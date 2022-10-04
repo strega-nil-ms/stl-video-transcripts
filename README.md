@@ -32,6 +32,7 @@ There are currently four fields in `metadata.json`:
 
 The following rules should be used:
 
+* Remove any `NOTE Confidence` lines
 * To denote a period of silence while mouths are moving,
   (for example, if someone forgot to unmute their microphone),
   or for noises or notes, use `[]` brackets:
