@@ -1,0 +1,9352 @@
+﻿WEBVTT
+
+NOTE duration:"01:29:15"
+
+NOTE recognizability:0.789
+
+NOTE language:en-us
+
+NOTE Confidence: 0.762570236666667
+
+00:00:07.100 --> 00:00:09.804
+No. Apparently transcription has
+
+NOTE Confidence: 0.762570236666667
+
+00:00:09.804 --> 00:00:12.222
+started itself. Hello everyone.
+
+NOTE Confidence: 0.762570236666667
+
+00:00:12.222 --> 00:00:14.346
+Welcome to yet another
+
+NOTE Confidence: 0.762570236666667
+
+00:00:14.346 --> 00:00:17.220
+Visual C Open code review.
+
+NOTE Confidence: 0.762570236666667
+
+00:00:17.220 --> 00:00:18.366
+I'm Casey Carter.
+
+NOTE Confidence: 0.762570236666667
+
+00:00:18.366 --> 00:00:20.276
+Remember the library's team here?
+
+NOTE Confidence: 0.762570236666667
+
+00:00:20.280 --> 00:00:22.488
+I spent a lot of time working on
+
+NOTE Confidence: 0.762570236666667
+
+00:00:22.488 --> 00:00:25.397
+the SCL and quite a bit of time
+
+NOTE Confidence: 0.762570236666667
+
+00:00:25.397 --> 00:00:26.917
+working on standardization with
+
+NOTE Confidence: 0.762570236666667
+
+00:00:26.992 --> 00:00:28.927
+WG 21 of the actual C + + 9.
+
+NOTE Confidence: 0.762570236666667
+
+00:00:28.930 --> 00:00:31.317
+Today we're going to be talking about.
+
+NOTE Confidence: 0.748192558571429
+
+00:00:34.920 --> 00:00:37.804
+PR2580 for the STL,
+
+NOTE Confidence: 0.748192558571429
+
+00:00:37.804 --> 00:00:41.172
+which is implementing P2440R1 ranges.
+
+NOTE Confidence: 0.748192558571429
+
+00:00:41.172 --> 00:00:43.576
+Iota Rangers shift left
+
+NOTE Confidence: 0.748192558571429
+
+00:00:43.576 --> 00:00:45.980
+and ranges shift right.
+
+NOTE Confidence: 0.748192558571429
+
+00:00:45.980 --> 00:00:47.737
+I'm gonna pull up the paper real
+
+NOTE Confidence: 0.748192558571429
+
+00:00:47.737 --> 00:00:49.587
+quick since I didn't do that yet.
+
+NOTE Confidence: 0.612815085
+
+00:00:55.280 --> 00:00:58.850
+Ohh no. Sorry I don't have my
+
+NOTE Confidence: 0.612815085
+
+00:00:58.850 --> 00:01:00.026
+shortcuts configured correctly here.
+
+NOTE Confidence: 0.31396872
+
+00:01:02.160 --> 00:01:03.010
+2040
+
+NOTE Confidence: 0.820210718571429
+
+00:01:09.160 --> 00:01:12.499
+No, this is a relatively short paper.
+
+NOTE Confidence: 0.820210718571429
+
+00:01:12.500 --> 00:01:15.460
+Adding you are not yet sharing your screen,
+
+NOTE Confidence: 0.820210718571429
+
+00:01:15.460 --> 00:01:17.228
+by the way, not yet sharing my screen.
+
+NOTE Confidence: 0.980851585
+
+00:01:19.720 --> 00:01:20.510
+Thank you.
+
+NOTE Confidence: 0.94377285
+
+00:01:25.240 --> 00:01:29.887
+OK. This is the paper of P2440R1.
+
+NOTE Confidence: 0.94377285
+
+00:01:29.887 --> 00:01:33.529
+It adds 3 new ranges algorithms.
+
+NOTE Confidence: 0.94377285
+
+00:01:33.530 --> 00:01:35.150
+The things that were already
+
+NOTE Confidence: 0.94377285
+
+00:01:35.150 --> 00:01:36.770
+existing algorithms in pre ranges,
+
+NOTE Confidence: 0.94377285
+
+00:01:36.770 --> 00:01:38.366
+world right? IOTA exists,
+
+NOTE Confidence: 0.94377285
+
+00:01:38.366 --> 00:01:41.310
+except it's not in the algorithms header,
+
+NOTE Confidence: 0.94377285
+
+00:01:41.310 --> 00:01:43.040
+it's in the numerics header.
+
+NOTE Confidence: 0.94377285
+
+00:01:43.040 --> 00:01:45.770
+But it's nonetheless an algorithm.
+
+NOTE Confidence: 0.94377285
+
+00:01:45.770 --> 00:01:49.290
+This adds Iota shift left and shift right.
+
+NOTE Confidence: 0.94377285
+
+00:01:49.290 --> 00:01:50.554
+As a Rangers algorithms,
+
+NOTE Confidence: 0.94377285
+
+00:01:50.554 --> 00:01:51.818
+in addition to their
+
+NOTE Confidence: 0.94377285
+
+00:01:51.818 --> 00:01:52.970
+stood algorithm versions.
+
+NOTE Confidence: 0.582358635
+
+00:01:55.000 --> 00:02:00.223
+So what's get the PR?
+
+NOTE Confidence: 0.582358635
+
+00:02:00.223 --> 00:02:04.088
+In the paper. Side by side.
+
+NOTE Confidence: 0.87738883
+
+00:02:07.340 --> 00:02:09.050
+We'll go into the files here.
+
+NOTE Confidence: 0.775605533708334
+
+00:02:11.560 --> 00:02:13.870
+Alright, in my usual alt click
+
+NOTE Confidence: 0.775605533708334
+
+00:02:13.870 --> 00:02:15.763
+trick to compress everything down
+
+NOTE Confidence: 0.775605533708334
+
+00:02:15.763 --> 00:02:18.059
+and wow this is touching a lot of
+
+NOTE Confidence: 0.775605533708334
+
+00:02:18.059 --> 00:02:20.237
+files for adding three algorithms.
+
+NOTE Confidence: 0.775605533708334
+
+00:02:20.240 --> 00:02:23.537
+We've got a new test for each.
+
+NOTE Confidence: 0.775605533708334
+
+00:02:23.540 --> 00:02:27.553
+Test case. And configurations for
+
+NOTE Confidence: 0.775605533708334
+
+00:02:27.553 --> 00:02:30.037
+test test test configuration.
+
+NOTE Confidence: 0.775605533708334
+
+00:02:30.040 --> 00:02:32.137
+I was going to change the future test macro,
+
+NOTE Confidence: 0.775605533708334
+
+00:02:32.140 --> 00:02:33.724
+presumably because this paper
+
+NOTE Confidence: 0.775605533708334
+
+00:02:33.724 --> 00:02:36.100
+adds a future test marker that
+
+NOTE Confidence: 0.775605533708334
+
+00:02:36.172 --> 00:02:37.888
+will not need to test for.
+
+NOTE Confidence: 0.775605533708334
+
+00:02:37.890 --> 00:02:38.640
+Changes to core,
+
+NOTE Confidence: 0.775605533708334
+
+00:02:38.640 --> 00:02:39.890
+probably to show that the
+
+NOTE Confidence: 0.775605533708334
+
+00:02:39.890 --> 00:02:41.260
+paper has been implemented.
+
+NOTE Confidence: 0.699318927
+
+00:02:44.300 --> 00:02:47.360
+Interesting, did we add just iota
+
+NOTE Confidence: 0.699318927
+
+00:02:47.360 --> 00:02:50.180
+in the numeric header? Must have.
+
+NOTE Confidence: 0.798650213846154
+
+00:02:57.800 --> 00:03:00.032
+Let's do to me. I thought we were
+
+NOTE Confidence: 0.798650213846154
+
+00:03:00.032 --> 00:03:01.858
+gonna have them on algorithms.
+
+NOTE Confidence: 0.798650213846154
+
+00:03:01.860 --> 00:03:03.400
+But I was apparently wrong.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:06.370 --> 00:03:08.491
+Yeah, even says the feature test marker
+
+NOTE Confidence: 0.644752880909091
+
+00:03:08.491 --> 00:03:10.660
+is in in numeric. Alright, awesome.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:10.660 --> 00:03:12.730
+It's more fun to discover these
+
+NOTE Confidence: 0.644752880909091
+
+00:03:12.730 --> 00:03:14.627
+things as we go than to read
+
+NOTE Confidence: 0.644752880909091
+
+00:03:14.627 --> 00:03:16.360
+the paper had a time right so?
+
+NOTE Confidence: 0.644752880909091
+
+00:03:16.360 --> 00:03:18.526
+And we know why that's changing
+
+NOTE Confidence: 0.644752880909091
+
+00:03:18.526 --> 00:03:19.970
+all of these headers.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:19.970 --> 00:03:23.258
+Let's, uh, start from the top.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:23.260 --> 00:03:26.662
+Let's make sure the new tests are in here.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:26.670 --> 00:03:28.588
+And that the names are spelled correctly.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:28.590 --> 00:03:31.930
+This is a. The shift left test.
+
+NOTE Confidence: 0.644752880909091
+
+00:03:31.930 --> 00:03:34.420
+And both of its files are there.
+
+NOTE Confidence: 0.8331503
+
+00:03:37.940 --> 00:03:41.100
+Shift right? Ohh
+
+NOTE Confidence: 0.90531438375
+
+00:03:44.220 --> 00:03:47.268
+I know this is a change to the.
+
+NOTE Confidence: 0.90531438375
+
+00:03:47.270 --> 00:03:49.230
+Existing shift right test.
+
+NOTE Confidence: 0.844408593333333
+
+00:03:56.930 --> 00:03:59.828
+Now I'm very confused why we're.
+
+NOTE Confidence: 0.844408593333333
+
+00:03:59.830 --> 00:04:01.486
+Choosing the existing test
+
+NOTE Confidence: 0.844408593333333
+
+00:04:01.486 --> 00:04:03.556
+and adding a new test.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:03.560 --> 00:04:07.270
+But we'll work that out when we get to it.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:07.270 --> 00:04:08.730
+Addition is actually correct.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:08.730 --> 00:04:10.190
+The correctly spelled name,
+
+NOTE Confidence: 0.844408593333333
+
+00:04:10.190 --> 00:04:12.950
+and that's all I'm concerned about right now.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:12.950 --> 00:04:14.290
+Again, these three new tests
+
+NOTE Confidence: 0.844408593333333
+
+00:04:14.290 --> 00:04:15.970
+have been added and the spelling
+
+NOTE Confidence: 0.844408593333333
+
+00:04:15.970 --> 00:04:17.390
+of the names is correct.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:17.390 --> 00:04:20.085
+We actually have to double check that
+
+NOTE Confidence: 0.844408593333333
+
+00:04:20.085 --> 00:04:22.568
+because otherwise we are test automation
+
+NOTE Confidence: 0.844408593333333
+
+00:04:22.570 --> 00:04:24.736
+isn't bright enough to tell us.
+
+NOTE Confidence: 0.844408593333333
+
+00:04:24.740 --> 00:04:26.156
+If the names are spelled correctly,
+
+NOTE Confidence: 0.844408593333333
+
+00:04:26.160 --> 00:04:28.185
+it will just run those tests and be happy.
+
+NOTE Confidence: 0.588197665428571
+
+00:04:30.840 --> 00:04:33.948
+Next step, let's pop into rivals core.
+
+NOTE Confidence: 0.588197665428571
+
+00:04:33.950 --> 00:04:36.200
+Yeah, there's the addition of
+
+NOTE Confidence: 0.588197665428571
+
+00:04:36.200 --> 00:04:38.522
+the comment that says we've
+
+NOTE Confidence: 0.588197665428571
+
+00:04:38.522 --> 00:04:39.926
+implemented this proposal.
+
+NOTE Confidence: 0.588197665428571
+
+00:04:39.930 --> 00:04:42.710
+It is in sorted order.
+
+NOTE Confidence: 0.588197665428571
+
+00:04:42.710 --> 00:04:45.398
+I'm not sure if the name matches.
+
+NOTE Confidence: 0.832843411428571
+
+00:04:48.410 --> 00:04:49.964
+#2537 the the name in our issue,
+
+NOTE Confidence: 0.832843411428571
+
+00:04:49.970 --> 00:04:52.502
+we're usually really.
+
+NOTE Confidence: 0.832843411428571
+
+00:04:52.502 --> 00:04:54.190
+Sticklers about.
+
+NOTE Confidence: 0.832843411428571
+
+00:04:54.190 --> 00:04:57.530
+Using a simplified name.
+
+NOTE Confidence: 0.832843411428571
+
+00:04:57.530 --> 00:04:59.505
+This simplified titles for papers
+
+NOTE Confidence: 0.832843411428571
+
+00:04:59.505 --> 00:05:02.179
+that are easier to keep track of.
+
+NOTE Confidence: 0.832843411428571
+
+00:05:02.180 --> 00:05:04.960
+That's not the right one.
+
+NOTE Confidence: 0.832843411428571
+
+00:05:04.960 --> 00:05:08.560
+537 OK. The transposition.
+
+NOTE Confidence: 0.830037864
+
+00:05:11.910 --> 00:05:14.124
+Yep, that's exactly the title we
+
+NOTE Confidence: 0.830037864
+
+00:05:14.124 --> 00:05:17.279
+listed it with in our issue for the
+
+NOTE Confidence: 0.830037864
+
+00:05:17.279 --> 00:05:19.408
+proposal. So that's all correct.
+
+NOTE Confidence: 0.849749876
+
+00:05:21.580 --> 00:05:24.424
+Looks like we have pulled CPP
+
+NOTE Confidence: 0.849749876
+
+00:05:24.424 --> 00:05:27.769
+Lib shift out of the C + + 17.
+
+NOTE Confidence: 0.849749876
+
+00:05:27.770 --> 00:05:31.400
+Section of future test macros.
+
+NOTE Confidence: 0.849749876
+
+00:05:31.400 --> 00:05:33.338
+Probably to move it down to
+
+NOTE Confidence: 0.849749876
+
+00:05:33.338 --> 00:05:34.307
+the conditional section.
+
+NOTE Confidence: 0.695174323333333
+
+00:05:42.560 --> 00:05:43.418
+Make this bigger.
+
+NOTE Confidence: 0.780517656666667
+
+00:05:51.350 --> 00:05:53.018
+Too many comments.
+
+NOTE Confidence: 0.869485067272727
+
+00:05:57.620 --> 00:05:58.760
+23 section now that we've
+
+NOTE Confidence: 0.869485067272727
+
+00:05:58.760 --> 00:06:00.250
+got this in the wrong place.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:02.620 --> 00:06:03.884
+Apparently Stephen has already
+
+NOTE Confidence: 0.824113604545454
+
+00:06:03.884 --> 00:06:06.140
+commented that this is the wrong place.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:06.140 --> 00:06:08.876
+It needs to move down to
+
+NOTE Confidence: 0.824113604545454
+
+00:06:08.880 --> 00:06:10.024
+the macros with language,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:10.024 --> 00:06:12.080
+but it's to be section we have.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:12.080 --> 00:06:13.452
+Four different sections of
+
+NOTE Confidence: 0.824113604545454
+
+00:06:13.452 --> 00:06:15.167
+feature test macros we defined
+
+NOTE Confidence: 0.824113604545454
+
+00:06:15.167 --> 00:06:16.960
+here that are C + + 17 macros.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:16.960 --> 00:06:18.802
+These that are defined in 20
+
+NOTE Confidence: 0.824113604545454
+
+00:06:18.802 --> 00:06:20.440
+things that were defined in 23.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:20.440 --> 00:06:22.582
+Whenever the macro depends on language
+
+NOTE Confidence: 0.824113604545454
+
+00:06:22.582 --> 00:06:24.939
+mode or pretty much anything else,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:24.940 --> 00:06:28.162
+it gets pulled out and goes into a fourth
+
+NOTE Confidence: 0.824113604545454
+
+00:06:28.162 --> 00:06:31.306
+section for the whatever configurable things.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:31.310 --> 00:06:32.828
+And just needs to go there,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:32.830 --> 00:06:34.394
+but isn't yet so.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:34.394 --> 00:06:35.567
+That's already noted,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:35.570 --> 00:06:37.370
+we don't need our notice again.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:37.370 --> 00:06:40.650
+We'll make sure that the value is right.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:40.650 --> 00:06:44.226
+Yeah, it's 2020 202,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:44.226 --> 00:06:47.418
+which is the February.
+
+NOTE Confidence: 0.824113604545454
+
+00:06:47.420 --> 00:06:47.781
+Eating,
+
+NOTE Confidence: 0.824113604545454
+
+00:06:47.781 --> 00:06:49.586
+I'll check that in there.
+
+NOTE Confidence: 0.591872587272727
+
+00:06:51.760 --> 00:06:54.875
+Enter that I continually have that we're
+
+NOTE Confidence: 0.591872587272727
+
+00:06:54.875 --> 00:06:58.720
+working dress open for. CP Lib shift.
+
+NOTE Confidence: 0.591872587272727
+
+00:06:58.720 --> 00:07:03.254
+Is in fact defined to 2022 or two?
+
+NOTE Confidence: 0.591872587272727
+
+00:07:03.254 --> 00:07:05.222
+So this was added in February.
+
+NOTE Confidence: 0.764637206666667
+
+00:07:12.460 --> 00:07:14.970
+We've got into comments that
+
+NOTE Confidence: 0.764637206666667
+
+00:07:14.970 --> 00:07:16.978
+matches correctly matches the.
+
+NOTE Confidence: 0.764637206666667
+
+00:07:16.980 --> 00:07:20.290
+Condition on but if so, that's all good.
+
+NOTE Confidence: 0.644253993636364
+
+00:07:22.940 --> 00:07:24.845
+Addition of the new feature
+
+NOTE Confidence: 0.644253993636364
+
+00:07:24.845 --> 00:07:27.380
+test macro for CP web ranges,
+
+NOTE Confidence: 0.644253993636364
+
+00:07:27.380 --> 00:07:30.086
+IOTA. This is out of order.
+
+NOTE Confidence: 0.898677442352941
+
+00:07:32.100 --> 00:07:34.180
+It was added to the end of this
+
+NOTE Confidence: 0.898677442352941
+
+00:07:34.180 --> 00:07:35.609
+section instead of being added
+
+NOTE Confidence: 0.898677442352941
+
+00:07:35.609 --> 00:07:37.818
+into this section and sorted order,
+
+NOTE Confidence: 0.898677442352941
+
+00:07:37.818 --> 00:07:41.556
+which would put it somewhere up here.
+
+NOTE Confidence: 0.898677442352941
+
+00:07:41.560 --> 00:07:43.480
+In between invoking this snooping on
+
+NOTE Confidence: 0.898677442352941
+
+00:07:43.480 --> 00:07:45.209
+Stefan has already commented on that.
+
+NOTE Confidence: 0.748429893846154
+
+00:07:49.010 --> 00:07:52.546
+It should actually move up just one because
+
+NOTE Confidence: 0.748429893846154
+
+00:07:52.546 --> 00:07:55.420
+it's CP live ranges iota. Thank you.
+
+NOTE Confidence: 0.76803606625
+
+00:07:58.210 --> 00:07:59.725
+Luckily I didn't commodate incorrectly
+
+NOTE Confidence: 0.76803606625
+
+00:07:59.725 --> 00:08:01.660
+and I don't have to fix it.
+
+NOTE Confidence: 0.76803606625
+
+00:08:01.660 --> 00:08:05.629
+Anyway, we're we have feature test macros.
+
+NOTE Confidence: 0.76803606625
+
+00:08:05.630 --> 00:08:07.555
+That's presumably all the things
+
+NOTE Confidence: 0.76803606625
+
+00:08:07.555 --> 00:08:09.960
+that were defined by the paper.
+
+NOTE Confidence: 0.76803606625
+
+00:08:09.960 --> 00:08:11.455
+I don't understand why people
+
+NOTE Confidence: 0.76803606625
+
+00:08:11.455 --> 00:08:13.300
+can't put the feature test macro
+
+NOTE Confidence: 0.76803606625
+
+00:08:13.300 --> 00:08:14.770
+wording in the right order.
+
+NOTE Confidence: 0.76803606625
+
+00:08:14.770 --> 00:08:17.030
+Like you never do.
+
+NOTE Confidence: 0.76803606625
+
+00:08:17.030 --> 00:08:18.598
+Objective value CPP Lib
+
+NOTE Confidence: 0.76803606625
+
+00:08:18.598 --> 00:08:20.166
+shift inversion not sin.
+
+NOTE Confidence: 0.475061782333333
+
+00:08:24.780 --> 00:08:26.730
+Find CPP library just like iota.
+
+NOTE Confidence: 0.722931131428571
+
+00:08:30.630 --> 00:08:31.790
+Those are all the features
+
+NOTE Confidence: 0.722931131428571
+
+00:08:31.790 --> 00:08:33.526
+test macros, so this header.
+
+NOTE Confidence: 0.722931131428571
+
+00:08:33.526 --> 00:08:35.214
+I said everything correct?
+
+NOTE Confidence: 0.769369051111111
+
+00:08:37.230 --> 00:08:38.902
+There's nothing additional to
+
+NOTE Confidence: 0.769369051111111
+
+00:08:38.902 --> 00:08:41.710
+comment on in this area. They're all.
+
+NOTE Confidence: 0.518323099
+
+00:08:44.500 --> 00:08:47.308
+Still on common ground.
+
+NOTE Confidence: 0.518323099
+
+00:08:47.310 --> 00:08:52.820
+Moving on. Let's do product code.
+
+NOTE Confidence: 0.518323099
+
+00:08:52.820 --> 00:08:55.760
+I'm going to look at X
+
+NOTE Confidence: 0.518323099
+
+00:08:55.760 --> 00:08:58.030
+utility first because it's a.
+
+NOTE Confidence: 0.518323099
+
+00:08:58.030 --> 00:08:59.926
+A higher order header than algorithm
+
+NOTE Confidence: 0.518323099
+
+00:08:59.926 --> 00:09:02.051
+in America that users include, right?
+
+NOTE Confidence: 0.518323099
+
+00:09:02.051 --> 00:09:03.856
+This is an internal header.
+
+NOTE Confidence: 0.518323099
+
+00:09:03.860 --> 00:09:05.645
+And this one happens to be included
+
+NOTE Confidence: 0.518323099
+
+00:09:05.645 --> 00:09:07.040
+by both algorithm and numeric,
+
+NOTE Confidence: 0.518323099
+
+00:09:07.040 --> 00:09:09.029
+so I assume there's a common code in here.
+
+NOTE Confidence: 0.8931149925
+
+00:09:11.790 --> 00:09:14.919
+And this is adding the out value
+
+NOTE Confidence: 0.8931149925
+
+00:09:14.919 --> 00:09:16.822
+result algorithm result type.
+
+NOTE Confidence: 0.8931149925
+
+00:09:16.822 --> 00:09:20.469
+There are a whole bunch of these things
+
+NOTE Confidence: 0.8931149925
+
+00:09:20.469 --> 00:09:22.282
+that we call result types whose names
+
+NOTE Confidence: 0.8931149925
+
+00:09:22.282 --> 00:09:24.578
+all in with under score results that
+
+NOTE Confidence: 0.8931149925
+
+00:09:24.578 --> 00:09:28.286
+were added to be types with pretty user.
+
+NOTE Confidence: 0.8931149925
+
+00:09:28.286 --> 00:09:30.381
+Respectable names for the return
+
+NOTE Confidence: 0.8931149925
+
+00:09:30.381 --> 00:09:32.359
+values of the ranges algorithms
+
+NOTE Confidence: 0.8931149925
+
+00:09:32.359 --> 00:09:34.591
+because we wanted to avoid ever
+
+NOTE Confidence: 0.8931149925
+
+00:09:34.665 --> 00:09:37.273
+having anything return tuple or pair,
+
+NOTE Confidence: 0.8931149925
+
+00:09:37.273 --> 00:09:39.559
+we wanted to always return names
+
+NOTE Confidence: 0.8931149925
+
+00:09:39.559 --> 00:09:42.032
+types with named members that people
+
+NOTE Confidence: 0.8931149925
+
+00:09:42.032 --> 00:09:44.840
+would refer to that would be stable.
+
+NOTE Confidence: 0.8931149925
+
+00:09:44.840 --> 00:09:47.246
+Because it's very hard when you're
+
+NOTE Confidence: 0.8931149925
+
+00:09:47.246 --> 00:09:49.340
+writing fresh code that takes.
+
+NOTE Confidence: 0.8931149925
+
+00:09:49.340 --> 00:09:51.290
+A pair, right? If you're using,
+
+NOTE Confidence: 0.8931149925
+
+00:09:51.290 --> 00:09:54.010
+say, insert into stood map.
+
+NOTE Confidence: 0.8931149925
+
+00:09:54.010 --> 00:09:56.026
+Returns a pair of an iterator and a bowl,
+
+NOTE Confidence: 0.8931149925
+
+00:09:56.030 --> 00:09:58.118
+and people can never remember if it's an
+
+NOTE Confidence: 0.8931149925
+
+00:09:58.118 --> 00:10:00.247
+iterator in a bowl or bowl and an iterator,
+
+NOTE Confidence: 0.8931149925
+
+00:10:00.250 --> 00:10:02.308
+so having actual names you can see
+
+NOTE Confidence: 0.8931149925
+
+00:10:02.308 --> 00:10:04.577
+you don't have to remember the order.
+
+NOTE Confidence: 0.873529092857143
+
+00:10:07.680 --> 00:10:10.235
+Anyway, this is called out value result,
+
+NOTE Confidence: 0.873529092857143
+
+00:10:10.240 --> 00:10:11.630
+which means it's going to
+
+NOTE Confidence: 0.873529092857143
+
+00:10:11.630 --> 00:10:13.020
+have a member named out.
+
+NOTE Confidence: 0.873529092857143
+
+00:10:13.020 --> 00:10:14.940
+I don't remember a named value.
+
+NOTE Confidence: 0.873529092857143
+
+00:10:14.940 --> 00:10:17.208
+We have a very very simple.
+
+NOTE Confidence: 0.873529092857143
+
+00:10:17.210 --> 00:10:19.218
+Naming rule that temperature
+
+NOTE Confidence: 0.873529092857143
+
+00:10:19.218 --> 00:10:21.728
+21 uses for these types.
+
+NOTE Confidence: 0.873529092857143
+
+00:10:21.730 --> 00:10:24.076
+Uh, these are gonna have no
+
+NOTE Confidence: 0.873529092857143
+
+00:10:24.076 --> 00:10:26.090
+unique address applied to them,
+
+NOTE Confidence: 0.873529092857143
+
+00:10:26.090 --> 00:10:27.658
+which is a pretty much a good
+
+NOTE Confidence: 0.873529092857143
+
+00:10:27.658 --> 00:10:28.760
+idea with anything generic.
+
+NOTE Confidence: 0.679428356666667
+
+00:10:32.140 --> 00:10:34.900
+In C + + 1 E, I'm going to go find.
+
+NOTE Confidence: 0.679428356666667
+
+00:10:34.900 --> 00:10:39.520
+Here's the declaration of this fast template.
+
+NOTE Confidence: 0.679428356666667
+
+00:10:39.520 --> 00:10:41.830
+It's supposed to be instant ranges.
+
+NOTE Confidence: 0.737645114
+
+00:10:45.330 --> 00:10:47.328
+Make sure we're within ranges, yes?
+
+NOTE Confidence: 0.737645114
+
+00:10:47.328 --> 00:10:51.654
+Within ranges we're in the concept section.
+
+NOTE Confidence: 0.737645114
+
+00:10:51.660 --> 00:10:53.232
+This is being made
+
+NOTE Confidence: 0.737645114
+
+00:10:53.232 --> 00:10:55.197
+conditional for SQL plus 23.
+
+NOTE Confidence: 0.737645114
+
+00:10:55.200 --> 00:10:58.568
+Which is all correct.
+
+NOTE Confidence: 0.737645114
+
+00:10:58.570 --> 00:11:00.720
+There's the indef there's commentary.
+
+NOTE Confidence: 0.737645114
+
+00:11:00.720 --> 00:11:01.530
+It doesn't match.
+
+NOTE Confidence: 0.838542908125
+
+00:11:05.430 --> 00:11:06.790
+The detailed specification of
+
+NOTE Confidence: 0.838542908125
+
+00:11:06.790 --> 00:11:09.221
+this and I didn't want to click
+
+NOTE Confidence: 0.838542908125
+
+00:11:09.221 --> 00:11:10.866
+that that's going to link.
+
+NOTE Confidence: 0.838542908125
+
+00:11:10.870 --> 00:11:12.890
+Yeah, you got the standard.
+
+NOTE Confidence: 0.838542908125
+
+00:11:12.890 --> 00:11:14.411
+Alright, detailed spec.
+
+NOTE Confidence: 0.838542908125
+
+00:11:14.411 --> 00:11:19.090
+This is again a class with two parameters.
+
+NOTE Confidence: 0.838542908125
+
+00:11:19.090 --> 00:11:20.540
+The members are both there.
+
+NOTE Confidence: 0.838542908125
+
+00:11:20.540 --> 00:11:23.510
+They're types are the first parameter.
+
+NOTE Confidence: 0.838542908125
+
+00:11:23.510 --> 00:11:25.772
+The first template argument and the
+
+NOTE Confidence: 0.838542908125
+
+00:11:25.772 --> 00:11:27.280
+first second template arguments.
+
+NOTE Confidence: 0.838542908125
+
+00:11:27.280 --> 00:11:28.720
+There no unique address.
+
+NOTE Confidence: 0.838542908125
+
+00:11:28.720 --> 00:11:29.080
+Appropriately,
+
+NOTE Confidence: 0.838542908125
+
+00:11:29.080 --> 00:11:31.618
+we are leaving these commented out.
+
+NOTE Confidence: 0.838542908125
+
+00:11:31.620 --> 00:11:33.520
+In the STL, for now,
+
+NOTE Confidence: 0.838542908125
+
+00:11:33.520 --> 00:11:36.175
+because MSVC didn't support no
+
+NOTE Confidence: 0.838542908125
+
+00:11:36.175 --> 00:11:39.879
+unique address for a very long time,
+
+NOTE Confidence: 0.838542908125
+
+00:11:39.880 --> 00:11:42.184
+and what we did do was add the
+
+NOTE Confidence: 0.838542908125
+
+00:11:42.184 --> 00:11:44.604
+attribute to the compiler so the
+
+NOTE Confidence: 0.838542908125
+
+00:11:44.604 --> 00:11:46.380
+compiler understood the attribute
+
+NOTE Confidence: 0.838542908125
+
+00:11:46.380 --> 00:11:48.696
+and didn't do anything with it.
+
+NOTE Confidence: 0.838542908125
+
+00:11:48.700 --> 00:11:50.835
+And then by the time it came,
+
+NOTE Confidence: 0.838542908125
+
+00:11:50.840 --> 00:11:51.338
+you know,
+
+NOTE Confidence: 0.838542908125
+
+00:11:51.338 --> 00:11:53.081
+by the time we decided we needed
+
+NOTE Confidence: 0.838542908125
+
+00:11:53.081 --> 00:11:54.574
+to actually implement the
+
+NOTE Confidence: 0.838542908125
+
+00:11:54.574 --> 00:11:56.154
+semantics of the attribute.
+
+NOTE Confidence: 0.838542908125
+
+00:11:56.160 --> 00:11:57.648
+It became clear that doing so
+
+NOTE Confidence: 0.838542908125
+
+00:11:57.648 --> 00:11:59.344
+would be an ABI break because
+
+NOTE Confidence: 0.838542908125
+
+00:11:59.344 --> 00:12:00.959
+we had been compiling code,
+
+NOTE Confidence: 0.838542908125
+
+00:12:00.960 --> 00:12:03.158
+they had that attribute in it already
+
+NOTE Confidence: 0.838542908125
+
+00:12:03.158 --> 00:12:05.666
+for a couple of point releases and
+
+NOTE Confidence: 0.838542908125
+
+00:12:05.666 --> 00:12:07.922
+not doing anything with the attribute.
+
+NOTE Confidence: 0.838542908125
+
+00:12:07.930 --> 00:12:09.415
+Since we really,
+
+NOTE Confidence: 0.838542908125
+
+00:12:09.415 --> 00:12:11.890
+really don't like Breaking API,
+
+NOTE Confidence: 0.838542908125
+
+00:12:11.890 --> 00:12:13.555
+that meant we decided to
+
+NOTE Confidence: 0.838542908125
+
+00:12:13.555 --> 00:12:14.887
+have no unique address.
+
+NOTE Confidence: 0.838542908125
+
+00:12:14.890 --> 00:12:18.787
+Do nothing in MSVC until the next ABI break.
+
+NOTE Confidence: 0.838542908125
+
+00:12:18.790 --> 00:12:21.320
+We do have another attribute
+
+NOTE Confidence: 0.838542908125
+
+00:12:21.320 --> 00:12:23.850
+that's in the MSVC namespace.
+
+NOTE Confidence: 0.838542908125
+
+00:12:23.850 --> 00:12:26.090
+It's MSVC colon colon.
+
+NOTE Confidence: 0.838542908125
+
+00:12:26.090 --> 00:12:27.770
+No unique address,
+
+NOTE Confidence: 0.838542908125
+
+00:12:27.770 --> 00:12:30.226
+which does do the IT does have the
+
+NOTE Confidence: 0.838542908125
+
+00:12:30.226 --> 00:12:32.063
+semantic effect that the standard
+
+NOTE Confidence: 0.838542908125
+
+00:12:32.063 --> 00:12:33.983
+specifies for no unique address,
+
+NOTE Confidence: 0.838542908125
+
+00:12:33.990 --> 00:12:34.413
+right?
+
+NOTE Confidence: 0.838542908125
+
+00:12:34.413 --> 00:12:36.528
+There are no backwards compatibility
+
+NOTE Confidence: 0.838542908125
+
+00:12:36.528 --> 00:12:38.604
+concerns because we added that
+
+NOTE Confidence: 0.838542908125
+
+00:12:38.604 --> 00:12:40.426
+with the semantic in place right
+
+NOTE Confidence: 0.838542908125
+
+00:12:40.426 --> 00:12:41.606
+when that attribute was new,
+
+NOTE Confidence: 0.838542908125
+
+00:12:41.610 --> 00:12:44.118
+but unfortunately that means we still
+
+NOTE Confidence: 0.838542908125
+
+00:12:44.118 --> 00:12:46.829
+can't use no unique address even
+
+NOTE Confidence: 0.838542908125
+
+00:12:46.829 --> 00:12:49.239
+with the MSBC specific attribute.
+
+NOTE Confidence: 0.838542908125
+
+00:12:49.240 --> 00:12:50.566
+In the STL,
+
+NOTE Confidence: 0.838542908125
+
+00:12:50.566 --> 00:12:53.218
+because client doesn't support it yet.
+
+NOTE Confidence: 0.838542908125
+
+00:12:53.220 --> 00:12:54.998
+And Clang largely doesn't support it yet,
+
+NOTE Confidence: 0.838542908125
+
+00:12:55.000 --> 00:12:59.130
+because they're waiting on me to get
+
+NOTE Confidence: 0.838542908125
+
+00:12:59.130 --> 00:13:00.705
+information to them about exactly
+
+NOTE Confidence: 0.838542908125
+
+00:13:00.705 --> 00:13:02.000
+how our implementation works,
+
+NOTE Confidence: 0.838542908125
+
+00:13:02.000 --> 00:13:04.637
+and I haven't had time to do that lately.
+
+NOTE Confidence: 0.838542908125
+
+00:13:04.640 --> 00:13:06.922
+So for now we have no unique
+
+NOTE Confidence: 0.838542908125
+
+00:13:06.922 --> 00:13:08.640
+address with comments and many
+
+NOTE Confidence: 0.838542908125
+
+00:13:08.640 --> 00:13:10.315
+places in our header files.
+
+NOTE Confidence: 0.838542908125
+
+00:13:10.320 --> 00:13:12.480
+Is there a reminder that eventually?
+
+NOTE Confidence: 0.838542908125
+
+00:13:12.480 --> 00:13:14.312
+There needs to be a, you know,
+
+NOTE Confidence: 0.838542908125
+
+00:13:14.312 --> 00:13:15.920
+unique address there.
+
+NOTE Confidence: 0.838542908125
+
+00:13:15.920 --> 00:13:16.568
+Or the equivalent.
+
+NOTE Confidence: 0.768572723333333
+
+00:13:19.470 --> 00:13:21.846
+OK, again, this is result type.
+
+NOTE Confidence: 0.768572723333333
+
+00:13:21.850 --> 00:13:24.197
+They have the standard format they
+
+NOTE Confidence: 0.768572723333333
+
+00:13:24.197 --> 00:13:26.819
+have named fields in a struct.
+
+NOTE Confidence: 0.768572723333333
+
+00:13:26.820 --> 00:13:29.658
+And they should be convertible to
+
+NOTE Confidence: 0.768572723333333
+
+00:13:29.658 --> 00:13:32.113
+other specializations of the same
+
+NOTE Confidence: 0.768572723333333
+
+00:13:32.113 --> 00:13:34.672
+class template when the types of
+
+NOTE Confidence: 0.768572723333333
+
+00:13:34.672 --> 00:13:37.060
+the members are convertible from the
+
+NOTE Confidence: 0.768572723333333
+
+00:13:37.141 --> 00:13:39.661
+types used in this specialization to
+
+NOTE Confidence: 0.768572723333333
+
+00:13:39.661 --> 00:13:42.530
+the types in another specialization.
+
+NOTE Confidence: 0.768572723333333
+
+00:13:42.530 --> 00:13:46.555
+So here is a conversion operator to.
+
+NOTE Confidence: 0.768572723333333
+
+00:13:46.560 --> 00:13:50.790
+How how value result with?
+
+NOTE Confidence: 0.768572723333333
+
+00:13:50.790 --> 00:13:54.200
+Ohh out and tie 2. Interesting.
+
+NOTE Confidence: 0.88084397875
+
+00:13:57.710 --> 00:14:00.806
+I would expect to use the same convention
+
+NOTE Confidence: 0.88084397875
+
+00:14:00.806 --> 00:14:03.416
+either adding two to both of the names.
+
+NOTE Confidence: 0.88084397875
+
+00:14:03.420 --> 00:14:06.458
+Or doubling the character at the beginning
+
+NOTE Confidence: 0.88084397875
+
+00:14:06.460 --> 00:14:08.000
+I I wouldn't care about a convention,
+
+NOTE Confidence: 0.88084397875
+
+00:14:08.000 --> 00:14:09.816
+but it's kind of strange that we picked
+
+NOTE Confidence: 0.88084397875
+
+00:14:09.820 --> 00:14:12.088
+two different conventions for naming these,
+
+NOTE Confidence: 0.88084397875
+
+00:14:12.090 --> 00:14:15.150
+so I wanna comment on that.
+
+NOTE Confidence: 0.88084397875
+
+00:14:15.150 --> 00:14:19.919
+It's OK. That you're using.
+
+NOTE Confidence: 0.753685
+
+00:14:23.010 --> 00:14:23.200
+To.
+
+NOTE Confidence: 0.57998738
+
+00:14:25.370 --> 00:14:27.560
+Name? Adjustment.
+
+NOTE Confidence: 0.372457335
+
+00:14:33.000 --> 00:14:34.389
+Name Justin conventions?
+
+NOTE Confidence: 0.794764558
+
+00:14:38.840 --> 00:14:41.540
+To get the parameter name,
+
+NOTE Confidence: 0.794764558
+
+00:14:41.540 --> 00:14:44.270
+it's for the conversion operators.
+
+NOTE Confidence: 0.649507056666667
+
+00:14:50.910 --> 00:14:51.600
+Please pick one.
+
+NOTE Confidence: 0.8049447
+
+00:15:06.850 --> 00:15:08.380
+I'm going to go ahead and edit this point.
+
+NOTE Confidence: 0.8049447
+
+00:15:08.380 --> 00:15:09.868
+I thought it applies to both.
+
+NOTE Confidence: 0.864954424285714
+
+00:15:14.300 --> 00:15:17.037
+Looking at other examples in the STL,
+
+NOTE Confidence: 0.864954424285714
+
+00:15:17.040 --> 00:15:19.441
+it does appear that the repeated character
+
+NOTE Confidence: 0.864954424285714
+
+00:15:19.441 --> 00:15:21.820
+is the current convention. We've got
+
+NOTE Confidence: 0.76305741
+
+00:15:23.980 --> 00:15:24.670
+INOLF fun.
+
+NOTE Confidence: 0.759208491428572
+
+00:15:35.750 --> 00:15:38.606
+Wonder if to tie was a problem.
+
+NOTE Confidence: 0.759208491428572
+
+00:15:38.610 --> 00:15:39.996
+Can't imagine what it would be.
+
+NOTE Confidence: 0.705656895
+
+00:15:43.180 --> 00:15:44.260
+Interestingly, for like minmax
+
+NOTE Confidence: 0.705656895
+
+00:15:44.260 --> 00:15:45.880
+result we do use tie two,
+
+NOTE Confidence: 0.705656895
+
+00:15:45.880 --> 00:15:47.740
+so there's Preston for both,
+
+NOTE Confidence: 0.705656895
+
+00:15:47.740 --> 00:15:48.830
+just not in the same.
+
+NOTE Confidence: 0.744572361666667
+
+00:15:51.190 --> 00:15:52.348
+Actually, maybe there is one I.
+
+NOTE Confidence: 0.744572361666667
+
+00:15:52.350 --> 00:15:54.288
+I haven't completely searched thoroughly yet.
+
+NOTE Confidence: 0.766085685
+
+00:15:56.780 --> 00:16:00.085
+Now we. Give this is his consistency
+
+NOTE Confidence: 0.766085685
+
+00:16:00.085 --> 00:16:01.919
+as the hard ground on the small minds.
+
+NOTE Confidence: 0.766085685
+
+00:16:01.920 --> 00:16:03.020
+They think it's villains.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:05.120 --> 00:16:08.618
+Anyway, we'll we'll work that out.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:08.620 --> 00:16:10.816
+Alright, so it's a conversion operator.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:10.820 --> 00:16:13.946
+It is correctly constrained to require.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:13.950 --> 00:16:17.359
+That the target type O is convertible
+
+NOTE Confidence: 0.795098868333333
+
+00:16:17.359 --> 00:16:19.238
+from a constant value out,
+
+NOTE Confidence: 0.795098868333333
+
+00:16:19.238 --> 00:16:21.320
+and that's gonna be constant value
+
+NOTE Confidence: 0.795098868333333
+
+00:16:21.383 --> 00:16:23.763
+because this is a constant L value
+
+NOTE Confidence: 0.795098868333333
+
+00:16:23.763 --> 00:16:26.160
+qualified conversion operator.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:26.160 --> 00:16:29.910
+And. Same for the other type.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:29.910 --> 00:16:33.720
+That cost tiraf is convertible.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:33.720 --> 00:16:38.770
+Sorry, the Type 2 is convertible from Tyra.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:38.770 --> 00:16:41.278
+Any little helper concept?
+
+NOTE Confidence: 0.795098868333333
+
+00:16:41.280 --> 00:16:42.636
+And of course,
+
+NOTE Confidence: 0.795098868333333
+
+00:16:42.636 --> 00:16:44.896
+it just has to return.
+
+NOTE Confidence: 0.795098868333333
+
+00:16:44.900 --> 00:16:45.610
+Members
+
+NOTE Confidence: 0.895366418
+
+00:16:47.690 --> 00:16:49.890
+yes, this is an aggregate.
+
+NOTE Confidence: 0.895366418
+
+00:16:49.890 --> 00:16:51.636
+It's not not. It's an aggregate.
+
+NOTE Confidence: 0.895366418
+
+00:16:51.640 --> 00:16:53.615
+We don't need to worry
+
+NOTE Confidence: 0.895366418
+
+00:16:53.615 --> 00:16:54.800
+about explicit conversions.
+
+NOTE Confidence: 0.895366418
+
+00:16:54.800 --> 00:16:56.000
+So so it doesn't need,
+
+NOTE Confidence: 0.895366418
+
+00:16:56.000 --> 00:16:58.240
+and it's hard to type.
+
+NOTE Confidence: 0.895366418
+
+00:16:58.240 --> 00:16:59.196
+And the other one.
+
+NOTE Confidence: 0.895366418
+
+00:16:59.196 --> 00:17:01.260
+This is going to be the R
+
+NOTE Confidence: 0.895366418
+
+00:17:01.260 --> 00:17:03.150
+value converting constructor.
+
+NOTE Confidence: 0.895366418
+
+00:17:03.150 --> 00:17:05.468
+Yep, our our value qualified.
+
+NOTE Confidence: 0.8781663775
+
+00:17:08.290 --> 00:17:12.700
+And we require that. Our value out.
+
+NOTE Confidence: 0.8781663775
+
+00:17:12.700 --> 00:17:16.270
+Sorry an X value out I guess.
+
+NOTE Confidence: 0.8781663775
+
+00:17:16.270 --> 00:17:18.115
+Right that out is convertible
+
+NOTE Confidence: 0.8781663775
+
+00:17:18.115 --> 00:17:19.960
+from and out X value.
+
+NOTE Confidence: 0.8781663775
+
+00:17:19.960 --> 00:17:23.540
+The reference here is extraneous.
+
+NOTE Confidence: 0.8781663775
+
+00:17:23.540 --> 00:17:25.364
+This is one of those things that we
+
+NOTE Confidence: 0.8781663775
+
+00:17:25.364 --> 00:17:27.653
+like to harp on a lot in the code with
+
+NOTE Confidence: 0.8781663775
+
+00:17:27.653 --> 00:17:30.824
+type traits and or concepts that use.
+
+NOTE Confidence: 0.8781663775
+
+00:17:30.830 --> 00:17:32.670
+Deco Val, the central.
+
+NOTE Confidence: 0.8781663775
+
+00:17:32.670 --> 00:17:35.310
+In their implementation the T ref ref
+
+NOTE Confidence: 0.8781663775
+
+00:17:35.310 --> 00:17:39.248
+is the same as T and is equivalent.
+
+NOTE Confidence: 0.8781663775
+
+00:17:39.250 --> 00:17:41.770
+And we try to keep the excess rest the sorry,
+
+NOTE Confidence: 0.8781663775
+
+00:17:41.770 --> 00:17:45.144
+the extraneous refs out of the code,
+
+NOTE Confidence: 0.8781663775
+
+00:17:45.150 --> 00:17:46.956
+because it's just a little more
+
+NOTE Confidence: 0.8781663775
+
+00:17:46.956 --> 00:17:48.760
+garbage to read and decipher.
+
+NOTE Confidence: 0.8781663775
+
+00:17:48.760 --> 00:17:50.072
+Someone has already commented
+
+NOTE Confidence: 0.8781663775
+
+00:17:50.072 --> 00:17:52.450
+this so I won't comment it again.
+
+NOTE Confidence: 0.8781663775
+
+00:17:52.450 --> 00:17:54.698
+Thank you miss go.
+
+NOTE Confidence: 0.8781663775
+
+00:17:54.698 --> 00:17:56.384
+You're catching that.
+
+NOTE Confidence: 0.8781663775
+
+00:17:56.390 --> 00:17:58.618
+Otherwise, this is a.
+
+NOTE Confidence: 0.8781663775
+
+00:17:58.618 --> 00:18:01.960
+Constexpr conversion operator to out value.
+
+NOTE Confidence: 0.8781663775
+
+00:18:01.960 --> 00:18:05.187
+Result of those types of once again.
+
+NOTE Confidence: 0.8781663775
+
+00:18:05.190 --> 00:18:06.598
+We're returning, you know,
+
+NOTE Confidence: 0.8781663775
+
+00:18:06.598 --> 00:18:08.358
+the difference here being that
+
+NOTE Confidence: 0.8781663775
+
+00:18:08.358 --> 00:18:10.456
+we're moving these members to
+
+NOTE Confidence: 0.8781663775
+
+00:18:10.456 --> 00:18:13.286
+get conversions from our values.
+
+NOTE Confidence: 0.8781663775
+
+00:18:13.290 --> 00:18:15.201
+Which is consistent with the R value
+
+NOTE Confidence: 0.8781663775
+
+00:18:15.201 --> 00:18:17.029
+qualification of the conversion operator,
+
+NOTE Confidence: 0.8781663775
+
+00:18:17.030 --> 00:18:17.856
+all good.
+
+NOTE Confidence: 0.8781663775
+
+00:18:17.856 --> 00:18:20.334
+So this is matching the pattern
+
+NOTE Confidence: 0.8781663775
+
+00:18:20.334 --> 00:18:22.769
+that we use elsewhere for.
+
+NOTE Confidence: 0.8781663775
+
+00:18:22.770 --> 00:18:25.098
+A great many algorithm result types.
+
+NOTE Confidence: 0.86878299
+
+00:18:27.390 --> 00:18:28.530
+And that's the only change
+
+NOTE Confidence: 0.86878299
+
+00:18:28.530 --> 00:18:30.120
+we have here in the utility.
+
+NOTE Confidence: 0.855482007692308
+
+00:18:32.540 --> 00:18:34.240
+Personally, that's gonna be used
+
+NOTE Confidence: 0.855482007692308
+
+00:18:34.240 --> 00:18:36.879
+in at least one or two of these.
+
+NOTE Confidence: 0.855482007692308
+
+00:18:36.880 --> 00:18:38.670
+It's also possible that they
+
+NOTE Confidence: 0.855482007692308
+
+00:18:38.670 --> 00:18:41.080
+just put it in the header.
+
+NOTE Confidence: 0.855482007692308
+
+00:18:41.080 --> 00:18:43.020
+No, he's our founding results.
+
+NOTE Confidence: 0.895573548571429
+
+00:18:48.830 --> 00:18:52.288
+Sorry, I'm going to scan through quickly.
+
+NOTE Confidence: 0.895573548571429
+
+00:18:52.290 --> 00:18:53.970
+No, these return subrange.
+
+NOTE Confidence: 0.895573548571429
+
+00:18:53.970 --> 00:18:56.940
+So it's actually only gonna be used.
+
+NOTE Confidence: 0.65329118
+
+00:19:01.180 --> 00:19:02.050
+In numeric.
+
+NOTE Confidence: 0.844016190909091
+
+00:19:04.750 --> 00:19:06.862
+But presumably someday we might have
+
+NOTE Confidence: 0.844016190909091
+
+00:19:06.862 --> 00:19:08.490
+another algorithm that needs it,
+
+NOTE Confidence: 0.844016190909091
+
+00:19:08.490 --> 00:19:10.270
+and it might make sense for it to be an
+
+NOTE Confidence: 0.844016190909091
+
+00:19:10.322 --> 00:19:12.194
+X utility instead of pushing it down and.
+
+NOTE Confidence: 0.814141451428571
+
+00:19:22.640 --> 00:19:26.819
+Ohh, it looks like we lost Casey.
+
+NOTE Confidence: 0.814141451428571
+
+00:19:26.820 --> 00:19:31.410
+Lego Pokémon. OK, maybe his teams crashed.
+
+NOTE Confidence: 0.905181616666667
+
+00:19:34.350 --> 00:19:35.640
+Please stand by.
+
+NOTE Confidence: 0.911099432
+
+00:19:47.320 --> 00:19:51.760
+Hello, welcome to another another.
+
+NOTE Confidence: 0.911099432
+
+00:19:51.760 --> 00:19:54.000
+Visual C++ Open code review.
+
+NOTE Confidence: 0.911099432
+
+00:19:54.000 --> 00:19:56.289
+OK, where was that when I disconnected?
+
+NOTE Confidence: 0.80788139875
+
+00:19:58.370 --> 00:20:00.045
+You were talking about potentially
+
+NOTE Confidence: 0.80788139875
+
+00:20:00.045 --> 00:20:02.041
+moving something to find an X
+
+NOTE Confidence: 0.80788139875
+
+00:20:02.041 --> 00:20:03.346
+utility down to the header.
+
+NOTE Confidence: 0.80788139875
+
+00:20:03.350 --> 00:20:05.542
+It's used or whether it should be kept
+
+NOTE Confidence: 0.80788139875
+
+00:20:05.542 --> 00:20:07.737
+in the central header for potential
+
+NOTE Confidence: 0.80788139875
+
+00:20:07.737 --> 00:20:09.962
+future use right out value results.
+
+NOTE Confidence: 0.80788139875
+
+00:20:09.962 --> 00:20:11.752
+This lvalue result apparently is
+
+NOTE Confidence: 0.80788139875
+
+00:20:11.752 --> 00:20:13.668
+only used in America right now.
+
+NOTE Confidence: 0.80788139875
+
+00:20:13.670 --> 00:20:16.001
+We could put it in America instead
+
+NOTE Confidence: 0.80788139875
+
+00:20:16.001 --> 00:20:18.190
+of putting it in next utility.
+
+NOTE Confidence: 0.80788139875
+
+00:20:18.190 --> 00:20:20.182
+I'm tempted to leave it in next utility
+
+NOTE Confidence: 0.80788139875
+
+00:20:20.182 --> 00:20:21.608
+because that's where the majority,
+
+NOTE Confidence: 0.80788139875
+
+00:20:21.610 --> 00:20:23.608
+if not all.
+
+NOTE Confidence: 0.80788139875
+
+00:20:23.610 --> 00:20:24.794
+Of the other algorithm,
+
+NOTE Confidence: 0.80788139875
+
+00:20:24.794 --> 00:20:25.978
+result types are defined.
+
+NOTE Confidence: 0.89499216
+
+00:20:29.810 --> 00:20:32.340
+Yeah, they did put this. Together with.
+
+NOTE Confidence: 0.89499216
+
+00:20:32.340 --> 00:20:34.860
+Other algorithm result types in the header.
+
+NOTE Confidence: 0.78792454
+
+00:20:37.340 --> 00:20:39.384
+You might want to reshare your screen.
+
+NOTE Confidence: 0.780921892
+
+00:20:44.420 --> 00:20:45.292
+Are they different? Apparently
+
+NOTE Confidence: 0.780921892
+
+00:20:45.292 --> 00:20:46.600
+I didn't do it hard enough.
+
+NOTE Confidence: 0.780921892
+
+00:20:46.600 --> 00:20:48.390
+There we go. Yeah, right?
+
+NOTE Confidence: 0.9732208
+
+00:20:53.780 --> 00:20:54.310
+OK.
+
+NOTE Confidence: 0.758482656
+
+00:20:57.290 --> 00:21:01.036
+Tiny little through product cost. Or one
+
+NOTE Confidence: 0.758482656
+
+00:21:01.036 --> 00:21:03.226
+class template that's not instantiated?
+
+NOTE Confidence: 0.831775105555555
+
+00:21:07.210 --> 00:21:09.316
+I don't see this being a
+
+NOTE Confidence: 0.831775105555555
+
+00:21:09.316 --> 00:21:10.369
+huge throughput problem.
+
+NOTE Confidence: 0.831775105555555
+
+00:21:10.370 --> 00:21:12.210
+If we do leave it in next utility,
+
+NOTE Confidence: 0.831775105555555
+
+00:21:12.210 --> 00:21:13.974
+so I'm not gonna complain about it.
+
+NOTE Confidence: 0.831775105555555
+
+00:21:13.980 --> 00:21:15.104
+But then again, I've.
+
+NOTE Confidence: 0.831775105555555
+
+00:21:15.104 --> 00:21:17.178
+I wouldn't refuse to change if somebody
+
+NOTE Confidence: 0.831775105555555
+
+00:21:17.178 --> 00:21:19.128
+else said they wanted one either,
+
+NOTE Confidence: 0.831775105555555
+
+00:21:19.130 --> 00:21:21.640
+so I'm just gonna let that one go for now.
+
+NOTE Confidence: 0.900293829
+
+00:21:24.700 --> 00:21:26.815
+And we're going to move
+
+NOTE Confidence: 0.900293829
+
+00:21:26.815 --> 00:21:28.930
+on to more product code.
+
+NOTE Confidence: 0.900293829
+
+00:21:28.930 --> 00:21:32.080
+We've been doing to numeric.
+
+NOTE Confidence: 0.900293829
+
+00:21:32.080 --> 00:21:33.520
+And take a look at IOTA.
+
+NOTE Confidence: 0.8247369242
+
+00:21:36.940 --> 00:21:39.060
+OK, I need a little more context to
+
+NOTE Confidence: 0.8247369242
+
+00:21:39.060 --> 00:21:41.380
+see where we are in the header where
+
+NOTE Confidence: 0.8247369242
+
+00:21:41.380 --> 00:21:42.825
+right after stud iota. Excellent,
+
+NOTE Confidence: 0.8247369242
+
+00:21:42.825 --> 00:21:45.105
+that's where I would want this to be.
+
+NOTE Confidence: 0.788950765
+
+00:21:48.110 --> 00:21:49.442
+Right off the bat,
+
+NOTE Confidence: 0.788950765
+
+00:21:49.442 --> 00:21:52.290
+we're defining the alias for the result type.
+
+NOTE Confidence: 0.788950765
+
+00:21:52.290 --> 00:21:54.278
+This again is also part of the
+
+NOTE Confidence: 0.788950765
+
+00:21:54.278 --> 00:21:56.209
+Convention used for ranges algorithms.
+
+NOTE Confidence: 0.788950765
+
+00:21:56.210 --> 00:21:58.695
+We'll have a result type
+
+NOTE Confidence: 0.788950765
+
+00:21:58.695 --> 00:22:01.180
+called a generic result type.
+
+NOTE Confidence: 0.788950765
+
+00:22:01.180 --> 00:22:03.284
+It's name is exactly the same as the
+
+NOTE Confidence: 0.788950765
+
+00:22:03.284 --> 00:22:05.278
+names of its members member name,
+
+NOTE Confidence: 0.788950765
+
+00:22:05.280 --> 00:22:07.100
+member name, etcetera under score
+
+NOTE Confidence: 0.788950765
+
+00:22:07.100 --> 00:22:09.320
+result and then we'll have a
+
+NOTE Confidence: 0.788950765
+
+00:22:09.320 --> 00:22:10.990
+specific alias for each algorithm
+
+NOTE Confidence: 0.788950765
+
+00:22:10.990 --> 00:22:13.360
+for the result type that it returns.
+
+NOTE Confidence: 0.788950765
+
+00:22:13.360 --> 00:22:16.006
+Since this algorithm is named Biota.
+
+NOTE Confidence: 0.788950765
+
+00:22:16.010 --> 00:22:18.450
+Have IOTA under score result.
+
+NOTE Confidence: 0.788950765
+
+00:22:18.450 --> 00:22:21.978
+Is an alias of out value result and that
+
+NOTE Confidence: 0.788950765
+
+00:22:21.978 --> 00:22:23.950
+again is exactly as specified in the.
+
+NOTE Confidence: 0.918577808333333
+
+00:22:26.560 --> 00:22:29.608
+Moving on, this is internal machinery.
+
+NOTE Confidence: 0.918577808333333
+
+00:22:29.610 --> 00:22:33.058
+I'd like to get down to see the.
+
+NOTE Confidence: 0.918577808333333
+
+00:22:33.060 --> 00:22:37.090
+Actual user public declarations first.
+
+NOTE Confidence: 0.918577808333333
+
+00:22:37.090 --> 00:22:39.050
+Make sure that they match
+
+NOTE Confidence: 0.918577808333333
+
+00:22:39.050 --> 00:22:41.040
+the standard OK. You have.
+
+NOTE Confidence: 0.7694609925
+
+00:22:43.360 --> 00:22:45.428
+Input or output iterator.
+
+NOTE Confidence: 0.599661578
+
+00:22:48.360 --> 00:22:52.248
+Sentinel for that input or output
+
+NOTE Confidence: 0.599661578
+
+00:22:52.248 --> 00:22:55.560
+iterator and weekly increment table.
+
+NOTE Confidence: 0.599661578
+
+00:22:55.560 --> 00:22:59.670
+Requires indirectly writable.
+
+NOTE Confidence: 0.599661578
+
+00:22:59.670 --> 00:23:01.914
+First type comma,
+
+NOTE Confidence: 0.599661578
+
+00:23:01.914 --> 00:23:05.654
+constant value of third type.
+
+NOTE Confidence: 0.599661578
+
+00:23:05.660 --> 00:23:08.390
+Those that agrees.
+
+NOTE Confidence: 0.599661578
+
+00:23:08.390 --> 00:23:10.958
+Constexpr I order results.
+
+NOTE Confidence: 0.7467709525
+
+00:23:14.210 --> 00:23:17.450
+First parameter, third parameter.
+
+NOTE Confidence: 0.7467709525
+
+00:23:17.450 --> 00:23:19.790
+Iota, the Silverload takes
+
+NOTE Confidence: 0.7467709525
+
+00:23:19.790 --> 00:23:22.715
+an iterator and a Sentinel.
+
+NOTE Confidence: 0.7467709525
+
+00:23:22.720 --> 00:23:26.580
+And another type initial value.
+
+NOTE Confidence: 0.7467709525
+
+00:23:26.580 --> 00:23:29.580
+So this does appear. Exactly.
+
+NOTE Confidence: 0.853336821666667
+
+00:23:31.620 --> 00:23:35.130
+Like the declaration in the paper.
+
+NOTE Confidence: 0.853336821666667
+
+00:23:35.130 --> 00:23:38.200
+And this next one also.
+
+NOTE Confidence: 0.853336821666667
+
+00:23:38.200 --> 00:23:41.768
+Full output range. It's.
+
+NOTE Confidence: 0.853336821666667
+
+00:23:41.768 --> 00:23:44.636
+No value of first parameter type.
+
+NOTE Confidence: 0.514430901777778
+
+00:23:46.820 --> 00:23:49.688
+Context for returns of iota result
+
+NOTE Confidence: 0.514430901777778
+
+00:23:49.688 --> 00:23:53.689
+of borrowed iterator. R comma T.
+
+NOTE Confidence: 0.514430901777778
+
+00:23:53.690 --> 00:23:57.758
+Party radar augmentee iota.
+
+NOTE Confidence: 0.514430901777778
+
+00:23:57.760 --> 00:24:01.790
+A forwarding reference to RNG.
+
+NOTE Confidence: 0.514430901777778
+
+00:24:01.790 --> 00:24:03.786
+Each type and value.
+
+NOTE Confidence: 0.514430901777778
+
+00:24:03.786 --> 00:24:06.281
+So these declarations do look
+
+NOTE Confidence: 0.514430901777778
+
+00:24:06.281 --> 00:24:09.109
+exactly like they do in the paper,
+
+NOTE Confidence: 0.514430901777778
+
+00:24:09.110 --> 00:24:11.040
+which means they are wrong.
+
+NOTE Confidence: 0.863576205454546
+
+00:24:14.540 --> 00:24:17.312
+Yes, this is one of these weird
+
+NOTE Confidence: 0.863576205454546
+
+00:24:17.312 --> 00:24:19.620
+things we have frontmatter.
+
+NOTE Confidence: 0.863576205454546
+
+00:24:19.620 --> 00:24:22.836
+For ranges out of the rooms.
+
+NOTE Confidence: 0.863576205454546
+
+00:24:22.840 --> 00:24:25.630
+That specifies.
+
+NOTE Confidence: 0.863576205454546
+
+00:24:25.630 --> 00:24:26.960
+You get the standard open.
+
+NOTE Confidence: 0.78761651
+
+00:24:30.110 --> 00:24:32.060
+Which I lost somewhere here.
+
+NOTE Confidence: 0.82077649125
+
+00:24:35.570 --> 00:24:37.730
+And while you find that I'll read out
+
+NOTE Confidence: 0.82077649125
+
+00:24:37.730 --> 00:24:39.026
+Cameron's question, Cameron asks,
+
+NOTE Confidence: 0.82077649125
+
+00:24:39.026 --> 00:24:41.288
+I have a question unrelated to this
+
+NOTE Confidence: 0.82077649125
+
+00:24:41.288 --> 00:24:43.143
+specific PR rather ranges as a whole.
+
+NOTE Confidence: 0.82077649125
+
+00:24:43.150 --> 00:24:45.306
+I notice that some algorithms like for
+
+NOTE Confidence: 0.82077649125
+
+00:24:45.306 --> 00:24:47.867
+each are not available for ADL to find.
+
+NOTE Confidence: 0.82077649125
+
+00:24:47.870 --> 00:24:49.610
+That's argument dependent lookup because
+
+NOTE Confidence: 0.82077649125
+
+00:24:49.610 --> 00:24:51.830
+they're implemented as an inline variable.
+
+NOTE Confidence: 0.82077649125
+
+00:24:51.830 --> 00:24:54.336
+But others, like this iota are not.
+
+NOTE Confidence: 0.82077649125
+
+00:24:54.340 --> 00:24:56.175
+What is the motivation for
+
+NOTE Confidence: 0.82077649125
+
+00:24:56.175 --> 00:24:58.010
+one method versus the other?
+
+NOTE Confidence: 0.82077649125
+
+00:24:58.010 --> 00:25:00.160
+What is strangely pertinent question.
+
+NOTE Confidence: 0.8882394
+
+00:25:02.930 --> 00:25:07.620
+So. The reason for the difference is
+
+NOTE Confidence: 0.8882394
+
+00:25:07.620 --> 00:25:10.859
+that these in the PR are incorrect.
+
+NOTE Confidence: 0.8882394
+
+00:25:10.860 --> 00:25:13.512
+We have front matter that states
+
+NOTE Confidence: 0.8882394
+
+00:25:13.512 --> 00:25:15.458
+various requirements for, uh,
+
+NOTE Confidence: 0.8882394
+
+00:25:15.458 --> 00:25:18.548
+overloads of algorithms and ranges.
+
+NOTE Confidence: 0.777901384444444
+
+00:25:22.250 --> 00:25:25.490
+Hmm, this is the right stuff I will find.
+
+NOTE Confidence: 0.667080096666667
+
+00:25:28.150 --> 00:25:30.160
+Parameters otherwise specified.
+
+NOTE Confidence: 0.912741866666667
+
+00:25:39.880 --> 00:25:43.338
+There we go. The entity is defined
+
+NOTE Confidence: 0.912741866666667
+
+00:25:43.338 --> 00:25:45.598
+as the stood ranges namespace.
+
+NOTE Confidence: 0.912741866666667
+
+00:25:45.600 --> 00:25:46.948
+Let's make this bigger.
+
+NOTE Confidence: 0.873363903846154
+
+00:25:49.410 --> 00:25:50.761
+So that I'm not the only one
+
+NOTE Confidence: 0.873363903846154
+
+00:25:50.761 --> 00:25:52.218
+who can see what I'm reading.
+
+NOTE Confidence: 0.631127270714286
+
+00:25:54.230 --> 00:25:56.526
+OK, look at paragraph 2 here in
+
+NOTE Confidence: 0.631127270714286
+
+00:25:56.526 --> 00:25:57.910
+algorithms that requirements the
+
+NOTE Confidence: 0.631127270714286
+
+00:25:57.910 --> 00:25:59.630
+new disappointing the stood ranges
+
+NOTE Confidence: 0.631127270714286
+
+00:25:59.630 --> 00:26:02.049
+namespace in this clause are not found
+
+NOTE Confidence: 0.631127270714286
+
+00:26:02.049 --> 00:26:03.689
+by argument dependent name lookup.
+
+NOTE Confidence: 0.631127270714286
+
+00:26:03.690 --> 00:26:07.380
+When found by unqualified name lookup.
+
+NOTE Confidence: 0.631127270714286
+
+00:26:07.380 --> 00:26:09.264
+Or the postfix expression and the
+
+NOTE Confidence: 0.631127270714286
+
+00:26:09.264 --> 00:26:10.520
+function call basically unqualified
+
+NOTE Confidence: 0.631127270714286
+
+00:26:10.574 --> 00:26:11.759
+lookup or a function call.
+
+NOTE Confidence: 0.631127270714286
+
+00:26:11.760 --> 00:26:14.220
+They inhibit argument dependent lookup.
+
+NOTE Confidence: 0.85169066875
+
+00:26:16.430 --> 00:26:19.520
+This is an intentional bit of
+
+NOTE Confidence: 0.85169066875
+
+00:26:19.520 --> 00:26:22.098
+design weirdness where we had to
+
+NOTE Confidence: 0.85169066875
+
+00:26:22.098 --> 00:26:24.033
+introduce this property so that.
+
+NOTE Confidence: 0.85169066875
+
+00:26:24.040 --> 00:26:27.592
+Calls to ranges algorithms would be
+
+NOTE Confidence: 0.85169066875
+
+00:26:27.592 --> 00:26:30.726
+unambiguous and they wouldn't be actually.
+
+NOTE Confidence: 0.85169066875
+
+00:26:30.726 --> 00:26:33.156
+Only ambiguous isn't the problem.
+
+NOTE Confidence: 0.85169066875
+
+00:26:33.160 --> 00:26:36.116
+If you think about calling find,
+
+NOTE Confidence: 0.85169066875
+
+00:26:36.116 --> 00:26:38.716
+for example the the the two
+
+NOTE Confidence: 0.85169066875
+
+00:26:38.716 --> 00:26:41.462
+iterator version of find. And stood.
+
+NOTE Confidence: 0.85169066875
+
+00:26:41.462 --> 00:26:44.042
+Has a corresponding iterator Sentinel
+
+NOTE Confidence: 0.85169066875
+
+00:26:44.042 --> 00:26:46.470
+implementation to find and ranges.
+
+NOTE Confidence: 0.85169066875
+
+00:26:46.470 --> 00:26:48.804
+And if you wanted to call
+
+NOTE Confidence: 0.85169066875
+
+00:26:48.804 --> 00:26:50.360
+find with two iterators.
+
+NOTE Confidence: 0.835368236
+
+00:26:52.370 --> 00:26:55.510
+And those two were somehow
+
+NOTE Confidence: 0.835368236
+
+00:26:55.510 --> 00:26:57.130
+in the same lookup set.
+
+NOTE Confidence: 0.835368236
+
+00:26:57.130 --> 00:27:00.146
+You would end up calling the stud version.
+
+NOTE Confidence: 0.835368236
+
+00:27:00.150 --> 00:27:01.370
+Instead of the ranges version,
+
+NOTE Confidence: 0.835368236
+
+00:27:01.370 --> 00:27:03.620
+because it is more specialized
+
+NOTE Confidence: 0.835368236
+
+00:27:03.620 --> 00:27:04.970
+since stood behind,
+
+NOTE Confidence: 0.835368236
+
+00:27:04.970 --> 00:27:07.147
+takes two first arguments by the same
+
+NOTE Confidence: 0.835368236
+
+00:27:07.147 --> 00:27:10.019
+type and the Ranges 1 takes those two
+
+NOTE Confidence: 0.835368236
+
+00:27:10.019 --> 00:27:11.889
+arguments could be different types.
+
+NOTE Confidence: 0.835368236
+
+00:27:11.890 --> 00:27:15.614
+It is less specialized. Anyway,
+
+NOTE Confidence: 0.835368236
+
+00:27:15.614 --> 00:27:19.026
+and in order to get around this problem,
+
+NOTE Confidence: 0.835368236
+
+00:27:19.026 --> 00:27:22.171
+we decided to make the range of things
+
+NOTE Confidence: 0.835368236
+
+00:27:22.171 --> 00:27:24.373
+not findable by ADL and inhibit
+
+NOTE Confidence: 0.835368236
+
+00:27:24.373 --> 00:27:27.019
+ADL when they are found otherwise.
+
+NOTE Confidence: 0.835368236
+
+00:27:27.020 --> 00:27:29.330
+So that these calls will work.
+
+NOTE Confidence: 0.835368236
+
+00:27:29.330 --> 00:27:30.794
+And of course,
+
+NOTE Confidence: 0.835368236
+
+00:27:30.794 --> 00:27:33.722
+implementing that means we have to
+
+NOTE Confidence: 0.835368236
+
+00:27:33.722 --> 00:27:36.449
+implement them currently as objects.
+
+NOTE Confidence: 0.835368236
+
+00:27:36.450 --> 00:27:39.323
+It would be nice if C++ gave us
+
+NOTE Confidence: 0.835368236
+
+00:27:39.323 --> 00:27:41.010
+a better tool so that we could
+
+NOTE Confidence: 0.835368236
+
+00:27:41.072 --> 00:27:42.937
+go ahead and actually implement
+
+NOTE Confidence: 0.835368236
+
+00:27:42.937 --> 00:27:44.802
+these things as function tippets,
+
+NOTE Confidence: 0.835368236
+
+00:27:44.810 --> 00:27:47.290
+but function templates that have
+
+NOTE Confidence: 0.835368236
+
+00:27:47.290 --> 00:27:50.197
+the same property of inhibiting ADL
+
+NOTE Confidence: 0.835368236
+
+00:27:50.197 --> 00:27:52.633
+or not being fined found by ADL.
+
+NOTE Confidence: 0.835368236
+
+00:27:52.640 --> 00:27:56.258
+But that hasn't happened.
+
+NOTE Confidence: 0.835368236
+
+00:27:56.260 --> 00:27:58.816
+There are proposals in the works.
+
+NOTE Confidence: 0.835368236
+
+00:27:58.820 --> 00:28:00.815
+In the standard, but none of them,
+
+NOTE Confidence: 0.835368236
+
+00:28:00.820 --> 00:28:02.446
+to my knowledge, is actually progressing.
+
+NOTE Confidence: 0.9018149525
+
+00:28:05.070 --> 00:28:06.738
+So that's the thing,
+
+NOTE Confidence: 0.9018149525
+
+00:28:06.738 --> 00:28:09.945
+we have lots of things that are not really
+
+NOTE Confidence: 0.9018149525
+
+00:28:09.945 --> 00:28:12.090
+specified as objects that are amplified,
+
+NOTE Confidence: 0.9018149525
+
+00:28:12.090 --> 00:28:14.490
+implemented as objects in the STL.
+
+NOTE Confidence: 0.9018149525
+
+00:28:14.490 --> 00:28:17.850
+For ranges algorithms, they're often
+
+NOTE Confidence: 0.9018149525
+
+00:28:17.850 --> 00:28:21.210
+referred to colloquially as diploids.
+
+NOTE Confidence: 0.9018149525
+
+00:28:21.210 --> 00:28:25.130
+Thanks to Tips Song who is a
+
+NOTE Confidence: 0.9018149525
+
+00:28:25.130 --> 00:28:27.340
+CPP reference maintainer and.
+
+NOTE Confidence: 0.9018149525
+
+00:28:27.340 --> 00:28:30.016
+Occasionally shows up at W 21.
+
+NOTE Confidence: 0.9018149525
+
+00:28:30.020 --> 00:28:32.309
+He came up with this name Niblets
+
+NOTE Confidence: 0.9018149525
+
+00:28:32.309 --> 00:28:35.540
+to basically mock Eric Niebler.
+
+NOTE Confidence: 0.9018149525
+
+00:28:35.540 --> 00:28:37.514
+Since Eric wanted them to be objects,
+
+NOTE Confidence: 0.9018149525
+
+00:28:37.520 --> 00:28:40.249
+and I argued that we should probably
+
+NOTE Confidence: 0.9018149525
+
+00:28:40.249 --> 00:28:42.583
+force the language to make functions
+
+NOTE Confidence: 0.9018149525
+
+00:28:42.583 --> 00:28:45.153
+work so that libraries could use
+
+NOTE Confidence: 0.9018149525
+
+00:28:45.153 --> 00:28:47.368
+functions instead of having to
+
+NOTE Confidence: 0.9018149525
+
+00:28:47.368 --> 00:28:49.199
+have everything be an object.
+
+NOTE Confidence: 0.9018149525
+
+00:28:49.200 --> 00:28:50.490
+Anyway, until that day comes,
+
+NOTE Confidence: 0.9018149525
+
+00:28:50.490 --> 00:28:53.120
+that means these things have
+
+NOTE Confidence: 0.9018149525
+
+00:28:53.120 --> 00:28:54.698
+to be implemented.
+
+NOTE Confidence: 0.9018149525
+
+00:28:54.700 --> 00:28:57.550
+As sort of object likes.
+
+NOTE Confidence: 0.9018149525
+
+00:28:57.550 --> 00:29:00.914
+We have a convenient pattern we
+
+NOTE Confidence: 0.9018149525
+
+00:29:00.914 --> 00:29:03.540
+use for that in the STL already.
+
+NOTE Confidence: 0.783981875
+
+00:29:10.670 --> 00:29:12.558
+Go into algorithm here.
+
+NOTE Confidence: 0.794502582
+
+00:29:21.010 --> 00:29:22.190
+While you're looking that up,
+
+NOTE Confidence: 0.794502582
+
+00:29:22.190 --> 00:29:23.442
+I have a question.
+
+NOTE Confidence: 0.794502582
+
+00:29:23.442 --> 00:29:25.320
+So in the the standard there's
+
+NOTE Confidence: 0.794502582
+
+00:29:25.384 --> 00:29:27.169
+been some movement towards trying
+
+NOTE Confidence: 0.794502582
+
+00:29:27.169 --> 00:29:29.765
+to name things by what they are
+
+NOTE Confidence: 0.794502582
+
+00:29:29.765 --> 00:29:31.985
+rather than after people because the
+
+NOTE Confidence: 0.794502582
+
+00:29:31.985 --> 00:29:33.876
+people based names are confusing
+
+NOTE Confidence: 0.794502582
+
+00:29:33.876 --> 00:29:35.404
+like argument dependent lookup,
+
+NOTE Confidence: 0.794502582
+
+00:29:35.410 --> 00:29:37.245
+occasionally used to be called
+
+NOTE Confidence: 0.794502582
+
+00:29:37.245 --> 00:29:39.080
+Koenig lookup after Andrew Koenig
+
+NOTE Confidence: 0.794502582
+
+00:29:39.138 --> 00:29:41.028
+who was the one who specified it,
+
+NOTE Confidence: 0.794502582
+
+00:29:41.030 --> 00:29:42.230
+but Connick lookup tells you
+
+NOTE Confidence: 0.794502582
+
+00:29:42.230 --> 00:29:43.430
+nothing unless you know who
+
+NOTE Confidence: 0.794502582
+
+00:29:43.473 --> 00:29:44.628
+he was and what he did and.
+
+NOTE Confidence: 0.794502582
+
+00:29:44.630 --> 00:29:47.059
+Argument tip dependent look up at least
+
+NOTE Confidence: 0.794502582
+
+00:29:47.059 --> 00:29:49.420
+says what it does with the knee fluids.
+
+NOTE Confidence: 0.794502582
+
+00:29:49.420 --> 00:29:50.645
+Is there a formal term
+
+NOTE Confidence: 0.794502582
+
+00:29:50.645 --> 00:29:51.899
+that we should be using?
+
+NOTE Confidence: 0.794502582
+
+00:29:51.900 --> 00:29:54.210
+I know that customization point
+
+NOTE Confidence: 0.794502582
+
+00:29:54.210 --> 00:29:56.520
+object is related but different
+
+NOTE Confidence: 0.794502582
+
+00:29:56.598 --> 00:29:58.776
+and I can never remember if.
+
+NOTE Confidence: 0.794502582
+
+00:29:58.776 --> 00:30:02.104
+Yeah, and people get the two things mixed
+
+NOTE Confidence: 0.794502582
+
+00:30:02.104 --> 00:30:04.622
+up all the time because one of them
+
+NOTE Confidence: 0.794502582
+
+00:30:04.622 --> 00:30:06.809
+has a name and the other one doesn't.
+
+NOTE Confidence: 0.794502582
+
+00:30:06.810 --> 00:30:08.917
+And because we added both things in
+
+NOTE Confidence: 0.794502582
+
+00:30:08.917 --> 00:30:11.489
+ranges at the same time to the standard,
+
+NOTE Confidence: 0.794502582
+
+00:30:11.490 --> 00:30:14.130
+so a customization point object is
+
+NOTE Confidence: 0.794502582
+
+00:30:14.130 --> 00:30:16.659
+something that is explicitly an object.
+
+NOTE Confidence: 0.794502582
+
+00:30:16.660 --> 00:30:18.152
+Right, it's a call.
+
+NOTE Confidence: 0.794502582
+
+00:30:18.152 --> 00:30:20.790
+It's callable it's a function object type.
+
+NOTE Confidence: 0.794502582
+
+00:30:20.790 --> 00:30:22.463
+But it is definitely an object you're
+
+NOTE Confidence: 0.794502582
+
+00:30:22.463 --> 00:30:24.027
+allowed to treat it like an object,
+
+NOTE Confidence: 0.794502582
+
+00:30:24.030 --> 00:30:26.046
+which means you can pass them around as
+
+NOTE Confidence: 0.794502582
+
+00:30:26.046 --> 00:30:27.870
+arguments to things that take function,
+
+NOTE Confidence: 0.794502582
+
+00:30:27.870 --> 00:30:30.312
+or do that that take function
+
+NOTE Confidence: 0.794502582
+
+00:30:30.312 --> 00:30:31.126
+object arguments,
+
+NOTE Confidence: 0.794502582
+
+00:30:31.130 --> 00:30:33.308
+which of course is extremely handy,
+
+NOTE Confidence: 0.794502582
+
+00:30:33.310 --> 00:30:35.438
+and it would be really handy to have
+
+NOTE Confidence: 0.794502582
+
+00:30:35.438 --> 00:30:37.548
+for the rest of these algorithms.
+
+NOTE Confidence: 0.794502582
+
+00:30:37.550 --> 00:30:38.402
+But again,
+
+NOTE Confidence: 0.794502582
+
+00:30:38.402 --> 00:30:41.772
+since I would like the core language to
+
+NOTE Confidence: 0.794502582
+
+00:30:41.772 --> 00:30:44.446
+be usable by people who write libraries.
+
+NOTE Confidence: 0.794502582
+
+00:30:44.450 --> 00:30:47.530
+I I would like if we had first
+
+NOTE Confidence: 0.794502582
+
+00:30:47.530 --> 00:30:49.070
+class overload sets or.
+
+NOTE Confidence: 0.794502582
+
+00:30:49.070 --> 00:30:50.302
+Overloads of function templates
+
+NOTE Confidence: 0.794502582
+
+00:30:50.302 --> 00:30:52.530
+and we didn't need to make again,
+
+NOTE Confidence: 0.794502582
+
+00:30:52.530 --> 00:30:53.990
+we didn't have to artificially
+
+NOTE Confidence: 0.794502582
+
+00:30:53.990 --> 00:30:55.743
+force things to the objects so
+
+NOTE Confidence: 0.794502582
+
+00:30:55.743 --> 00:30:56.958
+that they would be useful.
+
+NOTE Confidence: 0.908938355
+
+00:30:59.320 --> 00:31:01.903
+So it would probably be nice if
+
+NOTE Confidence: 0.908938355
+
+00:31:01.903 --> 00:31:04.959
+we had a name for this thing,
+
+NOTE Confidence: 0.908938355
+
+00:31:04.960 --> 00:31:07.010
+especially if it's gonna stick
+
+NOTE Confidence: 0.908938355
+
+00:31:07.010 --> 00:31:10.130
+around for much longer. Umm?
+
+NOTE Confidence: 0.908938355
+
+00:31:10.130 --> 00:31:13.370
+I think maybe in one or two more cycles
+
+NOTE Confidence: 0.908938355
+
+00:31:13.370 --> 00:31:16.300
+of the standard at most will either
+
+NOTE Confidence: 0.908938355
+
+00:31:16.300 --> 00:31:18.670
+have changes in the core language
+
+NOTE Confidence: 0.908938355
+
+00:31:18.670 --> 00:31:21.289
+that let us use all these things,
+
+NOTE Confidence: 0.908938355
+
+00:31:21.290 --> 00:31:22.871
+actual function templates,
+
+NOTE Confidence: 0.908938355
+
+00:31:22.871 --> 00:31:25.626
+but function templates with an attribute.
+
+NOTE Confidence: 0.908938355
+
+00:31:25.626 --> 00:31:27.241
+All of them that gives
+
+NOTE Confidence: 0.908938355
+
+00:31:27.241 --> 00:31:28.910
+them the right semantics,
+
+NOTE Confidence: 0.908938355
+
+00:31:28.910 --> 00:31:30.210
+or we'll have given up,
+
+NOTE Confidence: 0.908938355
+
+00:31:30.210 --> 00:31:32.758
+and these will become.
+
+NOTE Confidence: 0.908938355
+
+00:31:32.760 --> 00:31:34.479
+Actual explicit objects,
+
+NOTE Confidence: 0.908938355
+
+00:31:34.479 --> 00:31:38.490
+in which case they'll just be Cpos.
+
+NOTE Confidence: 0.908938355
+
+00:31:38.490 --> 00:31:40.818
+Like the other Cpos.
+
+NOTE Confidence: 0.908938355
+
+00:31:40.820 --> 00:31:44.444
+And we won't need a name for neighborhoods.
+
+NOTE Confidence: 0.908938355
+
+00:31:44.450 --> 00:31:45.630
+Anyway, the the transient,
+
+NOTE Confidence: 0.908938355
+
+00:31:45.630 --> 00:31:47.622
+the intended transient nature is why we
+
+NOTE Confidence: 0.908938355
+
+00:31:47.622 --> 00:31:49.510
+never had a name for it in the 1st place.
+
+NOTE Confidence: 0.908938355
+
+00:31:49.510 --> 00:31:51.400
+We just called.
+
+NOTE Confidence: 0.908938355
+
+00:31:51.400 --> 00:31:54.130
+Let them be things and somebody had
+
+NOTE Confidence: 0.908938355
+
+00:31:54.130 --> 00:31:56.790
+to decided to come up with the name.
+
+NOTE Confidence: 0.908938355
+
+00:31:56.790 --> 00:31:58.422
+The document that right Tim is a I
+
+NOTE Confidence: 0.908938355
+
+00:31:58.422 --> 00:32:00.101
+said he was a CPP reference maintainer
+
+NOTE Confidence: 0.908938355
+
+00:32:00.101 --> 00:32:02.430
+and he came up with a name to be able
+
+NOTE Confidence: 0.908938355
+
+00:32:02.430 --> 00:32:04.600
+to document these things as a class.
+
+NOTE Confidence: 0.837252226086957
+
+00:32:06.710 --> 00:32:08.593
+Thanks, that explains a lot and I've
+
+NOTE Confidence: 0.837252226086957
+
+00:32:08.593 --> 00:32:10.079
+been reviewing this for a couple
+
+NOTE Confidence: 0.837252226086957
+
+00:32:10.079 --> 00:32:11.836
+of years now and I didn't know the
+
+NOTE Confidence: 0.837252226086957
+
+00:32:11.836 --> 00:32:15.238
+whole story. Well, now you do.
+
+NOTE Confidence: 0.837252226086957
+
+00:32:15.240 --> 00:32:18.019
+I also have a question about these
+
+NOTE Confidence: 0.837252226086957
+
+00:32:18.019 --> 00:32:21.540
+things, uh, which might be.
+
+NOTE Confidence: 0.837252226086957
+
+00:32:21.540 --> 00:32:23.240
+Unrelated, and if it is,
+
+NOTE Confidence: 0.837252226086957
+
+00:32:23.240 --> 00:32:25.470
+you know we can talk about it later, but.
+
+NOTE Confidence: 0.889091378
+
+00:32:28.840 --> 00:32:30.190
+How do you get a function
+
+NOTE Confidence: 0.889091378
+
+00:32:30.190 --> 00:32:31.090
+pointer to these things?
+
+NOTE Confidence: 0.889091378
+
+00:32:31.090 --> 00:32:32.326
+Because I don't see in the
+
+NOTE Confidence: 0.889091378
+
+00:32:32.326 --> 00:32:33.669
+standard that you can't take a
+
+NOTE Confidence: 0.889091378
+
+00:32:33.669 --> 00:32:34.849
+function pointer to these things,
+
+NOTE Confidence: 0.889091378
+
+00:32:34.850 --> 00:32:36.782
+but I don't see how it's implemented
+
+NOTE Confidence: 0.889091378
+
+00:32:36.782 --> 00:32:38.699
+to take a function pointer.
+
+NOTE Confidence: 0.889091378
+
+00:32:38.700 --> 00:32:40.095
+Sorry it's not implemented because
+
+NOTE Confidence: 0.889091378
+
+00:32:40.095 --> 00:32:41.809
+you're not allowed to take the
+
+NOTE Confidence: 0.889091378
+
+00:32:41.809 --> 00:32:43.149
+address of things and namespace
+
+NOTE Confidence: 0.889091378
+
+00:32:43.149 --> 00:32:46.628
+stood except when explicitly allowed.
+
+NOTE Confidence: 0.889091378
+
+00:32:46.628 --> 00:32:49.640
+Ah. Friends, another one of the
+
+NOTE Confidence: 0.889091378
+
+00:32:49.640 --> 00:32:52.669
+changes that came there in C + + 20.
+
+NOTE Confidence: 0.889091378
+
+00:32:52.670 --> 00:32:55.196
+Yeah, we we have algorithm requirements
+
+NOTE Confidence: 0.889091378
+
+00:32:55.196 --> 00:32:57.289
+and or blanket requirements that
+
+NOTE Confidence: 0.889091378
+
+00:32:57.289 --> 00:32:59.662
+have just enough magic to let you
+
+NOTE Confidence: 0.889091378
+
+00:32:59.662 --> 00:33:01.668
+implement these things as functions.
+
+NOTE Confidence: 0.889091378
+
+00:33:01.670 --> 00:33:03.586
+I'm sorry as objects.
+
+NOTE Confidence: 0.889091378
+
+00:33:03.586 --> 00:33:05.981
+Despite him being depicted as
+
+NOTE Confidence: 0.889091378
+
+00:33:05.981 --> 00:33:08.058
+function tablets in the iOS.
+
+NOTE Confidence: 0.889091378
+
+00:33:08.060 --> 00:33:11.007
+Cool, we for example we have working
+
+NOTE Confidence: 0.889091378
+
+00:33:11.007 --> 00:33:13.397
+this issue can't pass explicit
+
+NOTE Confidence: 0.889091378
+
+00:33:13.397 --> 00:33:16.007
+template argument list to these.
+
+NOTE Confidence: 0.889091378
+
+00:33:16.010 --> 00:33:17.991
+Because that would break if it was
+
+NOTE Confidence: 0.889091378
+
+00:33:17.991 --> 00:33:20.198
+an object and not actually a temple.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:22.860 --> 00:33:25.776
+Anyway, there, and it's worth noting.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:25.780 --> 00:33:27.915
+It's a it's worth noting that users
+
+NOTE Confidence: 0.673875956666667
+
+00:33:27.915 --> 00:33:30.090
+taking the address of standard library
+
+NOTE Confidence: 0.673875956666667
+
+00:33:30.090 --> 00:33:32.095
+functions or passing explicit template
+
+NOTE Confidence: 0.673875956666667
+
+00:33:32.095 --> 00:33:34.800
+arguments to them was problematic even
+
+NOTE Confidence: 0.673875956666667
+
+00:33:34.800 --> 00:33:38.040
+before these object imitators were added.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:38.040 --> 00:33:40.674
+For example, people doing that with
+
+NOTE Confidence: 0.673875956666667
+
+00:33:40.674 --> 00:33:43.798
+stood make pair back in C + 9803.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:43.798 --> 00:33:45.678
+We're broken when the signature
+
+NOTE Confidence: 0.673875956666667
+
+00:33:45.678 --> 00:33:48.093
+of make pair changed in C + +
+
+NOTE Confidence: 0.673875956666667
+
+00:33:48.093 --> 00:33:50.680
+11 to be perfect forwarding.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:50.680 --> 00:33:53.816
+It would create a totally you know,
+
+NOTE Confidence: 0.673875956666667
+
+00:33:53.820 --> 00:33:55.272
+undesirable templates specialization.
+
+NOTE Confidence: 0.673875956666667
+
+00:33:55.272 --> 00:33:59.393
+If you said make pair angle bracket you know
+
+NOTE Confidence: 0.673875956666667
+
+00:33:59.393 --> 00:34:01.350
+int comma double you would now get int,
+
+NOTE Confidence: 0.673875956666667
+
+00:34:01.350 --> 00:34:02.412
+ref, ref, comma,
+
+NOTE Confidence: 0.673875956666667
+
+00:34:02.412 --> 00:34:04.890
+double ref ref as your function parameters
+
+NOTE Confidence: 0.673875956666667
+
+00:34:04.956 --> 00:34:07.105
+and that is not something that code
+
+NOTE Confidence: 0.673875956666667
+
+00:34:07.105 --> 00:34:10.206
+written in C + 9803 was expecting so it
+
+NOTE Confidence: 0.673875956666667
+
+00:34:10.206 --> 00:34:12.642
+had always been problematic and with the
+
+NOTE Confidence: 0.673875956666667
+
+00:34:12.642 --> 00:34:14.827
+addition of these object like things,
+
+NOTE Confidence: 0.673875956666667
+
+00:34:14.830 --> 00:34:17.962
+the standard flatly forbidding users from
+
+NOTE Confidence: 0.673875956666667
+
+00:34:17.962 --> 00:34:20.599
+doing this unless otherwise specified
+
+NOTE Confidence: 0.673875956666667
+
+00:34:20.599 --> 00:34:23.903
+has solved both those problems and more.
+
+NOTE Confidence: 0.673875956666667
+
+00:34:23.910 --> 00:34:25.800
+Yes, and for Britain take.
+
+NOTE Confidence: 0.673875956666667
+
+00:34:25.800 --> 00:34:27.885
+The admissions has also conveniently
+
+NOTE Confidence: 0.673875956666667
+
+00:34:27.885 --> 00:34:30.832
+allowed us Tom and make some more
+
+NOTE Confidence: 0.673875956666667
+
+00:34:30.832 --> 00:34:32.828
+optimizations to the STL that
+
+NOTE Confidence: 0.673875956666667
+
+00:34:32.828 --> 00:34:34.500
+we couldn't do otherwise.
+
+NOTE Confidence: 0.68803224
+
+00:34:36.960 --> 00:34:38.211
+Starting to call,
+
+NOTE Confidence: 0.68803224
+
+00:34:38.211 --> 00:34:40.296
+I think I interrupted you.
+
+NOTE Confidence: 0.68803224
+
+00:34:40.300 --> 00:34:42.094
+Ohh I was just saying thank
+
+NOTE Confidence: 0.68803224
+
+00:34:42.094 --> 00:34:43.723
+you for the explanation. Yeah.
+
+NOTE Confidence: 0.68803224
+
+00:34:43.723 --> 00:34:46.754
+That's what this process is all about.
+
+NOTE Confidence: 0.68803224
+
+00:34:46.760 --> 00:34:50.185
+So anyway, here's an example of fine.
+
+NOTE Confidence: 0.68803224
+
+00:34:50.185 --> 00:34:51.610
+First of the implementation of
+
+NOTE Confidence: 0.68803224
+
+00:34:51.610 --> 00:34:53.340
+the find first of algorithm,
+
+NOTE Confidence: 0.68803224
+
+00:34:53.340 --> 00:34:57.400
+it is defined as a again a class object,
+
+NOTE Confidence: 0.68803224
+
+00:34:57.400 --> 00:35:01.481
+and we have a helper called not quite object
+
+NOTE Confidence: 0.68803224
+
+00:35:01.481 --> 00:35:04.904
+that we derive these from whose purpose.
+
+NOTE Confidence: 0.68803224
+
+00:35:04.910 --> 00:35:06.398
+Is to make impossible.
+
+NOTE Confidence: 0.68803224
+
+00:35:06.398 --> 00:35:08.630
+Some of the behaviors that you
+
+NOTE Confidence: 0.68803224
+
+00:35:08.707 --> 00:35:11.115
+would expect to work with this if
+
+NOTE Confidence: 0.68803224
+
+00:35:11.115 --> 00:35:13.767
+it was supposed to be an object
+
+NOTE Confidence: 0.68803224
+
+00:35:13.767 --> 00:35:15.697
+to keep people from accidentally
+
+NOTE Confidence: 0.68803224
+
+00:35:15.697 --> 00:35:18.979
+taking advantage of what's
+
+NOTE Confidence: 0.68803224
+
+00:35:18.979 --> 00:35:21.868
+effectively implementation details.
+
+NOTE Confidence: 0.68803224
+
+00:35:21.870 --> 00:35:24.858
+So not quite object.
+
+NOTE Confidence: 0.68803224
+
+00:35:24.860 --> 00:35:25.740
+He's gonna find that.
+
+NOTE Confidence: 0.827361847142857
+
+00:35:27.980 --> 00:35:29.530
+It's got to be an X utility, right?
+
+NOTE Confidence: 0.658311634
+
+00:35:42.900 --> 00:35:45.508
+And, uh, here we go. Not quite object.
+
+NOTE Confidence: 0.658311634
+
+00:35:45.508 --> 00:35:48.280
+Actually describes its what its purpose is.
+
+NOTE Confidence: 0.658311634
+
+00:35:48.280 --> 00:35:51.206
+Because this is a really weird thing.
+
+NOTE Confidence: 0.658311634
+
+00:35:51.210 --> 00:35:54.437
+It has deleted default constructor to keep
+
+NOTE Confidence: 0.658311634
+
+00:35:54.437 --> 00:35:57.650
+you from constructing objects of this type
+
+NOTE Confidence: 0.658311634
+
+00:35:57.650 --> 00:36:00.284
+without knowing the magic construct tag.
+
+NOTE Confidence: 0.658311634
+
+00:36:00.290 --> 00:36:02.874
+For example, right, we have a secret tag
+
+NOTE Confidence: 0.658311634
+
+00:36:02.874 --> 00:36:05.706
+type that's necessary to construct these.
+
+NOTE Confidence: 0.658311634
+
+00:36:05.710 --> 00:36:08.810
+They're not copyable or movable,
+
+NOTE Confidence: 0.658311634
+
+00:36:08.810 --> 00:36:10.674
+and we've even deleted
+
+NOTE Confidence: 0.658311634
+
+00:36:10.674 --> 00:36:12.538
+the address of operator.
+
+NOTE Confidence: 0.658311634
+
+00:36:12.540 --> 00:36:13.919
+You can't try and take the address
+
+NOTE Confidence: 0.658311634
+
+00:36:13.919 --> 00:36:15.210
+of it like it's an object.
+
+NOTE Confidence: 0.709951507333333
+
+00:36:17.370 --> 00:36:18.789
+And. Ohh protected,
+
+NOTE Confidence: 0.709951507333333
+
+00:36:18.789 --> 00:36:20.681
+default protected destructor always
+
+NOTE Confidence: 0.709951507333333
+
+00:36:20.681 --> 00:36:23.813
+a nice thing with the base class to
+
+NOTE Confidence: 0.709951507333333
+
+00:36:23.813 --> 00:36:26.496
+have either a virtual or a protected
+
+NOTE Confidence: 0.709951507333333
+
+00:36:26.496 --> 00:36:28.931
+destructor to keep people from
+
+NOTE Confidence: 0.709951507333333
+
+00:36:28.931 --> 00:36:32.570
+destroying through pointers to base.
+
+NOTE Confidence: 0.709951507333333
+
+00:36:32.570 --> 00:36:35.058
+With the undefined behavior.
+
+NOTE Confidence: 0.709951507333333
+
+00:36:35.058 --> 00:36:37.584
+So this is designed to be a base class
+
+NOTE Confidence: 0.709951507333333
+
+00:36:37.584 --> 00:36:39.483
+and it inhibits lots of otherwise
+
+NOTE Confidence: 0.709951507333333
+
+00:36:39.483 --> 00:36:41.523
+useful things that you would want
+
+NOTE Confidence: 0.709951507333333
+
+00:36:41.588 --> 00:36:43.674
+to have your objects to have if
+
+NOTE Confidence: 0.709951507333333
+
+00:36:43.674 --> 00:36:45.078
+they were intentionally objects.
+
+NOTE Confidence: 0.709951507333333
+
+00:36:45.080 --> 00:36:49.010
+So these to the two template
+
+NOTE Confidence: 0.709951507333333
+
+00:36:49.010 --> 00:36:50.975
+overloads of IOTA.
+
+NOTE Confidence: 0.709951507333333
+
+00:36:50.980 --> 00:36:52.880
+There are only two right, yes?
+
+NOTE Confidence: 0.322715073333333
+
+00:36:56.080 --> 00:36:57.310
+Did only bloyd
+
+NOTE Confidence: 0.766765375
+
+00:37:03.030 --> 00:37:05.490
+sorry. I'm scanning the existing comments.
+
+NOTE Confidence: 0.766765375
+
+00:37:05.490 --> 00:37:08.679
+It looks like we actually have an an attempt.
+
+NOTE Confidence: 0.766979955
+
+00:37:12.180 --> 00:37:16.720
+Let's clarify this a little bit. Verifying
+
+NOTE Confidence: 0.611180575
+
+00:37:19.440 --> 00:37:20.770
+the algorithms.
+
+NOTE Confidence: 0.89202825
+
+00:37:23.760 --> 00:37:26.365
+I think did you look at miss who's first?
+
+NOTE Confidence: 0.89202825
+
+00:37:26.365 --> 00:37:27.775
+Comment because I think in his
+
+NOTE Confidence: 0.89202825
+
+00:37:27.775 --> 00:37:29.255
+first comment he did at least try
+
+NOTE Confidence: 0.89202825
+
+00:37:29.255 --> 00:37:30.579
+to explain what he Bloods are.
+
+NOTE Confidence: 0.89202825
+
+00:37:30.580 --> 00:37:32.700
+This is the this is the second occurrence,
+
+NOTE Confidence: 0.89202825
+
+00:37:32.700 --> 00:37:34.500
+that's why he just said Ditto.
+
+NOTE Confidence: 0.89202825
+
+00:37:34.500 --> 00:37:36.570
+Yes, I get that and.
+
+NOTE Confidence: 0.785087668333333
+
+00:37:47.030 --> 00:37:50.390
+Let's look just search for me, boy.
+
+NOTE Confidence: 0.785087668333333
+
+00:37:50.390 --> 00:37:53.038
+So now this is unfortunately in ranges.
+
+NOTE Confidence: 0.785087668333333
+
+00:37:53.038 --> 00:37:55.550
+Algorithms are not functions
+
+NOTE Confidence: 0.785087668333333
+
+00:37:55.550 --> 00:37:56.786
+or function templates.
+
+NOTE Confidence: 0.785087668333333
+
+00:37:56.786 --> 00:37:59.258
+But our currently implemented as diploids
+
+NOTE Confidence: 0.785087668333333
+
+00:37:59.258 --> 00:38:01.890
+as our objects with the call operator.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:01.890 --> 00:38:05.736
+The reason for that is that it inhibits BDL.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:05.736 --> 00:38:08.028
+Close enough.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:08.030 --> 00:38:09.885
+There are some conventions to follow here,
+
+NOTE Confidence: 0.785087668333333
+
+00:38:09.890 --> 00:38:11.744
+and you should have a look at how the
+
+NOTE Confidence: 0.785087668333333
+
+00:38:11.744 --> 00:38:13.447
+other Ranger charms are implemented.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:13.450 --> 00:38:16.488
+The general starting point is something like.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:16.490 --> 00:38:20.960
+Class. Algorithm name under score fondness.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:20.960 --> 00:38:23.620
+That's how we name them all consistently.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:23.620 --> 00:38:25.920
+Name under score fund.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:25.920 --> 00:38:30.210
+Hear it privately from not quite object.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:30.210 --> 00:38:33.490
+Make its constructor set available
+
+NOTE Confidence: 0.785087668333333
+
+00:38:33.490 --> 00:38:35.458
+without using declaration.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:35.460 --> 00:38:36.650
+Then implement.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:36.650 --> 00:38:40.220
+Overloads of the function call operator
+
+NOTE Confidence: 0.785087668333333
+
+00:38:40.220 --> 00:38:44.010
+to implement your actual algorithm.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:44.010 --> 00:38:46.690
+Declare an inline variable.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:46.690 --> 00:38:49.370
+Object of that type.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:49.370 --> 00:38:53.270
+The type of your function object.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:53.270 --> 00:38:56.750
+And initialize it with not quite
+
+NOTE Confidence: 0.785087668333333
+
+00:38:56.750 --> 00:38:59.570
+an object secret construct tag.
+
+NOTE Confidence: 0.785087668333333
+
+00:38:59.570 --> 00:39:04.650
+So. This is a great comment.
+
+NOTE Confidence: 0.785087668333333
+
+00:39:04.650 --> 00:39:06.242
+I think he actually did a pretty good
+
+NOTE Confidence: 0.785087668333333
+
+00:39:06.242 --> 00:39:09.210
+job of explaining what to do here, yeah?
+
+NOTE Confidence: 0.785087668333333
+
+00:39:09.210 --> 00:39:11.829
+Which I just wanted to save you the work
+
+NOTE Confidence: 0.785087668333333
+
+00:39:11.829 --> 00:39:14.627
+of writing all that again from scratch.
+
+NOTE Confidence: 0.785087668333333
+
+00:39:14.630 --> 00:39:16.358
+Yeah, Moscow has implemented quite a
+
+NOTE Confidence: 0.785087668333333
+
+00:39:16.358 --> 00:39:17.990
+few ranges algorithms in his time,
+
+NOTE Confidence: 0.785087668333333
+
+00:39:17.990 --> 00:39:20.470
+so I I'm not at all surprised that
+
+NOTE Confidence: 0.785087668333333
+
+00:39:20.470 --> 00:39:22.829
+he knows how to do it correctly.
+
+NOTE Confidence: 0.785087668333333
+
+00:39:22.830 --> 00:39:27.279
+Anyway, that's awesome. You know this.
+
+NOTE Confidence: 0.785087668333333
+
+00:39:27.280 --> 00:39:30.360
+It's fun having a community.
+
+NOTE Confidence: 0.785087668333333
+
+00:39:30.360 --> 00:39:32.390
+Or around the SCL to do our work for us.
+
+NOTE Confidence: 0.784632771111111
+
+00:39:36.530 --> 00:39:38.528
+Alright, coming back here so that
+
+NOTE Confidence: 0.784632771111111
+
+00:39:38.528 --> 00:39:39.914
+that's already clear, right?
+
+NOTE Confidence: 0.784632771111111
+
+00:39:39.914 --> 00:39:41.450
+Uh, did Arnie Boyd?
+
+NOTE Confidence: 0.784632771111111
+
+00:39:41.450 --> 00:39:43.430
+Presumably they will understand if
+
+NOTE Confidence: 0.784632771111111
+
+00:39:43.430 --> 00:39:45.850
+they read Miscoe comments in order.
+
+NOTE Confidence: 0.784632771111111
+
+00:39:45.850 --> 00:39:48.426
+What that is trying to tell them?
+
+NOTE Confidence: 0.784632771111111
+
+00:39:48.430 --> 00:39:53.798
+So we will go ahead and review the algorithm.
+
+NOTE Confidence: 0.784632771111111
+
+00:39:53.800 --> 00:39:57.720
+See what the paper had to say.
+
+NOTE Confidence: 0.784632771111111
+
+00:39:57.720 --> 00:39:59.220
+Paper, which I've lost track of.
+
+NOTE Confidence: 0.681508857666667
+
+00:40:04.640 --> 00:40:06.968
+Of the following effects equivalent too.
+
+NOTE Confidence: 0.807902355714286
+
+00:40:11.390 --> 00:40:13.945
+Our first is not equal to last.
+
+NOTE Confidence: 0.807902355714286
+
+00:40:13.950 --> 00:40:16.998
+Well, first not equal to last.
+
+NOTE Confidence: 0.807902355714286
+
+00:40:17.000 --> 00:40:19.250
+Start first equals as constant value.
+
+NOTE Confidence: 0.819398824615385
+
+00:40:22.370 --> 00:40:24.729
+We are as consisting the value to
+
+NOTE Confidence: 0.819398824615385
+
+00:40:24.729 --> 00:40:27.200
+enforce the value doesn't get modified.
+
+NOTE Confidence: 0.819398824615385
+
+00:40:27.200 --> 00:40:29.559
+Which I don't think stood Iota does,
+
+NOTE Confidence: 0.819398824615385
+
+00:40:29.560 --> 00:40:31.132
+but hey, that's OK.
+
+NOTE Confidence: 0.819398824615385
+
+00:40:31.132 --> 00:40:32.704
+It's still pretty close.
+
+NOTE Confidence: 0.73983711
+
+00:40:34.720 --> 00:40:36.644
+We increment the iterator.
+
+NOTE Confidence: 0.73983711
+
+00:40:36.644 --> 00:40:38.568
+We increment the value.
+
+NOTE Confidence: 0.73983711
+
+00:40:38.570 --> 00:40:39.850
+Move one around until we
+
+NOTE Confidence: 0.73983711
+
+00:40:39.850 --> 00:40:41.130
+get to see the range,
+
+NOTE Confidence: 0.73983711
+
+00:40:41.130 --> 00:40:43.698
+and then we return the final
+
+NOTE Confidence: 0.73983711
+
+00:40:43.698 --> 00:40:45.898
+value of the iterator and
+
+NOTE Confidence: 0.73983711
+
+00:40:45.898 --> 00:40:48.338
+the final value of the.
+
+NOTE Confidence: 0.825919517142857
+
+00:40:50.790 --> 00:40:53.590
+Object that we're using to
+
+NOTE Confidence: 0.825919517142857
+
+00:40:53.590 --> 00:40:55.853
+initialize things. Pick your name.
+
+NOTE Confidence: 0.825919517142857
+
+00:40:55.853 --> 00:40:58.900
+Accumulator would be the name if it was.
+
+NOTE Confidence: 0.825919517142857
+
+00:40:58.900 --> 00:41:03.170
+Uh. Stood accumulate, but it isn't so.
+
+NOTE Confidence: 0.825919517142857
+
+00:41:03.170 --> 00:41:05.228
+Accumulator is nevertheless what it's doing.
+
+NOTE Confidence: 0.859729732222222
+
+00:41:09.840 --> 00:41:12.522
+And let's go see what the
+
+NOTE Confidence: 0.859729732222222
+
+00:41:12.522 --> 00:41:13.863
+actual implementation does.
+
+NOTE Confidence: 0.859729732222222
+
+00:41:13.870 --> 00:41:14.926
+Is this going to be hard to read?
+
+NOTE Confidence: 0.859729732222222
+
+00:41:14.930 --> 00:41:16.540
+It's a shame there's no
+
+NOTE Confidence: 0.859729732222222
+
+00:41:16.540 --> 00:41:18.380
+way to collapse. Comets.
+
+NOTE Confidence: 0.859220543333333
+
+00:41:22.020 --> 00:41:24.780
+GitHub that would be really nice.
+
+NOTE Confidence: 0.859220543333333
+
+00:41:24.780 --> 00:41:27.930
+Anyway. Let's look at the
+
+NOTE Confidence: 0.859220543333333
+
+00:41:27.930 --> 00:41:29.290
+iterator central overload first.
+
+NOTE Confidence: 0.859220543333333
+
+00:41:29.290 --> 00:41:31.129
+We've already checked.
+
+NOTE Confidence: 0.859220543333333
+
+00:41:31.130 --> 00:41:32.398
+The signature is correct.
+
+NOTE Confidence: 0.840175665714286
+
+00:41:34.930 --> 00:41:38.990
+He the first step is to verify.
+
+NOTE Confidence: 0.840175665714286
+
+00:41:38.990 --> 00:41:41.714
+The iterator signal range using our
+
+NOTE Confidence: 0.840175665714286
+
+00:41:41.714 --> 00:41:43.782
+iterator checking machinery we have.
+
+NOTE Confidence: 0.840175665714286
+
+00:41:43.782 --> 00:41:45.880
+This is a standard video verify
+
+NOTE Confidence: 0.840175665714286
+
+00:41:45.880 --> 00:41:48.295
+range doesn't look up to figure out
+
+NOTE Confidence: 0.840175665714286
+
+00:41:48.295 --> 00:41:50.779
+if these iterators are iterator in
+
+NOTE Confidence: 0.840175665714286
+
+00:41:50.779 --> 00:41:53.332
+Sentinel type are opting into our
+
+NOTE Confidence: 0.840175665714286
+
+00:41:53.332 --> 00:41:55.412
+iterator checking machinery and it's
+
+NOTE Confidence: 0.840175665714286
+
+00:41:55.412 --> 00:41:58.540
+so it does any checking necessary.
+
+NOTE Confidence: 0.840175665714286
+
+00:41:58.540 --> 00:42:02.761
+After which it's safe for us to unwrap the
+
+NOTE Confidence: 0.840175665714286
+
+00:42:02.761 --> 00:42:05.999
+iterator types into an unchecked type.
+
+NOTE Confidence: 0.840175665714286
+
+00:42:06.000 --> 00:42:11.054
+Let's the STL use checked iterators and
+
+NOTE Confidence: 0.840175665714286
+
+00:42:11.054 --> 00:42:14.972
+still have it allows the STL to use
+
+NOTE Confidence: 0.840175665714286
+
+00:42:14.972 --> 00:42:17.892
+checked iterators in APIs so that we
+
+NOTE Confidence: 0.840175665714286
+
+00:42:17.892 --> 00:42:20.657
+can ensure users are using the errors
+
+NOTE Confidence: 0.840175665714286
+
+00:42:20.748 --> 00:42:24.460
+correctly and then unwrap them and have fast,
+
+NOTE Confidence: 0.840175665714286
+
+00:42:24.460 --> 00:42:27.466
+unchecked iterators that we use internally
+
+NOTE Confidence: 0.840175665714286
+
+00:42:27.466 --> 00:42:30.499
+for the actual implementations of algorithms.
+
+NOTE Confidence: 0.840175665714286
+
+00:42:30.500 --> 00:42:33.284
+In any case, we're verifying the
+
+NOTE Confidence: 0.840175665714286
+
+00:42:33.284 --> 00:42:36.630
+range and then we're going to unwrap.
+
+NOTE Confidence: 0.840175665714286
+
+00:42:36.630 --> 00:42:38.298
+Those first and last.
+
+NOTE Confidence: 0.91738252
+
+00:42:40.350 --> 00:42:42.429
+Since this is.
+
+NOTE Confidence: 0.91738252
+
+00:42:42.430 --> 00:42:43.273
+Potentially input iterator.
+
+NOTE Confidence: 0.91738252
+
+00:42:43.273 --> 00:42:44.397
+Yeah, this is potentially
+
+NOTE Confidence: 0.91738252
+
+00:42:44.397 --> 00:42:45.660
+a single pass iterator.
+
+NOTE Confidence: 0.91738252
+
+00:42:45.660 --> 00:42:49.126
+We have to pass in our
+
+NOTE Confidence: 0.91738252
+
+00:42:49.126 --> 00:42:51.414
+value to get unwrapped.
+
+NOTE Confidence: 0.91738252
+
+00:42:51.420 --> 00:42:53.055
+Since input errors may have
+
+NOTE Confidence: 0.91738252
+
+00:42:53.055 --> 00:42:55.150
+things that need to be moved.
+
+NOTE Confidence: 0.666563683333333
+
+00:42:58.750 --> 00:43:00.010
+So we are wrapping our value.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:00.010 --> 00:43:01.606
+We unwrapping our value of the Sentinel.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:01.610 --> 00:43:04.010
+We'll pass all of this to.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:04.010 --> 00:43:05.930
+The helper ioda unchecked,
+
+NOTE Confidence: 0.666563683333333
+
+00:43:05.930 --> 00:43:09.529
+which is a common name that we use.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:09.530 --> 00:43:13.898
+For helpers that implement the algorithm.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:13.900 --> 00:43:15.604
+After the unwrapping.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:15.604 --> 00:43:16.740
+Right there,
+
+NOTE Confidence: 0.666563683333333
+
+00:43:16.740 --> 00:43:18.273
+using unchecked iterators
+
+NOTE Confidence: 0.666563683333333
+
+00:43:18.273 --> 00:43:20.317
+instead of checked iterators.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:20.320 --> 00:43:23.799
+And I haven't checked his up here.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:23.800 --> 00:43:26.900
+It takes an iterator.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:26.900 --> 00:43:28.650
+Constant reference to the santone.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:28.650 --> 00:43:30.480
+Instead of taking the central value.
+
+NOTE Confidence: 0.666563683333333
+
+00:43:30.480 --> 00:43:31.408
+That's kind of odd.
+
+NOTE Confidence: 0.764813024705882
+
+00:43:34.160 --> 00:43:34.956
+That was already accommodated
+
+NOTE Confidence: 0.764813024705882
+
+00:43:34.956 --> 00:43:36.150
+here on the thing that I'm
+
+NOTE Confidence: 0.764813024705882
+
+00:43:36.193 --> 00:43:37.369
+calling out as being kind of odd.
+
+NOTE Confidence: 0.877440144444444
+
+00:43:43.540 --> 00:43:44.596
+I don't know if this is a different
+
+NOTE Confidence: 0.877440144444444
+
+00:43:44.596 --> 00:43:45.970
+thing, sorry. This was common,
+
+NOTE Confidence: 0.877440144444444
+
+00:43:45.970 --> 00:43:47.830
+suggesting that we could take Valve
+
+NOTE Confidence: 0.877440144444444
+
+00:43:47.883 --> 00:43:50.007
+by constant reference instead of by
+
+NOTE Confidence: 0.877440144444444
+
+00:43:50.007 --> 00:43:51.620
+mutable reference, which doesn't work.
+
+NOTE Confidence: 0.705103578571428
+
+00:43:53.720 --> 00:43:55.380
+As Stephen has already pointed
+
+NOTE Confidence: 0.705103578571428
+
+00:43:55.380 --> 00:43:57.330
+out here. And I'm gonna go
+
+NOTE Confidence: 0.705103578571428
+
+00:43:57.330 --> 00:43:58.930
+ahead and resolve this comment.
+
+NOTE Confidence: 0.870803601666667
+
+00:44:03.820 --> 00:44:06.761
+Just to draw attention to the to the fact
+
+NOTE Confidence: 0.870803601666667
+
+00:44:06.761 --> 00:44:09.320
+that there's no action to be taken here.
+
+NOTE Confidence: 0.870803601666667
+
+00:44:09.320 --> 00:44:11.230
+So the the author of the of the PR can
+
+NOTE Confidence: 0.870803601666667
+
+00:44:11.286 --> 00:44:13.099
+read the comments that they like to,
+
+NOTE Confidence: 0.870803601666667
+
+00:44:13.100 --> 00:44:14.288
+but they will hopefully know that
+
+NOTE Confidence: 0.870803601666667
+
+00:44:14.288 --> 00:44:15.580
+they don't need to do anything.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:20.370 --> 00:44:22.044
+Here's the body we're using that
+
+NOTE Confidence: 0.819731436153846
+
+00:44:22.044 --> 00:44:23.920
+for loop instead of a while loop.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:23.920 --> 00:44:25.900
+First, not equal to last increment.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:25.900 --> 00:44:27.766
+First increment Val.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:27.766 --> 00:44:30.254
+It's got the mandatory
+
+NOTE Confidence: 0.819731436153846
+
+00:44:30.254 --> 00:44:32.700
+mandatory voting cast here.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:32.700 --> 00:44:35.140
+Which hopefully keeps, uh,
+
+NOTE Confidence: 0.819731436153846
+
+00:44:35.140 --> 00:44:38.800
+overloaded comma operators from being called.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:38.800 --> 00:44:41.466
+As always in the STL, we have to
+
+NOTE Confidence: 0.819731436153846
+
+00:44:41.466 --> 00:44:43.776
+defend against hijacking of operators
+
+NOTE Confidence: 0.819731436153846
+
+00:44:43.776 --> 00:44:47.176
+that we use by strange ADL overloads.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:47.180 --> 00:44:49.370
+Right, this algorithm is not.
+
+NOTE Confidence: 0.819731436153846
+
+00:44:49.370 --> 00:44:52.335
+Specified as calling uh comma
+
+NOTE Confidence: 0.819731436153846
+
+00:44:52.335 --> 00:44:55.270
+operator with an iterator and this
+
+NOTE Confidence: 0.819731436153846
+
+00:44:55.270 --> 00:44:57.930
+whenever object type we're passed in,
+
+NOTE Confidence: 0.819731436153846
+
+00:44:57.930 --> 00:45:00.758
+so we can't observably call that operator.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:00.760 --> 00:45:03.088
+We have to make sure that.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:03.090 --> 00:45:04.970
+It's not observable by user,
+
+NOTE Confidence: 0.819731436153846
+
+00:45:04.970 --> 00:45:07.354
+and we do that by basically ensuring
+
+NOTE Confidence: 0.819731436153846
+
+00:45:07.354 --> 00:45:09.646
+that no ideal lookup will find
+
+NOTE Confidence: 0.819731436153846
+
+00:45:09.646 --> 00:45:11.728
+an operator comma and invoke it.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:11.730 --> 00:45:14.998
+The built-in operator comma.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:15.000 --> 00:45:15.710
+All right,
+
+NOTE Confidence: 0.819731436153846
+
+00:45:15.710 --> 00:45:18.195
+and we've got a start first equals.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:18.200 --> 00:45:18.610
+Comcast.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:18.610 --> 00:45:21.480
+This is a handy way of implementing,
+
+NOTE Confidence: 0.819731436153846
+
+00:45:21.480 --> 00:45:23.349
+as columnist directly.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:23.349 --> 00:45:26.464
+Instead of calling as constant.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:26.470 --> 00:45:27.532
+I would, uh,
+
+NOTE Confidence: 0.819731436153846
+
+00:45:27.532 --> 00:45:29.656
+make the argument here that it
+
+NOTE Confidence: 0.819731436153846
+
+00:45:29.656 --> 00:45:31.859
+should probably use static cast.
+
+NOTE Confidence: 0.819731436153846
+
+00:45:31.860 --> 00:45:32.280
+Umm?
+
+NOTE Confidence: 0.5301905703
+
+00:45:35.140 --> 00:45:36.685
+Because that's yeah.
+
+NOTE Confidence: 0.5301905703
+
+00:45:36.685 --> 00:45:40.290
+So we're we're not casting away consent,
+
+NOTE Confidence: 0.5301905703
+
+00:45:40.290 --> 00:45:41.850
+so we I, in my opinion,
+
+NOTE Confidence: 0.5301905703
+
+00:45:41.850 --> 00:45:43.535
+should be suggestion to actually
+
+NOTE Confidence: 0.5301905703
+
+00:45:43.535 --> 00:45:45.220
+call stood as Constance dead.
+
+NOTE Confidence: 0.5301905703
+
+00:45:45.220 --> 00:45:47.596
+I don't think that's a great idea either.
+
+NOTE Confidence: 0.5301905703
+
+00:45:47.600 --> 00:45:49.100
+I think we can get away
+
+NOTE Confidence: 0.5301905703
+
+00:45:49.100 --> 00:45:50.450
+with the static cast here.
+
+NOTE Confidence: 0.5301905703
+
+00:45:50.450 --> 00:45:53.327
+And I have offered a third alternative
+
+NOTE Confidence: 0.5301905703
+
+00:45:53.330 --> 00:45:55.530
+because and you can read my comment there.
+
+NOTE Confidence: 0.5301905703
+
+00:45:55.530 --> 00:45:58.306
+Static cast is powerful in a different way.
+
+NOTE Confidence: 0.5301905703
+
+00:45:58.310 --> 00:46:00.060
+It can't remove Constness but
+
+NOTE Confidence: 0.5301905703
+
+00:46:00.060 --> 00:46:01.816
+it's willing to, you know,
+
+NOTE Confidence: 0.5301905703
+
+00:46:01.816 --> 00:46:04.287
+make temporaries and that sort of thing.
+
+NOTE Confidence: 0.5301905703
+
+00:46:04.290 --> 00:46:05.326
+Or maybe not temporaries,
+
+NOTE Confidence: 0.5301905703
+
+00:46:05.326 --> 00:46:06.880
+but it's willing to do fairly
+
+NOTE Confidence: 0.5301905703
+
+00:46:06.931 --> 00:46:08.109
+powerful transformations.
+
+NOTE Confidence: 0.5301905703
+
+00:46:08.110 --> 00:46:09.795
+So here we want something
+
+NOTE Confidence: 0.5301905703
+
+00:46:09.795 --> 00:46:10.806
+that happens implicitly,
+
+NOTE Confidence: 0.5301905703
+
+00:46:10.810 --> 00:46:12.808
+so if we're willing to spend an extra line,
+
+NOTE Confidence: 0.5301905703
+
+00:46:12.810 --> 00:46:14.142
+we could just implicitly
+
+NOTE Confidence: 0.5301905703
+
+00:46:14.142 --> 00:46:15.807
+bind a constant type ref.
+
+NOTE Confidence: 0.5301905703
+
+00:46:15.810 --> 00:46:16.820
+I think that would probably
+
+NOTE Confidence: 0.5301905703
+
+00:46:16.820 --> 00:46:17.830
+be safer than a cast,
+
+NOTE Confidence: 0.5301905703
+
+00:46:17.830 --> 00:46:20.200
+or at least less scary looking.
+
+NOTE Confidence: 0.756413635625
+
+00:46:23.040 --> 00:46:24.895
+Interesting. Yeah, because the the
+
+NOTE Confidence: 0.756413635625
+
+00:46:24.895 --> 00:46:27.732
+thing about static cast is it's willing
+
+NOTE Confidence: 0.756413635625
+
+00:46:27.732 --> 00:46:29.560
+to reverse implicit conversions,
+
+NOTE Confidence: 0.756413635625
+
+00:46:29.560 --> 00:46:30.768
+which is actually what we don't want here.
+
+NOTE Confidence: 0.756413635625
+
+00:46:30.770 --> 00:46:32.560
+We want the forward implicit
+
+NOTE Confidence: 0.756413635625
+
+00:46:32.560 --> 00:46:33.992
+conversion of adding constants,
+
+NOTE Confidence: 0.756413635625
+
+00:46:34.000 --> 00:46:35.698
+but there's no like super safe
+
+NOTE Confidence: 0.756413635625
+
+00:46:35.698 --> 00:46:37.420
+static cast that'll do just that.
+
+NOTE Confidence: 0.756413635625
+
+00:46:37.420 --> 00:46:38.910
+So that's why I suggest.
+
+NOTE Confidence: 0.756413635625
+
+00:46:38.910 --> 00:46:41.360
+Just make a temporary variable
+
+NOTE Confidence: 0.756413635625
+
+00:46:41.360 --> 00:46:43.320
+or a local variable.
+
+NOTE Confidence: 0.756413635625
+
+00:46:43.320 --> 00:46:45.750
+I wouldn't send out of this.
+
+NOTE Confidence: 0.756413635625
+
+00:46:45.750 --> 00:46:46.878
+I wouldn't write this.
+
+NOTE Confidence: 0.735263495
+
+00:46:49.560 --> 00:46:50.478
+I would write it to start,
+
+NOTE Confidence: 0.735263495
+
+00:46:50.480 --> 00:46:52.419
+I would write the static cast I.
+
+NOTE Confidence: 0.735263495
+
+00:46:52.420 --> 00:46:54.114
+I wonder why it matters to me.
+
+NOTE Confidence: 0.735263495
+
+00:46:54.120 --> 00:46:56.020
+It's interesting.
+
+NOTE Confidence: 0.735263495
+
+00:46:56.020 --> 00:46:58.050
+I would write the static as probably
+
+NOTE Confidence: 0.735263495
+
+00:46:58.050 --> 00:46:59.700
+cause this consumes an extra line.
+
+NOTE Confidence: 0.735263495
+
+00:46:59.700 --> 00:47:02.868
+There's another name to reason about.
+
+NOTE Confidence: 0.735263495
+
+00:47:02.870 --> 00:47:05.156
+We avoid that with the cast.
+
+NOTE Confidence: 0.735263495
+
+00:47:05.160 --> 00:47:07.330
+It is unfortunate that there's
+
+NOTE Confidence: 0.735263495
+
+00:47:07.330 --> 00:47:09.745
+no clean cast that just says add
+
+NOTE Confidence: 0.735263495
+
+00:47:09.745 --> 00:47:11.880
+costs to this other than the one.
+
+NOTE Confidence: 0.735263495
+
+00:47:11.880 --> 00:47:13.535
+Of course that we define
+
+NOTE Confidence: 0.735263495
+
+00:47:13.535 --> 00:47:14.528
+the standard library.
+
+NOTE Confidence: 0.735263495
+
+00:47:14.530 --> 00:47:17.880
+Which requires instantiating a function
+
+NOTE Confidence: 0.735263495
+
+00:47:17.880 --> 00:47:20.590
+template and suffer the throughput cost.
+
+NOTE Confidence: 0.735263495
+
+00:47:20.590 --> 00:47:21.478
+So yeah, I will.
+
+NOTE Confidence: 0.735263495
+
+00:47:21.478 --> 00:47:22.366
+I'm happy with this,
+
+NOTE Confidence: 0.735263495
+
+00:47:22.370 --> 00:47:24.068
+I'm I'm not gonna add another
+
+NOTE Confidence: 0.735263495
+
+00:47:24.068 --> 00:47:25.770
+comment here just to be clear.
+
+NOTE Confidence: 0.735263495
+
+00:47:25.770 --> 00:47:28.116
+One thing I will say is, uh,
+
+NOTE Confidence: 0.735263495
+
+00:47:28.116 --> 00:47:31.098
+something that is confusing to me is
+
+NOTE Confidence: 0.735263495
+
+00:47:31.098 --> 00:47:36.444
+why we are not OK with as contst.
+
+NOTE Confidence: 0.735263495
+
+00:47:36.450 --> 00:47:39.950
+But are OK with move.
+
+NOTE Confidence: 0.735263495
+
+00:47:39.950 --> 00:47:41.060
+Because that that.
+
+NOTE Confidence: 0.735263495
+
+00:47:41.060 --> 00:47:42.540
+Seems odd to me.
+
+NOTE Confidence: 0.873192108333333
+
+00:47:44.700 --> 00:47:48.656
+Not really OK with move either. Yeah,
+
+NOTE Confidence: 0.873192108333333
+
+00:47:48.656 --> 00:47:51.918
+you gotta, that's it's an excellent point.
+
+NOTE Confidence: 0.873192108333333
+
+00:47:51.920 --> 00:47:54.875
+Like we we do spend move, oh sorry go
+
+NOTE Confidence: 0.873192108333333
+
+00:47:54.875 --> 00:47:57.125
+ahead the the the cognitive overhead
+
+NOTE Confidence: 0.873192108333333
+
+00:47:57.125 --> 00:48:00.332
+of implementing move directly is high.
+
+NOTE Confidence: 0.873192108333333
+
+00:48:00.332 --> 00:48:02.858
+And that that's really the issue,
+
+NOTE Confidence: 0.873192108333333
+
+00:48:02.860 --> 00:48:05.956
+it's it's much more readable to see stood
+
+NOTE Confidence: 0.873192108333333
+
+00:48:05.956 --> 00:48:09.478
+moved blah than it is see static cast.
+
+NOTE Confidence: 0.873192108333333
+
+00:48:09.480 --> 00:48:13.250
+Ex ref ref blah and then have to go back
+
+NOTE Confidence: 0.873192108333333
+
+00:48:13.347 --> 00:48:17.115
+and determine OK is X actually the type?
+
+NOTE Confidence: 0.873192108333333
+
+00:48:17.120 --> 00:48:19.248
+This move, or is it forward or
+
+NOTE Confidence: 0.873192108333333
+
+00:48:19.248 --> 00:48:21.329
+is it doing something else?
+
+NOTE Confidence: 0.873192108333333
+
+00:48:21.330 --> 00:48:22.826
+And in that sense,
+
+NOTE Confidence: 0.873192108333333
+
+00:48:22.826 --> 00:48:25.070
+having the actual names moving forward
+
+NOTE Confidence: 0.873192108333333
+
+00:48:25.137 --> 00:48:27.495
+as vocabularies is nice for readers.
+
+NOTE Confidence: 0.69362866
+
+00:48:30.880 --> 00:48:32.424
+Fair enough, that said,
+
+NOTE Confidence: 0.69362866
+
+00:48:32.424 --> 00:48:34.740
+there is a throughput cost and
+
+NOTE Confidence: 0.69362866
+
+00:48:34.740 --> 00:48:36.889
+it would be nice if we didn't
+
+NOTE Confidence: 0.69362866
+
+00:48:36.889 --> 00:48:39.390
+have to pay the throughput cost.
+
+NOTE Confidence: 0.69362866
+
+00:48:39.390 --> 00:48:41.438
+You know, I could be convinced that we
+
+NOTE Confidence: 0.69362866
+
+00:48:41.438 --> 00:48:43.240
+should have forward and move macros.
+
+NOTE Confidence: 0.901966476
+
+00:48:45.290 --> 00:48:47.670
+Even though I despise macros,
+
+NOTE Confidence: 0.901966476
+
+00:48:47.670 --> 00:48:50.050
+I could be talked into it as a way to
+
+NOTE Confidence: 0.901966476
+
+00:48:50.117 --> 00:48:53.020
+improve throughput. If I I would be,
+
+NOTE Confidence: 0.901966476
+
+00:48:53.020 --> 00:48:56.940
+I would be interested in the like.
+
+NOTE Confidence: 0.901966476
+
+00:48:56.940 --> 00:49:00.475
+Amount of actual speed you'd get from
+
+NOTE Confidence: 0.901966476
+
+00:49:00.475 --> 00:49:03.760
+switching to moving forward macros. Uh.
+
+NOTE Confidence: 0.833395252
+
+00:49:05.820 --> 00:49:08.788
+Especially since move, I think you still
+
+NOTE Confidence: 0.833395252
+
+00:49:08.788 --> 00:49:12.220
+need to instantiate, remove, remove rafty.
+
+NOTE Confidence: 0.7722711
+
+00:49:15.070 --> 00:49:17.527
+This is the template, I don't know.
+
+NOTE Confidence: 0.7722711
+
+00:49:17.530 --> 00:49:20.370
+Anyway, beside the point and we have we,
+
+NOTE Confidence: 0.7722711
+
+00:49:20.370 --> 00:49:22.194
+we have active conversations with the
+
+NOTE Confidence: 0.7722711
+
+00:49:22.194 --> 00:49:24.309
+front end team about making at least
+
+NOTE Confidence: 0.7722711
+
+00:49:24.309 --> 00:49:26.674
+forward and move compiler known so that
+
+NOTE Confidence: 0.7722711
+
+00:49:26.674 --> 00:49:28.960
+it can just directly transform them
+
+NOTE Confidence: 0.7722711
+
+00:49:29.025 --> 00:49:31.660
+without emitting real function calls for
+
+NOTE Confidence: 0.7722711
+
+00:49:31.660 --> 00:49:33.280
+reference claiming and I believe Jesus.
+
+NOTE Confidence: 0.7722711
+
+00:49:33.280 --> 00:49:35.070
+We have already done so,
+
+NOTE Confidence: 0.7722711
+
+00:49:35.070 --> 00:49:37.912
+and MSVC does similar things to things
+
+NOTE Confidence: 0.7722711
+
+00:49:37.912 --> 00:49:40.736
+like remove CVT just not moving forward,
+
+NOTE Confidence: 0.7722711
+
+00:49:40.736 --> 00:49:43.977
+so that's that would be my preference
+
+NOTE Confidence: 0.7722711
+
+00:49:43.977 --> 00:49:45.510
+compared to macros. Honestly,
+
+NOTE Confidence: 0.7722711
+
+00:49:45.510 --> 00:49:47.430
+I mean now looking at my comment here,
+
+NOTE Confidence: 0.7722711
+
+00:49:47.430 --> 00:49:48.864
+it sounds like I'm advocating that
+
+NOTE Confidence: 0.7722711
+
+00:49:48.864 --> 00:49:50.270
+we shouldn't use as constant.
+
+NOTE Confidence: 0.7722711
+
+00:49:50.270 --> 00:49:52.166
+I'm actually fine with mascons here.
+
+NOTE Confidence: 0.7722711
+
+00:49:52.170 --> 00:49:55.074
+I mean, it is one call per element,
+
+NOTE Confidence: 0.7722711
+
+00:49:55.080 --> 00:49:58.696
+which is a little bit more expensive than
+
+NOTE Confidence: 0.7722711
+
+00:49:58.696 --> 00:50:02.497
+one call per outer call to the function.
+
+NOTE Confidence: 0.7722711
+
+00:50:02.500 --> 00:50:04.411
+I had just recommended ohh you know
+
+NOTE Confidence: 0.7722711
+
+00:50:04.411 --> 00:50:06.793
+we could use a local variable here in
+
+NOTE Confidence: 0.7722711
+
+00:50:06.793 --> 00:50:08.951
+case you know throughput was a concern
+
+NOTE Confidence: 0.7722711
+
+00:50:08.951 --> 00:50:11.016
+because I know that I personally have
+
+NOTE Confidence: 0.7722711
+
+00:50:11.016 --> 00:50:15.100
+been relatively unconcerned about debug.
+
+NOTE Confidence: 0.7722711
+
+00:50:15.100 --> 00:50:18.229
+Performance over the years and I should
+
+NOTE Confidence: 0.7722711
+
+00:50:18.229 --> 00:50:20.200
+probably care a little bit more,
+
+NOTE Confidence: 0.7722711
+
+00:50:20.200 --> 00:50:21.880
+and this seemed like a reasonably
+
+NOTE Confidence: 0.7722711
+
+00:50:21.880 --> 00:50:24.437
+cheap way to do so that didn't involve
+
+NOTE Confidence: 0.7722711
+
+00:50:24.437 --> 00:50:26.152
+like obnoxious static cast ref.
+
+NOTE Confidence: 0.7722711
+
+00:50:26.160 --> 00:50:27.165
+Ref or anything,
+
+NOTE Confidence: 0.7722711
+
+00:50:27.165 --> 00:50:30.586
+but I would be fine with as constant myself.
+
+NOTE Confidence: 0.7722711
+
+00:50:30.586 --> 00:50:34.060
+Also, this is totally gross and I hate it,
+
+NOTE Confidence: 0.7722711
+
+00:50:34.060 --> 00:50:38.618
+but you could put the constant tie ref
+
+NOTE Confidence: 0.7722711
+
+00:50:38.618 --> 00:50:42.776
+constant Val equals Val above the loop.
+
+NOTE Confidence: 0.7722711
+
+00:50:42.780 --> 00:50:45.052
+Uh. Yeah.
+
+NOTE Confidence: 0.7722711
+
+00:50:45.052 --> 00:50:47.376
+Which would result in keep it bound
+
+NOTE Confidence: 0.7722711
+
+00:50:47.376 --> 00:50:51.270
+even though the value changes, yeah.
+
+NOTE Confidence: 0.7722711
+
+00:50:51.270 --> 00:50:55.686
+Yeah, that it. It still spends a line.
+
+NOTE Confidence: 0.7722711
+
+00:50:55.690 --> 00:50:57.514
+I don't think it would necessarily
+
+NOTE Confidence: 0.7722711
+
+00:50:57.514 --> 00:50:58.730
+interfere with compiler optimizations,
+
+NOTE Confidence: 0.7722711
+
+00:50:58.730 --> 00:51:00.907
+but it is weird to reason about.
+
+NOTE Confidence: 0.7722711
+
+00:51:00.910 --> 00:51:02.878
+It would be one you wouldn't have to
+
+NOTE Confidence: 0.7722711
+
+00:51:02.878 --> 00:51:04.628
+skip over every time you're going
+
+NOTE Confidence: 0.7722711
+
+00:51:04.628 --> 00:51:06.750
+through the loop and single step mode.
+
+NOTE Confidence: 0.7722711
+
+00:51:06.750 --> 00:51:08.430
+There there were, they that improvement,
+
+NOTE Confidence: 0.7722711
+
+00:51:08.430 --> 00:51:12.108
+yeah? A little bit of UX.
+
+NOTE Confidence: 0.7722711
+
+00:51:12.110 --> 00:51:14.840
+If you're debugging through this, but.
+
+NOTE Confidence: 0.7722711
+
+00:51:14.840 --> 00:51:18.408
+Yeah, we can argue there's lots of reasons.
+
+NOTE Confidence: 0.7722711
+
+00:51:18.410 --> 00:51:19.556
+Lots of little reasons to prefer
+
+NOTE Confidence: 0.7722711
+
+00:51:19.556 --> 00:51:20.649
+one thing or another thing I.
+
+NOTE Confidence: 0.7722711
+
+00:51:20.650 --> 00:51:22.512
+I don't think any of them is
+
+NOTE Confidence: 0.7722711
+
+00:51:22.512 --> 00:51:24.010
+actually the best suggestion.
+
+NOTE Confidence: 0.7722711
+
+00:51:24.010 --> 00:51:25.978
+Sorry I don't think any of them is
+
+NOTE Confidence: 0.7722711
+
+00:51:25.978 --> 00:51:27.329
+clearly better than the others.
+
+NOTE Confidence: 0.7722711
+
+00:51:27.330 --> 00:51:29.150
+Except of course getting rid of Comcast.
+
+NOTE Confidence: 0.7722711
+
+00:51:29.150 --> 00:51:31.160
+I think we all agree.
+
+NOTE Confidence: 0.7722711
+
+00:51:31.160 --> 00:51:33.116
+If we don't like the Comcast,
+
+NOTE Confidence: 0.7722711
+
+00:51:33.120 --> 00:51:35.750
+no constest everywhere, please God.
+
+NOTE Confidence: 0.811917938846154
+
+00:51:38.000 --> 00:51:39.750
+Well, we we do have some Comcast
+
+NOTE Confidence: 0.811917938846154
+
+00:51:39.750 --> 00:51:41.410
+in the code base I believe,
+
+NOTE Confidence: 0.811917938846154
+
+00:51:41.410 --> 00:51:43.288
+but keeping them to where they're
+
+NOTE Confidence: 0.811917938846154
+
+00:51:43.288 --> 00:51:45.185
+necessary is like really unavoidable is
+
+NOTE Confidence: 0.811917938846154
+
+00:51:45.185 --> 00:51:47.521
+ideal because that way we can focus all
+
+NOTE Confidence: 0.811917938846154
+
+00:51:47.575 --> 00:51:49.702
+of our attention on them and say, OK,
+
+NOTE Confidence: 0.811917938846154
+
+00:51:49.702 --> 00:51:51.754
+we're doing something super scary here.
+
+NOTE Confidence: 0.811917938846154
+
+00:51:51.760 --> 00:51:53.290
+Let's make really sure that
+
+NOTE Confidence: 0.811917938846154
+
+00:51:53.290 --> 00:51:55.249
+this is the right thing to do.
+
+NOTE Confidence: 0.811917938846154
+
+00:51:55.250 --> 00:51:56.738
+Which is generally true for cast,
+
+NOTE Confidence: 0.811917938846154
+
+00:51:56.740 --> 00:51:59.548
+but especially for Comcast.
+
+NOTE Confidence: 0.811917938846154
+
+00:51:59.550 --> 00:52:01.008
+It really seems like we should
+
+NOTE Confidence: 0.811917938846154
+
+00:52:01.008 --> 00:52:02.400
+have this like unsafe keyword.
+
+NOTE Confidence: 0.811917938846154
+
+00:52:02.400 --> 00:52:05.697
+Maybe that puts all of our focus
+
+NOTE Confidence: 0.811917938846154
+
+00:52:05.697 --> 00:52:08.937
+on unsafely into like 1 area maybe.
+
+NOTE Confidence: 0.811917938846154
+
+00:52:08.940 --> 00:52:10.048
+We already have one.
+
+NOTE Confidence: 0.811917938846154
+
+00:52:10.048 --> 00:52:11.710
+We have a lot of them.
+
+NOTE Confidence: 0.776539449
+
+00:52:17.120 --> 00:52:18.608
+We have as many unsafe keywords
+
+NOTE Confidence: 0.776539449
+
+00:52:18.608 --> 00:52:20.515
+as you like in C++. That's one
+
+NOTE Confidence: 0.776539449
+
+00:52:20.515 --> 00:52:22.345
+one advantage he has over us.
+
+NOTE Confidence: 0.90312113
+
+00:52:27.060 --> 00:52:30.712
+Advantage OK. Moving on.
+
+NOTE Confidence: 0.90312113
+
+00:52:30.712 --> 00:52:32.417
+I think we've beaten this
+
+NOTE Confidence: 0.90312113
+
+00:52:32.417 --> 00:52:33.980
+point into the ground.
+
+NOTE Confidence: 0.90312113
+
+00:52:33.980 --> 00:52:35.112
+We've got this loop.
+
+NOTE Confidence: 0.90312113
+
+00:52:35.112 --> 00:52:37.330
+We're happy that the loop is correct.
+
+NOTE Confidence: 0.90312113
+
+00:52:37.330 --> 00:52:38.910
+You don't like the Comcast?
+
+NOTE Confidence: 0.90312113
+
+00:52:38.910 --> 00:52:40.678
+We've made recommendations about
+
+NOTE Confidence: 0.90312113
+
+00:52:40.678 --> 00:52:42.446
+putting something different there.
+
+NOTE Confidence: 0.90312113
+
+00:52:42.450 --> 00:52:45.805
+Umm? I don't think we need this move.
+
+NOTE Confidence: 0.858994633636364
+
+00:52:50.850 --> 00:52:55.258
+1st. Is the name of a variable with
+
+NOTE Confidence: 0.858994633636364
+
+00:52:55.258 --> 00:52:58.920
+automatic storage duration. Right?
+
+NOTE Confidence: 0.858994633636364
+
+00:52:58.920 --> 00:53:01.818
+Does that mean that gets UM get the metric
+
+NOTE Confidence: 0.858994633636364
+
+00:53:01.818 --> 00:53:05.970
+or value treatment and return right? Yep.
+
+NOTE Confidence: 0.858994633636364
+
+00:53:05.970 --> 00:53:07.790
+They they added that though after 11.
+
+NOTE Confidence: 0.858994633636364
+
+00:53:07.790 --> 00:53:10.414
+I think that's why I missed it because
+
+NOTE Confidence: 0.858994633636364
+
+00:53:10.414 --> 00:53:13.010
+in 11 original the function parameters I
+
+NOTE Confidence: 0.858994633636364
+
+00:53:13.010 --> 00:53:15.238
+think were not eligible for auto moving
+
+NOTE Confidence: 0.858994633636364
+
+00:53:15.238 --> 00:53:17.184
+and that did change at some point.
+
+NOTE Confidence: 0.858994633636364
+
+00:53:17.190 --> 00:53:19.260
+All the standard versions blur
+
+NOTE Confidence: 0.858994633636364
+
+00:53:19.260 --> 00:53:21.530
+together for me now. Umm?
+
+NOTE Confidence: 0.846430995
+
+00:53:24.330 --> 00:53:28.068
+Right, because function parameters cannot be.
+
+NOTE Confidence: 0.846430995
+
+00:53:28.070 --> 00:53:32.427
+Like nerve out like they can't be like
+
+NOTE Confidence: 0.846430995
+
+00:53:32.427 --> 00:53:34.988
+done without they they can't be RVL
+
+NOTE Confidence: 0.846430995
+
+00:53:34.990 --> 00:53:36.820
+you can't do return value optimization
+
+NOTE Confidence: 0.846430995
+
+00:53:36.820 --> 00:53:38.640
+because the parameter has to get
+
+NOTE Confidence: 0.846430995
+
+00:53:38.640 --> 00:53:40.272
+stored parameters go like can't get
+
+NOTE Confidence: 0.846430995
+
+00:53:40.272 --> 00:53:41.678
+stored whether returned by goes.
+
+NOTE Confidence: 0.79045874875
+
+00:53:43.980 --> 00:53:46.420
+But nevertheless, I think the
+
+NOTE Confidence: 0.79045874875
+
+00:53:46.420 --> 00:53:48.226
+implicit move rule. Works here,
+
+NOTE Confidence: 0.79045874875
+
+00:53:48.226 --> 00:53:49.402
+so we don't really need this move.
+
+NOTE Confidence: 0.790034167333333
+
+00:53:51.440 --> 00:53:53.702
+And I think Nicole was correct
+
+NOTE Confidence: 0.790034167333333
+
+00:53:53.702 --> 00:53:55.210
+to say Nervo specifically
+
+NOTE Confidence: 0.790034167333333
+
+00:53:55.284 --> 00:53:57.330
+because it is a named parameter.
+
+NOTE Confidence: 0.841456436666667
+
+00:54:05.420 --> 00:54:07.560
+Although now return value optimization
+
+NOTE Confidence: 0.841456436666667
+
+00:54:07.560 --> 00:54:10.834
+is not a thing in C because PR
+
+NOTE Confidence: 0.841456436666667
+
+00:54:10.834 --> 00:54:12.900
+values are actually a real thing,
+
+NOTE Confidence: 0.841456436666667
+
+00:54:12.900 --> 00:54:15.320
+I'm so happy they finally fixed that.
+
+NOTE Confidence: 0.89640872
+
+00:54:17.760 --> 00:54:22.220
+There we go. First, I copied our vision 1.1.
+
+NOTE Confidence: 0.214434663333333
+
+00:54:28.770 --> 00:54:30.948
+What is extraneous?
+
+NOTE Confidence: 0.928387648333333
+
+00:54:39.490 --> 00:54:41.530
+Looking at this makes me wonder
+
+NOTE Confidence: 0.928387648333333
+
+00:54:41.530 --> 00:54:43.336
+if this is potentially a global
+
+NOTE Confidence: 0.928387648333333
+
+00:54:43.336 --> 00:54:44.850
+problem throughout the code base,
+
+NOTE Confidence: 0.928387648333333
+
+00:54:44.850 --> 00:54:47.560
+like if we're redundantly moving
+
+NOTE Confidence: 0.928387648333333
+
+00:54:47.560 --> 00:54:51.290
+parameters that are non CV qualified.
+
+NOTE Confidence: 0.928387648333333
+
+00:54:51.290 --> 00:54:52.436
+I bet you there's other currencies,
+
+NOTE Confidence: 0.928387648333333
+
+00:54:52.440 --> 00:54:53.784
+not that we would ask this contributor
+
+NOTE Confidence: 0.928387648333333
+
+00:54:53.784 --> 00:54:55.129
+to go clean up things globally.
+
+NOTE Confidence: 0.928387648333333
+
+00:54:55.130 --> 00:54:57.018
+If anything, it should be a separate PR.
+
+NOTE Confidence: 0.928387648333333
+
+00:54:57.020 --> 00:54:59.580
+Should do a global global thing for this.
+
+NOTE Confidence: 0.928387648333333
+
+00:54:59.580 --> 00:55:01.670
+I'm not terribly concerned because
+
+NOTE Confidence: 0.928387648333333
+
+00:55:01.670 --> 00:55:04.230
+it's not really a throughput issue.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:04.230 --> 00:55:06.005
+Redundant move is only a
+
+NOTE Confidence: 0.928387648333333
+
+00:55:06.005 --> 00:55:07.425
+problem when it inhibits.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:07.430 --> 00:55:09.768
+Ohh that's right, yeah, yeah can't dribble.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:09.770 --> 00:55:12.250
+So it most. It's in the extra call
+
+NOTE Confidence: 0.928387648333333
+
+00:55:12.250 --> 00:55:15.008
+so it's just extra words to look at.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:15.010 --> 00:55:17.746
+Yeah is the is the believe.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:17.750 --> 00:55:20.810
+I, I believe that this should be paragraph 3.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:20.810 --> 00:55:25.224
+Uh. Paragraph 1.1 is about are
+
+NOTE Confidence: 0.928387648333333
+
+00:55:25.224 --> 00:55:27.920
+named return value optimization.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:27.920 --> 00:55:29.208
+So, uh.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:29.208 --> 00:55:31.140
+In return statement,
+
+NOTE Confidence: 0.928387648333333
+
+00:55:31.140 --> 00:55:32.472
+when the expression is the name
+
+NOTE Confidence: 0.928387648333333
+
+00:55:32.472 --> 00:55:34.053
+of a non volatile object with
+
+NOTE Confidence: 0.928387648333333
+
+00:55:34.053 --> 00:55:35.019
+automatic storage duration
+
+NOTE Confidence: 0.928387648333333
+
+00:55:35.019 --> 00:55:36.629
+other than a function parameter,
+
+NOTE Confidence: 0.928387648333333
+
+00:55:36.630 --> 00:55:38.520
+the copy move operation can be emitted.
+
+NOTE Confidence: 0.928387648333333
+
+00:55:38.520 --> 00:55:41.660
+Throw protein exception declaration.
+
+NOTE Confidence: 0.594904333125
+
+00:55:47.030 --> 00:55:49.238
+And implicitly movable entity.
+
+NOTE Confidence: 0.594904333125
+
+00:55:49.238 --> 00:55:54.339
+The sporting got changed. Recently for 23.
+
+NOTE Confidence: 0.594904333125
+
+00:55:54.340 --> 00:55:56.270
+More things became implicitly movable.
+
+NOTE Confidence: 0.540027753333333
+
+00:56:08.420 --> 00:56:09.980
+On my storage duration that's known,
+
+NOTE Confidence: 0.540027753333333
+
+00:56:09.980 --> 00:56:11.800
+while another reference to
+
+NOTE Confidence: 0.540027753333333
+
+00:56:11.800 --> 00:56:13.620
+a nonvolatile undertype OK.
+
+NOTE Confidence: 0.866610941666667
+
+00:56:16.790 --> 00:56:18.458
+So they haven't broken this wording.
+
+NOTE Confidence: 0.866610941666667
+
+00:56:18.460 --> 00:56:21.316
+It's still 3 and 3.1 specifically.
+
+NOTE Confidence: 0.769518684285714
+
+00:56:28.120 --> 00:56:30.542
+And I do recommend citing a working
+
+NOTE Confidence: 0.769518684285714
+
+00:56:30.542 --> 00:56:33.020
+paper number when you cite a paragraph,
+
+NOTE Confidence: 0.769518684285714
+
+00:56:33.020 --> 00:56:36.480
+particularly when they are
+
+NOTE Confidence: 0.769518684285714
+
+00:56:36.480 --> 00:56:38.348
+editing the the standard's.
+
+NOTE Confidence: 0.769518684285714
+
+00:56:38.348 --> 00:56:40.683
+There's paragraph numbers can be
+
+NOTE Confidence: 0.769518684285714
+
+00:56:40.683 --> 00:56:43.372
+moved around, as we've seen here,
+
+NOTE Confidence: 0.769518684285714
+
+00:56:43.372 --> 00:56:46.335
+so saying like in 4910 if that's
+
+NOTE Confidence: 0.769518684285714
+
+00:56:46.335 --> 00:56:48.099
+the latest one could be helpful.
+
+NOTE Confidence: 0.769518684285714
+
+00:56:48.099 --> 00:56:49.320
+If we got to go look this up,
+
+NOTE Confidence: 0.769518684285714
+
+00:56:49.320 --> 00:56:51.035
+you know in five years and wonder,
+
+NOTE Confidence: 0.769518684285714
+
+00:56:51.040 --> 00:56:52.300
+wait what we're what we're reciting,
+
+NOTE Confidence: 0.769518684285714
+
+00:56:52.300 --> 00:56:53.788
+what paragraph with the was this?
+
+NOTE Confidence: 0.688593386666667
+
+00:57:13.510 --> 00:57:19.530
+Should this use? Tim Song C PWP.
+
+NOTE Confidence: 0.688593386666667
+
+00:57:19.530 --> 00:57:20.538
+So that it's stable.
+
+NOTE Confidence: 0.914669868
+
+00:57:25.160 --> 00:57:26.660
+That's a really good idea.
+
+NOTE Confidence: 0.942300075
+
+00:57:36.000 --> 00:57:37.190
+Don't remember.
+
+NOTE Confidence: 0.7713911
+
+00:57:49.830 --> 00:57:51.258
+What no 4910?
+
+NOTE Confidence: 0.560721575
+
+00:57:55.700 --> 00:57:59.248
+Attack the. I didn't see a tip of trunk,
+
+NOTE Confidence: 0.560721575
+
+00:57:59.250 --> 00:58:02.586
+but I don't know which that corresponds to.
+
+NOTE Confidence: 0.560721575
+
+00:58:02.590 --> 00:58:04.004
+I haven't. I haven't used this myself.
+
+NOTE Confidence: 0.560721575
+
+00:58:04.010 --> 00:58:06.530
+I was just proposing citing the actual just
+
+NOTE Confidence: 0.560721575
+
+00:58:06.530 --> 00:58:08.970
+name to say 4910 and let them look up.
+
+NOTE Confidence: 0.560721575
+
+00:58:08.970 --> 00:58:10.500
+Look it up necessary because mostly
+
+NOTE Confidence: 0.560721575
+
+00:58:10.500 --> 00:58:12.230
+concerned about us looking at this comment.
+
+NOTE Confidence: 0.560721575
+
+00:58:12.230 --> 00:58:13.693
+The problem for years down the road
+
+NOTE Confidence: 0.560721575
+
+00:58:13.693 --> 00:58:15.490
+right now I have to go look at 4910.
+
+NOTE Confidence: 0.9073973
+
+00:58:18.700 --> 00:58:21.616
+Because I never used the working,
+
+NOTE Confidence: 0.9073973
+
+00:58:21.620 --> 00:58:23.933
+I never used the working draft I always use.
+
+NOTE Confidence: 0.87913963
+
+00:58:26.410 --> 00:58:30.990
+My own copy. That I regenerate every day.
+
+NOTE Confidence: 0.87913963
+
+00:58:30.990 --> 00:58:35.870
+All right, where were we? Class dots copy.
+
+NOTE Confidence: 0.732668094285714
+
+00:58:45.830 --> 00:58:47.498
+Alright, there we go.
+
+NOTE Confidence: 0.732668094285714
+
+00:58:47.498 --> 00:58:50.040
+It's paragraph 3. In in 4868.
+
+NOTE Confidence: 0.70999203
+
+00:58:52.060 --> 00:58:53.980
+It probably also isn't in 4910.
+
+NOTE Confidence: 0.82646548
+
+00:58:59.600 --> 00:59:01.048
+Yeah, as long as it hasn't changed recently,
+
+NOTE Confidence: 0.82646548
+
+00:59:01.050 --> 00:59:04.538
+most time I was just suggesting citing a
+
+NOTE Confidence: 0.82646548
+
+00:59:04.538 --> 00:59:06.688
+specific graph so that if we ever needed
+
+NOTE Confidence: 0.82646548
+
+00:59:06.688 --> 00:59:09.459
+to look this up later, we could find
+
+NOTE Confidence: 0.82646548
+
+00:59:09.459 --> 00:59:12.210
+exactly which paragraph we meant. So.
+
+NOTE Confidence: 0.780320645
+
+00:59:24.300 --> 00:59:25.330
+1st is.
+
+NOTE Confidence: 0.897677716666667
+
+00:59:37.490 --> 00:59:38.318
+Alright, moving on.
+
+NOTE Confidence: 0.807044259090909
+
+00:59:41.570 --> 00:59:43.004
+Next overload you know this is
+
+NOTE Confidence: 0.807044259090909
+
+00:59:43.004 --> 00:59:44.130
+the overload we're working on.
+
+NOTE Confidence: 0.807044259090909
+
+00:59:44.130 --> 00:59:46.503
+Still sorry, this again returns the final
+
+NOTE Confidence: 0.807044259090909
+
+00:59:46.503 --> 00:59:49.029
+value of the iterator from the loop.
+
+NOTE Confidence: 0.807044259090909
+
+00:59:49.030 --> 00:59:51.228
+We don't need to return the final
+
+NOTE Confidence: 0.807044259090909
+
+00:59:51.228 --> 00:59:53.608
+value of Val because we're using.
+
+NOTE Confidence: 0.807044259090909
+
+00:59:53.610 --> 00:59:56.160
+An elevator that references the original
+
+NOTE Confidence: 0.807044259090909
+
+00:59:56.160 --> 00:59:59.281
+value of the owl in the car today.
+
+NOTE Confidence: 0.807044259090909
+
+00:59:59.281 --> 01:00:02.827
+There so. We get first back
+
+NOTE Confidence: 0.807044259090909
+
+01:00:02.827 --> 01:00:06.529
+from this iota unchecked call.
+
+NOTE Confidence: 0.807044259090909
+
+01:00:06.530 --> 01:00:09.400
+It's an R value, so we don't need to move it.
+
+NOTE Confidence: 0.807044259090909
+
+01:00:09.400 --> 01:00:11.830
+We wrap it back up inside.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:14.250 --> 01:00:16.539
+The original iterator.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:16.540 --> 01:00:18.732
+Which we then return.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:18.732 --> 01:00:20.924
+In our out result.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:20.930 --> 01:00:22.324
+Alright results.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:22.324 --> 01:00:25.809
+IT comma Thai we're returning.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:25.810 --> 01:00:28.568
+There's lots of moving 1st and tie,
+
+NOTE Confidence: 0.863917353333333
+
+01:00:28.570 --> 01:00:32.650
+and the paper did want us to move.
+
+NOTE Confidence: 0.863917353333333
+
+01:00:32.650 --> 01:00:35.690
+Tie. Didn't it?
+
+NOTE Confidence: 0.723638818
+
+01:00:38.060 --> 01:00:39.750
+Return move first move value.
+
+NOTE Confidence: 0.8146676
+
+01:00:44.310 --> 01:00:47.088
+The other other overload for ranges.
+
+NOTE Confidence: 0.789571011818182
+
+01:00:49.350 --> 01:00:50.670
+This takes an iota.
+
+NOTE Confidence: 0.789571011818182
+
+01:00:50.670 --> 01:00:53.050
+It takes a range and a tie.
+
+NOTE Confidence: 0.789571011818182
+
+01:00:53.050 --> 01:00:56.546
+There's not gonna be any wording for this
+
+NOTE Confidence: 0.789571011818182
+
+01:00:56.550 --> 01:00:59.766
+in the paper or in the working draft.
+
+NOTE Confidence: 0.789571011818182
+
+01:00:59.770 --> 01:01:02.306
+No, because again, we're lazy and we had
+
+NOTE Confidence: 0.789571011818182
+
+01:01:02.306 --> 01:01:04.928
+like to have magical blanket wording.
+
+NOTE Confidence: 0.789571011818182
+
+01:01:04.930 --> 01:01:06.262
+That means we don't have to
+
+NOTE Confidence: 0.789571011818182
+
+01:01:06.262 --> 01:01:07.420
+repeat things over and over.
+
+NOTE Confidence: 0.789571011818182
+
+01:01:07.420 --> 01:01:09.610
+So we have.
+
+NOTE Confidence: 0.789571011818182
+
+01:01:09.610 --> 01:01:12.310
+Magic warning in the algorithms
+
+NOTE Confidence: 0.789571011818182
+
+01:01:12.310 --> 01:01:14.935
+requirements again that say that
+
+NOTE Confidence: 0.789571011818182
+
+01:01:14.935 --> 01:01:17.230
+range algorithms to take a range
+
+NOTE Confidence: 0.789571011818182
+
+01:01:17.230 --> 01:01:19.090
+are equivalent to the taking the
+
+NOTE Confidence: 0.789571011818182
+
+01:01:19.156 --> 01:01:21.016
+result of calling begin and end
+
+NOTE Confidence: 0.789571011818182
+
+01:01:21.016 --> 01:01:23.510
+on the range and passing it to
+
+NOTE Confidence: 0.789571011818182
+
+01:01:23.510 --> 01:01:25.094
+the iterator signal overload.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:27.940 --> 01:01:30.684
+So now we'll look at this and make
+
+NOTE Confidence: 0.909927235714286
+
+01:01:30.684 --> 01:01:33.010
+sure that that's what it does.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:33.010 --> 01:01:34.985
+Luckily, we don't need the
+
+NOTE Confidence: 0.909927235714286
+
+01:01:34.985 --> 01:01:36.565
+any kind of verification.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:36.570 --> 01:01:39.102
+The major advantage, one of the
+
+NOTE Confidence: 0.909927235714286
+
+01:01:39.102 --> 01:01:41.459
+many advantages of ranges is that.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:41.460 --> 01:01:43.523
+They are correct by construction, right?
+
+NOTE Confidence: 0.909927235714286
+
+01:01:43.523 --> 01:01:44.738
+Somebody passed in a range.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:44.740 --> 01:01:46.792
+We don't need to worry about
+
+NOTE Confidence: 0.909927235714286
+
+01:01:46.792 --> 01:01:48.589
+mismatching begin and end.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:48.589 --> 01:01:51.004
+Units indicating where that range
+
+NOTE Confidence: 0.909927235714286
+
+01:01:51.004 --> 01:01:53.566
+lies straight out of the range itself.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:53.570 --> 01:01:56.920
+So we're pulling first out.
+
+NOTE Confidence: 0.909927235714286
+
+01:01:56.920 --> 01:01:59.728
+Of that range with ranges begin.
+
+NOTE Confidence: 0.93872015
+
+01:02:02.200 --> 01:02:05.596
+OK, yeah. Going out first.
+
+NOTE Confidence: 0.93872015
+
+01:02:05.596 --> 01:02:07.648
+And then we're going to call
+
+NOTE Confidence: 0.93872015
+
+01:02:07.648 --> 01:02:09.458
+the same iota unchecked,
+
+NOTE Confidence: 0.93872015
+
+01:02:09.460 --> 01:02:13.048
+with the result of unwrapping first.
+
+NOTE Confidence: 0.93872015
+
+01:02:13.050 --> 01:02:16.266
+And calling to the UN range.
+
+NOTE Confidence: 0.825997714615385
+
+01:02:18.380 --> 01:02:22.097
+You end is a magic accessor that
+
+NOTE Confidence: 0.825997714615385
+
+01:02:22.097 --> 01:02:24.979
+basically does the unwrapping for
+
+NOTE Confidence: 0.825997714615385
+
+01:02:24.979 --> 01:02:28.566
+us of getting the end of the range.
+
+NOTE Confidence: 0.825997714615385
+
+01:02:28.570 --> 01:02:31.042
+It's sometimes more efficient.
+
+NOTE Confidence: 0.825997714615385
+
+01:02:31.042 --> 01:02:34.160
+It's for a. Range types that
+
+NOTE Confidence: 0.825997714615385
+
+01:02:34.160 --> 01:02:35.840
+are implemented specifically to
+
+NOTE Confidence: 0.825997714615385
+
+01:02:35.840 --> 01:02:38.298
+have access to an unchecked end,
+
+NOTE Confidence: 0.825997714615385
+
+01:02:38.300 --> 01:02:39.637
+which is the thing in our design.
+
+NOTE Confidence: 0.825997714615385
+
+01:02:39.640 --> 01:02:41.964
+This will grab it directly instead of
+
+NOTE Confidence: 0.825997714615385
+
+01:02:41.964 --> 01:02:44.889
+calling in and then unwrapping the iterator.
+
+NOTE Confidence: 0.825997714615385
+
+01:02:44.890 --> 01:02:46.170
+It may be more efficient.
+
+NOTE Confidence: 0.7825803125
+
+01:02:48.890 --> 01:02:50.750
+So we're taking those.
+
+NOTE Confidence: 0.7825803125
+
+01:02:50.750 --> 01:02:53.075
+We're passing 3 arguments to
+
+NOTE Confidence: 0.7825803125
+
+01:02:53.075 --> 01:02:55.164
+iota and checked, which doesn't.
+
+NOTE Confidence: 0.7825803125
+
+01:02:55.164 --> 01:02:56.766
+We already know that it does.
+
+NOTE Confidence: 0.7825803125
+
+01:02:56.770 --> 01:03:00.487
+It returns the final value of first,
+
+NOTE Confidence: 0.7825803125
+
+01:03:00.490 --> 01:03:02.590
+which we wrap back up.
+
+NOTE Confidence: 0.7825803125
+
+01:03:02.590 --> 01:03:04.660
+Iterator that we have and we
+
+NOTE Confidence: 0.7825803125
+
+01:03:04.660 --> 01:03:06.738
+return the first move out just
+
+NOTE Confidence: 0.7825803125
+
+01:03:06.738 --> 01:03:08.936
+as we did on the other overload.
+
+NOTE Confidence: 0.7825803125
+
+01:03:08.940 --> 01:03:11.528
+So this is correct.
+
+NOTE Confidence: 0.7825803125
+
+01:03:11.530 --> 01:03:14.956
+Can be implemented a little more
+
+NOTE Confidence: 0.7825803125
+
+01:03:14.956 --> 01:03:16.742
+efficiently using rewrap iterator.
+
+NOTE Confidence: 0.7825803125
+
+01:03:16.742 --> 01:03:18.358
+We have a helper.
+
+NOTE Confidence: 0.881694496
+
+01:03:21.830 --> 01:03:23.000
+Lots and lots of helpers.
+
+NOTE Confidence: 0.641057537666667
+
+01:03:25.800 --> 01:03:27.558
+This is probably an ex util.
+
+NOTE Confidence: 0.8599363
+
+01:03:40.650 --> 01:03:41.160
+Yes.
+
+NOTE Confidence: 0.71285295
+
+01:03:51.780 --> 01:03:56.168
+Crap. You gotta turn off related matches.
+
+NOTE Confidence: 0.71285295
+
+01:03:56.170 --> 01:04:00.408
+It is the. Dumbest feature
+
+NOTE Confidence: 0.71285295
+
+01:04:00.408 --> 01:04:05.378
+no you so so frustrating.
+
+NOTE Confidence: 0.71285295
+
+01:04:05.380 --> 01:04:07.298
+I guess if you don't remember what
+
+NOTE Confidence: 0.71285295
+
+01:04:07.298 --> 01:04:10.860
+you're looking for, it could be handy.
+
+NOTE Confidence: 0.71285295
+
+01:04:10.860 --> 01:04:12.438
+You know, if it's something like
+
+NOTE Confidence: 0.71285295
+
+01:04:12.438 --> 01:04:14.618
+this then then I might use that tool,
+
+NOTE Confidence: 0.71285295
+
+01:04:14.620 --> 01:04:16.066
+but when I know exactly what
+
+NOTE Confidence: 0.71285295
+
+01:04:16.066 --> 01:04:17.420
+I'm looking for there anyway,
+
+NOTE Confidence: 0.71285295
+
+01:04:17.420 --> 01:04:20.297
+we have a utility called rewrap iterator.
+
+NOTE Confidence: 0.71285295
+
+01:04:20.300 --> 01:04:24.348
+That takes a range and an unwrapped iterator.
+
+NOTE Confidence: 0.83395274
+
+01:04:26.570 --> 01:04:29.700
+And it will you either.
+
+NOTE Confidence: 0.83395274
+
+01:04:29.700 --> 01:04:32.003
+Sorry if the unwrapped iterator type is
+
+NOTE Confidence: 0.83395274
+
+01:04:32.003 --> 01:04:34.740
+the same as the wrapped iterator type.
+
+NOTE Confidence: 0.83395274
+
+01:04:34.740 --> 01:04:36.938
+That's what this is trying to say.
+
+NOTE Confidence: 0.83395274
+
+01:04:36.940 --> 01:04:39.076
+Right, if this unwrapped iterator type,
+
+NOTE Confidence: 0.83395274
+
+01:04:39.080 --> 01:04:41.257
+IT is the same as the actual
+
+NOTE Confidence: 0.83395274
+
+01:04:41.257 --> 01:04:42.959
+iterator type of the range.
+
+NOTE Confidence: 0.83395274
+
+01:04:42.960 --> 01:04:44.600
+Then we don't need to do anything funny
+
+NOTE Confidence: 0.83395274
+
+01:04:44.600 --> 01:04:47.560
+in reader app, we just return it.
+
+NOTE Confidence: 0.83395274
+
+01:04:47.560 --> 01:04:49.672
+If the unwrapped and wraps types
+
+NOTE Confidence: 0.83395274
+
+01:04:49.672 --> 01:04:51.928
+are different, this meaning this is
+
+NOTE Confidence: 0.83395274
+
+01:04:51.928 --> 01:04:53.863
+arranged that has checked iterators.
+
+NOTE Confidence: 0.83395274
+
+01:04:53.870 --> 01:04:55.886
+Then we'll go ahead and grab
+
+NOTE Confidence: 0.83395274
+
+01:04:55.886 --> 01:04:58.060
+a new begin from the range.
+
+NOTE Confidence: 0.83395274
+
+01:04:58.060 --> 01:05:00.880
+And we'll wrap up our.
+
+NOTE Confidence: 0.83395274
+
+01:05:00.880 --> 01:05:04.296
+Unwrapped iterator inside that and return it.
+
+NOTE Confidence: 0.83395274
+
+01:05:04.300 --> 01:05:07.142
+This is constrained to we're only work
+
+NOTE Confidence: 0.83395274
+
+01:05:07.142 --> 01:05:09.274
+with forward ranges and necessity
+
+NOTE Confidence: 0.83395274
+
+01:05:09.274 --> 01:05:11.794
+because you're only allowed to call
+
+NOTE Confidence: 0.83395274
+
+01:05:11.794 --> 01:05:14.318
+begin once on a single pass range.
+
+NOTE Confidence: 0.83395274
+
+01:05:14.320 --> 01:05:16.364
+Like calling began on an input range
+
+NOTE Confidence: 0.83395274
+
+01:05:16.364 --> 01:05:18.350
+or an output range can suck the
+
+NOTE Confidence: 0.83395274
+
+01:05:18.350 --> 01:05:20.568
+magic smoke out of it and make you
+
+NOTE Confidence: 0.83395274
+
+01:05:20.568 --> 01:05:22.605
+unable to call again on that again.
+
+NOTE Confidence: 0.83395274
+
+01:05:22.610 --> 01:05:27.650
+Since this takes an. Output range range.
+
+NOTE Confidence: 0.83395274
+
+01:05:27.650 --> 01:05:29.030
+It may be single pass.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:35.180 --> 01:05:36.880
+And that means we can't
+
+NOTE Confidence: 0.774218353333333
+
+01:05:36.880 --> 01:05:38.240
+really use rewrap iterator.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:38.240 --> 01:05:41.420
+We don't have any facility for.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:41.420 --> 01:05:43.670
+Yeah, we're dealing with that.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:43.670 --> 01:05:46.480
+Unfortunately.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:46.480 --> 01:05:48.432
+So if we if we tried to it
+
+NOTE Confidence: 0.774218353333333
+
+01:05:48.432 --> 01:05:50.079
+would but fail to compile,
+
+NOTE Confidence: 0.774218353333333
+
+01:05:50.080 --> 01:05:51.984
+but only if our test coverage calls
+
+NOTE Confidence: 0.774218353333333
+
+01:05:51.984 --> 01:05:54.337
+it with an actual output only range.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:54.340 --> 01:05:57.140
+Is that correct, yes.
+
+NOTE Confidence: 0.774218353333333
+
+01:05:57.140 --> 01:06:00.290
+OK, yeah it will fail to compile but
+
+NOTE Confidence: 0.774218353333333
+
+01:06:00.290 --> 01:06:02.839
+only when called with us sub forward.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:02.840 --> 01:06:04.808
+Single pass range.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:04.810 --> 01:06:06.530
+And to check my understanding,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:06.530 --> 01:06:08.108
+because I I hit actually hadn't
+
+NOTE Confidence: 0.774218353333333
+
+01:06:08.108 --> 01:06:09.160
+looked into this commentary,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:09.160 --> 01:06:10.298
+I was like, oh crap, iterator.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:10.298 --> 01:06:11.930
+That sounds good because
+
+NOTE Confidence: 0.774218353333333
+
+01:06:11.930 --> 01:06:13.970
+I hadn't used it myself.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:13.970 --> 01:06:15.308
+Even in the case where we
+
+NOTE Confidence: 0.774218353333333
+
+01:06:15.308 --> 01:06:16.650
+do have like a strong,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:16.650 --> 01:06:20.012
+you know forward range in this code,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:20.012 --> 01:06:22.350
+we need to start off by calling
+
+NOTE Confidence: 0.774218353333333
+
+01:06:22.431 --> 01:06:24.807
+ranges begin and then unwrap it.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:24.810 --> 01:06:26.210
+I guess we could call you begin,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:26.210 --> 01:06:29.106
+I suppose, but that's what we would do.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:29.110 --> 01:06:30.706
+We would call you, but again,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:30.710 --> 01:06:32.850
+I see you again, OK,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:32.850 --> 01:06:34.464
+checked right into.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:34.464 --> 01:06:35.540
+Drink, drink,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:35.540 --> 01:06:38.468
+wrap with the idea idea that it doesn't
+
+NOTE Confidence: 0.774218353333333
+
+01:06:38.468 --> 01:06:40.570
+necessarily even need to keep first
+
+NOTE Confidence: 0.774218353333333
+
+01:06:40.570 --> 01:06:42.700
+around if they're the same iterator types,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:42.700 --> 01:06:44.730
+for example.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:44.730 --> 01:06:48.944
+Right and not a use after move.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:48.950 --> 01:06:50.330
+I guess it's not.
+
+NOTE Confidence: 0.774218353333333
+
+01:06:50.330 --> 01:06:52.055
+I guess first is technically
+
+NOTE Confidence: 0.774218353333333
+
+01:06:52.055 --> 01:06:53.946
+it is a used after move,
+
+NOTE Confidence: 0.774218353333333
+
+01:06:53.950 --> 01:06:54.348
+yes?
+
+NOTE Confidence: 0.774218353333333
+
+01:06:54.348 --> 01:06:57.134
+OK, but are we like asserting that
+
+NOTE Confidence: 0.774218353333333
+
+01:06:57.134 --> 01:06:59.850
+this must be OK for anything that
+
+NOTE Confidence: 0.774218353333333
+
+01:06:59.850 --> 01:07:02.659
+deals with our OK use after move?
+
+NOTE Confidence: 0.774218353333333
+
+01:07:02.660 --> 01:07:03.062
+OK,
+
+NOTE Confidence: 0.774218353333333
+
+01:07:03.062 --> 01:07:06.278
+it's it's part of the design of the
+
+NOTE Confidence: 0.774218353333333
+
+01:07:06.278 --> 01:07:08.780
+iterator in wrapping design that.
+
+NOTE Confidence: 0.774218353333333
+
+01:07:08.780 --> 01:07:10.810
+Seek rap.
+
+NOTE Confidence: 0.774218353333333
+
+01:07:10.810 --> 01:07:13.022
+Seek wrapped could take can have a
+
+NOTE Confidence: 0.774218353333333
+
+01:07:13.022 --> 01:07:15.549
+a boot from and put it right here.
+
+NOTE Confidence: 0.774218353333333
+
+01:07:15.550 --> 01:07:16.100
+OK cool.
+
+NOTE Confidence: 0.7389472915
+
+01:07:19.700 --> 01:07:21.662
+OK, yeah, essentially the the wrap
+
+NOTE Confidence: 0.7389472915
+
+01:07:21.662 --> 01:07:23.649
+state has not been changed the
+
+NOTE Confidence: 0.7389472915
+
+01:07:23.649 --> 01:07:25.497
+like the pointer to the parent
+
+NOTE Confidence: 0.7389472915
+
+01:07:25.497 --> 01:07:27.690
+but the printer to the element is
+
+NOTE Confidence: 0.7389472915
+
+01:07:27.690 --> 01:07:29.260
+what's getting totally reset here.
+
+NOTE Confidence: 0.7389472915
+
+01:07:29.260 --> 01:07:31.548
+But I was wondering like I see what
+
+NOTE Confidence: 0.7389472915
+
+01:07:31.548 --> 01:07:33.491
+that would do for like a forward
+
+NOTE Confidence: 0.7389472915
+
+01:07:33.491 --> 01:07:35.358
+list or a stood list for vector.
+
+NOTE Confidence: 0.7389472915
+
+01:07:35.358 --> 01:07:37.032
+Though it seems like we would
+
+NOTE Confidence: 0.7389472915
+
+01:07:37.032 --> 01:07:38.699
+actually be calling begin twice.
+
+NOTE Confidence: 0.818248625454545
+
+01:07:40.940 --> 01:07:42.578
+Ohh no, not if we called
+
+NOTE Confidence: 0.818248625454545
+
+01:07:42.578 --> 01:07:44.060
+you begin to begin with.
+
+NOTE Confidence: 0.818248625454545
+
+01:07:44.060 --> 01:07:46.594
+We would at most have one begin.
+
+NOTE Confidence: 0.818248625454545
+
+01:07:46.600 --> 01:07:49.540
+OK, never mind, only the
+
+NOTE Confidence: 0.818248625454545
+
+01:07:49.540 --> 01:07:51.500
+single pass thing is preventing
+
+NOTE Confidence: 0.818248625454545
+
+01:07:51.500 --> 01:07:53.068
+this from being desirable.
+
+NOTE Confidence: 0.676313678181818
+
+01:07:56.200 --> 01:07:57.950
+Obviously you could sandwich something
+
+NOTE Confidence: 0.676313678181818
+
+01:07:57.950 --> 01:08:00.000
+together with the concept we're here.
+
+NOTE Confidence: 0.676313678181818
+
+01:08:00.000 --> 01:08:01.500
+But it's probably more
+
+NOTE Confidence: 0.676313678181818
+
+01:08:01.500 --> 01:08:03.000
+trouble than it's worth.
+
+NOTE Confidence: 0.676313678181818
+
+01:08:03.000 --> 01:08:04.130
+We're talking about a pretty
+
+NOTE Confidence: 0.676313678181818
+
+01:08:04.130 --> 01:08:05.540
+minimal benefit in the first place.
+
+NOTE Confidence: 0.924186965
+
+01:08:09.420 --> 01:08:10.764
+Let's go ahead and say I
+
+NOTE Confidence: 0.924186965
+
+01:08:10.764 --> 01:08:11.660
+don't think it's worth.
+
+NOTE Confidence: 0.24536726
+
+01:08:17.490 --> 01:08:20.480
+2. If constant.
+
+NOTE Confidence: 0.39618488
+
+01:08:25.250 --> 01:08:26.930
+And sub.
+
+NOTE Confidence: 0.715533917142857
+
+01:08:33.370 --> 01:08:36.905
+Separately, I don't know spell
+
+NOTE Confidence: 0.715533917142857
+
+01:08:36.905 --> 01:08:39.410
+that word. I believe this as is.
+
+NOTE Confidence: 0.74809527
+
+01:08:49.410 --> 01:08:51.768
+Well, no. Somebody say something.
+
+NOTE Confidence: 0.800279937142857
+
+01:08:55.220 --> 01:08:58.195
+Am I not? Am I dropping again?
+
+NOTE Confidence: 0.800279937142857
+
+01:08:58.200 --> 01:08:58.989
+No, you're fine.
+
+NOTE Confidence: 0.800279937142857
+
+01:08:58.989 --> 01:09:00.567
+It just looked like GitHub took
+
+NOTE Confidence: 0.800279937142857
+
+01:09:00.567 --> 01:09:02.517
+a little second to respond there,
+
+NOTE Confidence: 0.800279937142857
+
+01:09:02.520 --> 01:09:03.608
+possibly because you just
+
+NOTE Confidence: 0.800279937142857
+
+01:09:03.608 --> 01:09:05.240
+pushed a comment with a typo.
+
+NOTE Confidence: 0.77083181375
+
+01:09:09.140 --> 01:09:11.724
+Because what I pushed comma of the typo.
+
+NOTE Confidence: 0.77083181375
+
+01:09:11.730 --> 01:09:13.188
+Yeah, you're you're separately, you didn't.
+
+NOTE Confidence: 0.77083181375
+
+01:09:13.190 --> 01:09:14.990
+You didn't fix it before submitting.
+
+NOTE Confidence: 0.77083181375
+
+01:09:14.990 --> 01:09:16.560
+It's like my eyebrows twitching.
+
+NOTE Confidence: 0.77083181375
+
+01:09:16.560 --> 01:09:17.740
+I'm like no, never,
+
+NOTE Confidence: 0.77083181375
+
+01:09:17.740 --> 01:09:19.038
+never mind, it doesn't matter.
+
+NOTE Confidence: 0.42890406
+
+01:09:21.110 --> 01:09:21.560
+Uh.
+
+NOTE Confidence: 0.128017545
+
+01:09:24.300 --> 01:09:25.719
+Spell constant progressively.
+
+NOTE Confidence: 0.6549697955
+
+01:09:28.890 --> 01:09:30.370
+OK, yeah, separately should be
+
+NOTE Confidence: 0.6549697955
+
+01:09:30.370 --> 01:09:31.850
+designed to be spelled correctly.
+
+NOTE Confidence: 0.6549697955
+
+01:09:31.850 --> 01:09:33.936
+It took three seconds and I realized
+
+NOTE Confidence: 0.6549697955
+
+01:09:33.936 --> 01:09:35.943
+nobody had said anything for 10
+
+NOTE Confidence: 0.6549697955
+
+01:09:35.943 --> 01:09:38.043
+seconds and thought that it was
+
+NOTE Confidence: 0.6549697955
+
+01:09:38.043 --> 01:09:40.760
+disconnecting it again. Anyone?
+
+NOTE Confidence: 0.6549697955
+
+01:09:40.760 --> 01:09:42.940
+OK, let's take deep breaths.
+
+NOTE Confidence: 0.6549697955
+
+01:09:42.940 --> 01:09:44.540
+Everything's fine.
+
+NOTE Confidence: 0.6549697955
+
+01:09:44.540 --> 01:09:47.740
+We are through iota.
+
+NOTE Confidence: 0.6549697955
+
+01:09:47.740 --> 01:09:49.039
+I should verify.
+
+NOTE Confidence: 0.546511982
+
+01:09:51.150 --> 01:09:54.760
+This new indiff comment matches.
+
+NOTE Confidence: 0.546511982
+
+01:09:54.760 --> 01:09:57.767
+And if comment. If.
+
+NOTE Confidence: 0.546511982
+
+01:09:57.767 --> 01:10:03.423
+Has 23 and CPP Lib concepts is defined.
+
+NOTE Confidence: 0.546511982
+
+01:10:03.430 --> 01:10:05.262
+Yes. That's also correct,
+
+NOTE Confidence: 0.546511982
+
+01:10:05.262 --> 01:10:09.378
+because this is a C + + 23 EDITION.
+
+NOTE Confidence: 0.546511982
+
+01:10:09.380 --> 01:10:11.056
+And we don't want.
+
+NOTE Confidence: 0.546511982
+
+01:10:11.056 --> 01:10:13.978
+To define it that code and or
+
+NOTE Confidence: 0.546511982
+
+01:10:13.978 --> 01:10:15.755
+test it when we're running,
+
+NOTE Confidence: 0.546511982
+
+01:10:15.755 --> 01:10:17.680
+EG in a test suite.
+
+NOTE Confidence: 0.546511982
+
+01:10:17.680 --> 01:10:19.420
+Because EDG concept support
+
+NOTE Confidence: 0.546511982
+
+01:10:19.420 --> 01:10:21.595
+is still not quite ready.
+
+NOTE Confidence: 0.546511982
+
+01:10:21.600 --> 01:10:24.368
+For the STL, although it works well enough
+
+NOTE Confidence: 0.546511982
+
+01:10:24.368 --> 01:10:27.067
+that it's been enabled in Intellisense.
+
+NOTE Confidence: 0.546511982
+
+01:10:27.070 --> 01:10:28.425
+So Intellisense does see all
+
+NOTE Confidence: 0.546511982
+
+01:10:28.425 --> 01:10:30.040
+the concepts code in the SDL.
+
+NOTE Confidence: 0.89661811
+
+01:10:33.810 --> 01:10:36.180
+OK. Moving on to algorithm.
+
+NOTE Confidence: 0.775382916666667
+
+01:10:39.160 --> 01:10:41.240
+Sungard, which is again
+
+NOTE Confidence: 0.775382916666667
+
+01:10:41.240 --> 01:10:43.840
+right for the same reasons.
+
+NOTE Confidence: 0.775382916666667
+
+01:10:43.840 --> 01:10:47.420
+OK, let's slide down to.
+
+NOTE Confidence: 0.775382916666667
+
+01:10:47.420 --> 01:10:50.760
+Again, the public interface.
+
+NOTE Confidence: 0.775382916666667
+
+01:10:50.760 --> 01:10:52.252
+Definitions we've got the
+
+NOTE Confidence: 0.775382916666667
+
+01:10:52.252 --> 01:10:52.998
+neighborhood comment.
+
+NOTE Confidence: 0.775382916666667
+
+01:10:53.000 --> 01:10:54.165
+Recall we, so we don't
+
+NOTE Confidence: 0.775382916666667
+
+01:10:54.165 --> 01:10:55.330
+need to worry about that.
+
+NOTE Confidence: 0.717272332
+
+01:10:58.250 --> 01:11:00.340
+Where in the paper go?
+
+NOTE Confidence: 0.717272332
+
+01:11:00.340 --> 01:11:02.240
+Shift left and shift right.
+
+NOTE Confidence: 0.7550426225
+
+01:11:04.990 --> 01:11:05.790
+Oh, this is weird.
+
+NOTE Confidence: 0.86037844
+
+01:11:14.160 --> 01:11:15.960
+Whatever we used to write,
+
+NOTE Confidence: 0.86037844
+
+01:11:15.960 --> 01:11:18.438
+the paper has kept the enormous
+
+NOTE Confidence: 0.86037844
+
+01:11:18.438 --> 01:11:20.730
+margins on my narrow window.
+
+NOTE Confidence: 0.86037844
+
+01:11:20.730 --> 01:11:23.516
+Which makes it pretty hard to read.
+
+NOTE Confidence: 0.86037844
+
+01:11:23.520 --> 01:11:26.628
+Anyway, uh. This is the template.
+
+NOTE Confidence: 0.86037844
+
+01:11:26.630 --> 01:11:28.790
+It takes. A first argument.
+
+NOTE Confidence: 0.86037844
+
+01:11:28.790 --> 01:11:30.690
+Must satisfy permutable and the
+
+NOTE Confidence: 0.86037844
+
+01:11:30.690 --> 01:11:33.489
+second must be a symbol for the 1st.
+
+NOTE Confidence: 0.86037844
+
+01:11:33.490 --> 01:11:36.166
+Which is exactly what this says.
+
+NOTE Confidence: 0.86037844
+
+01:11:36.170 --> 01:11:38.845
+Most explorer returning a sub
+
+NOTE Confidence: 0.86037844
+
+01:11:38.845 --> 01:11:41.520
+range of the first parameter.
+
+NOTE Confidence: 0.86037844
+
+01:11:41.520 --> 01:11:42.530
+Shift right?
+
+NOTE Confidence: 0.721978626
+
+01:11:45.540 --> 01:11:48.480
+First template parameter named first.
+
+NOTE Confidence: 0.721978626
+
+01:11:48.480 --> 01:11:51.270
+Second template parameter named last.
+
+NOTE Confidence: 0.721978626
+
+01:11:51.270 --> 01:11:54.258
+And inter difference tea.
+
+NOTE Confidence: 0.721978626
+
+01:11:54.260 --> 01:11:55.460
+Of the iterator type.
+
+NOTE Confidence: 0.76097061
+
+01:12:01.400 --> 01:12:05.387
+All right, this person is using it or gift.
+
+NOTE Confidence: 0.76097061
+
+01:12:05.390 --> 01:12:09.086
+Which is an internal thing we had
+
+NOTE Confidence: 0.76097061
+
+01:12:09.090 --> 01:12:12.710
+even before it was added in C + + 20.
+
+NOTE Confidence: 0.76097061
+
+01:12:12.710 --> 01:12:14.270
+That does effectively the same thing,
+
+NOTE Confidence: 0.76097061
+
+01:12:14.270 --> 01:12:16.085
+but by going through iterator
+
+NOTE Confidence: 0.76097061
+
+01:12:16.085 --> 01:12:18.435
+traits in subsec plus 20 mode
+
+NOTE Confidence: 0.76097061
+
+01:12:18.435 --> 01:12:20.834
+and by going through the actual
+
+NOTE Confidence: 0.76097061
+
+01:12:20.834 --> 01:12:24.540
+difference T alias in C + + 20 bug.
+
+NOTE Confidence: 0.858698023333333
+
+01:12:26.730 --> 01:12:29.790
+Yeah, I think if I recall.
+
+NOTE Confidence: 0.858698023333333
+
+01:12:29.790 --> 01:12:32.016
+Let's go ahead already. Comment on that.
+
+NOTE Confidence: 0.892063112
+
+01:12:34.310 --> 01:12:39.950
+But I don't see it. Is this above? Yes.
+
+NOTE Confidence: 0.702200945333333
+
+01:12:42.280 --> 01:12:43.864
+Miss go common in the first
+
+NOTE Confidence: 0.702200945333333
+
+01:12:43.864 --> 01:12:44.920
+occurrence and Stephen pointed
+
+NOTE Confidence: 0.702200945333333
+
+01:12:44.972 --> 01:12:46.247
+out that there were several,
+
+NOTE Confidence: 0.702200945333333
+
+01:12:46.250 --> 01:12:48.786
+so this is already taken care of alright?
+
+NOTE Confidence: 0.702200945333333
+
+01:12:48.790 --> 01:12:49.958
+Somebody already caught the
+
+NOTE Confidence: 0.702200945333333
+
+01:12:49.958 --> 01:12:51.126
+utter difference to issue.
+
+NOTE Confidence: 0.702200945333333
+
+01:12:51.130 --> 01:12:53.434
+I won't come on it on it again.
+
+NOTE Confidence: 0.702200945333333
+
+01:12:53.440 --> 01:12:56.645
+That probably came from copying our C-17.
+
+NOTE Confidence: 0.702200945333333
+
+01:12:56.645 --> 01:12:58.160
+Implementations of these
+
+NOTE Confidence: 0.702200945333333
+
+01:12:58.160 --> 01:13:00.685
+algorithms in the 1st place,
+
+NOTE Confidence: 0.702200945333333
+
+01:13:00.690 --> 01:13:04.466
+at least that that name pause to shift,
+
+NOTE Confidence: 0.702200945333333
+
+01:13:04.470 --> 01:13:05.720
+seems really familiar to me.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:08.750 --> 01:13:10.549
+I'm glad that's Misco caught it cause
+
+NOTE Confidence: 0.726604035857143
+
+01:13:10.549 --> 01:13:12.370
+I probably would have missed that one.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:12.370 --> 01:13:14.057
+I do know enough about like remove
+
+NOTE Confidence: 0.726604035857143
+
+01:13:14.057 --> 01:13:16.213
+CVT that if I see the ugly one being
+
+NOTE Confidence: 0.726604035857143
+
+01:13:16.213 --> 01:13:18.300
+used in modern code I'm like ohh we
+
+NOTE Confidence: 0.726604035857143
+
+01:13:18.300 --> 01:13:19.962
+can unconditionally is the modern one
+
+NOTE Confidence: 0.726604035857143
+
+01:13:19.970 --> 01:13:21.468
+but with iterative I think if Misco
+
+NOTE Confidence: 0.726604035857143
+
+01:13:21.468 --> 01:13:22.768
+hadn't noticed I probably would say
+
+NOTE Confidence: 0.726604035857143
+
+01:13:22.768 --> 01:13:24.483
+yeah I know what that does that looks
+
+NOTE Confidence: 0.726604035857143
+
+01:13:24.483 --> 01:13:25.633
+right and wouldn't have realized
+
+NOTE Confidence: 0.726604035857143
+
+01:13:25.633 --> 01:13:26.808
+oh we should just unconditionally
+
+NOTE Confidence: 0.726604035857143
+
+01:13:26.808 --> 01:13:28.048
+use the standard one there.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:28.050 --> 01:13:29.366
+So I'm very glad you noticed it.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:29.370 --> 01:13:30.270
+It's correct right?
+
+NOTE Confidence: 0.726604035857143
+
+01:13:30.270 --> 01:13:31.770
+It would have been correct.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:31.770 --> 01:13:33.090
+Again it does the same thing.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:33.090 --> 01:13:36.970
+It's was funny, but it's just a readability.
+
+NOTE Confidence: 0.726604035857143
+
+01:13:36.970 --> 01:13:38.290
+Problem only.
+
+NOTE Confidence: 0.896215725
+
+01:13:41.600 --> 01:13:43.288
+You know it's not. Look at the other.
+
+NOTE Confidence: 0.76943908
+
+01:13:45.630 --> 01:13:48.975
+Template forward range. Requires
+
+NOTE Confidence: 0.76943908
+
+01:13:48.975 --> 01:13:51.405
+that the iterator type is permutable.
+
+NOTE Confidence: 0.72254354
+
+01:13:53.520 --> 01:13:55.872
+We're returning a borrowed
+
+NOTE Confidence: 0.72254354
+
+01:13:55.872 --> 01:13:59.478
+subrange of that range shift left.
+
+NOTE Confidence: 0.72254354
+
+01:13:59.478 --> 01:14:01.974
+Takes the range argument
+
+NOTE Confidence: 0.72254354
+
+01:14:01.974 --> 01:14:03.846
+by forwarding reference.
+
+NOTE Confidence: 0.72254354
+
+01:14:03.850 --> 01:14:06.890
+And it also takes a range difference T
+
+NOTE Confidence: 0.72254354
+
+01:14:06.890 --> 01:14:08.612
+which is spelled correctly here because
+
+NOTE Confidence: 0.72254354
+
+01:14:08.612 --> 01:14:10.560
+we don't have another version of that.
+
+NOTE Confidence: 0.72254354
+
+01:14:10.560 --> 01:14:12.016
+And at the same.
+
+NOTE Confidence: 0.72254354
+
+01:14:12.016 --> 01:14:13.836
+Thanks parameter name positive shift.
+
+NOTE Confidence: 0.905117738181818
+
+01:14:16.530 --> 01:14:17.550
+So let's go ahead and look
+
+NOTE Confidence: 0.905117738181818
+
+01:14:17.550 --> 01:14:18.500
+at what these are doing.
+
+NOTE Confidence: 0.740412447272727
+
+01:14:20.970 --> 01:14:23.515
+This looks strangely similar to
+
+NOTE Confidence: 0.740412447272727
+
+01:14:23.515 --> 01:14:26.630
+the iota thing in that it's.
+
+NOTE Confidence: 0.740412447272727
+
+01:14:26.630 --> 01:14:28.162
+Checking the range right,
+
+NOTE Confidence: 0.740412447272727
+
+01:14:28.162 --> 01:14:29.694
+doing the validation first
+
+NOTE Confidence: 0.740412447272727
+
+01:14:29.694 --> 01:14:31.780
+of the range. And then.
+
+NOTE Confidence: 0.7620253975
+
+01:14:34.670 --> 01:14:36.498
+Auto result equals first.
+
+NOTE Confidence: 0.8616407575
+
+01:14:41.020 --> 01:14:43.388
+I'm sure that should mean something to me.
+
+NOTE Confidence: 0.8616407575
+
+01:14:43.390 --> 01:14:45.010
+Let's go back and find this.
+
+NOTE Confidence: 0.90001497
+
+01:14:48.600 --> 01:14:53.019
+OK preconditions. Zero is true.
+
+NOTE Confidence: 0.785580291034483
+
+01:14:58.070 --> 01:14:59.966
+Effects, if it is zero or it is
+
+NOTE Confidence: 0.785580291034483
+
+01:14:59.966 --> 01:15:01.630
+greater than or equal to last minus
+
+NOTE Confidence: 0.785580291034483
+
+01:15:01.630 --> 01:15:03.386
+first right if N is greater than
+
+NOTE Confidence: 0.785580291034483
+
+01:15:03.386 --> 01:15:05.360
+a number of elements in the range.
+
+NOTE Confidence: 0.785580291034483
+
+01:15:05.360 --> 01:15:08.169
+What that means. It does nothing.
+
+NOTE Confidence: 0.08404344
+
+01:15:12.070 --> 01:15:12.560
+Hmm.
+
+NOTE Confidence: 0.582798438333333
+
+01:15:15.610 --> 01:15:19.966
+Returned to find something called last.
+
+NOTE Confidence: 0.582798438333333
+
+01:15:19.970 --> 01:15:22.341
+Your turn at first comma, new last for
+
+NOTE Confidence: 0.582798438333333
+
+01:15:22.341 --> 01:15:23.726
+the overloads and namespace ranges.
+
+NOTE Confidence: 0.582798438333333
+
+01:15:23.730 --> 01:15:26.738
+So we need to make sure that this.
+
+NOTE Confidence: 0.582798438333333
+
+01:15:26.740 --> 01:15:32.942
+Is the unmodified. First argument.
+
+NOTE Confidence: 0.582798438333333
+
+01:15:32.942 --> 01:15:36.424
+OK. And we do that by making a copy.
+
+NOTE Confidence: 0.839567488666667
+
+01:15:43.110 --> 01:15:45.006
+To rewrap alright, this is this
+
+NOTE Confidence: 0.839567488666667
+
+01:15:45.006 --> 01:15:47.604
+is clear to me and we're making a
+
+NOTE Confidence: 0.839567488666667
+
+01:15:47.604 --> 01:15:52.748
+copy of first we're unwrapping.
+
+NOTE Confidence: 0.839567488666667
+
+01:15:52.750 --> 01:15:53.862
+There's no move here,
+
+NOTE Confidence: 0.839567488666667
+
+01:15:53.862 --> 01:15:55.530
+so let's make sure this is.
+
+NOTE Confidence: 0.839567488666667
+
+01:15:55.530 --> 01:15:58.570
+Yeah, Permutable refines forward.
+
+NOTE Confidence: 0.839567488666667
+
+01:15:58.570 --> 01:16:01.556
+No, it's OK that we're not moving
+
+NOTE Confidence: 0.839567488666667
+
+01:16:01.556 --> 01:16:04.670
+first when we pass it to get unwrapped.
+
+NOTE Confidence: 0.839567488666667
+
+01:16:04.670 --> 01:16:06.360
+Which should leave it unmodified.
+
+NOTE Confidence: 0.779340332933333
+
+01:16:08.510 --> 01:16:10.758
+And we're going to wrap the return value
+
+NOTE Confidence: 0.779340332933333
+
+01:16:10.758 --> 01:16:13.308
+in this company we've made called result.
+
+NOTE Confidence: 0.870966506428571
+
+01:16:15.940 --> 01:16:18.509
+So hopefully with the return value from
+
+NOTE Confidence: 0.870966506428571
+
+01:16:18.509 --> 01:16:20.588
+shift left unchecked is going to be.
+
+NOTE Confidence: 0.870966506428571
+
+01:16:20.590 --> 01:16:23.089
+This new last that the paper says
+
+NOTE Confidence: 0.870966506428571
+
+01:16:23.089 --> 01:16:25.598
+it's calculating, which is the.
+
+NOTE Confidence: 0.870966506428571
+
+01:16:25.600 --> 01:16:28.240
+Well, whenever that pointer, sorry,
+
+NOTE Confidence: 0.870966506428571
+
+01:16:28.240 --> 01:16:31.152
+the iterator after the final L element
+
+NOTE Confidence: 0.870966506428571
+
+01:16:31.152 --> 01:16:34.184
+that was that contains a value that
+
+NOTE Confidence: 0.870966506428571
+
+01:16:34.184 --> 01:16:36.684
+was in the original range, right?
+
+NOTE Confidence: 0.870966506428571
+
+01:16:36.684 --> 01:16:38.696
+We're gonna ignore the the tail
+
+NOTE Confidence: 0.870966506428571
+
+01:16:38.696 --> 01:16:40.364
+of elements after that that are
+
+NOTE Confidence: 0.870966506428571
+
+01:16:40.364 --> 01:16:42.306
+going to be moved from when we
+
+NOTE Confidence: 0.870966506428571
+
+01:16:42.306 --> 01:16:44.209
+shift all the elements to the left.
+
+NOTE Confidence: 0.76629865
+
+01:16:46.460 --> 01:16:50.010
+So we checked this already, right?
+
+NOTE Confidence: 0.76629865
+
+01:16:50.010 --> 01:16:51.978
+It's unwrapping first unwrapping
+
+NOTE Confidence: 0.76629865
+
+01:16:51.978 --> 01:16:54.625
+last and passing pause to shift
+
+NOTE Confidence: 0.76629865
+
+01:16:54.625 --> 01:16:57.358
+left unchecked, let's go take a
+
+NOTE Confidence: 0.76629865
+
+01:16:57.358 --> 01:16:59.693
+look at that unchecked algorithm.
+
+NOTE Confidence: 0.76629865
+
+01:16:59.700 --> 01:17:03.347
+Which I'm certain was defined above here.
+
+NOTE Confidence: 0.76629865
+
+01:17:03.350 --> 01:17:04.620
+Is that against our style?
+
+NOTE Confidence: 0.83370910875
+
+01:17:07.080 --> 01:17:09.705
+Yeah, it takes an iterator and a
+
+NOTE Confidence: 0.83370910875
+
+01:17:09.705 --> 01:17:13.268
+Sentinel returns the iterator type.
+
+NOTE Confidence: 0.83370910875
+
+01:17:13.270 --> 01:17:15.014
+Doesn't need to modify the synth and all.
+
+NOTE Confidence: 0.73970943125
+
+01:17:17.160 --> 01:17:19.304
+Again, this needs to be utter difference T.
+
+NOTE Confidence: 0.811626966
+
+01:17:22.700 --> 01:17:24.668
+And its behavior is.
+
+NOTE Confidence: 0.811626966
+
+01:17:24.668 --> 01:17:27.620
+We're shifting by less than 0.
+
+NOTE Confidence: 0.783848504444444
+
+01:17:29.700 --> 01:17:32.067
+We advance first to the end of the ring,
+
+NOTE Confidence: 0.783848504444444
+
+01:17:32.070 --> 01:17:34.566
+the original range, and return it.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:36.840 --> 01:17:39.756
+And that is going to be first plus.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:39.756 --> 01:17:44.380
+The original number of elements in the range.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:44.380 --> 01:17:45.883
+Minus. Zero, right?
+
+NOTE Confidence: 0.913759498333333
+
+01:17:45.883 --> 01:17:48.955
+If it is zero, then we that's
+
+NOTE Confidence: 0.913759498333333
+
+01:17:48.955 --> 01:17:50.730
+number of elements minus zero.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:50.730 --> 01:17:53.474
+So new last will actually be the
+
+NOTE Confidence: 0.913759498333333
+
+01:17:53.474 --> 01:17:54.920
+iterator that corresponds to.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:54.920 --> 01:17:57.329
+The Sentinel last.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:57.330 --> 01:17:58.690
+And that's what we're doing.
+
+NOTE Confidence: 0.913759498333333
+
+01:17:58.690 --> 01:18:01.230
+We're advancing first until it's.
+
+NOTE Confidence: 0.913759498333333
+
+01:18:01.230 --> 01:18:02.970
+Proventil ask we're trying.
+
+NOTE Confidence: 0.948469382857143
+
+01:18:06.160 --> 01:18:09.527
+Otherwise, we want to start at first.
+
+NOTE Confidence: 0.710092646
+
+01:18:21.670 --> 01:18:25.300
+You did only equals zero, this is.
+
+NOTE Confidence: 0.7673967
+
+01:18:28.790 --> 01:18:30.240
+Interesting.
+
+NOTE Confidence: 0.906727625
+
+01:18:34.000 --> 01:18:34.840
+I think.
+
+NOTE Confidence: 0.895022463333333
+
+01:18:39.850 --> 01:18:41.728
+I thought there was a change.
+
+NOTE Confidence: 0.829358121428571
+
+01:18:43.780 --> 01:18:46.772
+To allow negative N.
+
+NOTE Confidence: 0.829358121428571
+
+01:18:46.772 --> 01:18:49.948
+With no effect. Or maybe the paper?
+
+NOTE Confidence: 0.829358121428571
+
+01:18:49.948 --> 01:18:51.692
+Sorry, May actually maybe shift
+
+NOTE Confidence: 0.829358121428571
+
+01:18:51.692 --> 01:18:53.204
+originally allowed negative end
+
+NOTE Confidence: 0.829358121428571
+
+01:18:53.204 --> 01:18:55.646
+with no effect. In the chain,
+
+NOTE Confidence: 0.829358121428571
+
+01:18:55.646 --> 01:18:58.460
+which was to make it a precondition.
+
+NOTE Confidence: 0.829358121428571
+
+01:18:58.460 --> 01:19:00.620
+You go look at what the standard says.
+
+NOTE Confidence: 0.563104
+
+01:19:03.210 --> 01:19:03.800
+Or
+
+NOTE Confidence: 0.696112776666667
+
+01:19:08.000 --> 01:19:10.268
+the existing shift left of C + + 17
+
+NOTE Confidence: 0.696112776666667
+
+01:19:10.268 --> 01:19:12.130
+shift lock items? Yeah, precondition.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:14.800 --> 01:19:16.984
+So this was not an error in
+
+NOTE Confidence: 0.764184484692308
+
+01:19:16.984 --> 01:19:18.900
+the context cited in the paper.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:18.900 --> 01:19:21.060
+That's what the paper says.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:21.060 --> 01:19:23.448
+So yeah, that must have originally
+
+NOTE Confidence: 0.764184484692308
+
+01:19:23.448 --> 01:19:25.040
+allowed in negative values,
+
+NOTE Confidence: 0.764184484692308
+
+01:19:25.040 --> 01:19:28.698
+and it was later changed my elegy issue,
+
+NOTE Confidence: 0.764184484692308
+
+01:19:28.698 --> 01:19:31.128
+and I got the order.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:31.130 --> 01:19:34.040
+Mixed up in my memory.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:34.040 --> 01:19:36.530
+Alright, I I won't argue
+
+NOTE Confidence: 0.764184484692308
+
+01:19:36.530 --> 01:19:38.024
+with Stephen's comment.
+
+NOTE Confidence: 0.764184484692308
+
+01:19:38.030 --> 01:19:38.900
+This is reasonable.
+
+NOTE Confidence: 0.570370363333333
+
+01:19:41.470 --> 01:19:42.628
+And if anything.
+
+NOTE Confidence: 0.67843402625
+
+01:19:47.220 --> 01:19:50.228
+If you do and I agree we should.
+
+NOTE Confidence: 0.6775694
+
+01:19:53.640 --> 01:19:57.050
+The assertion. Sure.
+
+NOTE Confidence: 0.5444482225
+
+01:20:01.600 --> 01:20:03.800
+No shift left itself.
+
+NOTE Confidence: 0.758770502727273
+
+01:20:07.040 --> 01:20:09.176
+Should be in the call or
+
+NOTE Confidence: 0.758770502727273
+
+01:20:09.176 --> 01:20:11.270
+instead of in this helper.
+
+NOTE Confidence: 0.789846493333333
+
+01:20:15.780 --> 01:20:18.438
+Easier for users. Yes, we report
+
+NOTE Confidence: 0.789846493333333
+
+01:20:18.438 --> 01:20:20.977
+errors inside something with a name
+
+NOTE Confidence: 0.789846493333333
+
+01:20:20.977 --> 01:20:23.047
+that they called in their code.
+
+NOTE Confidence: 0.909945171666667
+
+01:20:25.670 --> 01:20:28.166
+Which is probably obvious to Stefan
+
+NOTE Confidence: 0.909945171666667
+
+01:20:28.170 --> 01:20:29.666
+and obvious to me, but may not be
+
+NOTE Confidence: 0.909945171666667
+
+01:20:29.666 --> 01:20:31.227
+obvious to the person that wrote this,
+
+NOTE Confidence: 0.909945171666667
+
+01:20:31.230 --> 01:20:34.850
+so we'll include that comment.
+
+NOTE Confidence: 0.909945171666667
+
+01:20:34.850 --> 01:20:38.802
+We would need two assertions right for the
+
+NOTE Confidence: 0.909945171666667
+
+01:20:38.802 --> 01:20:41.529
+Iterator Sentinel and the ranges form.
+
+NOTE Confidence: 0.909945171666667
+
+01:20:41.530 --> 01:20:43.780
+I think. Is that right? Yes.
+
+NOTE Confidence: 0.769896986
+
+01:20:45.870 --> 01:20:46.850
+Did we do that elsewhere?
+
+NOTE Confidence: 0.769896986
+
+01:20:46.850 --> 01:20:48.750
+Where we repeat the assertions
+
+NOTE Confidence: 0.769896986
+
+01:20:48.750 --> 01:20:51.610
+in each public entry?
+
+NOTE Confidence: 0.769896986
+
+01:20:51.610 --> 01:20:53.560
+Rather than centralized or does it?
+
+NOTE Confidence: 0.769896986
+
+01:20:53.560 --> 01:20:55.320
+Has it not just come up with enough
+
+NOTE Confidence: 0.769896986
+
+01:20:55.320 --> 01:20:56.669
+that we've got preconditions?
+
+NOTE Confidence: 0.769896986
+
+01:20:56.670 --> 01:20:58.290
+I think we'd usually do that.
+
+NOTE Confidence: 0.769896986
+
+01:20:58.290 --> 01:21:00.140
+Yes, we usually apply preconditions
+
+NOTE Confidence: 0.769896986
+
+01:21:00.140 --> 01:21:02.679
+as close as we can to users.
+
+NOTE Confidence: 0.769896986
+
+01:21:02.680 --> 01:21:03.848
+OK, I couldn't remember,
+
+NOTE Confidence: 0.769896986
+
+01:21:03.848 --> 01:21:04.668
+uh, what we do.
+
+NOTE Confidence: 0.87458701
+
+01:21:08.560 --> 01:21:09.694
+If we don't, we should fix it.
+
+NOTE Confidence: 0.900202583571429
+
+01:21:13.430 --> 01:21:15.419
+I think I I think we may have some
+
+NOTE Confidence: 0.900202583571429
+
+01:21:15.419 --> 01:21:17.029
+cases where we do centralized,
+
+NOTE Confidence: 0.900202583571429
+
+01:21:17.030 --> 01:21:19.774
+but we're careful that the I think
+
+NOTE Confidence: 0.900202583571429
+
+01:21:19.774 --> 01:21:22.079
+we're called the message will
+
+NOTE Confidence: 0.900202583571429
+
+01:21:22.079 --> 01:21:24.308
+sometimes mention the the standard
+
+NOTE Confidence: 0.900202583571429
+
+01:21:24.308 --> 01:21:26.282
+pretty name rather than the under
+
+NOTE Confidence: 0.900202583571429
+
+01:21:26.282 --> 01:21:28.567
+score ugly name and say range is
+
+NOTE Confidence: 0.900202583571429
+
+01:21:28.567 --> 01:21:30.480
+double colon shift left requires blah,
+
+NOTE Confidence: 0.900202583571429
+
+01:21:30.480 --> 01:21:32.160
+even if it's being emitted
+
+NOTE Confidence: 0.900202583571429
+
+01:21:32.160 --> 01:21:33.504
+within the internal helper.
+
+NOTE Confidence: 0.900202583571429
+
+01:21:33.510 --> 01:21:34.886
+But I would need to go check to
+
+NOTE Confidence: 0.900202583571429
+
+01:21:34.886 --> 01:21:36.318
+see what the actual precedent is.
+
+NOTE Confidence: 0.852683846470588
+
+01:21:44.190 --> 01:21:46.038
+I believe we should not do
+
+NOTE Confidence: 0.852683846470588
+
+01:21:46.038 --> 01:21:47.270
+anything here except checking
+
+NOTE Confidence: 0.852683846470588
+
+01:21:47.331 --> 01:21:49.039
+that it's I can't see the code.
+
+NOTE Confidence: 0.852683846470588
+
+01:21:49.040 --> 01:21:51.088
+Can't see the forest for the trees OK?
+
+NOTE Confidence: 0.881610993333333
+
+01:21:53.700 --> 01:21:55.080
+We make a copy of first.
+
+NOTE Confidence: 0.807656658333333
+
+01:21:58.690 --> 01:22:02.026
+If we have a size Sentinel.
+
+NOTE Confidence: 0.807656658333333
+
+01:22:02.030 --> 01:22:04.285
+Recheck that positive shift if
+
+NOTE Confidence: 0.807656658333333
+
+01:22:04.285 --> 01:22:06.540
+positive shift is greater than.
+
+NOTE Confidence: 0.807656658333333
+
+01:22:06.540 --> 01:22:07.620
+Yeah, again, the entire
+
+NOTE Confidence: 0.807656658333333
+
+01:22:07.620 --> 01:22:08.970
+length of the input range,
+
+NOTE Confidence: 0.807656658333333
+
+01:22:08.970 --> 01:22:13.588
+and if so. We return first.
+
+NOTE Confidence: 0.918176266666667
+
+01:22:17.800 --> 01:22:19.780
+Which is correct?
+
+NOTE Confidence: 0.743294262
+
+01:22:22.850 --> 01:22:25.558
+Now do last would be, I lost the definition.
+
+NOTE Confidence: 0.789464866666667
+
+01:22:28.610 --> 01:22:30.086
+I still looking at shift left.
+
+NOTE Confidence: 0.789464866666667
+
+01:22:30.090 --> 01:22:33.000
+Now I'm looking at shift right.
+
+NOTE Confidence: 0.789464866666667
+
+01:22:33.000 --> 01:22:34.032
+Alright, you asked.
+
+NOTE Confidence: 0.789464866666667
+
+01:22:34.032 --> 01:22:36.440
+It's first plus the number of elements
+
+NOTE Confidence: 0.789464866666667
+
+01:22:36.501 --> 01:22:38.398
+in the range might have sets OK.
+
+NOTE Confidence: 0.789464866666667
+
+01:22:38.400 --> 01:22:42.140
+Except end caps. Effectively.
+
+NOTE Confidence: 0.715762430769231
+
+01:22:44.220 --> 01:22:45.744
+At last, minus first.
+
+NOTE Confidence: 0.715762430769231
+
+01:22:45.744 --> 01:22:49.588
+So if N is larger than last minus first.
+
+NOTE Confidence: 0.715762430769231
+
+01:22:49.590 --> 01:22:51.777
+Then we return the new last is just first,
+
+NOTE Confidence: 0.715762430769231
+
+01:22:51.780 --> 01:22:53.340
+which would be the result of
+
+NOTE Confidence: 0.715762430769231
+
+01:22:53.340 --> 01:22:55.541
+doing all this math. If this was.
+
+NOTE Confidence: 0.715762430769231
+
+01:22:55.541 --> 01:22:57.863
+Max of N and last months.
+
+NOTE Confidence: 0.89204431
+
+01:23:00.110 --> 01:23:01.550
+OK, so that's correct.
+
+NOTE Confidence: 0.478827929125
+
+01:23:03.990 --> 01:23:09.406
+If it's seasonal, 4 if that's not greater,
+
+NOTE Confidence: 0.478827929125
+
+01:23:09.410 --> 01:23:12.870
+we advance start at.
+
+NOTE Confidence: 0.478827929125
+
+01:23:12.870 --> 01:23:16.718
+I paused to shift. Will you skip over?
+
+NOTE Confidence: 0.478827929125
+
+01:23:16.720 --> 01:23:19.408
+You take this copy of first and we
+
+NOTE Confidence: 0.478827929125
+
+01:23:19.408 --> 01:23:22.020
+skip over the the first N elements.
+
+NOTE Confidence: 0.478827929125
+
+01:23:22.020 --> 01:23:25.539
+Now that we know that N is somewhere within.
+
+NOTE Confidence: 0.478827929125
+
+01:23:25.540 --> 01:23:28.832
+The the range. This is gonna give
+
+NOTE Confidence: 0.478827929125
+
+01:23:28.832 --> 01:23:30.639
+us a a copy from the point right?
+
+NOTE Confidence: 0.478827929125
+
+01:23:30.640 --> 01:23:32.400
+We're gonna end up copying
+
+NOTE Confidence: 0.478827929125
+
+01:23:32.400 --> 01:23:34.300
+from here into first later on.
+
+NOTE Confidence: 0.92848643
+
+01:23:36.700 --> 01:23:38.565
+OK, otherwise if we don't
+
+NOTE Confidence: 0.92848643
+
+01:23:38.565 --> 01:23:40.057
+have a size Sentinel.
+
+NOTE Confidence: 0.7518157225
+
+01:23:42.350 --> 01:23:44.178
+You're going to start.
+
+NOTE Confidence: 0.80481975
+
+01:23:46.270 --> 01:23:49.474
+We're going to. Index our way into the range
+
+NOTE Confidence: 0.80481975
+
+01:23:49.474 --> 01:23:51.789
+manually instead of calling it advance.
+
+NOTE Confidence: 0.695878967714286
+
+01:23:58.880 --> 01:24:02.432
+Decorate pasta shift and for each
+
+NOTE Confidence: 0.695878967714286
+
+01:24:02.432 --> 01:24:04.838
+decrement. Will increment start at.
+
+NOTE Confidence: 0.912205755454546
+
+01:24:07.900 --> 01:24:09.015
+But not if it's already
+
+NOTE Confidence: 0.912205755454546
+
+01:24:09.015 --> 01:24:10.520
+at the end of the range.
+
+NOTE Confidence: 0.912205755454546
+
+01:24:10.520 --> 01:24:13.337
+If it has hit the end of the range.
+
+NOTE Confidence: 0.912205755454546
+
+01:24:13.340 --> 01:24:14.519
+You returned first.
+
+NOTE Confidence: 0.89149029875
+
+01:24:16.540 --> 01:24:17.540
+Which we already decided
+
+NOTE Confidence: 0.89149029875
+
+01:24:17.540 --> 01:24:18.896
+was the right thing, right?
+
+NOTE Confidence: 0.89149029875
+
+01:24:18.896 --> 01:24:21.032
+If the shift count was greater
+
+NOTE Confidence: 0.89149029875
+
+01:24:21.032 --> 01:24:22.160
+than the length of the range,
+
+NOTE Confidence: 0.89149029875
+
+01:24:22.160 --> 01:24:23.256
+they should return first.
+
+NOTE Confidence: 0.89149029875
+
+01:24:23.256 --> 01:24:25.269
+This is just another way to do it.
+
+NOTE Confidence: 0.764013707142857
+
+01:24:32.370 --> 01:24:34.295
+We try to avoid the other conditionals.
+
+NOTE Confidence: 0.655383609888889
+
+01:24:39.540 --> 01:24:41.860
+And I've afflicted miscall
+
+NOTE Confidence: 0.655383609888889
+
+01:24:41.860 --> 01:24:44.760
+with my hatred of multiple.
+
+NOTE Confidence: 0.655383609888889
+
+01:24:44.760 --> 01:24:45.980
+Blank lines, I know.
+
+NOTE Confidence: 0.655383609888889
+
+01:24:45.980 --> 01:24:47.810
+He just doesn't like this blank
+
+NOTE Confidence: 0.655383609888889
+
+01:24:47.876 --> 01:24:50.074
+line in between that. If constexpr,
+
+NOTE Confidence: 0.655383609888889
+
+01:24:50.074 --> 01:24:52.484
+the definition of the variable.
+
+NOTE Confidence: 0.655383609888889
+
+01:24:52.490 --> 01:24:54.002
+I believe you should not do
+
+NOTE Confidence: 0.655383609888889
+
+01:24:54.002 --> 01:24:55.356
+anything here except checking the
+
+NOTE Confidence: 0.655383609888889
+
+01:24:55.356 --> 01:24:56.556
+distance fire ranges distance.
+
+NOTE Confidence: 0.765066903333333
+
+01:25:01.840 --> 01:25:04.666
+This difference is less than 0.
+
+NOTE Confidence: 0.765066903333333
+
+01:25:04.670 --> 01:25:05.530
+It's less than zero.
+
+NOTE Confidence: 0.765066903333333
+
+01:25:05.530 --> 01:25:06.605
+We we have a problem.
+
+NOTE Confidence: 0.765066903333333
+
+01:25:06.610 --> 01:25:08.206
+If it's zero this does nothing.
+
+NOTE Confidence: 0.21886772522
+
+01:25:23.390 --> 01:25:26.270
+Just familiarize yourself with debuggers.
+
+NOTE Confidence: 0.21886772522
+
+01:25:26.270 --> 01:25:28.604
+Usually we use an internal helper
+
+NOTE Confidence: 0.21886772522
+
+01:25:28.604 --> 01:25:30.160
+function for both implementations.
+
+NOTE Confidence: 0.21886772522
+
+01:25:30.160 --> 01:25:31.632
+Without the balance checks.
+
+NOTE Confidence: 0.21886772522
+
+01:25:31.632 --> 01:25:33.472
+But here the implementation might
+
+NOTE Confidence: 0.21886772522
+
+01:25:33.472 --> 01:25:35.675
+be simple enough to do it in line.
+
+NOTE Confidence: 0.890948642
+
+01:25:38.580 --> 01:25:40.070
+All right, I'm not sure.
+
+NOTE Confidence: 0.867103234
+
+01:25:42.380 --> 01:25:43.930
+Entirely what he's talking about.
+
+NOTE Confidence: 0.941589456666667
+
+01:25:46.540 --> 01:25:47.518
+I do see.
+
+NOTE Confidence: 0.81550314
+
+01:25:56.280 --> 01:25:58.555
+What if we could use the three
+
+NOTE Confidence: 0.81550314
+
+01:25:58.555 --> 01:26:00.988
+argument form of ranges advance here?
+
+NOTE Confidence: 0.81550314
+
+01:26:00.990 --> 01:26:04.000
+There's a form of ranges advanced that
+
+NOTE Confidence: 0.81550314
+
+01:26:04.000 --> 01:26:07.140
+takes an iterator account and a Sentinel.
+
+NOTE Confidence: 0.81550314
+
+01:26:07.140 --> 01:26:09.195
+It tries to advance the
+
+NOTE Confidence: 0.81550314
+
+01:26:09.195 --> 01:26:11.250
+iterator count steps and stops
+
+NOTE Confidence: 0.81550314
+
+01:26:11.326 --> 01:26:13.606
+if it reaches Sentinel before.
+
+NOTE Confidence: 0.81550314
+
+01:26:13.610 --> 01:26:14.879
+Going count steps.
+
+NOTE Confidence: 0.93090295
+
+01:26:20.450 --> 01:26:23.380
+I think that's how I would do this.
+
+NOTE Confidence: 0.66618366
+
+01:26:25.770 --> 01:26:27.870
+Because I could get under who?
+
+NOTE Confidence: 0.66618366
+
+01:26:27.870 --> 01:26:31.220
+Yes, I, I wonder if it would result in the
+
+NOTE Confidence: 0.66618366
+
+01:26:31.305 --> 01:26:34.657
+same behavior when you do reach that last,
+
+NOTE Confidence: 0.66618366
+
+01:26:34.660 --> 01:26:37.387
+because here it looks like we need to return
+
+NOTE Confidence: 0.66618366
+
+01:26:37.387 --> 01:26:40.240
+the first iterator if the user has asked
+
+NOTE Confidence: 0.66618366
+
+01:26:40.240 --> 01:26:42.699
+for an unreasonably large pause to shift.
+
+NOTE Confidence: 0.66618366
+
+01:26:42.700 --> 01:26:44.870
+But if we use the three Arg
+
+NOTE Confidence: 0.66618366
+
+01:26:44.870 --> 01:26:46.879
+clamped version of ranges advance,
+
+NOTE Confidence: 0.66618366
+
+01:26:46.880 --> 01:26:49.517
+I think we might not end up returning first.
+
+NOTE Confidence: 0.66618366
+
+01:26:49.520 --> 01:26:50.280
+I could be wrong though.
+
+NOTE Confidence: 0.66618366
+
+01:26:50.280 --> 01:26:52.408
+I haven't traced through all the logic.
+
+NOTE Confidence: 0.782597823333333
+
+01:26:55.440 --> 01:26:57.325
+And with the Miscoe suggestion
+
+NOTE Confidence: 0.782597823333333
+
+01:26:57.325 --> 01:26:58.833
+to use move unchecked,
+
+NOTE Confidence: 0.782597823333333
+
+01:26:58.840 --> 01:27:00.793
+I also am not sure exactly what it means
+
+NOTE Confidence: 0.782597823333333
+
+01:27:00.793 --> 01:27:02.815
+now that you've pointed it out. Yeah,
+
+NOTE Confidence: 0.782597823333333
+
+01:27:02.815 --> 01:27:05.720
+because there's no like move unchecked in.
+
+NOTE Confidence: 0.782597823333333
+
+01:27:05.720 --> 01:27:07.742
+We're trying to find the specific
+
+NOTE Confidence: 0.782597823333333
+
+01:27:07.742 --> 01:27:09.090
+iterator in the middle.
+
+NOTE Confidence: 0.782597823333333
+
+01:27:09.090 --> 01:27:11.239
+Unchecked, yeah, we do call it there,
+
+NOTE Confidence: 0.782597823333333
+
+01:27:11.240 --> 01:27:13.400
+so I'm not sure what the suggestion is.
+
+NOTE Confidence: 0.76749449073125
+
+01:27:17.420 --> 01:27:20.048
+Oh, and time check it has been one hour
+
+NOTE Confidence: 0.76749449073125
+
+01:27:20.048 --> 01:27:22.798
+and 31 minutes ohpa time check already.
+
+NOTE Confidence: 0.76749449073125
+
+01:27:22.800 --> 01:27:25.430
+Oh, this is so much fun. OK.
+
+NOTE Confidence: 0.755918046153846
+
+01:27:28.540 --> 01:27:30.773
+The nice thing about the three argument
+
+NOTE Confidence: 0.755918046153846
+
+01:27:30.773 --> 01:27:32.569
+range is advanced is it returns.
+
+NOTE Confidence: 0.755918046153846
+
+01:27:32.570 --> 01:27:35.696
+Uh, you know count that's leftover.
+
+NOTE Confidence: 0.755918046153846
+
+01:27:35.700 --> 01:27:37.806
+So if there is a nonzero if it returns
+
+NOTE Confidence: 0.755918046153846
+
+01:27:37.806 --> 01:27:40.600
+nonzero, we could return first.
+
+NOTE Confidence: 0.755918046153846
+
+01:27:40.600 --> 01:27:44.359
+As we're advancing whatever is start at,
+
+NOTE Confidence: 0.755918046153846
+
+01:27:44.360 --> 01:27:45.914
+we will advance, start at by pasta,
+
+NOTE Confidence: 0.755918046153846
+
+01:27:45.920 --> 01:27:47.498
+shift towards last.
+
+NOTE Confidence: 0.9117352
+
+01:27:50.830 --> 01:27:52.410
+So it would work here.
+
+NOTE Confidence: 0.9117352
+
+01:27:52.410 --> 01:27:53.859
+I don't know if it's better or
+
+NOTE Confidence: 0.9117352
+
+01:27:53.859 --> 01:27:54.890
+not without thinking about it,
+
+NOTE Confidence: 0.9117352
+
+01:27:54.890 --> 01:27:55.970
+and we've run out of time
+
+NOTE Confidence: 0.9117352
+
+01:27:55.970 --> 01:27:56.690
+for thinking about it.
+
+NOTE Confidence: 0.9117352
+
+01:27:56.690 --> 01:27:58.580
+Unfortunately, so why don't we
+
+NOTE Confidence: 0.9117352
+
+01:27:58.580 --> 01:28:00.900
+go ahead and knock off here?
+
+NOTE Confidence: 0.90963231375
+
+01:28:03.280 --> 01:28:05.500
+Yeah, it'll take at least another
+
+NOTE Confidence: 0.90963231375
+
+01:28:05.500 --> 01:28:07.960
+15 minutes to finish shift left.
+
+NOTE Confidence: 0.9102311225
+
+01:28:10.040 --> 01:28:12.336
+So we're going to go ahead and stop,
+
+NOTE Confidence: 0.9102311225
+
+01:28:12.340 --> 01:28:14.279
+apologize for starting a little bit late.
+
+NOTE Confidence: 0.9102311225
+
+01:28:14.280 --> 01:28:16.269
+We might have been able to get to the
+
+NOTE Confidence: 0.9102311225
+
+01:28:16.269 --> 01:28:18.496
+end of it if we had that 5 minutes back.
+
+NOTE Confidence: 0.9102311225
+
+01:28:18.500 --> 01:28:21.076
+Sorry I haven't used this particular machine.
+
+NOTE Confidence: 0.9102311225
+
+01:28:21.080 --> 01:28:22.820
+I haven't driven here before,
+
+NOTE Confidence: 0.9102311225
+
+01:28:22.820 --> 01:28:25.634
+so I wasn't set up and prepared.
+
+NOTE Confidence: 0.9102311225
+
+01:28:25.640 --> 01:28:28.628
+Anyway, let's, uh go to questions.
+
+NOTE Confidence: 0.9102311225
+
+01:28:28.630 --> 01:28:30.366
+Are there any questions in the chat?
+
+NOTE Confidence: 0.9102311225
+
+01:28:30.370 --> 01:28:31.618
+Has everybody been asking?
+
+NOTE Confidence: 0.709263262857143
+
+01:28:33.920 --> 01:28:35.486
+No outstanding questions,
+
+NOTE Confidence: 0.709263262857143
+
+01:28:35.486 --> 01:28:39.660
+just some talk about, uh.
+
+NOTE Confidence: 0.709263262857143
+
+01:28:39.660 --> 01:28:41.532
+Why are we using those neighborhoods
+
+NOTE Confidence: 0.709263262857143
+
+01:28:41.532 --> 01:28:43.580
+and the stood move optimization?
+
+NOTE Confidence: 0.709263262857143
+
+01:28:43.580 --> 01:28:45.500
+So you, you've already covered everything.
+
+NOTE Confidence: 0.709263262857143
+
+01:28:45.500 --> 01:28:47.610
+Ohh, there's a suggestion from
+
+NOTE Confidence: 0.709263262857143
+
+01:28:47.610 --> 01:28:50.610
+Cameron that we assign our suggestion.
+
+NOTE Confidence: 0.709263262857143
+
+01:28:50.610 --> 01:28:53.580
+Our suggestion to him to implement
+
+NOTE Confidence: 0.709263262857143
+
+01:28:53.580 --> 01:28:55.065
+movement compiler funding.
+
+NOTE Confidence: 0.900219918571429
+
+01:28:57.460 --> 01:29:00.869
+Anyway, OK. Thank you all for coming.
+
+NOTE Confidence: 0.900219918571429
+
+01:29:00.870 --> 01:29:02.934
+And I actually like the live
+
+NOTE Confidence: 0.900219918571429
+
+01:29:02.934 --> 01:29:04.605
+question format better than people
+
+NOTE Confidence: 0.900219918571429
+
+01:29:04.605 --> 01:29:06.375
+type things in chat and having
+
+NOTE Confidence: 0.900219918571429
+
+01:29:06.375 --> 01:29:08.497
+to go back and get them later.
+
+NOTE Confidence: 0.900219918571429
+
+01:29:08.500 --> 01:29:10.960
+It worked well. Yeah thanks.
+
+NOTE Confidence: 0.900219918571429
+
+01:29:10.960 --> 01:29:12.466
+I will stop the recording now.
