@@ -1,0 +1,6 @@
+{
+  "name": "GH-2158 (part 2), Extend memcpy, memmove, and memcmp optimizations",
+  "description": "In this video we review GH-2158: https://github.com/microsoft/STL/pull/2158, titled \"Extend memcpy, memmove and memcmp optimizations\", now on part 2. Part 1 of the code review can be found at https://youtu.be/aQ4isF4f0bY.",
+  "private-link": "",
+  "public-link": "https://youtu.be/YojGZFdCH-k"
+}

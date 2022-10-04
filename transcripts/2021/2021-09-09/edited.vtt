@@ -1,0 +1,6624 @@
+﻿WEBVTT
+
+NOTE duration:"01:36:43"
+
+NOTE language:en-us
+
+00:00:03.000 --> 00:00:08.290
+[silence]
+
+00:00:08.290 --> 00:00:10.940
+&gt;&gt; Miya: And you should be good.
+
+00:00:10.940 --> 00:00:12.896
+&gt;&gt; Stephan: Cool, hi, welcome back to another
+
+00:00:12.896 --> 00:00:14.700
+VC Libraries open code review.
+
+00:00:14.700 --> 00:00:16.938
+I'm Stephan T. Lavavej, an STL maintainer,
+
+00:00:16.940 --> 00:00:21.979
+and today we'll be looking at a PR again,
+
+00:00:21.979 --> 00:00:23.296
+PR 2158 extend memcpy,
+
+00:00:23.296 --> 00:00:25.052
+memmove and memcmp optimizations
+
+00:00:25.052 --> 00:00:27.619
+from our contributor Adam Bucior.
+
+00:00:27.620 --> 00:00:30.240
+So let me go ahead and share out my screen.
+
+00:00:33.920 --> 00:00:35.268
+And here we go.
+
+00:00:37.420 --> 00:00:38.050
+'kay.
+
+00:00:42.230 --> 00:00:45.716
+So resuming the review that I left
+
+00:00:45.716 --> 00:00:49.370
+off last week, I got through up to
+
+00:00:49.370 --> 00:00:52.286
+line, right line 4005 of &lt;xutility&gt;.
+
+00:00:52.286 --> 00:00:54.710
+One of our central internal headers,
+
+00:00:54.710 --> 00:00:56.369
+not the most central, but fairly central.
+
+00:00:56.370 --> 00:00:59.130
+Contains lots of commonly used algorithms,
+
+00:00:59.130 --> 00:01:00.920
+so we'll be resuming there.
+
+00:01:00.920 --> 00:01:06.218
+Adam also pushed one commit to update a
+
+00:01:06.218 --> 00:01:09.688
+comment. So, let's just check that.
+
+00:01:09.690 --> 00:01:11.450
+It adds a comma, addressing the one comment
+
+00:01:11.450 --> 00:01:13.269
+I had from the last time, excellent.
+
+00:01:13.270 --> 00:01:15.454
+OK, so that's good.
+
+00:01:15.454 --> 00:01:18.270
+Uh, let's get this to disappear.
+
+00:01:18.270 --> 00:01:21.414
+OK, so, let's go look at the code.
+
+00:01:25.770 --> 00:01:27.570
+We got all the product code
+
+00:01:27.570 --> 00:01:29.432
+reviewed except for &lt;xutility&gt; and
+
+00:01:29.432 --> 00:01:31.525
+then we've got tests to look at.
+
+00:01:31.530 --> 00:01:35.680
+OK, so let's load this diff.
+
+00:01:35.680 --> 00:01:39.180
+Scroll down to, right line 4005.
+
+00:01:43.040 --> 00:01:45.483
+I seem to recall, at least for
+
+00:01:45.483 --> 00:01:47.975
+this top part I had chosen to split
+
+00:01:47.975 --> 00:01:50.250
+left and right, rather than inline.
+
+00:01:50.250 --> 00:01:53.730
+Let me see if… here's 4005, let
+
+00:01:53.730 --> 00:01:56.320
+me see if the stuff below it
+
+00:01:56.320 --> 00:01:57.930
+would benefit from being split.
+
+00:02:00.180 --> 00:02:02.310
+This part kind of yes,
+
+00:02:02.310 --> 00:02:06.190
+not massively… well yeah here,
+
+00:02:06.190 --> 00:02:08.458
+here this is kind of a…
+
+00:02:08.460 --> 00:02:10.756
+I guess it's a rename plus a refactoring.
+
+00:02:13.620 --> 00:02:15.492
+The diff isn't quite to the
+
+00:02:15.492 --> 00:02:16.740
+point where it's unreadable.
+
+00:02:16.740 --> 00:02:19.410
+This is like, here this is,
+
+00:02:19.410 --> 00:02:22.632
+uh, sort of almost looks like
+
+00:02:22.632 --> 00:02:24.623
+unrelated code getting… uh, it's
+
+00:02:24.623 --> 00:02:27.234
+jumping in and out of add/remove
+
+00:02:27.234 --> 00:02:29.849
+because it sees these empty lines.
+
+00:02:29.850 --> 00:02:31.943
+And the diff algorithm used can be
+
+00:02:31.943 --> 00:02:33.819
+responsible for this sort of behavior.
+
+00:02:33.820 --> 00:02:35.675
+This down here is enough that I
+
+00:02:35.675 --> 00:02:37.706
+think I wanna use side by side, OK.
+
+00:02:39.790 --> 00:02:42.240
+So let's do that, click the gear, split,
+
+00:02:42.240 --> 00:02:45.210
+may as well hide whitespace changes.
+
+00:02:48.950 --> 00:02:51.470
+I could also use the VS Code
+
+00:02:51.470 --> 00:02:52.847
+GitHub extension, but I'm more
+
+00:02:52.847 --> 00:02:54.780
+used to the web UI at this point.
+
+00:02:57.220 --> 00:02:59.271
+The VS Code extension is very nice because
+
+00:02:59.271 --> 00:03:01.785
+it lets you see an arbitrary amount of
+
+00:03:01.785 --> 00:03:04.010
+context around the lines being edited,
+
+00:03:04.010 --> 00:03:06.236
+you don't have to click more.
+
+00:03:06.240 --> 00:03:08.515
+I should get used to using it.
+
+00:03:08.520 --> 00:03:10.487
+OK, so here's where we reviewed &lt;xutility&gt;
+
+00:03:10.487 --> 00:03:12.956
+up to but not including this line.
+
+00:03:12.960 --> 00:03:15.612
+I always pay attention to my
+
+00:03:15.612 --> 00:03:16.938
+inclusive/exclusive issues.
+
+00:03:16.940 --> 00:03:19.495
+So go ahead and resolve this, and
+
+00:03:19.495 --> 00:03:22.099
+let's pick up where we left off.
+
+00:03:22.100 --> 00:03:26.108
+OK, so this is the _Copy_unchecked algorithm.
+
+00:03:26.110 --> 00:03:27.888
+Here we are copying a range [_First, _Last)
+
+00:03:27.890 --> 00:03:30.530
+to a destination iterator.
+
+00:03:30.530 --> 00:03:32.610
+It's internal and it's unchecked,
+
+00:03:32.610 --> 00:03:34.731
+saying that we are going to assume
+
+00:03:34.731 --> 00:03:36.476
+that the iterator range is valid
+
+00:03:36.476 --> 00:03:38.526
+and that we have sufficient space
+
+00:03:38.526 --> 00:03:42.082
+in _Dest. We have outer layers, um,
+
+00:03:42.090 --> 00:03:44.550
+like the publicly accessible std::copy
+
+00:03:44.550 --> 00:03:46.747
+function that will perform iterator
+
+00:03:46.747 --> 00:03:49.142
+debugging checks when possible to do
+
+00:03:49.142 --> 00:03:50.724
+things like make sure that the first
+
+00:03:50.724 --> 00:03:52.579
+and last iterators are not reversed.
+
+00:03:52.580 --> 00:03:54.146
+If you accidentally say, like,
+
+00:03:54.150 --> 00:03:56.369
+(v.end(), v.begin()), or if you mismatch
+
+00:03:56.370 --> 00:03:58.190
+them into different containers, like,
+
+00:03:58.190 --> 00:04:01.368
+uh, (v.begin(), v2.end()), that would be bad.
+
+00:04:01.368 --> 00:04:02.856
+Or if the destination range does
+
+00:04:02.856 --> 00:04:03.940
+not have enough space,
+
+00:04:03.940 --> 00:04:07.009
+uh, we can detect that sometimes if we can,
+
+00:04:07.010 --> 00:04:07.516
+umm, sense
+
+00:04:07.516 --> 00:04:09.540
+how many elements are in the input
+
+00:04:09.593 --> 00:04:11.231
+range by doing like a difference
+
+00:04:11.231 --> 00:04:12.900
+on forward or better iterators.
+
+00:04:12.900 --> 00:04:16.113
+And if the output range is forward or better,
+
+00:04:16.120 --> 00:04:17.534
+and especially if it's a random access,
+
+00:04:17.540 --> 00:04:20.137
+we can see whether we can form,
+
+00:04:20.140 --> 00:04:22.928
+you know _Dest + N or next(_Dest, N)
+
+00:04:22.928 --> 00:04:25.476
+and see if that's valid.
+
+00:04:25.480 --> 00:04:27.178
+And then once we have verified
+
+00:04:27.180 --> 00:04:29.910
+that the iterators are not reversed,
+
+00:04:29.910 --> 00:04:31.002
+and that there's sufficient
+
+00:04:31.002 --> 00:04:32.094
+space in the destination.
+
+00:04:32.452 --> 00:04:35.268
+We can do what we call unwrap the
+
+00:04:35.268 --> 00:04:38.026
+iterators down to either raw pointers
+
+00:04:38.026 --> 00:04:40.897
+for contiguous things or unchecked class
+
+00:04:40.897 --> 00:04:43.711
+types that don't do iterator debugging
+
+00:04:43.711 --> 00:04:45.800
+logic to sort of avoid overhead,
+
+00:04:45.800 --> 00:04:47.528
+especially in debug mode.
+
+00:04:47.528 --> 00:04:49.600
+Uh, where we don't get inlining
+
+00:04:49.600 --> 00:04:50.912
+or any fancy optimizations.
+
+00:04:51.248 --> 00:04:54.200
+So that's what _Copy_unchecked is doing here.
+
+00:04:54.560 --> 00:04:57.080
+We have a note as a reminder
+
+00:04:57.080 --> 00:04:59.560
+that things other than just std::copy
+
+00:04:59.560 --> 00:05:01.680
+will directly call this.
+
+00:05:01.680 --> 00:05:03.200
+We don't usually note this,
+
+00:05:03.200 --> 00:05:05.504
+but the pattern of having unchecked
+
+00:05:05.504 --> 00:05:07.548
+helpers just exist to implement
+
+00:05:07.548 --> 00:05:09.738
+the public functions is strong
+
+00:05:09.738 --> 00:05:12.071
+enough that when there's direct
+
+00:05:12.071 --> 00:05:14.119
+callers to something unchecked,
+
+00:05:14.120 --> 00:05:16.374
+we did start adding some of these
+
+00:05:16.374 --> 00:05:19.268
+comments here, just as a reminder.
+
+00:05:19.270 --> 00:05:19.735
+OK,
+
+00:05:19.735 --> 00:05:22.525
+so this is changing from
+
+00:05:22.525 --> 00:05:24.730
+_Ptr_copy_cat to _Iter_copy_cat.
+
+00:05:24.730 --> 00:05:27.045
+That's the rename because it's being
+
+00:05:27.045 --> 00:05:28.897
+generalized, and _Trivially_copyable
+
+00:05:28.897 --> 00:05:30.739
+changes to _Trivially_assignable
+
+00:05:30.739 --> 00:05:33.361
+because here we are assigning over
+
+00:05:33.361 --> 00:05:35.170
+elements that already exist,
+
+00:05:35.170 --> 00:05:39.470
+this is not the uninitialized special
+
+00:05:39.470 --> 00:05:42.350
+algorithm that will fill raw memory.
+
+00:05:42.350 --> 00:05:43.590
+So this is correct.
+
+00:05:43.590 --> 00:05:45.932
+This is that make the type traits
+
+00:05:45.932 --> 00:05:48.007
+we're using more fine grained.
+
+00:05:48.010 --> 00:05:49.099
+OK, so down here,
+
+00:05:49.099 --> 00:05:51.277
+this looks like a ranges version
+
+00:05:51.280 --> 00:05:53.396
+let me expand some context.
+
+00:05:53.396 --> 00:05:57.600
+We've got the ranges helper _Copy_unchecked,
+
+00:05:57.600 --> 00:05:59.460
+I can tell it's ranges because
+
+00:05:59.460 --> 00:06:01.740
+it's got all this sentinel stuff.
+
+00:06:01.740 --> 00:06:03.048
+Here, _Ptr_copy_cat,
+
+00:06:03.048 --> 00:06:04.029
+renamed _Iter_copy_cat,
+
+00:06:04.030 --> 00:06:05.794
+_Trivially_copyable changed to
+
+00:06:05.794 --> 00:06:06.970
+_Trivially_assignable,
+
+00:06:06.970 --> 00:06:09.080
+same rationale, writing to an
+
+00:06:09.080 --> 00:06:11.016
+_Out that already exists and
+
+00:06:11.016 --> 00:06:12.246
+not changing the sized_sentinel_for
+
+00:06:12.250 --> 00:06:15.806
+thing: this is the ranges idea – 
+
+00:06:15.810 --> 00:06:17.706
+Trying to avoid using the word
+
+00:06:17.706 --> 00:06:18.970
+concept to avoid confusion.
+
+00:06:18.970 --> 00:06:23.366
+– the ranges idea that you can
+
+00:06:23.366 --> 00:06:26.504
+have a range and in C++20 ranges
+
+00:06:26.504 --> 00:06:28.053
+the sentinel that denotes the
+
+00:06:28.053 --> 00:06:29.901
+end of the range does not have
+
+00:06:29.901 --> 00:06:31.886
+to be the same type as the
+
+00:06:31.890 --> 00:06:34.915
+iterator, so it's generalizing the
+
+00:06:34.915 --> 00:06:38.677
+classic iterator pattern from C++98's STL,
+
+00:06:38.680 --> 00:06:40.468
+and this allows you to have
+
+00:06:40.468 --> 00:06:42.803
+ranges like, oh, I have a pointer
+
+00:06:42.803 --> 00:06:44.583
+to a null terminated string,
+
+00:06:44.590 --> 00:06:46.480
+and I know when I'm going to hit the end,
+
+00:06:46.480 --> 00:06:49.468
+if you traverse it from front to back.
+
+00:06:49.468 --> 00:06:50.860
+But I don't know exactly where
+
+00:06:50.914 --> 00:06:52.306
+that's going to be until we
+
+00:06:52.306 --> 00:06:53.660
+actually look at every element,
+
+00:06:53.660 --> 00:06:56.072
+so the sentinel can be a
+
+00:06:56.072 --> 00:06:57.726
+special type that says, hey,
+
+00:06:57.726 --> 00:06:59.700
+I've reached the end of the range
+
+00:06:59.700 --> 00:07:01.236
+if the iterator on the left
+
+00:07:01.236 --> 00:07:02.960
+hand side of the comparison
+
+00:07:02.960 --> 00:07:05.666
+is pointing to a null character.
+
+00:07:06.005 --> 00:07:08.685
+So that's an example of a sentinel that
+
+00:07:08.685 --> 00:07:11.150
+does not have the same type as the iterator.
+
+00:07:11.150 --> 00:07:14.696
+Some sentinels can actually tell you
+
+00:07:14.696 --> 00:07:19.390
+the size of a range, that happens for
+
+00:07:19.390 --> 00:07:21.202
+things like forward or better iterators,
+
+00:07:21.202 --> 00:07:23.156
+where they are the same type, where the
+
+00:07:23.156 --> 00:07:24.764
+sentinel is the same type as the iterator.
+
+00:07:24.770 --> 00:07:26.630
+You just do a classic difference.
+
+00:07:26.630 --> 00:07:30.158
+It can also happen in some cases for
+
+00:07:30.158 --> 00:07:32.966
+something I believe like a list,
+
+00:07:32.970 --> 00:07:35.658
+where the list knows its own size,
+
+00:07:35.660 --> 00:07:38.906
+but, uh, arbitrary iterators may not.
+
+00:07:38.910 --> 00:07:40.656
+Uh, I may be incorrect
+
+00:07:40.660 --> 00:07:41.564
+there is that wrong?
+
+00:07:41.564 --> 00:07:42.946
+&gt;&gt; Casey: That's not exactly this one, right?
+
+00:07:42.946 --> 00:07:44.668
+So sized_sentinel_for means that the
+
+00:07:44.668 --> 00:07:46.099
+iterator and sentinel can tell
+
+00:07:46.099 --> 00:07:47.574
+you the distance between them.
+
+00:07:47.580 --> 00:07:49.288
+list is an example of a range
+
+00:07:49.288 --> 00:07:50.410
+that's a sized range.
+
+00:07:50.410 --> 00:07:51.880
+It knows its own size,
+
+00:07:51.880 --> 00:07:54.225
+but the iterators and sentinels don't know
+
+00:07:54.225 --> 00:07:56.048
+the distance between them.
+&gt;&gt; Stephan: Thank you.
+
+00:07:56.048 --> 00:07:58.000
+OK, I thought I was getting that wrong, and, uh…
+
+00:07:58.000 --> 00:07:59.257
+&gt;&gt; Casey: you were close.
+
+00:07:59.257 --> 00:08:02.190
+That's definitely, you know, list is the important example,
+
+00:08:02.190 --> 00:08:03.625
+but it's the important example of the
+
+00:08:03.630 --> 00:08:04.770
+other property than the one you
+
+00:08:04.770 --> 00:08:05.340
+were looking at.
+
+00:08:05.340 --> 00:08:07.620
+&gt;&gt; Stephan: Yeah, the sized_range, OK.
+
+00:08:07.620 --> 00:08:08.184
+Awesome, so yeah,
+
+00:08:08.184 --> 00:08:08.936
+and sized_sentinel_for
+
+00:08:08.940 --> 00:08:10.244
+is definitely the one we want
+
+00:08:10.244 --> 00:08:11.457
+here because at this point we're just
+
+00:08:11.457 --> 00:08:12.700
+being given an iterator and a sentinel,
+
+00:08:12.700 --> 00:08:15.600
+not an entire range.
+
+00:08:15.600 --> 00:08:17.220
+OK, so this is good,
+
+00:08:17.220 --> 00:08:19.680
+uh, let's scroll down some more.
+
+00:08:19.680 --> 00:08:20.358
+Um, OK,
+
+00:08:20.358 --> 00:08:22.731
+now we've got copy_n, the version
+
+00:08:22.731 --> 00:08:25.176
+that takes N number of elements.
+
+00:08:25.180 --> 00:08:27.490
+This is the
+
+00:08:27.490 --> 00:08:30.084
+classic std version, uh,
+
+00:08:30.084 --> 00:08:31.788
+there is no unchecked form because
+
+00:08:31.788 --> 00:08:33.698
+we're doing the unchecking in here.
+
+00:08:33.700 --> 00:08:36.260
+Umm, so _Ptr_copy_cat renamed _Iter_copy_cat,
+
+00:08:36.260 --> 00:08:38.440
+_Trivially_copyable to _Trivially_assignable.
+
+00:08:38.440 --> 00:08:40.258
+Yep, it's not the uninitialized form,
+
+00:08:40.260 --> 00:08:42.000
+so all good.
+
+00:08:42.000 --> 00:08:46.065
+We've got a _Copy_backward_unchecked.
+
+00:08:46.065 --> 00:08:49.165
+Yeah, that looks good.
+
+00:08:49.702 --> 00:08:52.362
+this is the internal version
+
+00:08:52.362 --> 00:08:53.958
+taking bidirectional iterators.
+
+00:08:53.960 --> 00:08:56.070
+_Ptr_copy_cat renamed _Iter_copy_cat,
+
+00:08:56.070 --> 00:08:58.180
+_Trivially_copyable to _Trivially_assignable.
+
+00:08:58.180 --> 00:08:59.293
+Yep, that's good.
+
+00:08:59.293 --> 00:09:01.519
+Nothing about this would be different.
+
+00:09:01.520 --> 00:09:02.705
+OK, _Move_unchecked,
+
+00:09:02.705 --> 00:09:05.470
+_Ptr_move_cat, because we're gonna
+
+00:09:05.547 --> 00:09:08.018
+move elements, is now _Iter_move_cat,
+
+00:09:08.020 --> 00:09:09.624
+that's good, _Trivially_copyable
+
+00:09:09.624 --> 00:09:10.827
+to _Trivially_assignable.
+
+00:09:10.830 --> 00:09:13.310
+Yep, the elements already exist.
+
+00:09:13.310 --> 00:09:14.785
+_Move_backward_unchecked, um, this
+
+00:09:14.785 --> 00:09:16.630
+one goes in the opposite order,
+
+00:09:16.630 --> 00:09:19.766
+which helps in certain overlapping cases.
+
+00:09:19.770 --> 00:09:22.422
+Uh, _Ptr_move_cat to _Iter_move_cat,
+
+00:09:22.422 --> 00:09:24.046
+that's correct, _Trivially_copyable
+
+00:09:24.050 --> 00:09:24.986
+to _Trivially_assignable,
+
+00:09:24.986 --> 00:09:26.234
+again, the elements exist,
+
+00:09:26.240 --> 00:09:28.418
+so that's good.
+
+00:09:28.420 --> 00:09:31.486
+OK, so now for something slightly different.
+
+00:09:34.130 --> 00:09:37.253
+This is one of the things that Adam had called
+
+00:09:37.253 --> 00:09:40.795
+out in his extensive PR notes that I really
+
+00:09:40.795 --> 00:09:43.388
+appreciate. The changes to _Is_all_bits_zero,
+
+00:09:43.390 --> 00:09:47.128
+so this is used by the fill
+
+00:09:47.128 --> 00:09:50.060
+optimization that will call memset.
+
+00:09:50.060 --> 00:09:52.780
+If we're gonna fill it with an element,
+
+00:09:52.780 --> 00:09:55.417
+and if that element happens to be 0, uh,
+
+00:09:55.420 --> 00:09:57.160
+we can just call mems… memset,
+
+00:09:57.160 --> 00:09:58.582
+and it doesn't matter how many bytes it is,
+
+00:09:58.590 --> 00:10:00.422
+as long as all of the bits of
+
+00:10:00.422 --> 00:10:01.698
+that element type are zero.
+
+00:10:01.700 --> 00:10:05.813
+I believe this is this was from a previous
+
+00:10:05.813 --> 00:10:07.960
+generalization of our optimization.
+
+00:10:07.960 --> 00:10:09.928
+This is being further extended to
+
+00:10:09.928 --> 00:10:11.578
+handle nullptr_t, because
+
+00:10:11.578 --> 00:10:13.606
+if we're being given an element,
+
+00:10:13.610 --> 00:10:15.834
+say, say we're being asked to fill a
+
+00:10:15.834 --> 00:10:17.998
+range of pointers, like char*s,
+
+00:10:18.000 --> 00:10:19.824
+const char*s, whatever.
+
+00:10:19.824 --> 00:10:23.260
+And the element that we're given to fill
+
+00:10:23.260 --> 00:10:25.585
+happens to be nullptr, the literal constant.
+
+00:10:25.585 --> 00:10:27.179
+That's saying, hey,
+
+00:10:27.179 --> 00:10:28.970
+I want you to null out all these pointers.
+
+00:10:28.970 --> 00:10:32.400
+So this will detect that hey,
+
+00:10:32.400 --> 00:10:34.920
+if the element we're being given is nullptr_t,
+
+00:10:34.920 --> 00:10:36.180
+we can just always return true.
+
+00:10:39.230 --> 00:10:41.801
+And we can do so at compile time.
+
+00:10:41.801 --> 00:10:44.449
+What this code would have done is it
+
+00:10:44.449 --> 00:10:47.018
+would have made a constexpr for,
+
+00:10:47.020 --> 00:10:48.500
+whoa, I'm zooming in a bit,
+
+00:10:48.500 --> 00:10:50.066
+It would have made a constexpr
+
+00:10:50.066 --> 00:10:51.500
+object of type nullptr,
+
+00:10:51.500 --> 00:10:54.850
+and then memcmp'd it at runtime.
+
+00:10:54.850 --> 00:10:56.218
+So we would get the answer
+
+00:10:56.220 --> 00:10:57.879
+yes, it's all bits zero, but we would
+
+00:10:57.879 --> 00:10:59.340
+have had to call memcmp to do so.
+
+00:10:59.340 --> 00:11:00.888
+For nullptr we can just
+
+00:11:00.888 --> 00:11:03.347
+statically detect it. So why not?
+
+00:11:03.347 --> 00:11:07.260
+This improves codegen a little bit more.
+
+00:11:07.260 --> 00:11:08.828
+And this does seem like a common enough
+
+00:11:08.828 --> 00:11:10.608
+case to be worth optimizing, like fill
+
+00:11:10.608 --> 00:11:12.386
+a range of pointers with nullptr,
+
+00:11:12.390 --> 00:11:14.917
+maybe, they were uninitialized before,
+
+00:11:14.920 --> 00:11:16.446
+maybe we need to reset them all.
+
+00:11:16.450 --> 00:11:18.890
+Seems totally reasonable and
+
+00:11:18.890 --> 00:11:19.940
+we can do this thanks to nullptr_t
+
+00:11:19.940 --> 00:11:21.340
+being in the type system.
+
+00:11:21.340 --> 00:11:22.410
+When things're in the type system,
+
+00:11:22.410 --> 00:11:25.506
+that's good, when things like 0 is a
+
+00:11:25.506 --> 00:11:28.046
+null pointer constant are rules that exist
+
+00:11:28.046 --> 00:11:32.488
+outside the type system, that leads to misery,
+
+00:11:32.490 --> 00:11:34.320
+as we saw from years and years
+
+00:11:34.320 --> 00:11:35.929
+of experience with C++98.
+
+00:11:35.930 --> 00:11:38.639
+So, if constexpr (is_same_v&lt;_Ty, nullptr_t&gt;)
+
+00:11:38.639 --> 00:11:41.549
+then just always return true.
+
+00:11:41.550 --> 00:11:43.762
+Otherwise do existing code.
+
+00:11:43.762 --> 00:11:47.850
+This is correct because we are already
+
+00:11:47.850 --> 00:11:49.684
+taking this thing by const _Ty&,
+
+00:11:49.690 --> 00:11:51.286
+so we don't need to worry
+
+00:11:51.286 --> 00:11:52.084
+about CV qualifiers.
+
+00:11:52.090 --> 00:11:54.106
+is_same_v is very very strict.
+
+00:11:54.110 --> 00:11:56.774
+It wants the type to be exactly identical
+
+00:11:56.774 --> 00:11:59.796
+and any differences in constness or
+
+00:11:59.796 --> 00:12:02.698
+volatility will cause this to report false.
+
+00:12:02.700 --> 00:12:04.200
+Here this will ignore constness,
+
+00:12:04.200 --> 00:12:05.370
+it ignores value category because
+
+00:12:05.370 --> 00:12:06.980
+we're already taking it by reference,
+
+00:12:06.980 --> 00:12:07.704
+so this is good.
+
+00:12:07.704 --> 00:12:08.790
+And if somebody gives us a
+
+00:12:08.835 --> 00:12:09.720
+volatile nullptr,
+
+00:12:09.720 --> 00:12:11.376
+well they deserve what they get.
+
+00:12:11.380 --> 00:12:13.641
+We'll go through this code path
+
+00:12:13.641 --> 00:12:16.480
+and I think memcmp handles volatile?
+
+00:12:16.480 --> 00:12:17.564
+I think it does.
+
+00:12:17.564 --> 00:12:18.377
+Maybe it doesn't,
+
+00:12:18.380 --> 00:12:20.140
+but in any event it's not going to
+
+00:12:20.140 --> 00:12:22.241
+be a regression, so that's good.
+
+00:12:22.241 --> 00:12:24.530
+And, I'm trying to think, are there any
+
+00:12:24.601 --> 00:12:27.137
+other types that we could do this for?
+
+00:12:27.140 --> 00:12:27.764
+Brain says no,
+
+00:12:27.764 --> 00:12:29.220
+there's no other types that are like
+
+00:12:29.268 --> 00:12:30.700
+nullptr_t, that we can just say hey,
+
+00:12:30.700 --> 00:12:33.028
+you're always 0, every other type
+
+00:12:33.030 --> 00:12:34.290
+Can store something useful.
+
+00:12:36.580 --> 00:12:40.740
+Umm, OK, next, and I was just thinking,
+
+00:12:40.740 --> 00:12:42.498
+um, that you could have something
+
+00:12:42.498 --> 00:12:44.239
+like a struct who's only data member is
+
+00:12:44.239 --> 00:12:46.038
+a nullptr, but we can't sense
+
+00:12:46.038 --> 00:12:47.890
+that without, like, reflection, and plus
+
+00:12:47.890 --> 00:12:50.436
+that would be very pathological/unusual.
+
+00:12:50.436 --> 00:12:53.668
+&gt;&gt; Casey: empty types?
+
+00:12:55.930 --> 00:12:57.897
+I wonder if empty types would be something interesting
+
+00:12:57.897 --> 00:12:59.670
+to consider for that optimization.
+
+00:12:59.670 --> 00:13:00.486
+&gt;&gt; Stephan: That's interesting.
+
+00:13:00.486 --> 00:13:03.342
+It's like how often would you be
+
+00:13:03.342 --> 00:13:05.389
+filling a range of empty types?
+
+00:13:05.390 --> 00:13:08.126
+&gt;&gt; Casey: I dunno, how often do you fill a range of pointers?
+
+00:13:08.130 --> 00:13:09.065
+[laughs] Ranges of pointers,
+
+00:13:09.065 --> 00:13:10.270
+I'll admit, are a little more common, yes, but
+
+00:13:10.270 --> 00:13:11.538
+&gt;&gt; Stephan: yeah, empty types,
+
+00:13:11.538 --> 00:13:14.669
+you do see them as things like base classes,
+
+00:13:14.670 --> 00:13:17.006
+you see them as things like tag types.
+
+00:13:17.010 --> 00:13:19.117
+You don't really see ranges of them
+
+00:13:19.117 --> 00:13:20.810
+because they would be stateless.
+
+00:13:20.810 --> 00:13:22.930
+So although I'll admit yes,
+
+00:13:22.930 --> 00:13:25.600
+we could potentially detect is_empty.
+
+00:13:25.600 --> 00:13:27.520
+I think it would occur.
+
+00:13:27.520 --> 00:13:29.466
+Yeah, I think it would occur so
+
+00:13:29.466 --> 00:13:31.460
+infrequently that it wouldn't be worth
+
+00:13:31.460 --> 00:13:33.300
+spending extra metaprogramming here,
+
+00:13:33.300 --> 00:13:34.818
+yeah, but that's that's an interesting question.
+
+00:13:34.818 --> 00:13:36.259
+&gt;&gt; Casey: [unintelligible] fallback to the compile time case?
+
+00:13:36.260 --> 00:13:38.220
+I mean, sorry, the runtime case?
+
+00:13:38.220 --> 00:13:40.054
+&gt;&gt; Stephan: Right, uh, yeah and this would say,
+
+00:13:40.060 --> 00:13:40.624
+hey,
+
+00:13:40.624 --> 00:13:42.880
+if it's constexpr and value init, it
+
+00:13:42.948 --> 00:13:45.460
+will get, it would get the correct answer.
+
+00:13:45.460 --> 00:13:46.909
+So at worst we get a little bit
+
+00:13:46.909 --> 00:13:47.750
+extra runtime codegen.
+
+00:13:51.900 --> 00:13:54.804
+OK, so now we've got more
+
+00:13:54.804 --> 00:13:56.740
+metaprogramming logic
+
+00:13:56.827 --> 00:13:59.988
+_Can_compare_with_operator_equal. This is asking…
+
+00:14:02.210 --> 00:14:03.450
+I'm reading ahead of it.
+
+00:14:03.450 --> 00:14:06.828
+Can we form the equality expression,
+
+00:14:06.830 --> 00:14:09.056
+and then some of this pointer address
+
+00:14:09.056 --> 00:14:10.808
+convertible stuff that we had before.
+
+00:14:10.810 --> 00:14:14.509
+OK, so let's look at what's going on here.
+
+00:14:14.510 --> 00:14:18.720
+template on _Ty1, _Ty2 and
+
+00:14:18.801 --> 00:14:21.178
+then class default to void,
+
+00:14:21.178 --> 00:14:23.614
+_INLINE_VAR is our macro that expands to
+
+00:14:23.614 --> 00:14:25.946
+inline in C++17 mode and above.
+
+00:14:25.950 --> 00:14:28.610
+We always want that for our constexpr
+
+00:14:28.610 --> 00:14:31.736
+bools, or constexpr constants in general.
+
+00:14:34.100 --> 00:14:35.940
+_Can_compare_with_operator_equal
+
+00:14:35.940 --> 00:14:37.780
+defaults to false,
+
+00:14:37.780 --> 00:14:40.777
+but if we meet criteria it can be true.
+
+00:14:40.780 --> 00:14:42.649
+So this one here just looks wrapped
+
+00:14:42.649 --> 00:14:44.538
+because of the narrow window here
+
+00:14:44.540 --> 00:14:46.381
+for _Ty1 and _Ty2 this
+
+00:14:46.381 --> 00:14:48.300
+is our void_t SFINAE pattern.
+
+00:14:48.300 --> 00:14:49.500
+We basically say hey,
+
+00:14:49.500 --> 00:14:51.870
+we're gonna write an expression that
+
+00:14:51.870 --> 00:14:54.238
+we want, put it inside decltype to
+
+00:14:54.238 --> 00:14:56.381
+get its type, and then smash that type
+
+00:14:56.381 --> 00:14:58.525
+to void_t, uh, using void_t we're always
+
+00:14:58.525 --> 00:15:00.677
+gonna get void out of this. So, if
+
+00:15:00.680 --> 00:15:03.326
+this thing is well formed it will
+
+00:15:03.330 --> 00:15:06.040
+be selected as the partial
+
+00:15:06.040 --> 00:15:07.964
+specialization for this, uh,
+
+00:15:07.964 --> 00:15:10.022
+because any use of this will use
+
+00:15:10.022 --> 00:15:11.470
+this class equals void default.
+
+00:15:11.470 --> 00:15:13.066
+This will be well formed and void
+
+00:15:13.066 --> 00:15:14.882
+is more specific, so we'll take it.
+
+00:15:14.882 --> 00:15:17.370
+But if this expression is not well formed,
+
+00:15:17.370 --> 00:15:19.407
+then it SFINAEs away and you only
+
+00:15:19.407 --> 00:15:21.469
+have the primary template available.
+
+00:15:21.470 --> 00:15:23.633
+This is the void_t pattern for
+
+00:15:23.633 --> 00:15:25.592
+SFINAE that we conventionally use
+
+00:15:25.592 --> 00:15:28.401
+everywhere in the STL, and it… once
+
+00:15:28.401 --> 00:15:30.480
+you learn the arcane trick behind it,
+
+00:15:30.480 --> 00:15:33.340
+it is nice and terse,
+
+00:15:33.340 --> 00:15:35.600
+and fairly simple to parse.
+
+00:15:35.600 --> 00:15:38.456
+OK, so we form std::declval,
+
+00:15:38.460 --> 00:15:40.436
+an imaginary value of type _Ty1&.
+
+00:15:40.440 --> 00:15:42.258
+So we're gonna compare lvalues,
+
+00:15:42.260 --> 00:15:44.868
+but we're not gonna add any sort of
+
+00:15:44.868 --> 00:15:46.425
+constness, if we can say that's
+
+00:15:46.425 --> 00:15:48.856
+== to a std::declval&lt;_Ty2&&gt;,
+
+00:15:48.860 --> 00:15:50.911
+then, we can compare them with
+
+00:15:50.911 --> 00:15:54.432
+operator==, because we usually compare
+
+00:15:54.432 --> 00:15:55.898
+lvalues…
+
+00:15:55.900 --> 00:15:56.572
+Which makes sense…
+
+00:15:56.572 --> 00:15:57.916
+We would be calling this for
+
+00:15:57.916 --> 00:15:58.629
+elements in a range?
+
+00:16:00.800 --> 00:16:02.126
+Do I like lvalues there?
+
+00:16:02.130 --> 00:16:02.802
+That's interesting.
+
+00:16:02.802 --> 00:16:04.818
+Uh, I'm thinking about, oh, proxies,
+
+00:16:04.820 --> 00:16:06.700
+if iterators, when dereferenced,
+
+00:16:06.700 --> 00:16:07.712
+return proxies.
+
+00:16:07.712 --> 00:16:10.748
+Am I comfortable with lvalue
+
+00:16:10.748 --> 00:16:13.100
+references being added here?
+
+00:16:17.280 --> 00:16:18.570
+I'm not sure, I'm going to
+
+00:16:18.570 --> 00:16:19.759
+think about that for a bit.
+
+00:16:19.760 --> 00:16:23.444
+Only, only very unusual types
+
+00:16:23.444 --> 00:16:25.052
+would be sensitive to the difference,
+
+00:16:25.060 --> 00:16:27.586
+vast majority of types don't care.
+
+00:16:27.590 --> 00:16:30.848
+OK, so then we have a
+
+00:16:30.850 --> 00:16:32.326
+separate variable template.
+
+00:16:32.326 --> 00:16:35.278
+This is _Is_pointer_address_comparable.
+
+00:16:35.280 --> 00:16:38.136
+This asks for a _Ty1 and _Ty2.
+
+00:16:38.140 --> 00:16:42.080
+Can we compare the pointers,
+
+00:16:42.080 --> 00:16:44.020
+_Ty1* and _Ty2*
+
+00:16:44.020 --> 00:16:44.827
+with operator==?
+
+00:16:44.827 --> 00:16:46.710
+Uh, for some this will be true,
+
+00:16:46.710 --> 00:16:50.278
+Like, um, char* equals const char*,
+
+00:16:50.280 --> 00:16:51.279
+that's totally valid.
+
+00:16:51.279 --> 00:16:53.277
+But char* equals int*,
+
+00:16:53.280 --> 00:16:54.625
+that's bogus, there's no such
+
+00:16:54.625 --> 00:16:56.280
+conversions that could make that work,
+
+00:16:56.280 --> 00:16:59.000
+so that would be false.
+
+00:16:59.000 --> 00:17:02.080
+And then, regardless of what this reports,
+
+00:17:02.080 --> 00:17:03.388
+because there's no short
+
+00:17:03.388 --> 00:17:04.696
+circuiting at compile time,
+
+00:17:04.700 --> 00:17:08.660
+uhm, we also asked the questions
+
+00:17:08.660 --> 00:17:10.420
+is _Ty1 pointer address
+
+00:17:10.420 --> 00:17:13.329
+convertible to _Ty2, or vice versa?
+
+00:17:16.210 --> 00:17:18.010
+OK, this is interesting.
+
+00:17:18.010 --> 00:17:20.710
+This is that thing that asks,
+
+00:17:20.710 --> 00:17:23.050
+I think this was above,
+
+00:17:23.050 --> 00:17:25.624
+Let me see if I can find it, pointer_address,
+
+00:17:25.630 --> 00:17:26.846
+yeah this thing,
+
+00:17:26.846 --> 00:17:28.340
+nope, that's the
+
+00:17:28.340 --> 00:17:31.910
+first use, this, oh here it is.
+
+00:17:31.910 --> 00:17:34.180
+OK. Nope, that's more use.
+
+00:17:34.180 --> 00:17:35.660
+Was this in another header?
+
+00:17:35.660 --> 00:17:38.790
+Oh here it is,
+
+00:17:38.790 --> 00:17:40.746
+This says are they the same
+
+00:17:40.746 --> 00:17:42.199
+after ignoring CVs and,
+
+00:17:42.199 --> 00:17:47.779
+is it a base of, is _Dest the base of _Source?
+
+00:17:47.780 --> 00:17:49.324
+Where they're pointer interconvertible,
+
+00:17:49.324 --> 00:17:51.254
+meaning there's no pointer adjustments.
+
+00:17:51.260 --> 00:17:53.385
+So, basically are the bits
+
+00:17:53.385 --> 00:17:55.338
+literally the same,
+
+00:17:55.338 --> 00:17:58.364
+if you convert from pointer
+
+00:17:58.364 --> 00:18:00.248
+to _Source to pointer to _Dest,
+
+00:18:00.250 --> 00:18:02.098
+which is true if you're just
+
+00:18:02.098 --> 00:18:03.284
+adjusting CV qualifiers and
+
+00:18:03.284 --> 00:18:04.554
+it's true if you're doing
+
+00:18:04.554 --> 00:18:05.316
+this base transformation.
+
+00:18:09.360 --> 00:18:10.560
+And we also special case,
+
+00:18:10.560 --> 00:18:11.757
+oh, if any of them were void
+
+00:18:11.760 --> 00:18:13.872
+pointer, uh, void*, then you can
+
+00:18:13.872 --> 00:18:16.030
+certainly convert there.
+
+00:18:23.400 --> 00:18:25.255
+I was briefly thinking about does this
+
+00:18:25.255 --> 00:18:27.180
+report true for something like a void*
+
+00:18:27.180 --> 00:18:28.800
+and a function pointer*,
+
+00:18:28.800 --> 00:18:34.208
+which is… or a function* which is, maybe not?
+
+00:18:34.210 --> 00:18:36.146
+But at least below we guard it with,
+
+00:18:36.150 --> 00:18:37.410
+can we even form the equality?
+
+00:18:37.410 --> 00:18:38.562
+Which is fine.
+
+00:18:38.562 --> 00:18:41.250
+OK, so let's jump to that usage.
+
+00:18:45.130 --> 00:18:47.560
+OK, so this is asking can we form the
+
+00:18:47.560 --> 00:18:51.690
+equality expression between the pointers, and,
+
+00:18:51.690 --> 00:18:53.409
+if we try to convert 1 to 2 or
+
+00:18:53.409 --> 00:18:55.337
+2 to 1 because we don't know
+
+00:18:55.337 --> 00:18:57.069
+exactly which order they've been given,
+
+00:18:57.070 --> 00:18:59.390
+for example, it could be base* and
+
+00:18:59.390 --> 00:19:01.567
+derived* or derived* and base*.
+
+00:19:01.570 --> 00:19:03.210
+We just need one of those to be
+
+00:19:03.210 --> 00:19:04.190
+pointer address convertible,
+
+00:19:04.190 --> 00:19:07.250
+they don't both need to be.
+
+00:19:07.250 --> 00:19:08.358
+Because the compiler,
+
+00:19:08.358 --> 00:19:09.743
+when it performs the conversion,
+
+00:19:09.750 --> 00:19:11.922
+will select the more de-, the more
+
+00:19:11.922 --> 00:19:15.207
+base one to convert them to.
+
+00:19:15.207 --> 00:19:18.266
+So if either of those are true,
+
+00:19:18.270 --> 00:19:20.442
+then that means we can just
+
+00:19:20.442 --> 00:19:23.900
+compare the pointers using memcmp.
+
+00:19:23.900 --> 00:19:26.717
+OK, I think this all makes sense to me.
+
+00:19:26.720 --> 00:19:29.051
+Um, the fact that _Can_compare_with_operator_equal
+
+00:19:29.051 --> 00:19:31.190
+is always answering the
+
+00:19:31.190 --> 00:19:32.744
+question means that we're not relying
+
+00:19:32.744 --> 00:19:34.712
+on this to return whether they're
+
+00:19:34.712 --> 00:19:37.974
+equality comparable at all, this is
+
+00:19:37.974 --> 00:19:41.838
+merely refining, when this reports true.
+
+00:19:41.838 --> 00:19:43.659
+I also see,
+
+00:19:43.660 --> 00:19:45.704
+there's no real reason to refactor this
+
+00:19:45.704 --> 00:19:48.188
+into terms of conjunction and disjunction.
+
+00:19:48.190 --> 00:19:50.790
+There might be a small
+
+00:19:50.790 --> 00:19:51.830
+throughput improvement.
+
+00:19:51.830 --> 00:19:54.080
+To not have to ask these questions if it's
+
+00:19:54.080 --> 00:19:56.449
+not comparable with operator equal at all.
+
+00:19:56.450 --> 00:19:57.746
+I'm not too worried about that.
+
+00:19:57.750 --> 00:19:59.550
+If we ever find throughput issues
+
+00:19:59.550 --> 00:20:01.450
+we can always refactor this later.
+
+00:20:01.450 --> 00:20:02.836
+Right now it's not really refactorable
+
+00:20:02.836 --> 00:20:04.260
+because there's no struct version of this.
+
+00:20:04.260 --> 00:20:06.846
+These are all, uh, variable templates,
+
+00:20:06.850 --> 00:20:08.728
+so this is, this is good.
+
+00:20:08.730 --> 00:20:13.490
+OK, so this is being used down here,
+
+00:20:13.490 --> 00:20:16.028
+but there's one change happening here.
+
+00:20:16.030 --> 00:20:19.546
+Um, this is in the implementation
+
+00:20:19.546 --> 00:20:22.980
+of _Can_memcmp_elements.
+
+00:20:22.980 --> 00:20:27.528
+Uh, previously we used to ask,
+
+00:20:27.530 --> 00:20:30.506
+are they the same size?
+
+00:20:30.510 --> 00:20:33.639
+And are they integral and non-volatile?
+
+00:20:37.400 --> 00:20:43.070
+And then we have a specialization,
+
+00:20:43.070 --> 00:20:45.350
+that handles if that's false, yes.
+
+00:20:51.170 --> 00:20:53.330
+After all these, yeah.
+
+00:20:55.500 --> 00:20:57.516
+So that's what that was doing.
+
+00:20:57.520 --> 00:20:59.348
+This is being changed.
+
+00:20:59.348 --> 00:21:04.219
+We're now going to permit volatile here.
+
+00:21:04.220 --> 00:21:06.260
+We keep the size of _Elem1 and the size of _Elem2,
+
+00:21:06.260 --> 00:21:09.060
+we keep _Elem1 integral, we keep
+
+00:21:09.060 --> 00:21:10.820
+is_integral_v&lt;_Elem2&gt;.
+
+00:21:10.820 --> 00:21:12.570
+This is clang-format being
+
+00:21:12.570 --> 00:21:14.610
+kind of bad, but that's OK.
+
+00:21:19.380 --> 00:21:22.356
+OK, uh, was it intended to
+
+00:21:22.360 --> 00:21:23.968
+handle volatile here?
+
+00:21:29.500 --> 00:21:31.966
+I need to look at the discussion notes.
+
+00:21:31.970 --> 00:21:34.690
+Uh, let me just open up in tab 2158.
+
+00:21:44.350 --> 00:21:48.800
+OK, this is _Can_memcmp_elements.
+
+00:21:58.030 --> 00:22:01.116
+All these functions are named similarly, OK.
+
+00:22:01.116 --> 00:22:03.540
+Pointers to pointer-interconvertible.
+
+00:22:07.650 --> 00:22:09.526
+OK, this doesn't say anything about memcmp.
+
+00:22:09.530 --> 00:22:12.708
+It says it disabled the memcpy and
+
+00:22:12.708 --> 00:22:14.850
+memmove optimization for volatile,
+
+00:22:14.850 --> 00:22:17.016
+but, this memcmp was already
+
+00:22:17.016 --> 00:22:18.460
+disabling it for volatile.
+
+00:22:18.460 --> 00:22:20.925
+So and now that nonvolatile
+
+00:22:20.925 --> 00:22:24.180
+logic is being removed.
+
+00:22:24.180 --> 00:22:26.966
+Why is this being removed? is_integral,
+
+00:22:26.966 --> 00:22:29.564
+because this is a standard primary cat…,
+
+00:22:29.570 --> 00:22:31.666
+uh, this is a standard type trait for
+
+00:22:31.666 --> 00:22:33.920
+one of the primary type categories,
+
+00:22:33.920 --> 00:22:36.464
+meaning the, sort of the entire
+
+00:22:36.464 --> 00:22:39.564
+universe of types is divided up into
+
+00:22:39.564 --> 00:22:42.204
+14 or so primary type categories
+
+00:22:42.204 --> 00:22:44.729
+like integral, floating point,
+
+00:22:44.730 --> 00:22:48.626
+nullptr, void, and a few others.
+
+00:22:48.630 --> 00:22:51.990
+All of those ignore
+
+00:22:51.990 --> 00:22:53.670
+top-level CV qualifiers.
+
+00:22:53.670 --> 00:22:56.646
+So is_integral&lt;int&gt;, const int, volatile int,
+
+00:22:56.650 --> 00:22:59.807
+and const volatile int are all true.
+
+00:22:59.810 --> 00:23:01.778
+Here we were excluding volatile and
+
+00:23:01.778 --> 00:23:04.069
+now it's no longer being excluded.
+
+00:23:06.520 --> 00:23:08.480
+Does anything else handle
+
+00:23:08.480 --> 00:23:10.650
+that here? This asks…
+
+00:23:12.850 --> 00:23:14.734
+once we're satisfied that they're the
+
+00:23:14.734 --> 00:23:16.789
+same type and they're both integral,
+
+00:23:16.790 --> 00:23:20.730
+then you can memcmp if one or other is bool,
+
+00:23:20.730 --> 00:23:22.220
+or if their negative
+
+00:23:22.220 --> 00:23:23.710
+one values are the same,
+
+00:23:23.710 --> 00:23:26.410
+then we handle bytes, we handle pointers.
+
+00:23:26.410 --> 00:23:30.090
+Otherwise, we report false,
+
+00:23:30.090 --> 00:23:33.698
+so this would report true for volatile int.
+
+00:23:33.700 --> 00:23:35.625
+I don't understand why volatile is
+
+00:23:35.625 --> 00:23:36.780
+being removed there.
+
+00:23:42.100 --> 00:23:46.476
+Ah, OK. It's being lifted up a level.
+
+00:23:49.310 --> 00:23:52.780
+This is asking _Can_memcmp_elements,
+
+00:23:56.500 --> 00:23:58.340
+and we use it, uh,
+
+00:23:58.340 --> 00:24:00.622
+I guess we have _Can_memcmp_elements_with_pred
+
+00:24:00.622 --> 00:24:04.400
+in the middle here, yeah.
+
+00:24:04.400 --> 00:24:05.940
+And then _Can_memcmp_elements_with_pred
+
+00:24:05.940 --> 00:24:08.481
+is used here and the
+
+00:24:08.481 --> 00:24:10.580
+_Equal_memcmp_is_safe_helper, this asks, hey
+
+00:24:10.580 --> 00:24:13.100
+are _Iter1 and _Iter2
+
+00:24:13.100 --> 00:24:14.651
+contiguous iterators, and that the
+
+00:24:14.651 --> 00:24:16.313
+iterators don't point to volatile stuff.
+
+00:24:16.320 --> 00:24:18.005
+So this is where volatility
+
+00:24:18.005 --> 00:24:19.016
+is being excluded.
+
+00:24:21.950 --> 00:24:24.530
+OK, so I believe that's correct,
+
+00:24:24.530 --> 00:24:26.393
+but I think a comment needs to be changed,
+
+00:24:26.400 --> 00:24:28.515
+so one of the things I look for when
+
+00:24:28.515 --> 00:24:30.511
+code is significantly changing, is that
+
+00:24:30.511 --> 00:24:32.670
+if there are any comments around,
+
+00:24:32.670 --> 00:24:35.238
+it is quite possible to change the code
+
+00:24:35.238 --> 00:24:37.990
+such that the comments become inaccurate.
+
+00:24:37.990 --> 00:24:40.320
+So double checking the comments
+
+00:24:40.320 --> 00:24:41.698
+for validity is important.
+
+00:24:41.698 --> 00:24:45.746
+Here, the volatile check is being removed,
+
+00:24:45.750 --> 00:24:48.081
+we've got this big comment here, and
+
+00:24:48.081 --> 00:24:49.928
+this was describing the old code.
+
+00:24:49.930 --> 00:24:52.228
+It said _Elem1 and _Elem2
+
+00:24:52.230 --> 00:24:54.491
+aren't top level const because we
+
+00:24:54.491 --> 00:24:56.580
+remove_const_t in an outer layer.
+
+00:24:56.580 --> 00:24:59.108
+And then we talk about integral types
+
+00:24:59.108 --> 00:25:01.379
+being eligible when they can't be volatile,
+
+00:25:01.380 --> 00:25:02.820
+and this was intended to
+
+00:25:02.820 --> 00:25:04.260
+map to this check here.
+
+00:25:04.260 --> 00:25:05.604
+That's no longer here,
+
+00:25:05.604 --> 00:25:07.620
+so I think at a minimum,
+
+00:25:07.620 --> 00:25:08.898
+this comment needs to be updated.
+
+00:25:08.900 --> 00:25:11.399
+Either we just need to strike
+
+00:25:11.400 --> 00:25:13.580
+this bit about volatility,
+
+00:25:13.580 --> 00:25:16.460
+or probably better, we should just add
+
+00:25:16.460 --> 00:25:18.320
+some parenthetical note like, this being-
+
+00:25:18.320 --> 00:25:21.290
+this is being checked, in – 
+
+00:25:21.290 --> 00:25:22.390
+What was the layer?
+
+00:25:22.390 --> 00:25:25.589
+_Equal_memcmp_is_safe_helper, or we could
+
+00:25:25.589 --> 00:25:28.749
+just describe that it's checked before
+
+00:25:28.750 --> 00:25:34.790
+using this. So I will ask that.
+
+00:25:37.760 --> 00:25:38.190
+OK.
+
+00:25:45.600 --> 00:25:49.394
+[under breath] get back to go. backtick. backtick.
+
+00:25:49.400 --> 00:25:55.930
+OK, it looks like the is-
+
+00:25:58.860 --> 00:26:00.370
+We'll just grab the whole thing.
+
+00:26:05.300 --> 00:26:09.380
+etc. checks are being lifted
+
+00:26:09.380 --> 00:26:14.610
+up to the (and get the other thing…)
+
+00:26:14.610 --> 00:26:16.750
+[under breath] Where is it? Here.
+
+00:26:16.750 --> 00:26:19.268
+Iterator is volatile, so it's the
+
+00:26:19.268 --> 00:26:21.644
+_Equal_memcmp_is- – what I want to do is double
+
+00:26:21.644 --> 00:26:23.730
+click but it grabs the space at the end.
+
+00:26:23.730 --> 00:26:25.422
+I guess I'll take it and delete the space.
+
+00:26:30.600 --> 00:26:31.610
+Oh it pastes without the space,
+
+00:26:31.610 --> 00:26:33.062
+interesting,
+
+00:26:33.062 --> 00:26:35.966
+_Equal_memcmp_is_safe_helper layer,
+
+00:26:35.970 --> 00:26:39.354
+which is fine. However,
+
+00:26:39.354 --> 00:26:43.584
+I or– However, the comment.
+
+00:26:43.590 --> 00:26:46.930
+They can't be volatile.
+
+00:26:46.930 --> 00:26:48.364
+[unintellegible]
+
+00:26:48.364 --> 00:26:50.754
+Ope, I don't want a space there.
+
+00:26:50.760 --> 00:26:54.080
+The comment they can't be volatile above
+
+00:26:56.560 --> 00:27:00.385
+was referring to the checks
+
+00:27:00.385 --> 00:27:05.390
+that have been moved
+
+00:27:05.390 --> 00:27:08.276
+Should this comment,
+
+00:27:08.276 --> 00:27:13.248
+or, should we add a parenthetical
+
+00:27:13.248 --> 00:27:17.930
+note to this comment mentioning
+
+00:27:17.930 --> 00:27:21.190
+that volatility?
+
+00:27:21.190 --> 00:27:22.609
+That's the right phrasing.
+
+00:27:25.540 --> 00:27:27.946
+Here we said we remove_const_t
+
+00:27:27.946 --> 00:27:30.520
+before using _Can_memcmp_elements,
+
+00:27:30.520 --> 00:27:33.196
+I can just copy that, volatility
+
+00:27:35.940 --> 00:27:42.107
+has already then handled similar to the
+
+00:27:44.200 --> 00:27:48.080
+comment above. OK, see if that makes sense.
+
+00:27:48.080 --> 00:27:49.622
+It looks like the
+
+00:27:49.622 --> 00:27:50.644
+!is_volatile_v&lt;_Elem1&gt;, etc.
+
+00:27:50.644 --> 00:27:52.596
+checks are being lifted up to the
+
+00:27:52.596 --> 00:27:54.586
+_Equal_memcmp_is_safe_helper layer, which is fine,
+
+00:27:54.586 --> 00:27:56.158
+however the comment they can't be
+
+00:27:56.158 --> 00:27:57.481
+volatile above was referring to
+
+00:27:57.481 --> 00:27:58.999
+the checks that have been moved.
+
+00:27:59.000 --> 00:28:00.435
+Should we add a parenthetical
+
+00:28:00.435 --> 00:28:01.870
+note to this comment mentioning
+
+00:28:01.922 --> 00:28:03.382
+the volatility has already been
+
+00:28:03.382 --> 00:28:05.165
+handled similar to the because we
+
+00:28:05.165 --> 00:28:06.535
+remove_const_t before using
+
+00:28:06.540 --> 00:28:10.620
+_Can_memcmp_elements comment above? OK.
+
+00:28:18.010 --> 00:28:20.098
+Yeah, this is,
+
+00:28:20.100 --> 00:28:22.524
+although this is all like variable
+
+00:28:22.524 --> 00:28:24.023
+template metaprogramming,
+
+00:28:24.023 --> 00:28:26.004
+really it's a question of, like,
+
+00:28:26.004 --> 00:28:27.960
+preconditions and postconditions. Here, there,
+
+00:28:27.960 --> 00:28:29.568
+this thing is assuming certain things
+
+00:28:29.568 --> 00:28:31.284
+about its inputs, that they're not
+
+00:28:31.284 --> 00:28:32.779
+const cause that's already been
+
+00:28:32.779 --> 00:28:34.319
+handled, that they're not volatile,
+
+00:28:34.320 --> 00:28:37.038
+because volatility has already been handled.
+
+00:28:37.040 --> 00:28:39.440
+So we're just really documenting
+
+00:28:39.440 --> 00:28:40.400
+our preconditions,
+
+00:28:40.400 --> 00:28:41.690
+which is important because there's
+
+00:28:41.690 --> 00:28:43.598
+no real way to debug through this
+
+00:28:43.598 --> 00:28:46.240
+stuff when it's variable templates.
+
+00:28:46.240 --> 00:28:47.936
+OK, next up, uh,
+
+00:28:47.936 --> 00:28:50.056
+we had included a performance
+
+00:28:50.056 --> 00:28:52.657
+note in the old code saying, hey,
+
+00:28:52.657 --> 00:28:53.719
+if you're trying to compare like
+
+00:28:53.719 --> 00:28:54.828
+int* to void*, we're just
+
+00:28:54.828 --> 00:28:55.914
+not gonna bother to handle that.
+
+00:28:55.920 --> 00:28:57.108
+That is now being handled by
+
+00:28:57.108 --> 00:28:58.484
+the new _Is_pointer_address_comparable stuff.
+
+00:28:58.484 --> 00:28:59.944
+So that comment's going away,
+
+00:28:59.950 --> 00:29:00.649
+so that's great.
+
+00:29:02.740 --> 00:29:04.384
+So here this is,
+
+00:29:04.384 --> 00:29:08.314
+after the case of we can handle same
+
+00:29:08.314 --> 00:29:10.543
+size integrals, uhm, which handles
+
+00:29:10.543 --> 00:29:11.707
+the usual arithmetic conversions.
+
+00:29:11.710 --> 00:29:13.460
+We have various other special cases like
+
+00:29:13.460 --> 00:29:15.168
+this one which was previously added.
+
+00:29:15.170 --> 00:29:17.234
+We can compare std::bytes even
+
+00:29:17.234 --> 00:29:19.050
+though they're not integral, here
+
+00:29:19.050 --> 00:29:22.130
+if we have pointers to some underlying
+
+00:29:22.130 --> 00:29:24.449
+_Ty1 and _Ty2 elements,
+
+00:29:24.450 --> 00:29:26.538
+We used to say we can compare
+
+00:29:26.538 --> 00:29:28.680
+them only if they're the same,
+
+00:29:28.680 --> 00:29:30.600
+pointing to the same element type.
+
+00:29:30.600 --> 00:29:33.280
+Ignoring CV qualifiers.
+
+00:29:33.280 --> 00:29:36.900
+This says if you're comparing two ranges
+
+00:29:36.900 --> 00:29:39.180
+and the range elements themselves
+
+00:29:39.254 --> 00:29:41.456
+are int* and const int*,
+
+00:29:41.460 --> 00:29:43.020
+then those are different types.
+
+00:29:43.020 --> 00:29:43.932
+But comparing them,
+
+00:29:43.932 --> 00:29:46.060
+we know that comparing each pair
+
+00:29:46.122 --> 00:29:48.090
+of pointers is not going to adjust any
+
+00:29:48.090 --> 00:29:50.236
+bits in the pointers, in the addresses,
+
+00:29:50.240 --> 00:29:51.776
+so we can just call memcmp
+
+00:29:51.776 --> 00:29:52.800
+on the whole thing.
+
+00:29:52.800 --> 00:29:54.080
+This optimization I think,
+
+00:29:54.080 --> 00:29:56.000
+actually goes back to the original
+
+00:29:56.000 --> 00:29:59.710
+implementation we had, circa 2007 or
+
+00:29:59.710 --> 00:30:02.710
+so, when I started working here,
+
+00:30:02.710 --> 00:30:05.740
+and it's been extended since then.
+
+00:30:05.740 --> 00:30:07.960
+So, that retains that behavior, and then
+
+00:30:07.960 --> 00:30:10.047
+additionally extends it to, oh! if
+
+00:30:10.047 --> 00:30:11.883
+you're comparing int* to void*,
+
+00:30:11.890 --> 00:30:13.735
+we know that is not going to do any
+
+00:30:13.735 --> 00:30:15.487
+sort of weird address conversions.
+
+00:30:15.490 --> 00:30:17.630
+And that's now all centralized
+
+00:30:17.630 --> 00:30:19.770
+in _Is_pointer_address_comparable,
+
+00:30:19.770 --> 00:30:25.106
+so that's good, like that. OK.
+
+00:30:25.106 --> 00:30:28.836
+Now this is being refactored.
+
+00:30:28.840 --> 00:30:31.837
+There used to be _Pred_is_consistent_with_memcmp.
+
+00:30:32.223 --> 00:30:35.670
+this is now called _Can_memcmp_elements_with_pred.
+
+00:30:35.670 --> 00:30:38.208
+So let's read the new explanation.
+
+00:30:38.210 --> 00:30:43.530
+_Can_memcmp_elements_with_pred&lt;_Elem1, _Elem2, _Pr&gt;,
+
+00:30:43.530 --> 00:30:45.686
+making sure that it matches the names,
+
+00:30:46.116 --> 00:30:48.246
+reports whether the memcmp
+
+00:30:48.246 --> 00:30:49.950
+optimization is applicable given
+
+00:30:50.025 --> 00:30:51.930
+contiguously stored elements,
+
+00:30:51.930 --> 00:30:54.160
+this avoids having to repeat
+
+00:30:54.160 --> 00:30:55.944
+the metaprogramming that finds
+
+00:30:55.944 --> 00:30:57.668
+the element types. OK.
+
+00:30:57.670 --> 00:31:00.374
+_Elem1 and _Elem2 aren't top level const here.
+
+00:31:00.380 --> 00:31:00.594
+OK,
+
+00:31:00.594 --> 00:31:02.092
+this is talking about how we've already
+
+00:31:02.092 --> 00:31:03.559
+handled the top level constness,
+
+00:31:03.560 --> 00:31:06.297
+and this replaces the old stuff about…
+
+00:31:06.300 --> 00:31:08.420
+thing about just whether
+
+00:31:08.420 --> 00:31:10.010
+the predicate invocation
+
+00:31:10.010 --> 00:31:11.122
+is transparent, uh,
+
+00:31:11.122 --> 00:31:13.190
+and this was always kind of weird,
+
+00:31:13.190 --> 00:31:17.390
+so I'm glad to see that going away.
+
+00:31:17.390 --> 00:31:20.490
+OK, so this is handling
+
+00:31:20.490 --> 00:31:22.278
+equal_to, OK, so,
+
+00:31:24.900 --> 00:31:28.100
+with equal_to&lt;_Elem3&gt;.
+
+00:31:28.100 --> 00:31:30.179
+Yeah, that's the name, we need to
+
+00:31:30.179 --> 00:31:32.856
+make sure that both _Elem1 and _Elem2
+
+00:31:32.856 --> 00:31:35.896
+are convertible to _Elem3 without
+
+00:31:35.896 --> 00:31:37.720
+changing object representation.
+
+00:31:37.720 --> 00:31:41.458
+We use _Iter_copy_cat for this task.
+
+00:31:41.460 --> 00:31:44.040
+And _Elem3 can be safely
+
+00:31:44.040 --> 00:31:46.104
+memcmp'd with itself.
+
+00:31:49.040 --> 00:31:50.352
+OK, that makes sense
+
+00:31:50.352 --> 00:31:51.992
+because we're, on input,
+
+00:31:52.000 --> 00:31:55.480
+we're converting _Elem1 and _Elem2 each to _Elem3.
+
+00:31:55.480 --> 00:31:57.772
+So that needs to not change object
+
+00:31:57.772 --> 00:31:59.613
+representation, and then within equal_to,
+
+00:31:59.613 --> 00:32:01.636
+that comparison, we need to see,
+
+00:32:01.640 --> 00:32:04.702
+hey, can we use memcmp for that, so
+
+00:32:04.702 --> 00:32:08.134
+template on class _Elem1, _Elem2, _Elem3,
+
+00:32:08.134 --> 00:32:10.390
+_INLINE_VAR constexpr bool
+
+00:32:10.465 --> 00:32:15.650
+_Can_memcmp_elements_with_pred for 1, 2, and
+
+00:32:15.650 --> 00:32:17.768
+if the predicate type happens to
+
+00:32:17.768 --> 00:32:19.929
+be exactly equal_to&lt;_Elem3&gt;,
+
+00:32:23.260 --> 00:32:25.474
+and I was just thinking, ohh, but what if
+
+00:32:25.474 --> 00:32:27.768
+_Elem3 is void, and we've got uh,
+
+00:32:27.768 --> 00:32:29.208
+specialization down here handling that,
+
+00:32:29.210 --> 00:32:30.806
+so here we know _Elem3 is not void.
+
+00:32:32.930 --> 00:32:35.520
+So we're going to answer,
+
+00:32:35.520 --> 00:32:37.208
+or ask three questions.
+
+00:32:37.208 --> 00:32:40.579
+It looks ugly because of clang-format.
+
+00:32:40.580 --> 00:32:44.430
+First, we ask, uh, the _Iter_copy_cat,
+
+00:32:44.430 --> 00:32:46.768
+if we were going to copy
+
+00:32:46.768 --> 00:32:49.646
+from _Elem1* to _Elem3*,
+
+00:32:49.650 --> 00:32:51.170
+we're just forming pointers,
+
+00:32:51.170 --> 00:32:53.358
+even though, we're forming imaginary pointers,
+
+00:32:53.358 --> 00:32:55.710
+these aren't actually being passed to us.
+
+00:32:55.710 --> 00:32:58.790
+If that is _Trivially_constructible,
+
+00:33:00.820 --> 00:33:02.912
+that says without changing
+
+00:33:02.912 --> 00:33:03.958
+object representation,
+
+00:33:03.960 --> 00:33:06.750
+I don't know if I believe this because we
+
+00:33:06.750 --> 00:33:11.080
+also want them to be the same size.
+
+00:33:11.080 --> 00:33:13.384
+I need to go look this up, because
+
+00:33:13.384 --> 00:33:15.480
+something like, say unsigned char
+
+00:33:15.480 --> 00:33:18.020
+to unsigned short.
+
+00:33:18.020 --> 00:33:19.904
+That's not, that's trivial as far
+
+00:33:19.904 --> 00:33:21.840
+as the standard is concerned,
+
+00:33:21.840 --> 00:33:24.731
+but it's going to widen the elements
+
+00:33:24.731 --> 00:33:27.836
+by inserting, you know, extra zeros, so
+
+00:33:27.836 --> 00:33:30.412
+we can't, like, memcmp them in place.
+
+00:33:30.412 --> 00:33:33.060
+OK, so I'm gonna check that.
+
+00:33:33.060 --> 00:33:34.460
+Then I ask the same question for _Elem2*
+
+00:33:34.460 --> 00:33:35.936
+to _Elem3*,
+
+00:33:35.940 --> 00:33:38.020
+_Trivially_constructible,
+
+00:33:38.020 --> 00:33:41.210
+and can we memcmp elements
+
+00:33:41.210 --> 00:33:42.840
+_Elem3 to _Elem3.
+
+00:33:42.840 --> 00:33:46.360
+This ignores top level CV.
+
+00:33:46.360 --> 00:33:48.570
+OK.
+
+00:33:48.570 --> 00:33:50.150
+It's interesting that it's ignoring
+
+00:33:50.150 --> 00:33:51.098
+top level volatility.
+
+00:33:53.150 --> 00:33:53.550
+OK.
+
+00:33:57.450 --> 00:33:59.228
+OK I was gonna check _Trivially_constructible,
+
+00:33:59.230 --> 00:34:00.730
+so that's in the _Iter_copy_cat,
+
+00:34:00.730 --> 00:34:03.831
+we're on line 4564, see if we can
+
+00:34:03.831 --> 00:34:06.450
+find that, _Trivially_constructible.
+
+00:34:08.780 --> 00:34:11.356
+OK, this asks are you _Pointer_address_convertible
+
+00:34:11.356 --> 00:34:13.929
+and are you is_trivially_constructible_v.
+
+00:34:13.930 --> 00:34:16.378
+This is the bit from the core language.
+
+00:34:16.380 --> 00:34:18.221
+Is this the thing that's going
+
+00:34:18.221 --> 00:34:20.076
+to require them to be the same size.
+
+00:34:20.080 --> 00:34:23.184
+I'm a little nervous that we are sort
+
+00:34:23.184 --> 00:34:25.528
+of introducing new concepts – [laughs] there I go,
+
+00:34:25.528 --> 00:34:28.180
+saying concepts – new ideas,
+
+00:34:28.180 --> 00:34:31.600
+that do not map to the standard type traits.
+
+00:34:31.600 --> 00:34:33.240
+When I see _Trivially_constructible,
+
+00:34:33.240 --> 00:34:36.282
+I'm generally assuming that we're referring
+
+00:34:36.282 --> 00:34:40.599
+to like std::is_trivially_constructible_v.
+
+00:34:40.600 --> 00:34:44.256
+It begins to be worrisome when we
+
+00:34:44.256 --> 00:34:46.719
+start introducing extra conventions,
+
+00:34:46.720 --> 00:34:48.860
+especially attached to existing terminology.
+
+00:34:48.860 --> 00:34:50.490
+We've… we've already had
+
+00:34:50.490 --> 00:34:51.794
+issues in the STL,
+
+00:34:51.800 --> 00:34:53.336
+they haven't really caused bugs yet,
+
+00:34:53.340 --> 00:34:54.534
+but we just have to
+
+00:34:54.534 --> 00:34:55.520
+be real careful about it,
+
+00:34:55.520 --> 00:34:58.516
+where we have type traits that are
+
+00:34:58.520 --> 00:35:00.800
+sensitive to things like top level
+
+00:35:00.800 --> 00:35:02.820
+CV qualifiers, where the standard
+
+00:35:02.820 --> 00:35:04.920
+primary type categories are not,
+
+00:35:04.920 --> 00:35:06.222
+and we haven't really done a
+
+00:35:06.222 --> 00:35:07.469
+good rigorous job of documenting
+
+00:35:07.469 --> 00:35:09.099
+exactly which things care about
+
+00:35:09.100 --> 00:35:11.128
+top level CVs, and which don't.
+
+00:35:11.130 --> 00:35:11.550
+Uhm,
+
+00:35:11.550 --> 00:35:14.910
+that's like one layer of issues,
+
+00:35:14.910 --> 00:35:18.844
+that we've successfully handled so far,
+
+00:35:18.850 --> 00:35:20.296
+maybe we'll need to do something
+
+00:35:20.296 --> 00:35:21.650
+about that in the future,
+
+00:35:21.650 --> 00:35:23.708
+but this is like one step
+
+00:35:23.708 --> 00:35:24.737
+beyond CV qualifiers.
+
+00:35:24.740 --> 00:35:26.116
+So let me let me check this
+
+00:35:26.120 --> 00:35:27.011
+_Pointer_address_convertible.
+
+00:35:27.011 --> 00:35:28.793
+I'm pretty sure this is the one
+
+00:35:28.793 --> 00:35:30.470
+that requires the same size.
+
+00:35:30.470 --> 00:35:31.950
+Oh, here we go,
+
+00:35:31.950 --> 00:35:33.295
+here's the _Trivially_constructible that's
+
+00:35:33.295 --> 00:35:35.130
+saying same size and compatible.
+
+00:35:42.890 --> 00:35:45.176
+This is _Trivial_cat, _Trivially_constructible,
+
+00:35:45.176 --> 00:35:47.460
+_Is_pointer_address_convertible.
+
+00:35:58.920 --> 00:36:00.695
+This is when you're just
+
+00:36:00.695 --> 00:36:02.470
+pointers to _Source and _Dest.
+
+00:36:02.470 --> 00:36:05.459
+Oh if the things themselves are
+
+00:36:05.460 --> 00:36:06.348
+pointers, then we know,
+
+00:36:06.348 --> 00:36:07.680
+of course, they're the same size,
+
+00:36:07.680 --> 00:36:09.865
+but if they're not necessarily
+
+00:36:09.865 --> 00:36:11.176
+both pointers here,
+
+00:36:11.180 --> 00:36:12.705
+then that's when we require
+
+00:36:12.705 --> 00:36:14.620
+them to be the same size.
+
+00:36:14.620 --> 00:36:15.652
+Yeah, this, uh,
+
+00:36:15.652 --> 00:36:18.330
+I'm more nervous about this,
+
+00:36:21.480 --> 00:36:23.415
+it does mean that the usage below is fine,
+
+00:36:23.420 --> 00:36:24.584
+uh, which is why I was
+
+00:36:24.584 --> 00:36:25.360
+originally looking at this.
+
+00:36:25.360 --> 00:36:27.000
+We were on 4564 I think.
+
+00:36:27.000 --> 00:36:30.370
+Yeah, we were around here.
+
+00:36:30.370 --> 00:36:31.966
+It is nested. That's the thing
+
+00:36:31.966 --> 00:36:33.419
+that makes it kind of OK,
+
+00:36:33.420 --> 00:36:35.976
+it's nested within _Iter_copy_cat.
+
+00:36:40.240 --> 00:36:43.124
+But now that I'm looking at this,
+
+00:36:43.130 --> 00:36:44.252
+the second time,
+
+00:36:44.252 --> 00:36:45.374
+I'm increasingly uncomfortable
+
+00:36:45.374 --> 00:36:48.088
+with the fact that we just see
+
+00:36:48.088 --> 00:36:49.249
+_Trivially_constructible here,
+
+00:36:49.250 --> 00:36:52.094
+and it expands to something more
+
+00:36:52.094 --> 00:36:54.652
+precise and more restrictive than
+
+00:36:54.652 --> 00:36:56.638
+just trivial constructibility.
+
+00:36:59.810 --> 00:37:01.194
+I'm going to add a comment about this
+
+00:37:01.194 --> 00:37:02.547
+because it's really a comment about naming.
+
+00:37:02.550 --> 00:37:05.250
+It could be addressed by introducing
+
+00:37:05.250 --> 00:37:08.085
+either different names or more clear names.
+
+00:37:08.090 --> 00:37:12.050
+Like one of the… sort of the
+
+00:37:12.050 --> 00:37:14.462
+only thing that makes this whole
+
+00:37:14.462 --> 00:37:16.052
+metaprogramming thing bearable, is that
+
+00:37:16.052 --> 00:37:17.858
+our names are generally pretty precise.
+
+00:37:17.860 --> 00:37:22.490
+When I see something like,
+
+00:37:22.490 --> 00:37:24.536
+you know, _Iterators_are_contiguous.
+
+00:37:24.540 --> 00:37:26.238
+As long as we've you know, carefully
+
+00:37:26.238 --> 00:37:28.086
+verified the definition of this thing,
+
+00:37:28.090 --> 00:37:30.235
+I don't need to worry too much about
+
+00:37:30.235 --> 00:37:32.545
+the actual usage because the type trait,
+
+00:37:32.550 --> 00:37:34.128
+you know, says what it does.
+
+00:37:34.130 --> 00:37:36.205
+But when something says _Trivially_constructible
+
+00:37:36.205 --> 00:37:38.280
+and it's doing something different,
+
+00:37:38.344 --> 00:37:40.074
+then it's an opportunity
+
+00:37:40.074 --> 00:37:42.454
+to get confused, either in cases where
+
+00:37:42.454 --> 00:37:44.512
+we really do want the more general
+
+00:37:44.512 --> 00:37:46.686
+form given to us by the standard and
+
+00:37:46.686 --> 00:37:48.197
+we're using something for convenience
+
+00:37:48.197 --> 00:37:50.165
+that happens to be more restrictive,
+
+00:37:50.170 --> 00:37:52.726
+or vice versa, which I think is more likely.
+
+00:37:52.730 --> 00:37:56.496
+We want this more restrictive form that
+
+00:37:56.500 --> 00:37:58.796
+has tests like same size and compatible,
+
+00:37:58.800 --> 00:38:00.912
+but if we accidentally never go
+
+00:38:00.912 --> 00:38:02.598
+through this centralized machinery,
+
+00:38:02.598 --> 00:38:06.410
+we start getting the wrong answer.
+
+00:38:06.410 --> 00:38:08.730
+And the usage would look like, what if
+
+00:38:08.730 --> 00:38:11.196
+on like 4564 if we accidentally
+
+00:38:11.196 --> 00:38:12.408
+didn't say, like,
+
+00:38:12.410 --> 00:38:13.978
+_Iter_copy_cat::_Trivially_constructible, if we just
+
+00:38:13.978 --> 00:38:15.678
+said, like, is_trivially_constructible_v,
+
+00:38:15.680 --> 00:38:16.640
+that would be super bad.
+
+00:38:19.690 --> 00:38:22.036
+And if the name were anything different,
+
+00:38:22.040 --> 00:38:23.924
+that didn't mirror the standard
+
+00:38:23.924 --> 00:38:26.226
+wording so much, I wouldn't be nervous,
+
+00:38:26.226 --> 00:38:28.670
+because when I see some new name,
+
+00:38:28.670 --> 00:38:30.924
+either a new arrangement of words or
+
+00:38:30.924 --> 00:38:32.430
+ideally different words entirely,
+
+00:38:32.430 --> 00:38:35.854
+then I don't come to it with those
+
+00:38:35.854 --> 00:38:37.314
+assumptions from reading the standard,
+
+00:38:37.314 --> 00:38:39.201
+like when I see, what was it,
+
+00:38:39.201 --> 00:38:40.369
+_Same_size_and_compatible,
+
+00:38:40.370 --> 00:38:42.446
+yeah, this does not map to
+
+00:38:42.446 --> 00:38:44.170
+anything existing in the STL,
+
+00:38:44.170 --> 00:38:46.530
+so if I see this, A. it tells me what it does,
+
+00:38:46.530 --> 00:38:47.979
+but B. I know I need to look
+
+00:38:47.979 --> 00:38:49.069
+up the definition to check,
+
+00:38:49.070 --> 00:38:49.960
+OK, what does it mean
+
+00:38:49.960 --> 00:38:52.420
+"compatible". It's that in fact,
+
+00:38:52.420 --> 00:38:53.308
+that _Trivially_constructible
+
+00:38:53.308 --> 00:38:54.788
+is using the same words,
+
+00:38:54.790 --> 00:38:56.728
+but then is adding extra things.
+
+00:38:56.730 --> 00:38:58.123
+I don't know if I necessarily want
+
+00:38:58.123 --> 00:39:00.057
+you know like _Same_size_and_compatible_trivially_constructible
+
+00:39:00.057 --> 00:39:03.630
+or something, but,
+
+00:39:03.630 --> 00:39:05.430
+this, I think, I'm concerned
+
+00:39:05.430 --> 00:39:07.609
+about it so I'm gonna comment.
+
+00:39:07.610 --> 00:39:08.930
+I think it's these three that
+
+00:39:08.930 --> 00:39:11.880
+I care about now.
+
+00:39:11.880 --> 00:39:13.644
+Here, oh, I don't wanna – I don't
+
+00:39:13.644 --> 00:39:14.630
+wanna get that.
+
+00:39:16.720 --> 00:39:18.616
+I guess it gives me no choice because
+
+00:39:18.616 --> 00:39:20.470
+this is what I would get in-line.
+
+00:39:20.470 --> 00:39:22.282
+I'll just comment on this
+
+00:39:22.282 --> 00:39:24.480
+one line and I'll say that
+
+00:39:24.480 --> 00:39:26.440
+all of them are affected. OK.
+
+00:39:30.450 --> 00:39:34.970
+After reading
+
+00:39:38.660 --> 00:39:42.830
+usage of these.
+
+00:39:42.830 --> 00:39:48.440
+[under breath] what should I call them? Constants?
+
+00:39:48.440 --> 00:39:51.602
+Let's just say, after reading
+
+00:39:51.602 --> 00:39:54.990
+usage far below these definitions.
+
+00:39:54.990 --> 00:40:00.330
+I'm increasingly uncomfortable with,
+
+00:40:00.330 --> 00:40:03.042
+and let's be explicit about exactly
+
+00:40:03.042 --> 00:40:05.830
+which ones, _Trivially_constructible,
+
+00:40:08.970 --> 00:40:10.090
+_Trivially_assignable,
+
+00:40:16.460 --> 00:40:17.350
+and,
+
+00:40:19.580 --> 00:40:25.160
+_Trivially_constructible_and_assignable, using
+
+00:40:27.630 --> 00:40:33.138
+Standard-terminology words, as seen in
+
+00:40:35.750 --> 00:40:37.800
+is_trivially_constructible_v etc,
+
+00:40:40.090 --> 00:40:44.078
+but adding additional conditions,
+
+00:40:47.420 --> 00:40:51.148
+specifically _Same_size_and_compatible.
+
+00:40:56.900 --> 00:41:02.985
+In all of these layers of
+
+00:41:02.985 --> 00:41:04.699
+complicated metaprogramming,
+
+00:41:04.700 --> 00:41:06.872
+clear naming
+
+00:41:06.872 --> 00:41:10.862
+is the only thing
+
+00:41:10.862 --> 00:41:16.060
+preventing massive confusion.
+
+00:41:19.930 --> 00:41:24.210
+I believe we should choose
+
+00:41:24.210 --> 00:41:28.958
+different names for these
+
+00:41:28.960 --> 00:41:33.674
+properties. So we…
+
+00:41:33.674 --> 00:41:38.566
+to avoid any confusion,
+
+00:41:38.566 --> 00:41:41.462
+[under breath] conversion, confusion,
+
+00:41:41.462 --> 00:41:44.240
+confusion between
+
+00:41:48.630 --> 00:41:50.838
+is_trivially_constructible_v
+
+00:41:54.470 --> 00:41:56.378
+and _Trivially_constructible, etc.
+
+00:42:00.430 --> 00:42:06.198
+They don't need to be
+
+00:42:06.198 --> 00:42:10.560
+super duper verbose, for example,
+
+00:42:14.910 --> 00:42:17.218
+Make a example here…
+
+00:42:17.218 --> 00:42:31.242
+_Same_size_and_compatible_and_trivially_constructible
+
+00:42:31.242 --> 00:42:37.098
+is probably too verbose, but
+
+00:42:37.100 --> 00:42:41.060
+introducing a different word
+
+00:42:41.060 --> 00:42:45.220
+somewhere, somehow could really help.
+
+00:42:45.220 --> 00:42:46.548
+No specific ideas yet.
+
+00:42:50.290 --> 00:42:51.830
+Hopefully this makes sense.
+
+00:42:51.830 --> 00:42:53.972
+After reading usage far below
+
+00:42:53.972 --> 00:42:55.436
+these definitions, I'm increasingly
+
+00:42:55.436 --> 00:42:56.928
+uncomfortable with _Trivially_constructible.
+
+00:42:59.180 --> 00:43:01.035
+Let me say – let me say the
+
+00:43:01.035 --> 00:43:02.760
+naming, 'cause the logic is fine.
+
+00:43:02.760 --> 00:43:05.880
+The naming of,
+
+00:43:05.880 --> 00:43:09.968
+using standard terminology words,
+
+00:43:09.970 --> 00:43:11.979
+At the – I'll just note it,
+
+00:43:11.980 --> 00:43:15.000
+I'll just note it at the end.
+
+00:43:17.710 --> 00:43:21.030
+The logic is fine, this is
+
+00:43:21.030 --> 00:43:24.330
+purely a naming concern. OK.
+
+00:43:27.470 --> 00:43:28.634
+After reading usage far
+
+00:43:28.634 --> 00:43:29.507
+below these definitions,
+
+00:43:29.510 --> 00:43:30.602
+I'm increasingly uncomfortable with
+
+00:43:30.602 --> 00:43:31.967
+the naming of _Trivially_constructible,
+
+00:43:31.970 --> 00:43:33.394
+_Trivially_assignable, and
+
+00:43:33.394 --> 00:43:34.818
+_Trivially_constructible_and_assignable using
+
+00:43:34.818 --> 00:43:36.314
+standard terminology words as seen
+
+00:43:36.314 --> 00:43:37.306
+in is_trivially_constructible_v,
+
+00:43:37.310 --> 00:43:39.265
+etc., by adding additional conditions
+
+00:43:39.265 --> 00:43:41.220
+specifically _Same_size_and_compatible,
+
+00:43:41.220 --> 00:43:42.555
+in all these layers of
+
+00:43:42.555 --> 00:43:43.089
+complicated metaprogramming,
+
+00:43:43.090 --> 00:43:44.740
+clear naming is the only thing
+
+00:43:44.740 --> 00:43:45.565
+preventing massive confusion.
+
+00:43:45.570 --> 00:43:47.058
+I believe we should choose different
+
+00:43:47.058 --> 00:43:48.734
+names for these properties to avoid any
+
+00:43:48.734 --> 00:43:49.799
+confusion between is_trivially_constructible_v
+
+00:43:49.799 --> 00:43:51.369
+and _Trivially_constructible, etc.
+
+00:43:51.370 --> 00:43:52.978
+They don't need to be super duper verbose,
+
+00:43:52.980 --> 00:43:53.556
+for example,
+
+00:43:53.556 --> 00:43:55.500
+_Same_size_and_compatible_and_trivially_constructible
+
+00:43:54.996 --> 00:43:56.060
+is probably too
+
+00:43:56.060 --> 00:43:57.866
+verbose, but introducing a different word
+
+00:43:57.866 --> 00:43:59.340
+somewhere, somehow, could really help.
+
+00:43:59.340 --> 00:44:00.220
+No specific ideas yet.
+
+00:44:00.220 --> 00:44:01.100
+The logic is fine,
+
+00:44:01.100 --> 00:44:03.038
+this is purely a naming concern.
+
+00:44:03.040 --> 00:44:05.284
+OK, but we've got the
+
+00:44:05.284 --> 00:44:06.780
+_Same_size_and_compatible condition,
+
+00:44:06.780 --> 00:44:11.048
+which excludes bool shenanigans.
+
+00:44:11.050 --> 00:44:13.017
+So we don't need to worry about
+
+00:44:13.017 --> 00:44:14.789
+unsigned char and unsigned short
+
+00:44:14.790 --> 00:44:17.240
+somehow activating memcmp,
+
+00:44:17.240 --> 00:44:18.976
+which would be bad.
+
+00:44:18.976 --> 00:44:21.338
+OK, so let's resume 4564.
+
+00:44:21.338 --> 00:44:23.716
+OK, so this is good,
+
+00:44:23.716 --> 00:44:25.138
+this is generalized.
+
+00:44:25.140 --> 00:44:27.740
+Ah, OK.
+
+00:44:27.740 --> 00:44:28.985
+Now,
+
+00:44:30.230 --> 00:44:32.170
+If our predicate happens to
+
+00:44:32.170 --> 00:44:33.722
+be equal_to&lt;&gt;,
+
+00:44:33.730 --> 00:44:35.500
+then we know we're just going
+
+00:44:35.500 --> 00:44:37.267
+to directly compare _Elem1, _Elem2
+
+00:44:37.267 --> 00:44:38.833
+so we can immediately ask
+
+00:44:38.833 --> 00:44:39.930
+_Can_memcmp_elements.
+
+00:44:43.100 --> 00:44:45.176
+This does not remove any CVS.
+
+00:44:49.240 --> 00:44:50.380
+Do we do that above?
+
+00:44:53.050 --> 00:44:55.970
+_Equal_memcmp_is_safe_helper.
+
+00:44:55.970 --> 00:44:59.435
+OK, this calls it with _Iter_value_t,
+
+00:44:59.440 --> 00:45:02.107
+and the iterator value type is
+
+00:45:02.107 --> 00:45:04.738
+not gonna have any CV qualifiers.
+
+00:45:04.740 --> 00:45:06.900
+OK, so, we don't need
+
+00:45:06.900 --> 00:45:08.830
+to worry about that here.
+
+00:45:11.640 --> 00:45:15.088
+In fact, this is sort of… No, no,
+
+00:45:17.830 --> 00:45:19.780
+somebody very strange could say
+
+00:45:19.780 --> 00:45:22.129
+equal_to&lt;const int&gt;, so removing
+
+00:45:22.129 --> 00:45:25.940
+CV on the _Elem3 is good here. OK.
+
+00:45:29.450 --> 00:45:31.352
+OK, so no reason to worry
+
+00:45:31.352 --> 00:45:33.082
+about CV qualifiers there. Next,
+
+00:45:33.082 --> 00:45:36.070
+ranges::equal_to is also transparent,
+
+00:45:36.070 --> 00:45:38.422
+so if we're in concepts mode and
+
+00:45:38.422 --> 00:45:40.240
+our comparator is ranges::equal_to,
+
+00:45:40.240 --> 00:45:43.990
+then just _Can_memcmp_elements. That's good.
+
+00:45:43.990 --> 00:45:47.945
+Ah OK, finally, _Equal_memcmp_is_safe.
+
+00:45:47.950 --> 00:45:49.399
+We've got a helper.
+
+00:45:49.399 --> 00:45:52.156
+It's being refactored a little.
+
+00:45:52.156 --> 00:45:54.172
+It reports whether we can activate
+
+00:45:54.172 --> 00:45:55.658
+the memcmp optimization for
+
+00:45:55.658 --> 00:45:57.346
+arbitrary iterators and predicates.
+
+00:45:57.350 --> 00:45:59.078
+It ignores top-level constness on
+
+00:45:59.078 --> 00:46:00.980
+the iterators and on the elements.
+
+00:46:00.980 --> 00:46:04.634
+So, _INLINE_VAR constexpr bool _Equal_memcmp_is_safe_helper,
+
+00:46:04.640 --> 00:46:08.679
+we first answer are the iterators contiguous.
+
+00:46:08.680 --> 00:46:10.840
+They better be if we're gonna call memcmp.
+
+00:46:10.840 --> 00:46:13.480
+_Iter1 had better not be
+
+00:46:13.480 --> 00:46:14.524
+an iterator to volatile.
+
+00:46:14.524 --> 00:46:15.916
+Same for _Iter2,
+
+00:46:15.920 --> 00:46:17.702
+it should not be iterator to
+
+00:46:17.702 --> 00:46:19.897
+volatile and we need to be able to
+
+00:46:19.897 --> 00:46:21.580
+memcmp elements with pred, 
+
+00:46:21.580 --> 00:46:24.796
+_Iter_value_t&lt;_Iter1&gt;, the _Iter_value_t&lt;_Iter2&gt;,
+
+00:46:24.796 --> 00:46:27.520
+and the predicate.
+
+00:46:27.520 --> 00:46:27.810
+OK.
+
+00:46:32.320 --> 00:46:37.740
+OK, onward to lexicographical compare.
+
+00:46:37.740 --> 00:46:40.797
+Here we're placing this logic,
+
+00:46:40.797 --> 00:46:42.750
+and I'm sort of skipping over the old logic
+
+00:46:42.804 --> 00:46:44.707
+cause I'm pretty familiar with it,
+
+00:46:44.707 --> 00:46:46.669
+I should be referring to
+
+00:46:46.669 --> 00:46:48.773
+it a little bit more,
+
+00:46:48.773 --> 00:46:51.437
+but I've reviewed this in the past,
+
+00:46:51.440 --> 00:46:53.717
+so when I've seen missing things here,
+
+00:46:53.720 --> 00:46:56.560
+it just sort of inherently jumps out to me.
+
+00:46:56.560 --> 00:46:59.000
+template&lt;_Elem1, _Elem2&gt;
+
+00:46:59.000 --> 00:47:03.570
+_INLINE_VAR constexpr bool _Lex_compare_memcmp_classify_elements.
+
+00:47:03.570 --> 00:47:08.690
+OK, there was no preamble comment to this.
+
+00:47:08.690 --> 00:47:10.328
+It's probably fine.
+
+00:47:10.328 --> 00:47:13.560
+I think we commented below. Do we?
+
+00:47:16.220 --> 00:47:17.576
+Yeah, we don't. We just go
+
+00:47:17.576 --> 00:47:18.480
+straight into _Lex_compare.
+
+00:47:24.720 --> 00:47:26.012
+On the other hand,
+
+00:47:26.012 --> 00:47:27.304
+that's sort of preexisting.
+
+00:47:27.310 --> 00:47:30.388
+We had comments on some of these
+
+00:47:30.390 --> 00:47:31.310
+definitions, OK, I'm not,
+
+00:47:31.310 --> 00:47:33.409
+I'm not gonna ask for a comment there.
+
+00:47:33.410 --> 00:47:36.146
+Maybe in the future we should add one.
+
+00:47:36.146 --> 00:47:37.108
+template&lt;_Elem1, _Elem2&gt;
+
+00:47:37.108 --> 00:47:39.316
+_INLINE_VAR constexpr bool _Lex_compare_memcmp_classify_elements,
+
+00:47:39.316 --> 00:47:41.326
+is_conjunction_v,
+
+00:47:41.330 --> 00:47:43.290
+all these things need to be true.
+
+00:47:43.290 --> 00:47:44.016
+_Elem1, and because
+
+00:47:44.016 --> 00:47:45.226
+we're going to _Lex_compare,
+
+00:47:45.230 --> 00:47:47.726
+they need to be byte-sized.
+
+00:47:47.730 --> 00:47:49.990
+_Elem1 needs to be a character or a bool,
+
+00:47:49.990 --> 00:47:51.268
+_Elem2 needs to be a character or a bool,
+
+00:47:51.270 --> 00:47:53.910
+_Elem1 needs to be unsigned,
+
+00:47:53.910 --> 00:47:56.400
+_Elem2 needs to be unsigned.
+
+00:47:56.400 --> 00:47:57.355
+OK, and this actually does
+
+00:47:57.355 --> 00:47:58.660
+map to what we had before,
+
+00:47:58.660 --> 00:47:59.960
+except now it permits bool.
+
+00:48:04.940 --> 00:48:05.954
+Is that reasonable?
+
+00:48:05.954 --> 00:48:08.700
+Can you do bool less than unsigned char?
+
+00:48:08.700 --> 00:48:11.140
+Yes you can, because the bool will widen.
+
+00:48:11.140 --> 00:48:12.748
+Actually, we promote it all the way to int,
+
+00:48:12.750 --> 00:48:15.095
+but you can definitely less than that.
+
+00:48:15.100 --> 00:48:17.236
+bool less than bool, that works.
+
+00:48:17.240 --> 00:48:20.273
+In fact we recently saw usage of that with
+
+00:48:20.273 --> 00:48:22.328
+less than equal or greater than equal.
+
+00:48:25.590 --> 00:48:29.852
+And, enums. Those I think would
+
+00:48:29.852 --> 00:48:32.150
+not be reported by _Is_character…
+
+00:48:32.150 --> 00:48:34.838
+It's a good question –
+
+00:48:37.070 --> 00:48:38.580
+_Is_character_or_bool.
+
+00:48:38.580 --> 00:48:41.608
+Let's – let's check that.
+
+00:48:41.610 --> 00:48:42.898
+I should have just been
+
+00:48:42.898 --> 00:48:45.950
+reviewing this in VS Code.
+
+00:48:45.950 --> 00:48:48.910
+Let's see if we can get this… search.
+
+00:48:53.230 --> 00:48:54.390
+OK, so this is elsewhere, in
+
+00:48:54.390 --> 00:48:59.328
+&lt;xutility&gt; 4329. Here we go.
+
+00:48:59.328 --> 00:49:00.758
+This reports true for bool,
+
+00:49:00.760 --> 00:49:03.679
+of course. It reports true for char,
+
+00:49:03.679 --> 00:49:06.264
+signed char, unsigned char, and char8_t.
+
+00:49:06.264 --> 00:49:09.220
+It does not report true for anything else.
+
+00:49:09.220 --> 00:49:10.492
+And here's an example of what
+
+00:49:10.492 --> 00:49:13.930
+I was talking about – it
+
+00:49:13.930 --> 00:49:15.490
+does not strip top level
+
+00:49:15.490 --> 00:49:16.672
+const qualifiers.
+
+00:49:16.672 --> 00:49:19.890
+It will reort true only for exactly bool, char,
+
+00:49:19.890 --> 00:49:22.746
+signed char, unsigned char, or char8_t.
+
+00:49:22.750 --> 00:49:25.438
+Because that's interesting, we do not
+
+00:49:25.440 --> 00:49:28.684
+check enums, ohh, but enums are not
+
+00:49:28.684 --> 00:49:31.070
+less than comparable by default, I think.
+
+00:49:31.070 --> 00:49:33.016
+Yeah, oh, well enum classes are not,
+
+00:49:33.020 --> 00:49:36.205
+I think enums get promoted.
+
+00:49:36.210 --> 00:49:37.749
+I don't… I don't know the enum rules
+
+00:49:37.749 --> 00:49:39.107
+well enough without looking them up.
+
+00:49:39.110 --> 00:49:41.078
+I don't use them that often,
+
+00:49:41.078 --> 00:49:43.348
+it's certainly not a regression.
+
+00:49:43.350 --> 00:49:45.548
+We didn't try to handle enums before.
+
+00:49:49.800 --> 00:49:52.770
+is_unsigned will report things correctly,
+
+00:49:52.770 --> 00:49:53.850
+at least for plain enums,
+
+00:49:53.850 --> 00:49:55.860
+I believe. It asks, what if
+
+00:49:55.860 --> 00:49:58.810
+you had negative one?
+
+00:49:58.810 --> 00:50:00.665
+I know for enums you do need
+
+00:50:00.665 --> 00:50:02.090
+to provide bitmask operators.
+
+00:50:02.090 --> 00:50:04.490
+I think for enum classes you
+
+00:50:04.490 --> 00:50:05.822
+don't get less than, you
+
+00:50:05.822 --> 00:50:06.890
+actually need to provide it.
+
+00:50:09.090 --> 00:50:10.794
+I think this is fine. I'm not gonna
+
+00:50:10.794 --> 00:50:12.740
+worry too much about enums here.
+
+00:50:12.740 --> 00:50:14.777
+In theory we could extend the optimization,
+
+00:50:14.780 --> 00:50:16.860
+but we would need to know that the
+
+00:50:16.860 --> 00:50:18.360
+comparison operator is not overloaded.
+
+00:50:18.360 --> 00:50:19.670
+The nice thing about characters
+
+00:50:19.670 --> 00:50:21.400
+or bools is they're not user defined,
+
+00:50:21.400 --> 00:50:22.912
+so there's no way there can be
+
+00:50:22.912 --> 00:50:23.560
+weird overloaded operators.
+
+00:50:23.560 --> 00:50:25.220
+I think that's probably what's
+
+00:50:25.220 --> 00:50:27.200
+preventing us from doing anything here.
+
+00:50:27.200 --> 00:50:29.180
+When we're copying, we know,
+
+00:50:29.180 --> 00:50:30.530
+hey, you've got an enum,
+
+00:50:30.530 --> 00:50:31.835
+there's no way you could
+
+00:50:31.835 --> 00:50:33.140
+overload a copy assignment operator,
+
+00:50:33.140 --> 00:50:35.597
+but for comparisons I think you could
+
+00:50:35.597 --> 00:50:38.667
+have a user defined operator&lt;.
+
+00:50:38.670 --> 00:50:41.730
+OK, so then if we're bytes,
+
+00:50:41.730 --> 00:50:44.286
+OK, this is, uh, this is a conformance bug.
+
+00:50:44.290 --> 00:50:46.180
+Oh, no, sorry! It's not!
+
+00:50:46.180 --> 00:50:48.220
+[laughs] It's __cpp_lib_byte.
+
+00:50:48.220 --> 00:50:50.260
+The classic gotcha that we
+
+00:50:50.260 --> 00:50:51.790
+have is saying template&lt;&gt;
+
+00:50:51.849 --> 00:50:53.169
+_INLINE_VAR is incorrect
+
+00:50:53.170 --> 00:50:54.815
+if you're in C++14 mode.
+
+00:50:57.240 --> 00:50:59.245
+Because you, it's technically
+
+00:50:59.245 --> 00:51:00.849
+non-conformant to explicitly
+
+00:51:00.849 --> 00:51:02.519
+specialize the variable template,
+
+00:51:02.520 --> 00:51:05.288
+without inline.
+
+00:51:05.288 --> 00:51:06.860
+However, if you are inline,
+
+00:51:06.860 --> 00:51:09.883
+it's totally cool. This is OK,
+
+00:51:09.883 --> 00:51:12.740
+because __cpp_lib_byte implies C++17.
+
+00:51:12.740 --> 00:51:14.540
+What that actually means is
+
+00:51:14.540 --> 00:51:16.340
+this should be plain inline.
+
+00:51:16.340 --> 00:51:17.592
+I should actually check.
+
+00:51:17.592 --> 00:51:20.338
+I think we do have cases where, I think
+
+00:51:20.338 --> 00:51:22.600
+in fact it might be above, where
+
+00:51:22.600 --> 00:51:23.965
+when we know we're __cpp_lib_byte,
+
+00:51:23.970 --> 00:51:26.436
+we just say inline directly.
+
+00:51:26.440 --> 00:51:27.328
+Yeah, here it is.
+
+00:51:30.700 --> 00:51:33.724
+_Can_memcmp, yeah, here's the [unintelligible]
+
+00:51:33.724 --> 00:51:36.501
+_Can_memcmp_elements because it's a
+
+00:51:36.501 --> 00:51:38.980
+C++14 available thing is _INLINE_VAR.
+
+00:51:38.980 --> 00:51:41.260
+When __cpp_lib_byte is defined,
+
+00:51:41.260 --> 00:51:44.276
+we are definitely in 17 or above mode.
+
+00:51:44.280 --> 00:51:47.136
+So we can say plain inline constexpr bool.
+
+00:51:47.140 --> 00:51:49.116
+We should follow the exact same pattern here.
+
+00:51:56.550 --> 00:51:57.796
+Let me just copy this whole thing.
+
+00:51:59.900 --> 00:52:01.454
+Actually I can – I can cite it.
+
+00:52:01.460 --> 00:52:03.860
+Um, four, no, that's right line.
+
+00:52:03.860 --> 00:52:07.878
+Left line 4513 in &lt;xutility&gt;
+
+00:52:07.880 --> 00:52:11.606
+Let's get this. OK, so stl, inc,
+
+00:52:11.610 --> 00:52:13.402
+I should add a little search
+
+00:52:13.402 --> 00:52:14.904
+engine that lets me type something
+
+00:52:14.904 --> 00:52:16.486
+like inc and then a file
+
+00:52:16.540 --> 00:52:18.094
+name and it will take me there.
+
+00:52:18.100 --> 00:52:19.580
+I should really do that.
+
+00:52:19.580 --> 00:52:22.400
+&lt;xutility&gt;.
+
+00:52:25.960 --> 00:52:27.190
+Yeah, we just need to
+
+00:52:27.190 --> 00:52:28.010
+autocomplete this part here.
+
+00:52:30.370 --> 00:52:31.918
+I said 4513.
+
+00:52:36.450 --> 00:52:40.518
+Down, scroll up. There it is.
+
+00:52:40.520 --> 00:52:42.940
+OK, hit Y for permalink.
+
+00:52:42.940 --> 00:52:46.156
+I want to, oh it's click and drag.
+
+00:52:46.160 --> 00:52:47.520
+Nope, no, it's shift click.
+
+00:52:47.520 --> 00:52:49.220
+Trying to remember which
+
+00:52:49.220 --> 00:52:50.620
+UI we're looking at.
+
+00:52:50.620 --> 00:52:53.490
+Excuse me, yeah, OK,
+
+00:52:53.490 --> 00:52:55.128
+this is what I wanna quote.
+
+00:52:55.130 --> 00:52:57.386
+It has to be permalink for the inline
+
+00:52:57.386 --> 00:52:59.189
+snippet to show in the comment.
+
+00:52:59.190 --> 00:53:02.600
+We don't need this anymore.
+
+00:53:02.600 --> 00:53:05.576
+OK, this is nitpick level
+
+00:53:05.580 --> 00:53:06.954
+now, it's not needed for correctness
+
+00:53:06.954 --> 00:53:08.310
+because it will expand to inline,
+
+00:53:08.310 --> 00:53:10.650
+but it does follow the existing
+
+00:53:10.650 --> 00:53:13.315
+convention. We were in the __cpp_lib_byte
+
+00:53:13.315 --> 00:53:16.570
+case for _Lex_compare … something or other.
+
+00:53:19.430 --> 00:53:22.446
+Yeah, here it is. #ifdef __cpp_lib_byte.
+
+00:53:24.500 --> 00:53:26.190
+No, I don't wanna comment
+
+00:53:26.190 --> 00:53:27.880
+on that whole thing, no.
+
+00:53:27.880 --> 00:53:30.058
+OK, maybe just this line? Will you cooperate?
+
+00:53:30.060 --> 00:53:30.848
+OK, here we go.
+
+00:53:33.920 --> 00:53:40.859
+Let me paste the thing, OK. Copy this, OK.
+
+00:53:40.860 --> 00:53:45.657
+As this is guarded by __cpp_lib_byte,
+
+00:53:45.660 --> 00:53:50.690
+we should say plain inline here, see:
+
+00:53:55.290 --> 00:53:58.140
+OK. #ifdef __cpp_lib_byte. As this
+
+00:53:58.140 --> 00:53:59.480
+is guarded by __cpp_lib_byte,
+
+00:53:59.480 --> 00:54:00.998
+we should say plain inline here,
+
+00:54:01.000 --> 00:54:02.540
+see: #ifdef __cpp_lib_byte
+
+00:54:02.540 --> 00:54:05.570
+allow memcmp'ing and so forth, OK.
+
+00:54:08.620 --> 00:54:11.020
+OK, so if we're being asked
+
+00:54:11.020 --> 00:54:12.951
+to compare byte versus byte,
+
+00:54:12.951 --> 00:54:15.366
+we will report true. OK, that's good.
+
+00:54:15.366 --> 00:54:17.178
+That's what we were doing before here,
+
+00:54:17.180 --> 00:54:21.060
+except we had to repeat byte three times. OK.
+
+00:54:24.040 --> 00:54:25.642
+And if we don't recognize the
+
+00:54:25.642 --> 00:54:27.458
+thing we report void for the _Pred,
+
+00:54:27.460 --> 00:54:28.916
+which is how we say, hey,
+
+00:54:28.916 --> 00:54:31.380
+you're not actually comparable.
+
+00:54:31.380 --> 00:54:33.780
+OK, Ohh wow this looks kind of terrible.
+
+00:54:33.780 --> 00:54:35.698
+Just 'cause it's so severely wrapped.
+
+00:54:35.700 --> 00:54:41.224
+OK, so we are specializing.
+
+00:54:41.224 --> 00:54:44.546
+_Lex_compare_memcmp_classify_pred.
+
+00:54:44.546 --> 00:54:46.086
+This is the primary template.
+
+00:54:46.090 --> 00:54:48.056
+So if we don't recognize it, it's void.
+
+00:54:48.056 --> 00:54:50.774
+But if we are specifically _Elem1,
+
+00:54:50.774 --> 00:54:53.798
+_Elem2, and less&lt;_Elem3&gt;,
+
+00:54:53.800 --> 00:54:55.610
+then we might be eligible.
+
+00:54:55.610 --> 00:54:58.670
+So we're gonna ask if
+
+00:54:58.670 --> 00:55:01.780
+comparing _Elem3's
+
+00:55:01.780 --> 00:55:03.490
+could be done with _Lex_compare,
+
+00:55:03.490 --> 00:55:04.630
+because that's the comparison
+
+00:55:04.630 --> 00:55:06.050
+that's actually gonna happen, then
+
+00:55:06.050 --> 00:55:08.014
+we need to make sure that going
+
+00:55:08.014 --> 00:55:09.974
+from _Elem1 to _Elem3, and _Elem2 to _Elem3,
+
+00:55:10.036 --> 00:55:11.620
+doesn't do weird conversions.
+
+00:55:11.620 --> 00:55:13.671
+So this uses the type traits we
+
+00:55:13.671 --> 00:55:15.844
+just asked about the naming,
+
+00:55:15.844 --> 00:55:17.656
+_Iter_copy_cat from an an imaginary _Elem1*
+
+00:55:17.660 --> 00:55:19.554
+to an _Elem3*,
+
+00:55:19.554 --> 00:55:20.700
+if that's trivial,
+
+00:55:20.700 --> 00:55:22.680
+meaning same size and compatible,
+
+00:55:22.680 --> 00:55:23.898
+and it's trivial.
+
+00:55:23.898 --> 00:55:26.334
+Then you're not gonna mess with
+
+00:55:26.334 --> 00:55:28.810
+the bit representation at all,
+
+00:55:28.810 --> 00:55:31.480
+and less'ing them is good.
+
+00:55:31.480 --> 00:55:33.552
+And, we don't need to worry about
+
+00:55:33.552 --> 00:55:34.786
+usual arithmetic conversions because
+
+00:55:34.786 --> 00:55:36.823
+they're both being coerced to _Elem3,
+
+00:55:36.830 --> 00:55:38.370
+so we don't need to worry about
+
+00:55:38.370 --> 00:55:40.965
+like an _Elem1 being wider or something
+
+00:55:40.965 --> 00:55:43.254
+and overpowering _Elem3.
+
+00:55:43.254 --> 00:55:45.510
+_Elem3 is always the destination,
+
+00:55:45.510 --> 00:55:47.802
+and similarly _Elem2 to _Elem3,
+
+00:55:47.802 --> 00:55:48.948
+_Trivially_constructible.
+
+00:55:48.950 --> 00:55:51.190
+OK, then return less&lt;int&gt;.
+
+00:55:51.190 --> 00:55:52.954
+This is, as we saw last time, will be
+
+00:55:52.954 --> 00:55:54.729
+used to compare the output of memcmp,
+
+00:55:54.730 --> 00:55:56.347
+so it always needs to be int.
+
+00:55:56.350 --> 00:55:58.726
+Otherwise just return void.
+
+00:55:58.726 --> 00:56:01.050
+OK, good.
+
+00:56:01.050 --> 00:56:03.170
+less&lt;&gt; is transparent,
+
+00:56:03.170 --> 00:56:04.574
+so you can,
+
+00:56:04.574 --> 00:56:06.329
+or we can, immediately skip
+
+00:56:06.329 --> 00:56:08.208
+any concern about that.
+
+00:56:08.210 --> 00:56:10.844
+We just directly ask. Hey is _Elem1 and _Elem2,
+
+00:56:10.844 --> 00:56:12.900
+are they _Lex_comparable?
+
+00:56:12.900 --> 00:56:13.900
+If so, return less&lt;int&gt;,
+
+00:56:13.900 --> 00:56:17.029
+otherwise void, OK.
+
+00:56:17.030 --> 00:56:19.466
+greater needs to reverse the sense,
+
+00:56:19.470 --> 00:56:21.262
+so same pattern.
+
+00:56:21.262 --> 00:56:25.110
+Gotta be careful for copy-pastoes,
+
+00:56:25.110 --> 00:56:27.810
+we would compare _Elem3 versus _Elem3.
+
+00:56:27.810 --> 00:56:30.225
+Here the fact that the comparison
+
+00:56:30.225 --> 00:56:31.730
+sense is reversed doesn't matter.
+
+00:56:31.730 --> 00:56:33.389
+It's going to be comparable through memcmp
+
+00:56:33.390 --> 00:56:35.525
+either way, the reverseness
+
+00:56:35.530 --> 00:56:37.707
+happens here, and then go from
+
+00:56:37.707 --> 00:56:40.167
+_Elem1 to _Elem3 and from _Elem2 to _Elem3.
+
+00:56:40.170 --> 00:56:41.654
+They both say pointers,
+
+00:56:41.654 --> 00:56:42.767
+so that's good.
+
+00:56:42.770 --> 00:56:43.590
+OK,
+
+00:56:43.590 --> 00:56:48.510
+greater&lt;&gt; is also transparent.
+
+00:56:48.510 --> 00:56:50.350
+So this is good,
+
+00:56:50.350 --> 00:56:52.660
+_Elem1 and _Elem2, greater&lt;int&gt;, void, OK.
+
+00:56:57.470 --> 00:56:59.130
+So for ranges, guarded
+
+00:56:59.130 --> 00:57:00.790
+by #ifdef __cpp_lib_concepts,
+
+00:57:00.790 --> 00:57:02.950
+If we see ranges::less, we know it's
+
+00:57:02.950 --> 00:57:04.987
+transparent, so we can do this short form.
+
+00:57:04.990 --> 00:57:06.607
+I was just thinking, should we just
+
+00:57:06.607 --> 00:57:08.350
+derive from the other specialization?
+
+00:57:08.350 --> 00:57:10.149
+But that would really be the same.
+
+00:57:10.150 --> 00:57:10.966
+It would be one line,
+
+00:57:10.966 --> 00:57:12.528
+one extra line of code and it
+
+00:57:12.528 --> 00:57:13.688
+would instantiate more stuff.
+
+00:57:13.690 --> 00:57:14.968
+Better to just repeat this here.
+
+00:57:17.080 --> 00:57:18.732
+So ranges::less,
+
+00:57:18.732 --> 00:57:22.709
+compare _Elem1, _Elem2, report less&lt;int&gt;.
+
+00:57:22.710 --> 00:57:24.150
+For ranges::greater, report
+
+00:57:24.150 --> 00:57:26.156
+std::greater&lt;int&gt;, that's good.
+
+00:57:26.156 --> 00:57:28.934
+OK, it's now the top level
+
+00:57:28.940 --> 00:57:32.220
+_Lex_compare_memcmp_classify.
+
+00:57:32.220 --> 00:57:33.528
+We're gonna ask
+
+00:57:33.528 --> 00:57:35.960
+for _It1, _It2, and _Pred.
+
+00:57:39.050 --> 00:57:40.298
+I was briefly thinking about, is that
+
+00:57:40.298 --> 00:57:41.380
+the usual naming we have?
+
+00:57:41.380 --> 00:57:42.805
+Usually we say things like
+
+00:57:42.805 --> 00:57:44.160
+_Iter, but _It is fine.
+
+00:57:47.120 --> 00:57:49.256
+So _It1 and _It2 need to be
+
+00:57:49.256 --> 00:57:51.069
+contiguous, and _It1 needs to be
+
+00:57:51.069 --> 00:57:52.750
+not volatile and not an iterator
+
+00:57:52.750 --> 00:57:55.330
+to volatile. Same for _It2,
+
+00:57:55.330 --> 00:57:59.010
+had better not be iterator volatile; then,
+
+00:58:01.940 --> 00:58:04.460
+if that's true, emit typename ::_Pred
+
+00:58:04.460 --> 00:58:06.998
+from _Lex_compare_memcmp_classify_pred,
+
+00:58:06.998 --> 00:58:09.742
+give it the _Iter_value_t,
+
+00:58:09.742 --> 00:58:12.798
+this will not have any CV qualifiers.
+
+00:58:12.800 --> 00:58:15.624
+_Iter_value_t&lt;_It2&gt; and the _Pred.
+
+00:58:15.630 --> 00:58:19.190
+OK. This is sort of preexisting.
+
+00:58:19.190 --> 00:58:21.080
+I am not a fan of shadowing.
+
+00:58:21.080 --> 00:58:22.560
+This is not technically shadowing,
+
+00:58:22.560 --> 00:58:24.184
+but this is using _Pred in two
+
+00:58:24.184 --> 00:58:25.570
+different sentences, so when I see this,
+
+00:58:25.570 --> 00:58:28.860
+my brain momentarily short circuits.
+
+00:58:28.860 --> 00:58:30.352
+This is fine, though.
+
+00:58:30.352 --> 00:58:34.130
+I mean it's prexisting.
+
+00:58:34.130 --> 00:58:36.514
+We did avoid it before by having _Pr,
+
+00:58:36.520 --> 00:58:39.510
+at least in the template.
+
+00:58:39.510 --> 00:58:40.868
+I guess we do use _Pred elsewhere.
+
+00:58:40.870 --> 00:58:42.286
+Where do we,
+
+00:58:42.286 --> 00:58:44.760
+do we use _Pred elsewhere? Or is it _Pr?
+
+00:58:44.760 --> 00:58:47.240
+We could avoid this cheaply by saying _Pr.
+
+00:58:47.240 --> 00:58:48.700
+We say _Pr here.
+
+00:58:48.700 --> 00:58:50.160
+This avoids the duplication
+
+00:58:50.160 --> 00:58:51.580
+by saying class _Pr.
+
+00:58:54.560 --> 00:58:57.392
+Did we say _Pred at the
+
+00:58:57.392 --> 00:58:58.808
+memcmp_classify level?
+
+00:58:58.810 --> 00:59:01.276
+Ohh, it used to be a function.
+
+00:59:01.280 --> 00:59:05.314
+And now it's a … that's a helper here.
+
+00:59:05.314 --> 00:59:07.693
+I'm going to ask for it to be,
+
+00:59:07.693 --> 00:59:09.674
+just class _Pr, 'cause it's a
+
+00:59:09.674 --> 00:59:11.315
+little more consistent with what
+
+00:59:11.315 --> 00:59:13.325
+we did above and it avoids
+
+00:59:13.330 --> 00:59:14.718
+this weird quasi-shadowing.
+
+00:59:14.718 --> 00:59:17.500
+Do we have any other cases of
+
+00:59:17.500 --> 00:59:20.004
+class _Pred that I would need to comment on?
+
+00:59:20.010 --> 00:59:21.418
+That's the only one.
+
+00:59:21.418 --> 00:59:26.640
+OK, let me see.
+
+00:59:26.640 --> 00:59:28.537
+Maybe I'll comment on the whole thing
+
+00:59:28.537 --> 00:59:31.120
+just so the context is clear.
+
+00:59:33.330 --> 00:59:39.450
+Naming nitpick: I recommend
+
+00:59:39.450 --> 00:59:43.725
+templating on class _Pr here,
+
+00:59:43.730 --> 00:59:46.595
+which would be more consistent
+
+00:59:46.595 --> 00:59:50.530
+with, and let's get the use of
+
+00:59:50.530 --> 00:59:53.550
+class _Pr above – this one –
+
+01:00:00.380 --> 01:00:02.688
+with the definition of
+
+01:00:05.000 --> 01:00:11.134
+blah above, and would avoid the
+
+01:00:11.134 --> 01:00:17.290
+quasi-shadowing that appears in
+
+01:00:21.920 --> 01:00:24.770
+this horrible thing. Not really
+
+01:00:24.770 --> 01:00:25.910
+horrible, it's just verbose.
+
+01:00:37.820 --> 01:00:39.384
+Ok, naming nitpick:
+
+01:00:39.384 --> 01:00:40.948
+I recommend templating on
+
+01:00:40.948 --> 01:00:42.759
+class _Pr here,
+
+01:00:42.760 --> 01:00:43.710
+which would be more consistent
+
+01:00:43.710 --> 01:00:44.660
+with the definition of
+
+01:00:44.660 --> 01:00:45.820
+_Lex_compare_memcmp_classify_pred above
+
+01:00:45.820 --> 01:00:47.312
+and would avoid the quasi-shadowing
+
+01:00:47.312 --> 01:00:48.460
+that appears in
+
+01:00:48.460 --> 01:00:53.930
+typename _Lex_compare_memcmp_classify&lt;MEOW, _Pred&gt;::_Pred.
+
+01:01:01.210 --> 01:01:04.859
+OK. So now,
+
+01:01:07.050 --> 01:01:09.515
+we're going directly to
+
+01:01:09.515 --> 01:01:11.678
+lexicographical_compare. Before we had functions,
+
+01:01:11.678 --> 01:01:12.929
+_Lex_compare_unchecked.
+
+01:01:15.380 --> 01:01:16.050
+Here.
+
+01:01:18.170 --> 01:01:21.032
+And now it's all being inlined. OK.
+
+01:01:21.032 --> 01:01:24.728
+So that's where all that complexity is going.
+
+01:01:24.730 --> 01:01:26.410
+That's good, these multiple
+
+01:01:26.410 --> 01:01:29.228
+layers are sort of a holdover,
+
+01:01:29.228 --> 01:01:31.792
+often from our previous
+
+01:01:31.792 --> 01:01:34.214
+tag dispatch era, when we didn't have
+
+01:01:34.220 --> 01:01:35.945
+if constexpr, and we didn't
+
+01:01:35.945 --> 01:01:37.670
+have things like decltype,
+
+01:01:37.670 --> 01:01:40.225
+so we really needed another layer of
+
+01:01:40.225 --> 01:01:42.522
+a function template to deduce the
+
+01:01:42.522 --> 01:01:44.732
+unwrapped types, and to switch between
+
+01:01:44.732 --> 01:01:46.184
+I can optimize versus
+
+01:01:46.190 --> 01:01:49.142
+I can't. Now that we have if constexpr
+
+01:01:49.142 --> 01:01:50.908
+unconditionally, even in C++14 mode,
+
+01:01:50.910 --> 01:01:52.618
+because we can always use future technology
+
+01:01:52.618 --> 01:01:55.090
+when we ask the compiler devs, pretty please.
+
+01:01:55.090 --> 01:01:57.308
+And we have
+
+01:01:57.308 --> 01:01:59.060
+things like decltype,
+
+01:01:59.060 --> 01:02:00.662
+we no longer need separate layers
+
+01:02:00.662 --> 01:02:01.196
+of functions.
+
+01:02:01.200 --> 01:02:02.862
+Sometimes we still want functions
+
+01:02:02.862 --> 01:02:04.812
+for helpers, like with, you know,
+
+01:02:04.812 --> 01:02:06.713
+_Copy_unchecked, but sometimes, inlining
+
+01:02:06.713 --> 01:02:08.317
+it is just easier.
+
+01:02:08.320 --> 01:02:09.680
+And that's the case here.
+
+01:02:09.680 --> 01:02:12.356
+Umm, so now std::lexicographical_compare?
+
+01:02:12.360 --> 01:02:14.433
+Which is a lot of syllables.
+
+01:02:14.433 --> 01:02:15.998
+We're adding top level constness,
+
+01:02:16.000 --> 01:02:18.996
+for our most modern convention on
+
+01:02:18.996 --> 01:02:20.794
+everything, except for the predicate,
+
+01:02:20.794 --> 01:02:22.499
+that could have a non-const function call
+
+01:02:22.499 --> 01:02:23.758
+operator for all we know.
+
+01:02:23.760 --> 01:02:27.280
+We verify the iterators are in the right order.
+
+01:02:27.280 --> 01:02:28.735
+We unwrap them.
+
+01:02:28.735 --> 01:02:31.160
+We're removing the constness on
+
+01:02:31.160 --> 01:02:34.017
+_UFirst1 and _UFirst2,
+
+01:02:34.020 --> 01:02:35.915
+because we're actually going to
+
+01:02:35.915 --> 01:02:37.810
+iterate through them, because we're
+
+01:02:37.871 --> 01:02:39.936
+actually doing the fundamental loop.
+
+01:02:39.940 --> 01:02:41.626
+So that's where that's going.
+
+01:02:41.626 --> 01:02:42.724
+Now we're gonna ask, OK,
+
+01:02:42.724 --> 01:02:43.486
+the _Memcmp_pred,
+
+01:02:43.486 --> 01:02:45.010
+which is the thing we're gonna
+
+01:02:45.064 --> 01:02:46.609
+compare the memcmp answer from.
+
+01:02:46.610 --> 01:02:51.946
+We're gonna _Lex_compare_memcmp_classify
+
+01:02:51.946 --> 01:02:54.386
+the decltype of the unwrapped iterator,
+
+01:02:54.390 --> 01:02:57.278
+same for the decltype of the unwrapped
+
+01:02:57.278 --> 01:02:59.850
+second iterator, and the _Pr. if constexpr
+
+01:02:59.850 --> 01:03:01.830
+so let's see if we're eligible
+
+01:03:01.896 --> 01:03:03.228
+for the optimization.
+
+01:03:03.230 --> 01:03:05.090
+If _Memcmp_pred is not void,
+
+01:03:05.090 --> 01:03:06.458
+then we are eligible.
+
+01:03:06.458 --> 01:03:08.168
+So let's do something cool.
+
+01:03:08.170 --> 01:03:08.958
+But wait!
+
+01:03:08.958 --> 01:03:12.110
+If we're in _HAS_CXXX20 mode,
+
+01:03:12.110 --> 01:03:13.850
+then we are required to be
+
+01:03:13.850 --> 01:03:15.010
+constexpr.
+
+01:03:15.010 --> 01:03:17.530
+This memcmp thing is incompatible at compile time.
+
+01:03:17.530 --> 01:03:19.770
+So we need a runtime test that says
+
+01:03:19.770 --> 01:03:22.286
+if we're in 20 mode then we had better
+
+01:03:22.286 --> 01:03:24.170
+not be std::is_constant_evaluated.
+
+01:03:24.170 --> 01:03:26.012
+Only then at runtime can we
+
+01:03:26.012 --> 01:03:27.240
+do this cool thing.
+
+01:03:27.240 --> 01:03:29.900
+If we turn out to be actually
+
+01:03:29.900 --> 01:03:32.179
+being invoked for compile time,
+
+01:03:32.180 --> 01:03:34.840
+this will turn out to be false
+
+01:03:34.840 --> 01:03:37.947
+and we'll end up doing the raw
+
+01:03:37.947 --> 01:03:40.297
+loop that is constexpr friendly.
+
+01:03:40.300 --> 01:03:41.580
+So this pattern is quite
+
+01:03:41.580 --> 01:03:42.604
+common throughout the STL,
+
+01:03:42.610 --> 01:03:44.100
+and if we're not eligible
+
+01:03:44.100 --> 01:03:45.590
+at all for the optimization,
+
+01:03:45.590 --> 01:03:46.826
+we never even bother asking that,
+
+01:03:46.830 --> 01:03:48.580
+we constant evaluate it, thanks
+
+01:03:48.580 --> 01:03:51.189
+to the wonders of if constexpr.
+
+01:03:51.190 --> 01:03:52.858
+This also explains why this
+
+01:03:52.858 --> 01:03:54.959
+is not an if constexpr else,
+
+01:03:54.960 --> 01:03:56.990
+because we do need this fall through
+
+01:03:56.990 --> 01:03:59.341
+in the case that the runtime test
+
+01:03:59.341 --> 01:04:01.450
+falls through and as a final aside,
+
+01:04:01.450 --> 01:04:03.546
+it is extremely intentional that this is not
+
+01:04:03.550 --> 01:04:06.466
+if constexpr (is_constant_evaluated),
+
+01:04:06.470 --> 01:04:07.605
+the compiler will actually warn
+
+01:04:07.605 --> 01:04:09.030
+at you if you do that,
+
+01:04:09.030 --> 01:04:10.105
+because that forces the answer
+
+01:04:10.105 --> 01:04:10.965
+to always be yes,
+
+01:04:10.970 --> 01:04:11.561
+it is constant evaluated,
+
+01:04:11.561 --> 01:04:12.743
+which is not what you want.
+
+01:04:12.750 --> 01:04:16.224
+This needs to be expressed as a runtime test.
+
+01:04:16.230 --> 01:04:18.646
+OK, so if we end up being
+
+01:04:18.646 --> 01:04:20.738
+eligible at compile time and
+
+01:04:20.738 --> 01:04:22.626
+runtime for the optimization,
+
+01:04:22.630 --> 01:04:24.814
+we get the differences of the
+
+01:04:24.814 --> 01:04:26.465
+iterators, and that's the number
+
+01:04:26.465 --> 01:04:28.090
+of elements we're looking at.
+
+01:04:28.090 --> 01:04:30.810
+We static_cast from ptrdiff_t to size_t.
+
+01:04:30.810 --> 01:04:32.522
+We know that they're in the right order
+
+01:04:32.522 --> 01:04:34.131
+because we verified them so we don't
+
+01:04:34.131 --> 01:04:35.610
+need to worry about reverse things.
+
+01:04:35.610 --> 01:04:38.606
+We call our helper memcmp taking a count.
+
+01:04:38.610 --> 01:04:42.040
+We give it the unwrapped raw pointers
+
+01:04:42.040 --> 01:04:44.371
+or unwrapped iterators and we're gonna
+
+01:04:44.371 --> 01:04:46.829
+compare for the lesser of _Num1 and _Num2
+
+01:04:46.830 --> 01:04:49.030
+elements, we use std::min,
+
+01:04:49.030 --> 01:04:51.380
+parenthesize to avoid macro expansion,
+
+01:04:51.380 --> 01:04:53.380
+get the answer out,
+
+01:04:53.380 --> 01:04:55.153
+this is very similar to what we had before,
+
+01:04:55.160 --> 01:05:00.158
+and then we compare. If it is
+
+01:05:00.160 --> 01:05:03.161
+less than zero, if it is,
+
+01:05:03.161 --> 01:05:05.089
+less than meaning as judged by the pred,
+
+01:05:05.090 --> 01:05:07.080
+this handles the reverting …
+
+01:05:07.080 --> 01:05:10.338
+the reversing of behavior.
+
+01:05:10.340 --> 01:05:11.890
+Then we'll immediately return that.
+
+01:05:16.290 --> 01:05:17.842
+So if it ends up being
+
+01:05:17.842 --> 01:05:19.928
+less than zero, we'll return that.
+
+01:05:19.928 --> 01:05:22.724
+Otherwise, if it's greater than zero,
+
+01:05:22.730 --> 01:05:24.390
+we definitely want to return false.
+
+01:05:24.390 --> 01:05:26.148
+If it's exactly equal to 0,
+
+01:05:26.150 --> 01:05:28.126
+the only way we can return true is
+
+01:05:28.126 --> 01:05:30.189
+if _Num1 one is less than _Num2,
+
+01:05:30.190 --> 01:05:32.278
+meaning the first sequence is shorter.
+
+01:05:32.280 --> 01:05:34.310
+This handles the prefix case where
+
+01:05:34.310 --> 01:05:36.908
+cat is considered less than catastrophe.
+
+01:05:36.910 --> 01:05:40.690
+If you had a sequence of char.
+
+01:05:40.690 --> 01:05:42.430
+This is exactly equivalent
+
+01:05:42.430 --> 01:05:44.800
+to what we had before.
+
+01:05:44.800 --> 01:05:45.560
+This also, by the way,
+
+01:05:45.560 --> 01:05:47.708
+this correctly handles the case where
+
+01:05:47.708 --> 01:05:50.009
+the comparator is std::greater,
+
+01:05:50.009 --> 01:05:52.721
+that only – if you pass std::greater as
+
+01:05:52.721 --> 01:05:55.531
+the comparison, that only affects the
+
+01:05:55.531 --> 01:05:58.739
+answer when the elements compare non-equal.
+
+01:05:58.740 --> 01:06:01.655
+A lexicographical_compare with std::greater will
+
+01:06:01.655 --> 01:06:05.820
+still say that a shorter sequence is
+
+01:06:05.820 --> 01:06:06.720
+considered lexicographically
+
+01:06:06.720 --> 01:06:08.520
+before the longer sequence.
+
+01:06:08.520 --> 01:06:10.733
+It doesn't reverse that part,
+
+01:06:10.733 --> 01:06:12.624
+because in some sense, lexicographical_compare
+
+01:06:12.624 --> 01:06:13.872
+doesn't know that it's
+
+01:06:13.872 --> 01:06:15.120
+reversing at all.
+
+01:06:15.120 --> 01:06:16.360
+Maybe it's only comparing the
+
+01:06:16.360 --> 01:06:17.600
+sizes of strings or something.
+
+01:06:17.600 --> 01:06:19.100
+It just has a rule.
+
+01:06:19.100 --> 01:06:20.485
+If all the elements are
+
+01:06:20.485 --> 01:06:21.039
+considered equivalent,
+
+01:06:21.040 --> 01:06:22.572
+then shorter sequence is
+
+01:06:22.572 --> 01:06:24.104
+lexicographically before longer sequence.
+
+01:06:26.840 --> 01:06:30.020
+OK, so that's good.
+
+01:06:30.020 --> 01:06:33.730
+Next, here we go,
+
+01:06:33.730 --> 01:06:35.242
+so I guess the conclusion is
+
+01:06:35.242 --> 01:06:38.090
+that what that means is that
+
+01:06:38.090 --> 01:06:41.240
+sorting a sequence of strings
+
+01:06:41.240 --> 01:06:43.390
+by lexicographic std::less
+
+01:06:43.390 --> 01:06:45.670
+and then sorting it …
+
+01:06:45.670 --> 01:06:48.205
+sorry, comparing them with std::greater
+
+01:06:48.205 --> 01:06:50.194
+is not the same as just doing it with
+
+01:06:50.194 --> 01:06:51.532
+std::less and then reversing it, because
+
+01:06:51.581 --> 01:06:53.297
+it's going to handle different length
+
+01:06:53.297 --> 01:06:56.490
+strings differently, if that makes any sense.
+
+01:06:56.490 --> 01:06:58.814
+OK, otherwise, if we are not eligible
+
+01:06:58.814 --> 01:07:00.663
+for the memcmp optimization, like
+
+01:07:00.663 --> 01:07:03.003
+we're dealing with user defined types
+
+01:07:03.003 --> 01:07:05.580
+or if we are in constexpr land,
+
+01:07:05.580 --> 01:07:08.400
+we need to do the raw loop, and so we iterate.
+
+01:07:08.400 --> 01:07:09.352
+We've initialized everything already,
+
+01:07:09.352 --> 01:07:11.626
+so as long as _UFirst1 is not _ULast1
+
+01:07:11.626 --> 01:07:13.278
+and _UFirst2 is not _ULast2,
+
+01:07:13.280 --> 01:07:14.678
+we have elements of both sequences,
+
+01:07:14.680 --> 01:07:17.240
+we can do the comparison. At the
+
+01:07:17.240 --> 01:07:18.480
+end of the loop, we'll increment _UFirst1,
+
+01:07:18.480 --> 01:07:20.520
+we'll increment _UFirst2.
+
+01:07:20.520 --> 01:07:23.168
+We've got this void cast here to handle
+
+01:07:23.168 --> 01:07:24.704
+overloaded operator comma because
+
+01:07:24.704 --> 01:07:26.744
+being a standard library implementer
+
+01:07:26.750 --> 01:07:27.284
+is fun.
+
+01:07:27.284 --> 01:07:29.420
+We have to defend against all sorts of
+
+01:07:29.420 --> 01:07:31.396
+interesting user behavior.
+
+01:07:31.396 --> 01:07:32.878
+Something to compare.
+
+01:07:32.880 --> 01:07:34.272
+Do it.
+
+01:07:34.272 --> 01:07:37.796
+We're gonna compare *_UFirst1
+
+01:07:37.796 --> 01:07:40.852
+against *_UFirst2 using the _Pred; We will
+
+01:07:40.852 --> 01:07:42.980
+run it through our _DEBUG_LT_PRED helper.
+
+01:07:42.980 --> 01:07:45.200
+This detects cases where the user
+
+01:07:45.200 --> 01:07:47.417
+predicate is incorrect and returns true
+
+01:07:47.417 --> 01:07:49.769
+when an element is less than itself.
+
+01:07:49.770 --> 01:07:51.760
+That should never ever happen.
+
+01:07:51.760 --> 01:07:53.032
+This detects incorrect use
+
+01:07:53.032 --> 01:07:54.611
+of, like, less_equal.
+
+01:07:54.611 --> 01:07:56.116
+So if it's considered less
+
+01:07:56.116 --> 01:07:57.320
+than we return true,
+
+01:07:57.320 --> 01:07:58.656
+Otherwise we'll reverse it,
+
+01:07:58.656 --> 01:08:00.990
+and if two is less than one,
+
+01:08:00.990 --> 01:08:02.151
+we'll return false.
+
+01:08:02.151 --> 01:08:02.538
+Otherwise,
+
+01:08:02.538 --> 01:08:03.699
+we'll keep going,
+
+01:08:03.700 --> 01:08:06.460
+because they're equivalent. At the end,
+
+01:08:06.460 --> 01:08:08.396
+they are lexicographically less
+
+01:08:08.396 --> 01:08:11.131
+only when the first sequence is
+
+01:08:11.131 --> 01:08:13.308
+shorter than the second; that happens when
+
+01:08:13.308 --> 01:08:15.399
+_UFirst1 has been exhausted,
+
+01:08:15.400 --> 01:08:16.600
+it's equal to _ULast1,
+
+01:08:16.600 --> 01:08:19.218
+and _UFirst2 is not exhausted,
+
+01:08:19.220 --> 01:08:20.980
+it's not equal to _ULast2.
+
+01:08:20.980 --> 01:08:22.858
+So this is translating, in fact,
+
+01:08:22.860 --> 01:08:24.280
+basically moving this code
+
+01:08:24.280 --> 01:08:26.410
+around that was already up here.
+
+01:08:26.410 --> 01:08:27.670
+GitHub doesn't show moves,
+
+01:08:27.670 --> 01:08:29.146
+but, it's just a move.
+
+01:08:29.150 --> 01:08:30.520
+If I was extremely paranoid,
+
+01:08:30.520 --> 01:08:32.374
+I would diff before and after
+
+01:08:32.374 --> 01:08:33.972
+as I do elsewhere. Here,
+
+01:08:33.972 --> 01:08:35.239
+the code is straightforward enough that I
+
+01:08:35.239 --> 01:08:36.608
+can visually see that it's all correct,
+
+01:08:36.610 --> 01:08:39.985
+and it hasn't been mutated in any weird way.
+
+01:08:39.990 --> 01:08:40.924
+OK,
+
+01:08:40.924 --> 01:08:44.660
+so that is for.
+
+01:08:44.660 --> 01:08:48.040
+lexicographical_compare with a pred.
+
+01:08:48.040 --> 01:08:51.046
+Now we have lexicographical_compare without a pred.
+
+01:08:51.050 --> 01:08:54.008
+This one is just gaining const on
+
+01:08:54.008 --> 01:08:55.487
+all the iterators.
+
+01:08:55.490 --> 01:08:57.430
+Nothing else is happening here.
+
+01:08:57.430 --> 01:08:58.480
+I don't actually know why …
+
+01:08:58.480 --> 01:08:59.848
+I guess it's too much of a change
+
+01:08:59.848 --> 01:09:00.877
+for GitHub to highlight
+
+01:09:00.877 --> 01:09:02.155
+const four times in this case,
+
+01:09:02.160 --> 01:09:04.388
+but that's what's happening.
+
+01:09:04.390 --> 01:09:07.760
+And then we just passed less&lt;&gt;, OK?
+
+01:09:07.760 --> 01:09:09.964
+For the parallel version,
+
+01:09:09.964 --> 01:09:11.617
+_ExPo&&.
+
+01:09:11.620 --> 01:09:15.050
+These are all const-ifying.
+
+01:09:15.050 --> 01:09:17.626
+OK, this one's not being parallelized right now,
+
+01:09:17.630 --> 01:09:20.374
+so we just call the std version.
+
+01:09:20.380 --> 01:09:20.810
+OK,
+
+01:09:20.810 --> 01:09:21.670
+that's good.
+
+01:09:24.530 --> 01:09:26.035
+This one is the one that doesn't
+
+01:09:26.035 --> 01:09:28.059
+even take a pred, but it's parallel.
+
+01:09:30.110 --> 01:09:33.169
+Again, we're adding const to all the iterators.
+
+01:09:33.170 --> 01:09:39.870
+OK. Yep. OK, now in the concepts
+
+01:09:39.870 --> 01:09:42.224
+world this is the _Lex_compare_three_way
+
+01:09:42.224 --> 01:09:44.030
+for the &lt;=&gt; operator.
+
+01:09:47.360 --> 01:09:53.010
+OK, so. Template on _Elem1, _Elem2,
+
+01:09:53.010 --> 01:09:56.566
+_Cmp, I'm always scanning for non-ugly names.
+
+01:09:56.570 --> 01:10:00.240
+This is the _Lex_compare_three_way_memcmp_classify_cmp
+
+01:10:00.240 --> 01:10:01.928
+By default, not eligible.
+
+01:10:01.928 --> 01:10:03.616
+We report void,
+
+01:10:03.620 --> 01:10:06.670
+but, if we're given the std::compare_three_way
+
+01:10:06.746 --> 01:10:09.595
+function object then we might be eligible.
+
+01:10:09.600 --> 01:10:14.316
+So using _Comp = conditional_t …
+
+01:10:14.320 --> 01:10:17.274
+We're gonna ask, can we
+
+01:10:17.274 --> 01:10:19.567
+_Lex_compare_memcmp_classify_elements&lt;_Elem1, _Elem2&gt;.
+
+01:10:19.570 --> 01:10:22.130
+This uses the memcmp thing we defined above,
+
+01:10:22.130 --> 01:10:23.726
+because ultimately that's what we wanna do.
+
+01:10:23.730 --> 01:10:24.915
+We wanna ask,
+
+01:10:24.915 --> 01:10:26.890
+hey, are you memcmp-able?
+
+01:10:26.890 --> 01:10:28.087
+But we also need to make sure,
+
+01:10:28.090 --> 01:10:30.030
+are these elements just
+
+01:10:30.030 --> 01:10:32.455
+three way comparable at all?
+
+01:10:32.460 --> 01:10:35.232
+So is it, and this standard, I want to
+
+01:10:35.232 --> 01:10:38.242
+say this is a concept, three_way_comparable_with,
+
+01:10:38.242 --> 01:10:41.188
+const _Elem1&amp; versus const _Elem2&amp;.
+
+01:10:41.190 --> 01:10:42.792
+If that's true we'll return compare_three_way,
+
+01:10:42.792 --> 01:10:44.599
+using the same sort of,
+
+01:10:44.600 --> 01:10:47.576
+this is what we're gonna compare
+
+01:10:47.576 --> 01:10:50.050
+memcmp's result with, otherwise void.
+
+01:10:50.050 --> 01:10:52.690
+OK, we've got some internal concepts,
+
+01:10:52.690 --> 01:10:56.546
+this is all guarded by __cpp_lib_concepts.
+
+01:10:56.815 --> 01:10:58.935
+That's because not all of our front ends
+
+01:10:58.935 --> 01:11:02.298
+support concepts yet, they will soon!
+
+01:11:02.300 --> 01:11:05.316
+Then this will just turn to _HAS_CXX_20.
+
+01:11:05.316 --> 01:11:08.760
+So if we are given _Ty1 and _Ty2,
+
+01:11:08.760 --> 01:11:11.022
+_Can_strong_order requires, given a
+
+01:11:11.022 --> 01:11:14.031
+const _Ty1&amp; _Left, and a const _Ty2&amp; _Right,
+
+01:11:14.031 --> 01:11:16.350
+we can call strong_order(_Left, _Right)?
+
+01:11:16.350 --> 01:11:17.700
+This is, interestingly,
+
+01:11:17.700 --> 01:11:20.400
+a function object in the STL,
+
+01:11:20.400 --> 01:11:23.028
+so we do not qualify it.
+
+01:11:23.030 --> 01:11:24.296
+I think
+
+01:11:24.296 --> 01:11:26.406
+it's not technically a function,
+
+01:11:26.410 --> 01:11:28.066
+so it's not vulnerable to ADL.
+
+01:11:28.070 --> 01:11:29.300
+I think the existing convention is
+
+01:11:29.300 --> 01:11:30.284
+we don't qualify it,
+
+01:11:30.290 --> 01:11:31.418
+but I can't remember if we
+
+01:11:31.418 --> 01:11:31.982
+actually call this.
+
+01:11:41.220 --> 01:11:43.296
+Ooh, that's interesting.
+
+01:11:43.296 --> 01:11:45.568
+So here I did end up –
+
+01:11:45.568 --> 01:11:46.900
+I think I wrote this code –
+
+01:11:46.900 --> 01:11:48.940
+Yeah, this is familiar.
+
+01:11:48.940 --> 01:11:50.780
+I did qualify this, because
+
+01:11:50.780 --> 01:11:52.620
+it looks like a function.
+
+01:11:52.620 --> 01:11:54.828
+Yeah, this is qualified here too.
+
+01:11:54.830 --> 01:11:59.630
+It's technically not.
+
+01:11:59.630 --> 01:12:01.040
+Here, we made sure that strong_ordering
+
+01:12:01.040 --> 01:12:02.320
+was not in scope,
+
+01:12:02.320 --> 01:12:04.408
+and then we're doing ADL call.
+
+01:12:04.410 --> 01:12:06.426
+I would feel better with a _STD here.
+
+01:12:09.720 --> 01:12:11.806
+It is more consistent with existing usage.
+
+01:12:14.490 --> 01:12:15.858
+I can quote this.
+
+01:12:15.858 --> 01:12:19.890
+This is in &lt;compare&gt; line 700.
+
+01:12:19.890 --> 01:12:21.602
+It's a nitpick.
+
+01:12:21.602 --> 01:12:23.314
+That's influenced by how
+
+01:12:23.314 --> 01:12:25.689
+much I hate and fear
+
+01:12:25.690 --> 01:12:27.898
+ADL, the argument dependent lookup that
+
+01:12:27.898 --> 01:12:29.890
+we're constantly on guard against.
+
+01:12:29.890 --> 01:12:32.250
+When I see the qualification,
+
+01:12:32.250 --> 01:12:34.090
+I'm like, ohh, no ADL, this is,
+
+01:12:34.090 --> 01:12:35.990
+you know, fun and happy.
+
+01:12:35.990 --> 01:12:38.013
+And when I don't see the qualification,
+
+01:12:38.013 --> 01:12:39.987
+I'm like, oh, could this be ADL?
+
+01:12:39.990 --> 01:12:42.510
+Could we be hijacked by a better overload?
+
+01:12:42.510 --> 01:12:45.186
+[under breath] Where's &lt;compare&gt;? Here we go.
+
+01:12:45.190 --> 01:12:48.347
+I wanted – nope, I don't want this PR.
+
+01:12:48.350 --> 01:12:50.840
+On line 3…, no, line 700.
+
+01:12:50.840 --> 01:12:51.372
+That's, ope,
+
+01:12:51.372 --> 01:12:52.968
+and I've got the PR up.
+
+01:12:55.560 --> 01:12:56.955
+Sorry about that.
+
+01:12:56.955 --> 01:12:59.972
+Whenever I tap my trackpad,
+
+01:12:59.972 --> 01:13:03.560
+it becomes a click, OK, here we go.
+
+01:13:03.560 --> 01:13:05.318
+Get a permalink by pressing Y.
+
+01:13:05.320 --> 01:13:07.228
+Here's the call to std::strong_order.
+
+01:13:09.580 --> 01:13:13.035
+OK, going inside &lt;utility&gt;, this
+
+01:13:13.035 --> 01:13:19.530
+occurs to all these. So, nitpick:
+
+01:13:21.680 --> 01:13:24.820
+Although this
+
+01:13:24.820 --> 01:13:30.400
+technically isn't a function,
+
+01:13:30.400 --> 01:13:36.119
+and therefore is invulnerable to ADL –
+
+01:13:36.120 --> 01:13:38.899
+I can expand this for any
+
+01:13:38.900 --> 01:13:41.707
+viewers out there who are not versed
+
+01:13:41.707 --> 01:13:44.379
+in the standard acronyms – Argument
+
+01:13:44.380 --> 01:13:46.200
+Dependent – and I don't do this for everything,
+
+01:13:46.200 --> 01:13:47.864
+like SFINAE, but may as well.
+
+01:13:47.864 --> 01:13:50.400
+This is also not universally known – Lookup.
+
+01:13:53.350 --> 01:13:58.254
+We've conventionally
+
+01:13:58.254 --> 01:14:01.296
+qualified it elsewhere,
+
+01:14:01.296 --> 01:14:06.366
+just to avoid any confusion.
+
+01:14:06.370 --> 01:14:09.880
+Occurs below for
+
+01:14:09.880 --> 01:14:15.420
+weak_order and partial_order.
+
+01:14:17.900 --> 01:14:22.620
+Example of … or example precedent?
+
+01:14:22.620 --> 01:14:25.494
+[unintelligible]
+
+01:14:25.494 --> 01:14:26.910
+Nitpick: although this technically
+
+01:14:26.910 --> 01:14:29.115
+isn't a function and therefore is
+
+01:14:29.115 --> 01:14:31.035
+invulnerable to Argument Dependent Lookup,
+
+01:14:31.040 --> 01:14:32.205
+we've conventionally qualified
+
+01:14:32.205 --> 01:14:33.648
+elsewhere just to avoid any confusion.
+
+01:14:33.648 --> 01:14:34.838
+Occurs below for weak_order and
+
+01:14:34.840 --> 01:14:36.350
+partial_order. Example precedent:
+
+01:14:36.350 --> 01:14:39.530
+return _STD strong_order(_Left, _Right). OK.
+
+01:14:49.600 --> 01:14:52.127
+Ohh, and this just occurred to me.
+
+01:14:52.130 --> 01:14:54.122
+This is called _Can_strong_order, that thing
+
+01:14:54.122 --> 01:14:55.958
+in &lt;compare&gt; was called _Can_strong_order.
+
+01:14:59.310 --> 01:15:02.340
+[under breath] thought it was here, _Can_strong_order.
+
+01:15:05.360 --> 01:15:09.308
+That's nested within the fallback.
+
+01:15:09.310 --> 01:15:13.340
+It's nested within this namespace.
+
+01:15:13.340 --> 01:15:15.425
+Technically … it is actually shadowing
+
+01:15:15.425 --> 01:15:17.991
+like there's a std::_Can_strong_order
+
+01:15:17.991 --> 01:15:20.469
+if that's been included above,
+
+01:15:20.470 --> 01:15:21.898
+although here I think &lt;compare&gt; is actually
+
+01:15:21.898 --> 01:15:24.860
+included above, but it's the same name.
+
+01:15:24.860 --> 01:15:26.260
+I'm really uncomfortable whenever I
+
+01:15:26.260 --> 01:15:28.220
+see the same name reused in the STL,
+
+01:15:28.220 --> 01:15:30.187
+even if there's no actual shadowing.
+
+01:15:33.760 --> 01:15:35.657
+I would prefer any other name;
+
+01:15:35.660 --> 01:15:39.910
+that, or lift this up.
+
+01:15:39.910 --> 01:15:41.002
+Like here, the only reason I
+
+01:15:41.002 --> 01:15:42.479
+nested it in was because I didn't
+
+01:15:42.479 --> 01:15:43.644
+think anybody else needed it.
+
+01:15:43.650 --> 01:15:45.434
+But if we actually do need it now …
+
+01:15:48.740 --> 01:15:50.735
+This is trying to call the
+
+01:15:50.735 --> 01:15:52.400
+std function object that we've defined.
+
+01:15:52.400 --> 01:15:55.310
+Lifting this out would be better.
+
+01:15:55.310 --> 01:15:57.470
+One fewer concept and no shadowing.
+
+01:15:57.470 --> 01:15:58.778
+Let me suggest that.
+
+01:16:01.660 --> 01:16:03.328
+OK, so let me …
+
+01:16:05.390 --> 01:16:07.820
+shift-select this, excuse me.
+
+01:16:12.640 --> 01:16:13.150
+OK.
+
+01:16:15.810 --> 01:16:17.710
+Just comment on maybe this
+
+01:16:17.710 --> 01:16:21.140
+thing. There we go.
+
+01:16:23.490 --> 01:16:27.630
+Actually, this
+
+01:16:27.630 --> 01:16:30.528
+I'm gonna say … I'm gonna say
+
+01:16:30.528 --> 01:16:32.460
+duplicates … this appears to …
+
+01:16:32.460 --> 01:16:35.275
+[unintelligible] not 100% sure …
+
+01:16:35.275 --> 01:16:37.527
+this appears to duplicate
+
+01:16:37.530 --> 01:16:41.490
+the helper in &lt;compare&gt;.
+
+01:16:44.610 --> 01:16:48.438
+template … yep, it's concept, _Can_strong_order.
+
+01:16:48.440 --> 01:16:50.216
+It's testing the std function object.
+
+01:16:50.220 --> 01:16:54.220
+Yeah, looks exactly the same.
+
+01:16:54.220 --> 01:16:58.119
+If they are indeed exactly the same,
+
+01:16:58.120 --> 01:17:03.132
+testing whether we can use the
+
+01:17:03.132 --> 01:17:06.302
+Standard function object.
+
+01:17:06.302 --> 01:17:10.390
+Lift it out of – let me copy the namespace.
+
+01:17:13.900 --> 01:17:19.688
+I recommend extracting the
+
+01:17:19.690 --> 01:17:24.910
+helper in &lt;compare&gt; out of
+
+01:17:24.910 --> 01:17:27.075
+namespace _Compare_strong_order_fallback
+
+01:17:27.075 --> 01:17:30.329
+so it can be used here.
+
+01:17:30.330 --> 01:17:36.206
+This would avoid any
+
+01:17:36.206 --> 01:17:40.100
+quasi-shadowing/confusion.
+
+01:17:40.100 --> 01:17:41.652
+OK, how's that look?
+
+01:17:41.652 --> 01:17:45.932
+And I need to say, occurs
+
+01:17:45.932 --> 01:17:49.340
+for the following concepts too.
+
+01:17:49.340 --> 01:17:55.290
+I had nested the helper concepts in
+
+01:17:55.290 --> 01:18:01.540
+their namespaces since I didn't expect
+
+01:18:01.540 --> 01:18:06.500
+any further use of them,
+
+01:18:12.300 --> 01:18:20.550
+but didn't intend to prevent wider use, OK.
+
+01:18:20.550 --> 01:18:21.905
+This appears to duplicate the
+
+01:18:21.905 --> 01:18:22.989
+helper in &lt;compare&gt;:
+
+01:18:22.990 --> 01:18:24.496
+concept _Can_strong_order,
+
+01:18:24.496 --> 01:18:25.810
+if they are indeed exactly the same,
+
+01:18:25.810 --> 01:18:26.820
+testing whether we can use
+
+01:18:26.820 --> 01:18:27.628
+the standard function object,
+
+01:18:27.630 --> 01:18:28.785
+I recommend extracting the helper
+
+01:18:28.785 --> 01:18:29.940
+in &lt;compare&gt; out of 
+
+01:18:29.940 --> 01:18:30.820
+namespace _Compare_strong_order_callback
+
+01:18:30.820 --> 01:18:32.140
+so it can be used here.
+
+01:18:32.140 --> 01:18:33.655
+This would avoid any
+
+01:18:33.655 --> 01:18:34.867
+quasi-shadowing/confusion.
+
+01:18:34.870 --> 01:18:36.868
+Occurs for the following concepts too.
+
+01:18:36.870 --> 01:18:38.310
+I had nested the helper concepts
+
+01:18:38.310 --> 01:18:39.727
+in their namespaces since I didn't
+
+01:18:39.727 --> 01:18:40.969
+expect any further use of them,
+
+01:18:40.970 --> 01:18:44.820
+but didn't intend to prevent wider use.
+
+01:18:44.820 --> 01:18:50.066
+OK. _Can_weak_order, _Can_partial_order.
+
+01:18:50.070 --> 01:18:52.563
+OK, getting close to the end of &lt;xutility&gt;.
+
+01:18:52.570 --> 01:18:54.906
+Let me check real quick, we're around line 5000.
+
+01:18:54.910 --> 01:18:56.710
+We are almost at the end?
+
+01:18:56.710 --> 01:18:58.168
+Yeah, we're almost at the end.
+
+01:18:58.170 --> 01:19:01.300
+OK, I'll get to the end of this file and
+
+01:19:01.387 --> 01:19:04.416
+we'll call this a review or a video review.
+
+01:19:04.416 --> 01:19:07.090
+We still have more files to look at.
+
+01:19:07.090 --> 01:19:09.645
+OK, here's the end of the concepts.
+
+01:19:09.650 --> 01:19:10.943
+OK, let's see.
+
+01:19:10.943 --> 01:19:12.667
+Is this all added?
+
+01:19:12.670 --> 01:19:16.330
+No, we're going back to deletions.
+
+01:19:16.330 --> 01:19:20.974
+template on _Elem1, _Elem2,
+
+01:19:20.974 --> 01:19:24.958
+_Lex_compare_three_way_memcmp_classify_comp,
+
+01:19:24.958 --> 01:19:27.790
+given _Elem1, _Elem2, and the strong_order customization point object,
+
+01:19:27.790 --> 01:19:30.688
+This is the type of the
+
+01:19:30.688 --> 01:19:32.580
+std::strong_order function object,
+
+01:19:32.580 --> 01:19:33.798
+using _Comp.
+
+01:19:33.798 --> 01:19:35.016
+So we are,
+
+01:19:35.020 --> 01:19:36.830
+if we're given strong_order,
+
+01:19:36.830 --> 01:19:38.542
+We're going to ask,
+
+01:19:38.542 --> 01:19:41.110
+can we _Lex_compare_memcmp_classify_elements&lt;_Elem1, _Elem2&gt;,
+
+01:19:41.189 --> 01:19:44.734
+and can we strong_order
+
+01:19:44.734 --> 01:19:47.412
+_Elem1, _Elem2 meaning can we call the
+
+01:19:47.412 --> 01:19:49.370
+std::strong_order function object on them.
+
+01:19:49.370 --> 01:19:51.266
+Then let's emit strong_order CPO.
+
+01:19:51.270 --> 01:19:53.919
+Otherwise void, OK.
+
+01:19:53.920 --> 01:19:57.000
+For weak_order, same question,
+
+01:19:57.000 --> 01:19:58.460
+can we use memcmp?
+
+01:19:58.460 --> 01:20:00.285
+Can we weak_order?
+
+01:20:00.290 --> 01:20:02.010
+Here, I'm looking for copy-pastoes,
+
+01:20:02.010 --> 01:20:04.529
+if so emit weak_order CPO.
+
+01:20:04.530 --> 01:20:06.560
+And, finally, for partial_order,
+
+01:20:06.560 --> 01:20:08.420
+still can we memcmp one and
+
+01:20:08.420 --> 01:20:11.270
+two, can we partial_order _Elem1, _Elem2?
+
+01:20:11.270 --> 01:20:14.070
+If so, emit partial_order CPO, OK.
+
+01:20:20.740 --> 01:20:23.530
+Now for class _It1, _It2, and _Comp,
+
+01:20:23.530 --> 01:20:26.438
+the _Lex_compare_three_way_memcmp_classify,
+
+01:20:26.438 --> 01:20:28.919
+given two iterators and a
+
+01:20:28.919 --> 01:20:31.378
+comparator, we need to ask, are _It1 and
+
+01:20:31.378 --> 01:20:33.394
+_It2 contiguous iterators, and _It1
+
+01:20:33.394 --> 01:20:35.648
+is not an iterator volatile, and _It2
+
+01:20:35.648 --> 01:20:38.189
+is not an iterator volatile.
+
+01:20:38.190 --> 01:20:42.747
+And, if that's the case, then let's report
+
+01:20:42.750 --> 01:20:45.333
+the _Comp returned by this. I see
+
+01:20:45.333 --> 01:20:47.644
+the same quasi-shadowing that we
+
+01:20:47.644 --> 01:20:49.023
+might be able to avoid with _Cmp,
+
+01:20:49.030 --> 01:20:51.762
+so I'm gonna ask for that. Let's ask,
+
+01:20:51.762 --> 01:20:54.744
+_Lex_compare_three_way_memcmp_classify_cmp,
+
+01:20:54.750 --> 01:20:56.010
+give it the iter_value_t from _It1,
+
+01:20:56.010 --> 01:20:59.490
+iter_value_t from _It2, and then _Comp.
+
+01:20:59.490 --> 01:21:01.485
+OK, here I'm trying to catch cases where
+
+01:21:01.485 --> 01:21:03.305
+we accidentally say like _It1, _It1
+
+01:21:03.305 --> 01:21:05.474
+twice, which would be catastrophic
+
+01:21:05.474 --> 01:21:08.520
+and missed in a lot of cases.
+
+01:21:08.520 --> 01:21:09.456
+OK, so this is all good,
+
+01:21:09.460 --> 01:21:11.004
+except quasi-shadowing,
+
+01:21:11.004 --> 01:21:14.128
+so I'll ask for that. Let's see.
+
+01:21:16.180 --> 01:21:20.045
+Similar issue as before,
+
+01:21:20.045 --> 01:21:25.594
+can we use class _Cmp to
+
+01:21:25.594 --> 01:21:29.419
+avoid the quasi-shadowing of …
+
+01:21:37.770 --> 01:21:42.828
+or just avoid quasi-shadowing here.
+
+01:21:46.800 --> 01:21:48.400
+class _Cmp, yep, that'd
+
+01:21:48.400 --> 01:21:50.230
+be nice and distinct, OK.
+
+01:21:52.620 --> 01:21:55.119
+And now the top-level function
+
+01:21:55.119 --> 01:21:57.523
+for users, we're adding top-level const
+
+01:21:57.523 --> 01:22:00.449
+to the iterators, all of them.
+
+01:22:00.450 --> 01:22:01.925
+We already were not const-ifying
+
+01:22:01.925 --> 01:22:03.765
+_UFirst1 and _UFirst2,
+
+01:22:03.765 --> 01:22:05.280
+so no change there.
+
+01:22:08.830 --> 01:22:10.430
+All of this is now being lifted up,
+
+01:22:10.430 --> 01:22:12.950
+that's being extracted into those helpers,
+
+01:22:12.950 --> 01:22:16.179
+so we can ask here: the _Memcmp_pred,
+
+01:22:16.179 --> 01:22:19.338
+let's call _Lex_compare_three_way_memcmp_classify
+
+01:22:19.338 --> 01:22:22.124
+the decltype of _UFirst1,
+
+01:22:22.124 --> 01:22:25.176
+and _UFirst2, and the _Cmp.
+
+01:22:27.220 --> 01:22:28.652
+If it's not void,
+
+01:22:28.652 --> 01:22:30.800
+then we're eligible at compile time.
+
+01:22:30.800 --> 01:22:32.612
+We need to see if we're
+
+01:22:32.612 --> 01:22:33.820
+eligible at runtime.
+
+01:22:33.820 --> 01:22:35.420
+Here, the three way is always C++20,
+
+01:22:35.420 --> 01:22:36.956
+so we don't need any
+
+01:22:36.960 --> 01:22:38.048
+if C++20 stuff around here.
+
+01:22:43.630 --> 01:22:44.270
+OK.
+
+01:22:49.110 --> 01:22:51.310
+It's not constant evaluated,
+
+01:22:51.310 --> 01:22:52.960
+then call memcmp.
+
+01:22:52.960 --> 01:22:55.627
+If they end up being the same,
+
+01:22:55.630 --> 01:22:58.540
+then we need to compare the
+
+01:22:58.540 --> 01:23:01.060
+lengths with the memcmp _Pred.
+
+01:23:01.060 --> 01:23:04.648
+Otherwise compare against zero.
+
+01:23:04.650 --> 01:23:06.120
+So this is not
+
+01:23:06.120 --> 01:23:07.296
+handling the greater thing.
+
+01:23:07.300 --> 01:23:08.872
+This would be, this is very
+
+01:23:08.872 --> 01:23:10.310
+different from the plain
+
+01:23:10.310 --> 01:23:12.092
+lexicographical_compare, where we never wanted
+
+01:23:12.092 --> 01:23:14.448
+to use the predicate that we
+
+01:23:14.448 --> 01:23:16.283
+emitted to our metaprogramming
+
+01:23:16.283 --> 01:23:19.860
+machinery on the lengths.
+
+01:23:19.860 --> 01:23:21.897
+Here, the _Pred can't be greater or whatever.
+
+01:23:21.900 --> 01:23:24.320
+It can only be
+
+01:23:24.320 --> 01:23:27.338
+strong_order, weak_order, or partial_order.
+
+01:23:27.338 --> 01:23:31.100
+Do I believe that? It can be user defined.
+
+01:23:31.100 --> 01:23:31.562
+That's interesting,
+
+01:23:31.562 --> 01:23:33.810
+I'm gonna need to double check that.
+
+01:23:37.690 --> 01:23:38.542
+That's extremely interesting.
+
+01:23:38.542 --> 01:23:40.246
+What if it's a user-defined
+
+01:23:40.246 --> 01:23:41.580
+comparator that reverses the sense?
+
+01:23:41.580 --> 01:23:44.065
+I'm going to need to check that.
+
+01:23:44.070 --> 01:23:45.390
+This part is fine.
+
+01:23:45.390 --> 01:23:52.209
+You compare against zero. OK.
+
+01:23:52.210 --> 01:23:53.554
+This one's really interesting.
+
+01:23:53.554 --> 01:23:55.542
+Uh, let me … lexicographical_compare_three_way …
+
+01:23:55.542 --> 01:23:58.020
+we don't have any –
+
+01:23:58.020 --> 01:23:59.300
+we don't have any test
+
+01:23:59.300 --> 01:24:00.324
+coverage for custom
+
+01:24:00.330 --> 01:24:02.970
+&lt;=&gt; comparators.
+
+01:24:10.730 --> 01:24:12.980
+lexicographical_three – ohh compare_three_way.
+
+01:24:20.880 --> 01:24:22.569
+Defined in clause 25.
+
+01:24:46.340 --> 01:24:51.606
+Oh, OK, I think I think we're correct, so
+
+01:24:51.606 --> 01:24:54.798
+this says in sort of mathematical terms,
+
+01:24:54.800 --> 01:24:57.080
+find the smallest integer that
+
+01:24:57.080 --> 01:24:58.384
+you see different elements,
+
+01:24:58.384 --> 01:25:00.720
+so the first elements that don't match.
+
+01:25:00.720 --> 01:25:02.336
+If you find one where it's not zero,
+
+01:25:02.340 --> 01:25:05.297
+you just return it. If they all
+
+01:25:05.297 --> 01:25:07.060
+end up happening to be equal to zero,
+
+01:25:07.060 --> 01:25:10.540
+meaning they're all equivalent, then,
+
+01:25:10.540 --> 01:25:15.016
+ohh, &lt;=&gt;-ize, always &lt;=&gt;.
+
+01:25:17.050 --> 01:25:19.680
+OK, so this is very much like,
+
+01:25:23.640 --> 01:25:25.120
+this is exactly like
+
+01:25:27.540 --> 01:25:30.015
+the stand… the classic one where
+
+01:25:30.015 --> 01:25:32.025
+the classical one says if the
+
+01:25:32.025 --> 01:25:33.519
+comparison resolves before the end,
+
+01:25:33.520 --> 01:25:35.032
+return whatever the comparator
+
+01:25:35.032 --> 01:25:37.300
+said, so std::less, std::greater,
+
+01:25:37.300 --> 01:25:40.160
+user less, user greater, whatever,
+
+01:25:40.160 --> 01:25:41.567
+you return that, but, if they end
+
+01:25:41.567 --> 01:25:43.119
+up all being equivalent elements,
+
+01:25:43.120 --> 01:25:46.256
+then the shorter sequence is considered less
+
+01:25:46.256 --> 01:25:48.718
+than, lexicographically less than, the greater.
+
+01:25:48.720 --> 01:25:51.408
+You don't use the user comparator
+
+01:25:51.408 --> 01:25:54.639
+there. This here says, let E(n)
+
+01:25:54.640 --> 01:25:56.866
+be the user comparator on the
+
+01:25:56.866 --> 01:25:58.800
+n-th elements of the sequences.
+
+01:25:58.800 --> 01:26:01.806
+If the comparison –
+
+01:26:01.806 --> 01:26:03.810
+if there are different elements
+
+01:26:03.810 --> 01:26:06.148
+that we encounter, return the user comparison.
+
+01:26:06.150 --> 01:26:08.430
+If you don't, then you ignore
+
+01:26:08.430 --> 01:26:09.570
+the user comparison.
+
+01:26:09.570 --> 01:26:12.470
+You directly open &lt;=&gt;
+
+01:26:12.470 --> 01:26:17.898
+the lengths of these, so
+
+01:26:17.900 --> 01:26:20.372
+the user comparison could be returning
+
+01:26:20.372 --> 01:26:22.782
+a strong_ordering of, you know,
+
+01:26:22.782 --> 01:26:24.306
+less or greater that's reversed.
+
+01:26:24.310 --> 01:26:26.711
+It could be doing like a std::greater
+
+01:26:26.711 --> 01:26:27.740
+type comparison,
+
+01:26:27.740 --> 01:26:30.296
+but you are not supposed to
+
+01:26:30.296 --> 01:26:31.940
+use it on this case.
+
+01:26:31.940 --> 01:26:33.380
+So this says that we've got a bug.
+
+01:26:33.380 --> 01:26:34.956
+We need test coverage for it as well,
+
+01:26:34.960 --> 01:26:35.380
+OK?
+
+01:26:41.550 --> 01:26:43.944
+And I guess I noticed this because
+
+01:26:43.950 --> 01:26:46.421
+this pattern of using the _Memcmp_pred
+
+01:26:46.421 --> 01:26:49.397
+twice did not occur for the
+
+01:26:49.397 --> 01:26:51.702
+std::lexicographical_compare, the classic one.
+
+01:26:51.710 --> 01:26:53.598
+So even though it does look like it's
+
+01:26:53.598 --> 01:26:55.013
+consistent here that we're converting
+
+01:26:55.013 --> 01:26:56.922
+these two &lt;=&gt;s over to the
+
+01:26:56.922 --> 01:26:58.772
+_Memcmp_pred machinery, that difference
+
+01:26:58.772 --> 01:27:01.509
+in pattern is what clued me in,
+
+01:27:01.510 --> 01:27:03.946
+this is not what we want.
+
+01:27:03.950 --> 01:27:05.570
+OK, so where is the bug?
+
+01:27:05.570 --> 01:27:08.792
+I think the bug is with the _Num1s.
+
+01:27:08.800 --> 01:27:13.434
+Because if memcmp finds a non-zero answer,
+
+01:27:13.440 --> 01:27:17.384
+we found different elements.
+
+01:27:17.384 --> 01:27:19.230
+So. Possibly here.
+
+01:27:24.960 --> 01:27:26.180
+Actually, is this an issue?
+
+01:27:26.180 --> 01:27:26.996
+Are we,
+
+01:27:26.996 --> 01:27:28.220
+this may not be an issue.
+
+01:27:28.220 --> 01:27:29.985
+We only activate this
+
+01:27:29.985 --> 01:27:31.397
+for ones we recognize.
+
+01:27:33.550 --> 01:27:36.566
+We only activate it for our strong_order,
+
+01:27:36.570 --> 01:27:38.290
+weak_order, and partial_order,
+
+01:27:38.290 --> 01:27:40.504
+not for user comparisons because we
+
+01:27:40.504 --> 01:27:42.609
+don't know what they're gonna do,
+
+01:27:42.610 --> 01:27:44.630
+so we can't possibly call
+
+01:27:44.630 --> 01:27:47.290
+memcmp for them. Ah.
+
+01:27:50.000 --> 01:27:54.352
+So at most, at most this is
+
+01:27:54.352 --> 01:27:55.358
+unnecessarily generalized.
+
+01:27:55.360 --> 01:27:56.146
+I think I'm still gonna ask
+
+01:27:56.146 --> 01:27:57.290
+for it to be changed because we
+
+01:27:57.290 --> 01:27:58.255
+can just say &lt;=&gt; here.
+
+01:28:03.010 --> 01:28:04.865
+Yeah it affects the return – oh yeah,
+
+01:28:04.870 --> 01:28:09.430
+ooh it – auto, ohh we would convert
+
+01:28:09.430 --> 01:28:11.255
+the stronger to the weaker,
+
+01:28:11.255 --> 01:28:14.258
+that's possible, right? Yeah?
+
+01:28:16.750 --> 01:28:18.718
+It – I think it does
+
+01:28:18.718 --> 01:28:20.449
+not affect observable behavior.
+
+01:28:20.450 --> 01:28:22.956
+But, for clarity, I would prefer
+
+01:28:22.956 --> 01:28:26.119
+to see a direct use of &lt;=&gt;.
+
+01:28:26.120 --> 01:28:29.550
+I'll put it like that.
+
+01:28:29.550 --> 01:28:32.358
+OK, and it's on the _Num1's because
+
+01:28:32.358 --> 01:28:34.860
+if _Ans is not zero, then we should
+
+01:28:34.860 --> 01:28:35.980
+return whatever this returns.
+
+01:28:35.980 --> 01:28:37.836
+Is this whole thing auto?
+
+01:28:37.836 --> 01:28:40.156
+The whole thing is auto.
+
+01:28:40.160 --> 01:28:41.637
+Ohh sorry it's auto -&gt;, so we've
+
+01:28:41.637 --> 01:28:43.040
+already got the return type here.
+
+01:28:43.040 --> 01:28:46.556
+Yeah I wanna see &lt;=&gt;, OK.
+
+01:28:46.560 --> 01:28:48.770
+I'm going to comment here.
+
+01:28:48.770 --> 01:28:50.654
+OK, ehh, these are horrible,
+
+01:28:50.654 --> 01:28:53.480
+it says paragraph 3 of …
+
+01:28:53.592 --> 01:28:56.670
+I really need a bigger text box.
+
+01:28:56.670 --> 01:28:58.722
+I think big thoughts.
+
+01:28:58.722 --> 01:29:00.590
+Thank you, OK.
+
+01:29:05.720 --> 01:29:07.598
+And we are almost at time,
+
+01:29:07.598 --> 01:29:08.537
+or slightly overtime.
+
+01:29:08.540 --> 01:29:11.056
+WG21-N4892.
+
+01:29:11.056 --> 01:29:13.040
+I Have memorized that number.
+
+01:29:13.040 --> 01:29:15.110
+I'll keep the section number
+
+01:29:15.110 --> 01:29:16.766
+in there for convenience.
+
+01:29:16.770 --> 01:29:18.202
+I'm not gonna bother
+
+01:29:18.202 --> 01:29:19.634
+with all the formatting.
+
+01:29:26.520 --> 01:29:31.140
+Chop this out so it's not distracting.
+
+01:29:33.180 --> 01:29:35.651
+I guess I am a little picky
+
+01:29:35.651 --> 01:29:38.218
+and I'll put that in italics.
+
+01:29:38.220 --> 01:29:41.060
+Gonna put some backticks here.
+
+01:29:41.060 --> 01:29:45.618
+OK. Let's see.
+
+01:29:50.600 --> 01:29:55.058
+Although I don't believe it
+
+01:29:55.060 --> 01:29:59.858
+[under breath] actually, let me summarize this.
+
+01:29:59.860 --> 01:30:04.996
+After some thought, I don't believe this affects correctness,
+
+01:30:04.996 --> 01:30:09.724
+but I believe we should directly
+
+01:30:12.440 --> 01:30:16.776
+&lt;=&gt; compare the
+
+01:30:16.776 --> 01:30:23.280
+lengths here, instead of using the
+
+01:30:23.280 --> 01:30:27.960
+_Memcmp_pred
+
+01:30:27.960 --> 01:30:31.851
+returned by the metaprogramming.
+
+01:30:31.851 --> 01:30:36.357
+This will match the standardese
+
+01:30:36.360 --> 01:30:41.846
+and the classic lexicographical_compare
+
+01:30:41.846 --> 01:30:50.030
+implementation more closely.
+
+01:30:50.030 --> 01:30:52.898
+For the classic impl,
+
+01:30:52.898 --> 01:30:56.958
+this is critical, as the
+
+01:30:59.110 --> 01:31:02.298
+metaprogrammed machinery is
+
+01:31:02.298 --> 01:31:06.178
+capable of reversing the ordering,
+
+01:31:06.178 --> 01:31:11.980
+which we don't want to do for the
+
+01:31:11.980 --> 01:31:18.886
+lengths of equal prefix sequences.
+
+01:31:18.890 --> 01:31:25.071
+For the three way impl, this is cosmetic
+
+01:31:25.071 --> 01:31:29.335
+as we activate the optimization only
+
+01:31:29.335 --> 01:31:31.885
+for strong_order, I'm not going
+
+01:31:31.885 --> 01:31:34.229
+to bother monospacing this, weak_order,
+
+01:31:34.230 --> 01:31:39.354
+partial_order, none of which
+
+01:31:39.360 --> 01:31:44.633
+reverse things like std::greater
+
+01:31:44.633 --> 01:31:48.598
+do. OK. Lot of words.
+
+01:31:48.600 --> 01:31:50.560
+WG21-N4892 alg.three.way/3
+
+01:31:50.560 --> 01:31:53.932
+Returns … or (e1 - b1) &lt;=&gt; (e2 - b2)
+
+01:31:53.932 --> 01:31:55.420
+if no such integer exists.
+
+01:31:55.420 --> 01:31:56.164
+After some thought,
+
+01:31:56.164 --> 01:31:57.652
+I don't believe this affects correctness,
+
+01:31:57.660 --> 01:31:59.050
+but I believe we should directly.
+
+01:32:02.220 --> 01:32:03.330
+Let me say, but for clarity.
+
+01:32:05.800 --> 01:32:06.409
+After some thought,
+
+01:32:06.409 --> 01:32:07.627
+I don't believe this affects correctness,
+
+01:32:07.630 --> 01:32:09.121
+but for clarity I believe we should
+
+01:32:09.121 --> 01:32:10.183
+directly &lt;=&gt; compare the lengths here
+
+01:32:10.183 --> 01:32:11.335
+instead of using the _Memcmp_pred returned
+
+01:32:11.335 --> 01:32:12.625
+by the metaprogramming, this will match
+
+01:32:12.625 --> 01:32:13.921
+the standardese and the classic
+
+01:32:13.930 --> 01:32:14.824
+lexicographical_compare implementation
+
+01:32:14.824 --> 01:32:16.612
+more closely. For the classic impl,
+
+01:32:16.620 --> 01:32:18.264
+this is critical as the metaprogramming
+
+01:32:18.264 --> 01:32:19.584
+machinery is capable of reversing the
+
+01:32:19.584 --> 01:32:20.664
+ordering which we don't want to
+
+01:32:20.664 --> 01:32:22.154
+do for the lengths of equal prefix
+
+01:32:22.154 --> 01:32:23.516
+sequences. For the three way impl,
+
+01:32:23.520 --> 01:32:24.810
+this is cosmetic as we activate
+
+01:32:24.810 --> 01:32:25.982
+the optimization only for strong_order,
+
+01:32:25.982 --> 01:32:27.070
+weak_order, partial_order,
+
+01:32:27.070 --> 01:32:28.850
+none of which reverse things
+
+01:32:28.850 --> 01:32:32.430
+like std::greater do. OK.
+
+01:32:32.430 --> 01:32:34.523
+And then add some top level const,
+
+01:32:34.523 --> 01:32:35.810
+and we're all good.
+
+01:32:35.810 --> 01:32:41.948
+No ranges stuff here, that I see.
+
+01:32:41.948 --> 01:32:44.670
+OK, that is the end of &lt;xutility&gt;.
+
+01:32:44.670 --> 01:32:47.616
+We can mark that as viewed.
+
+01:32:47.620 --> 01:32:49.706
+OK, so let me alt click and
+
+01:32:49.706 --> 01:32:51.620
+see what test code we have.
+
+01:32:51.620 --> 01:32:53.405
+So we've got all the test code.
+
+01:32:53.410 --> 01:32:55.309
+The only thing I had looked at was test.lst.
+
+01:32:57.600 --> 01:32:59.913
+OK, most of it is new tests, or sorry,
+
+01:32:59.920 --> 01:33:02.760
+it's these decomposed tests.
+
+01:33:02.760 --> 01:33:05.048
+Some new, some decomposed.
+
+01:33:05.048 --> 01:33:07.762
+OK, I will go ahead and submit
+
+01:33:07.762 --> 01:33:10.930
+this review. Thanks –
+
+01:33:10.930 --> 01:33:16.298
+part 2 of the …
+
+01:33:16.298 --> 01:33:21.024
+or, thanks – reviewed this in part 2
+
+01:33:21.024 --> 01:33:26.100
+of the video review.
+
+01:33:26.100 --> 01:33:30.020
+Looked at the rest of &lt;xutility&gt;,
+
+01:33:30.020 --> 01:33:35.050
+still need to review the test code.
+
+01:33:38.350 --> 01:33:41.380
+OK. Comment.
+
+01:33:49.110 --> 01:33:51.712
+OK so I asked for,
+
+01:33:51.712 --> 01:33:53.404
+comment change about the volatility because
+
+01:33:53.404 --> 01:33:55.886
+I was a little bit confused about that,
+
+01:33:55.890 --> 01:33:58.754
+the renaming that I don't have any good
+
+01:33:58.754 --> 01:34:01.458
+suggestions for, the inline, that's cosmetic.
+
+01:34:01.458 --> 01:34:03.446
+Avoiding the quasi-shadowing
+
+01:34:03.446 --> 01:34:05.330
+with _Pred.
+
+01:34:05.330 --> 01:34:08.066
+Same with _Comp elsewhere.
+
+01:34:08.070 --> 01:34:09.286
+And either std:: qualifying
+
+01:34:09.286 --> 01:34:10.806
+this or just unifying them.
+
+01:34:10.810 --> 01:34:13.466
+And I think it should actually be unified.
+
+01:34:13.470 --> 01:34:15.374
+Uh, the _Comp as I mentioned and then
+
+01:34:15.374 --> 01:34:17.197
+the final thing with the &lt;=&gt;.
+
+01:34:17.200 --> 01:34:21.466
+So all cosmetic stuff/some clarity for naming?
+
+01:34:21.470 --> 01:34:23.426
+But really no correctness concerns,
+
+01:34:23.430 --> 01:34:25.695
+so, this is looking extremely
+
+01:34:25.695 --> 01:34:27.722
+good and I think we're just gonna
+
+01:34:27.722 --> 01:34:29.669
+need to look at the test code.
+
+01:34:29.670 --> 01:34:31.875
+Oh, and it looks like Casey has also reviewed.
+
+01:34:34.040 --> 01:34:36.278
+This can fail in the presence
+
+01:34:36.278 --> 01:34:37.397
+of multiple inheritance,
+
+01:34:37.400 --> 01:34:38.855
+since the pointer to base and the pointer
+
+01:34:38.855 --> 01:34:41.149
+to derived can be equal but have differing
+
+01:34:41.150 --> 01:34:43.460
+bit patterns. Is that true for
+
+01:34:43.460 --> 01:34:44.450
+is_pointer_interconvertible?
+
+01:34:47.020 --> 01:34:48.784
+I thought that's what …
+
+01:34:48.784 --> 01:34:51.240
+&gt;&gt; Casey: [unintelligible]
+
+01:34:51.240 --> 01:34:52.440
+&gt;&gt; Stephan: Yeah, this is user …
+
+01:34:52.440 --> 01:34:53.410
+this is library defined.
+
+01:34:53.410 --> 01:34:54.635
+This is why AdamBucior is defining.
+
+01:34:54.640 --> 01:34:57.442
+But he uses is_pointer_interconvertible_base_of.
+
+01:34:57.442 --> 01:35:02.440
+&gt;&gt; Casey: OK, never mind.
+
+01:35:02.440 --> 01:35:03.400
+&gt;&gt; Stephan: But that's a good point.
+
+01:35:04.380 --> 01:35:08.580
+We should have a test, ideally.
+
+01:35:08.580 --> 01:35:09.816
+I can add a comment here.
+
+01:35:09.820 --> 01:35:12.160
+I believe that the use of
+
+01:35:12.160 --> 01:35:15.796
+&gt;&gt; Casey: I guess yeah, thank you.
+
+01:35:15.800 --> 01:35:17.220
+&gt;&gt; Stephan: Yeah, I can't spell it.
+
+01:35:17.220 --> 01:35:19.940
+I think it's is_pointer_interconvertible …
+
+01:35:19.940 --> 01:35:23.416
+&gt;&gt; Casey: yeah, is_pointer_interconvertible.
+
+01:35:23.416 --> 01:35:25.414
+&gt;&gt; Stephan: … base_of. This puppy.
+
+01:35:25.414 --> 01:35:28.078
+&gt;&gt; Casey: There we go.
+
+01:35:28.080 --> 01:35:28.740
+&gt;&gt; Stephan: Yeah.
+
+01:35:31.170 --> 01:35:33.501
+handles this scenario,
+
+01:35:33.501 --> 01:35:38.163
+but we should be sure to,
+
+01:35:38.170 --> 01:35:39.358
+we should make sure
+
+01:35:41.370 --> 01:35:45.936
+that there's test coverage for this
+
+01:35:45.936 --> 01:35:49.268
+scenario. I haven't checked yet.
+
+01:35:53.240 --> 01:35:54.632
+Yes, an excellent question,
+
+01:35:54.632 --> 01:35:55.844
+because mishandling
+
+01:35:55.844 --> 01:35:57.284
+this would be very bad.
+
+01:36:00.130 --> 01:36:00.650
+Commented!
+
+01:36:05.240 --> 01:36:07.060
+OK, cool, let's see.
+
+01:36:07.060 --> 01:36:08.500
+Are there any questions for all
+
+01:36:08.500 --> 01:36:10.150
+of the topics we covered?
+
+01:36:19.860 --> 01:36:22.680
+OK, I'm not hearing any.
+
+01:36:22.680 --> 01:36:25.700
+So I think we can call this the end of the
+
+01:36:25.700 --> 01:36:27.480
+video code review.
+
+01:36:27.480 --> 01:36:29.780
+I'll stop sharing my screen.
+
+01:36:29.780 --> 01:36:32.546
+So thanks again for joining us; for next week
+
+01:36:32.546 --> 01:36:34.240
+we may either continue looking at this,
+
+01:36:34.240 --> 01:36:36.454
+or perhaps I'll go off and review the tests,
+
+01:36:36.460 --> 01:36:39.308
+and we'll be looking at another PR next time,
+
+01:36:39.310 --> 01:36:40.648
+so thanks and see you then!
