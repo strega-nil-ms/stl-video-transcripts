@@ -1,7 +1,25 @@
-## STL Video Transcripts
+# STL Video Transcripts
 
 This repo is for people to contribute to editing transcripts of the
 STL Open Code Review meetings. Thank you!
+
+
+## Adding Captions
+
+To add captions, first make sure to pipe up in the correct issue thread,
+and inform us that you're taking a video on, so that we don't duplicate work.
+Then, you can start on a pull request.
+
+You should start with [`metadata.json`][]; add a `"name"` and a `"description"`
+in accordance with that section.
+
+Then, copy `original.vtt` to `edited.vtt`, and you can start editing there in
+accordance with [Captioning Style][]. You can get the video at the link in
+`metadata.json` (`"private-link"`). If you need any assistance at all, don't hesitate
+to ask either on the STL discord, or on the issue thread.
+
+[`metadata.json`]: #metadata-json
+[Captioning Style]: #captioning-style
 
 ### Layout of the Repo
 
