@@ -64,7 +64,7 @@ sequence containers and then vector.
 Let's just look at the class
 
 00:01:08.220 --> 00:01:11.170
-Definition here.
+definition here.
 
 00:01:11.170 --> 00:01:13.870
 And zoom in.
@@ -487,7 +487,7 @@ This case I don't want to do
 this subrange thing.
 
 00:06:55.420 --> 00:07:01.297
-But what if I have an istream iterator?
+But what if I have an istream_iterator?
 
 00:07:01.300 --> 00:07:03.958
 I can read shorts from this
@@ -529,7 +529,7 @@ a string with a bunch of space
 separated odd numbers and I can use an
 
 00:07:35.702 --> 00:07:37.604
-istream iterator to parse integers.
+istream_iterator to parse integers.
 
 00:07:37.604 --> 00:07:41.200
 In this case I'm saying I want to read
@@ -541,7 +541,7 @@ short values from this istringstream
 until I run out of them and
 
 00:07:45.795 --> 00:07:48.273
-the end istream iterator is a default
+the end istream_iterator is a default
 
 00:07:48.273 --> 00:07:50.293
 constructed one or value constructed one,
@@ -562,7 +562,7 @@ So what's happening here is
 actually kind of interesting.
 
 00:07:59.870 --> 00:08:02.012
-I'm giving the vector into the
+I'm giving the vector<int> the
 
 00:08:02.012 --> 00:08:04.150
 weakest possible range of iterators.
@@ -619,7 +619,7 @@ passes over the input data,
 because as you're incrementing an
 
 00:08:44.210 --> 00:08:47.820
-istream iterator, you're consuming
+istream_iterator, you're consuming
 
 00:08:47.820 --> 00:08:48.864
 information from that stringstream
@@ -628,7 +628,7 @@ information from that stringstream
 and as soon as you increment
 
 00:08:50.868 --> 00:08:52.029
-that istream iterator,
+that istream_iterator,
 
 00:08:52.030 --> 00:08:55.330
 you can't go back and read
@@ -766,7 +766,7 @@ So here we have C++20 ranges
 with some namespace aliases.
 
 00:10:25.960 --> 00:10:31.910
-sr is std::ranges, rv is ranges views
+sr is std::ranges, rv is sr::views
 
 00:10:31.910 --> 00:10:34.155
 Two vector takes a random
@@ -856,16 +856,17 @@ Ohh is that this one here?
 Conversions ranges to containers
 
 00:11:48.506 --> 00:11:51.480
-of all because I've got it mostly
+&gt;&gt; Casey: of all because I've got it mostly
 
 00:11:51.480 --> 00:11:53.500
-implemented and I'm perennially
+&gt;&gt; Casey: implemented and I'm perennially
 
 00:11:53.500 --> 00:11:56.710
-5% away from getting it finished.
+&gt;&gt; Casey: 5% away from getting it finished.
 
 00:11:56.710 --> 00:11:58.050
-So really reviewing this at
+&gt;&gt; Stephan: Excellent.
+So we will be reviewing this at
 
 00:11:58.050 --> 00:11:59.390
 some point in the future,
@@ -1105,7 +1106,7 @@ so this code is much easier to read
 than it used to be years ago.
 
 00:14:49.190 --> 00:14:51.848
-So here we can see vectors,
+So here we can see vector's
 
 00:14:51.850 --> 00:14:52.726
 range constructor.
@@ -1120,10 +1121,10 @@ Yeah, I've used 150% for other reviews.
 Let me know if this looks too small.
 
 00:15:01.860 --> 00:15:03.992
-So vectors range constructor.
+So vector's range constructor.
 
 00:15:03.992 --> 00:15:06.657
-We're templated on arbitrary iterators.
+were templated on arbitrary iterators.
 
 00:15:06.660 --> 00:15:09.020
 We've got a constraint here,
@@ -1201,7 +1202,7 @@ so the code originally here was using
 one of our helper variable templates,
 
 00:16:00.430 --> 00:16:02.590
-saying if you were forward iterator.
+saying if you're a forward iterator.
 
 00:16:02.590 --> 00:16:05.134
 Or better then we can take it the
@@ -1219,7 +1220,7 @@ which we'll do iterator checking and
 unwrap down to raw pointers if we
 
 00:16:14.636 --> 00:16:16.776
-recognize oh you're vector iterator
+recognize oh you're a vector or an iterator
 
 00:16:16.776 --> 00:16:19.098
 or something and we don't need to pay
@@ -1237,7 +1238,7 @@ and you last are doing.
 So going back if we have a
 
 00:16:25.456 --> 00:16:26.500
-forward iterator stronger,
+forward iterator or stronger,
 
 00:16:26.500 --> 00:16:28.140
 we can call std::distance,
@@ -1288,10 +1289,10 @@ weakest input iterators,
 in which case we need to repeatedly
 
 00:17:00.709 --> 00:17:02.698
-reallocate by calling in place.
+reallocate by calling in place
 
 00:17:02.698 --> 00:17:03.754
-In a loop.
+in a loop.
 
 00:17:03.760 --> 00:17:05.097
 So that's what this code is doing,
@@ -1339,7 +1340,7 @@ according to the iterator
 category,
 
 00:17:39.478 --> 00:17:42.334
-but if a compile time we meet
+but if I compile time we meet
 
 00:17:42.334 --> 00:17:44.600
 the forward iterator concept,
@@ -1381,76 +1382,76 @@ the forward iterator category.
 Oh, Nicole, go ahead.
 
 00:18:13.940 --> 00:18:15.640
-Sorry, I'm I'm still sick.
+&gt;&gt; Nicole: Sorry, I'm I'm still sick.
 
 00:18:15.640 --> 00:18:18.335
-Uh, so that's why I sound terrible,
+&gt;&gt; Nicole: Uh, so that's why I sound terrible,
 
 00:18:18.340 --> 00:18:20.740
-but my point in the meeting
+&gt;&gt; Nicole: but my point in the meeting
 
 00:18:20.740 --> 00:18:22.397
-yesterday was less, uh,
+&gt;&gt; Nicole: yesterday was less, uh,
 
 00:18:22.397 --> 00:18:25.139
-aren't these the same and more?
+&gt;&gt; Nicole: aren't these the same and more?
 
 00:18:25.140 --> 00:18:29.591
-Uh, should _Is_fwd_iter_v uh,
+&gt;&gt; Nicole: Uh, should _Is_fwd_iter_v uh,
 
 00:18:29.591 --> 00:18:32.398
-be like only done in old code.
+&gt;&gt; Nicole: be like only done in old code.
 
 00:18:32.400 --> 00:18:36.418
-Given that I believe that forward iterator
+&gt;&gt; Nicole: Given that I believe that forward iterator
 
 00:18:36.418 --> 00:18:40.000
-like encompasses _Is_fwd_iter_v?
+&gt;&gt; Nicole: like encompasses _Is_fwd_iter_v?
 
 00:18:40.000 --> 00:18:41.296
-Does that make sense?
+&gt;&gt; Nicole: Does that make sense?
 
 00:18:41.296 --> 00:18:43.078
-Yeah, OK, so the question is
+&gt;&gt; Stephan: Yeah, OK, so the question is
 
 00:18:43.080 --> 00:18:44.088
-Not is it redundant?
+not is it redundant
 
 00:18:44.088 --> 00:18:45.768
-But could we simply replace
+but could we simply replace
 
 00:18:45.768 --> 00:18:47.538
-the old code path, right?
+the old code path? 
 
 00:18:47.540 --> 00:18:49.416
-And like obviously we would need to
+&gt;&gt; Nicole: Right. And like obviously we would need to
 
 00:18:49.416 --> 00:18:51.740
-like do an ifdef and then and else,
+&gt;&gt; Nicole: like do an ifdef and then and else,
 
 00:18:51.740 --> 00:18:55.188
-but in theory it's.
+&gt;&gt; Nicole: but in theory it's.
 
 00:18:55.190 --> 00:18:55.682
-Reasonable,
+&gt;&gt; Nicole: Reasonable,
 
 00:18:55.682 --> 00:18:59.618
-I think everything that is a forward iterator
+&gt;&gt; Nicole: I think everything that is a forward iterator
 
 00:18:59.618 --> 00:19:02.914
-in C++ or C++17 classic forward iterator,
+&gt;&gt; Nicole: in C++ or C++17 classic forward iterator,
 
 00:19:02.914 --> 00:19:05.694
-whatever is also a forward
+&gt;&gt; Nicole: whatever is also a forward
 
 00:19:05.694 --> 00:19:08.327
-iterator in the new ranges world.
+&gt;&gt; Nicole: iterator in the new ranges world.
 
 00:19:08.330 --> 00:19:11.270
-I might be wrong though Casey.
+&gt;&gt; Nicole: I might be wrong though Casey.
 
 00:19:11.270 --> 00:19:11.888
-Yeah, I'll let.
+&gt;&gt; Stephan: Yeah, I'll let.
 
 00:19:11.888 --> 00:19:12.918
 I'll let Casey comment there.
@@ -1465,7 +1466,7 @@ we may need to worry about iterators
 that essentially lie and they're tagged
 
 00:19:19.381 --> 00:19:22.940
-with is forward ITER without not
+with _Is_fwd_iter_v without, um not
 
 00:19:22.940 --> 00:19:25.604
 technically meeting the requirements.
@@ -1531,73 +1532,73 @@ Casey may have stepped away
 from his computer, so that's OK,
 
 00:20:09.286 --> 00:20:11.651
-sorry I'm I'm here. I I didn't.
+&gt;&gt; Casey: Sorry. I'm I'm here. I I didn't.
 
 00:20:11.651 --> 00:20:13.079
-I was muted. Apologies.
+&gt;&gt; Casey: I was muted. Apologies.
 
 00:20:13.080 --> 00:20:16.825
-I think all actual things that comply
+&gt;&gt; Casey: I think all actual things that comply
 
 00:20:16.825 --> 00:20:19.484
-with CPP 17 forward iterator will
+&gt;&gt; Casey: with CPP 17 forward iterator will
 
 00:20:19.484 --> 00:20:22.139
-actually satisfy the forward iter concept,
+&gt;&gt; Casey: actually satisfy the forward iter concept,
 
 00:20:22.140 --> 00:20:24.205
-and I did just look at this.
+&gt;&gt; Casey: and I did just look at this.
 
 00:20:24.210 --> 00:20:26.660
-Right like moments ago because I was
+&gt;&gt; Casey: Right like moments ago because I was
 
 00:20:26.660 --> 00:20:29.403
-trying to make sure that it was kosher
+&gt;&gt; Casey: trying to make sure that it was kosher
 
 00:20:29.403 --> 00:20:31.869
-for us to check forward iterator on
+&gt;&gt; Casey: for us to check forward iterator on
 
 00:20:31.869 --> 00:20:34.592
-things that were CPP 17 input iterators,
+&gt;&gt; Casey: things that were CPP 17 input iterators,
 
 00:20:34.600 --> 00:20:37.120
-which it is because yeah,
+&gt;&gt; Casey: which it is because yeah,
 
 00:20:37.120 --> 00:20:38.872
-we checked that they've opted in
+&gt;&gt; Casey: we checked that they've opted in
 
 00:20:38.872 --> 00:20:40.780
-by the iter concept value first,
+&gt;&gt; Casey: by the iter concept value first,
 
 00:20:40.780 --> 00:20:43.198
-so it's clean.
+&gt;&gt; Casey: so it's clean.
 
 00:20:43.200 --> 00:20:45.279
-We can do this under as if and I
+&gt;&gt; Casey: We can do this under as if and I
 
 00:20:45.279 --> 00:20:47.260
-actually had that concern with this PR,
+&gt;&gt; Casey: actually had that concern with this PR,
 
 00:20:47.260 --> 00:20:48.334
-but it's fine.
+&gt;&gt; Casey: but it's fine.
 
 00:20:48.334 --> 00:20:51.247
-OK, so so you're saying can we get
+&gt;&gt; Casey: so the question now can we get
 
 00:20:51.247 --> 00:20:53.855
-rid of the old path and you are
+&gt;&gt; Casey: rid of the old path and you are
 
 00:20:53.855 --> 00:20:56.650
-right that there are broken iterator
+&gt;&gt; Casey: right that there are broken iterator
 
 00:20:56.650 --> 00:20:58.528
-types that will use the old path.
+&gt;&gt; Casey: types that will use the old path.
 
 00:20:58.530 --> 00:21:02.884
-Still that wouldn't make the new path.
+&gt;&gt; Casey: Still that wouldn't make the new path.
 
 00:21:02.890 --> 00:21:05.362
-OK, so in an ideal world we could
+&gt;&gt; Stephan: OK, so in an ideal world we could
 
 00:21:05.362 --> 00:21:07.873
 do Nicole's suggests and just
@@ -1810,52 +1811,53 @@ down to the allocators size type.
 Casey, go ahead.
 
 00:23:51.580 --> 00:23:54.254
-We can't static cast the results of
+&gt;&gt; Casey: We can't static cast the results of
 
 00:23:54.254 --> 00:23:56.996
-ranges distance to size_t without
+&gt;&gt; Casey: ranges distance to size_t without
 
 00:23:56.996 --> 00:23:58.517
-possibly losing information.
+&gt;&gt; Casey: possibly losing information.
 
 00:23:58.520 --> 00:24:02.684
-Since, like the iota with 128 bit
+&gt;&gt; Stephan: Since, like the iota with 128 bit
 
 00:24:02.684 --> 00:24:03.860
-or whatever stuff, yes,
+&gt;&gt; Stephan: or whatever stuff, 
+&gt;&gt; Casey: yes
 
 00:24:03.860 --> 00:24:06.296
-there it's possible that ranges have
+&gt;&gt; Casey: there it's possible that ranges have
 
 00:24:06.296 --> 00:24:09.098
-integer class type for their size type,
+&gt;&gt; Casey: integer class type for their size type,
 
 00:24:09.100 --> 00:24:11.030
-which has values that aren't
+&gt;&gt; Casey: which has values that aren't
 
 00:24:11.030 --> 00:24:12.574
-representable by size_t,
+&gt;&gt; Casey: representable by size_t,
 
 00:24:12.580 --> 00:24:15.190
-and we'll be modulating the information
+&gt;&gt; Casey: and we'll be modulating the information
 
 00:24:15.190 --> 00:24:17.529
-away and that would be bad.
+&gt;&gt; Casey: away and that would be bad.
 
 00:24:17.530 --> 00:24:19.474
-So what we need to do here is instead
+&gt;&gt; Casey: So what we need to do here is instead
 
 00:24:19.474 --> 00:24:21.156
-of static casting the size_t,
+&gt;&gt; Casey: of static casting the size_t,
 
 00:24:21.160 --> 00:24:24.345
-we need to use _To_unsigned_like.
+&gt;&gt; Casey: we need to use _To_unsigned_like.
 
 00:24:24.350 --> 00:24:27.128
-Internal helper function
+&gt;&gt; Casey: Internal helper function
 
 00:24:27.130 --> 00:24:31.240
-Let's see if I can find that I do have my.
+&gt;&gt; Stephan: Let's see if I can find that I do have my.
 
 00:24:31.240 --> 00:24:33.248
 Enlistment here or repo.
@@ -1864,19 +1866,21 @@ Enlistment here or repo.
 OK so you said _To_unsigned_like_t?
 
 00:24:39.820 --> 00:24:41.500
-No t, I didn't get it right.
+&gt;&gt; Casey: No t
+&gt;&gt; Stephan: I didn't get it right.
 
 00:24:41.500 --> 00:24:44.200
-Oh, no t. There we go.
+&gt;&gt; Stephan: Oh, no t. There we go.
 
 00:24:44.200 --> 00:24:45.360
 _To_unsigned_like OK,
 
 00:24:45.360 --> 00:24:49.230
-that lives in xutility.
+&gt;&gt; Stephan: that lives in xutility.
+&gt;&gt; Casey: lives in xutility.
 
 00:24:49.230 --> 00:24:50.658
-Yeah, OK, great.
+&gt;&gt; Stephan: Yeah, OK, great.
 
 00:24:50.658 --> 00:24:53.990
 And this is is this only suit?
@@ -1897,10 +1901,10 @@ OK, that's 476 ish.
 OK let me get the citation here.
 
 00:25:05.700 --> 00:25:07.574
-stl, inc
+stl, inc,
 
 00:25:07.574 --> 00:25:09.448
-xutility
+xutility,
 
 00:25:13.670 --> 00:25:18.927
 _To_unsigned_like, hit Y for permalink.
@@ -1975,106 +1979,108 @@ iota view can make 64 bit stuff.
 Did Nicole did
 
 00:26:25.214 --> 00:26:26.270
-you have your hand up briefly.
+you have your hand up briefly?
 
 00:26:26.270 --> 00:26:28.265
-Ohh yeah, I was just gonna say,
+&gt;&gt; Nicole: Ohh yeah, I was just gonna say,
 
 00:26:28.270 --> 00:26:32.726
-I assume that the convert size throws a.
+&gt;&gt; Nicole: I assume that the convert size throws a.
 
 00:26:32.730 --> 00:26:36.546
-Throws an exception if the thing is too big.
+&gt;&gt; Nicole: Throws an exception if the thing is too big.
 
 00:26:36.550 --> 00:26:38.138
-Why this is good?
+&gt;&gt; Nicole: Why this is good?
 
 00:26:38.138 --> 00:26:40.123
-Like the basically what what?
+&gt;&gt; Nicole: Like the basically what what?
 
 00:26:40.130 --> 00:26:42.890
-What will happen in the modulo case is?
+&gt;&gt; Nicole: What will happen in the modulo case is?
 
 00:26:42.890 --> 00:26:44.240
-You'll get a
+&gt;&gt; Nicole: You'll get a
 
 00:26:44.240 --> 00:26:48.350
-bad codegen where or bad code where you like.
+&gt;&gt; Nicole: bad codegen where or bad code where you like.
 
 00:26:48.350 --> 00:26:50.976
-Create, uh? Uh.
+&gt;&gt; Nicole: Create, uh? Uh.
 
 00:26:50.976 --> 00:26:53.824
-Create a thing that's like if you have
+&gt;&gt; Nicole: Create a thing that's like if you have
 
 00:26:53.824 --> 00:26:56.938
-a range from zero to two to the uh,
+&gt;&gt; Nicole: a range from zero to two to the uh,
 
 00:26:56.940 --> 00:27:00.009
-33 you create a range of zero and then
+&gt;&gt; Nicole: 33 you create a range of zero and then
 
 00:27:00.009 --> 00:27:02.348
-construct n into that range of 0.
+&gt;&gt; Nicole: construct n into that range of 0.
 
 00:27:04.980 --> 00:27:08.300
-Which is obviously broken.
+&gt;&gt; Nicole: Which is obviously broken.
 
 00:27:08.300 --> 00:27:10.244
-Yeah, and what you want is
+&gt;&gt; Stephan: Yeah
+&gt;&gt; Nicole: and what you want is
 
 00:27:10.244 --> 00:27:12.219
-that the this is too big.
+&gt;&gt; Nicole: that the this is too big.
 
 00:27:14.390 --> 00:27:16.532
-My question is, isn't this broken
+&gt;&gt; Nicole: My question is, isn't this broken
 
 00:27:16.532 --> 00:27:18.590
-in the other code as well?
+&gt;&gt; Nicole: in the other code as well?
 
 00:27:18.590 --> 00:27:23.860
-Like my understanding is that std::distance
+&gt;&gt; Nicole: Like my understanding is that std::distance
 
 00:27:23.860 --> 00:27:27.626
-On something similar to an iota of
+&gt;&gt; Nicole: On something similar to an iota of
 
 00:27:27.626 --> 00:27:31.290
-you could still exist in C++17.
+&gt;&gt; Nicole: you could still exist in C++17.
 
 00:27:31.290 --> 00:27:34.370
-I guess. I guess it wouldn't be a.
+&gt;&gt; Nicole: I guess. I guess it wouldn't be a.
 
 00:27:34.370 --> 00:27:35.875
-It wouldn't be a forward iterator range,
+&gt;&gt; Nicole: It wouldn't be a forward iterator range,
 
 00:27:35.880 --> 00:27:37.644
-though it would be an input iterator.
+&gt;&gt; Nicole: though it would be an input iterator.
 
 00:27:37.650 --> 00:27:39.348
-Never mind right right, it wouldn't.
+&gt;&gt; Nicole:Never mind, right.
+&gt;&gt; Casey: Right, it wouldn't.
 
 00:27:39.350 --> 00:27:40.736
-We're protected by the fact that this
+&gt;&gt; Casey: We're protected by the fact that this
 
 00:27:40.736 --> 00:27:42.168
-is for working on forward iterators,
+&gt;&gt; Casey: is for working on forward iterators,
 
 00:27:42.170 --> 00:27:43.862
-and they have to refer to
+&gt;&gt; Casey: and they have to refer to
 
 00:27:43.862 --> 00:27:44.990
-actual objects in memory,
+&gt;&gt; Casey: actual objects in memory,
 
 00:27:44.990 --> 00:27:46.558
-so we're basically guaranteed
+&gt;&gt; Casey: so we're basically guaranteed
 
 00:27:46.558 --> 00:27:49.331
-that no forward range is has a
+&gt;&gt; Casey: that no forward range is has a
 
 00:27:49.331 --> 00:27:51.390
-distance longer than size_t, right?
+&gt;&gt; Casey: distance longer than size_t, right?
 
 00:27:54.590 --> 00:27:57.579
-OK so I'm looking at convert size
+&gt;&gt; Stephan: OK so I'm looking at convert size
 
 00:27:57.579 --> 00:28:00.241
 convert size expects its input to be
@@ -2155,16 +2161,17 @@ Is that right? Essentially doing what
 convert size is doing, but handwritten?
 
 00:29:06.260 --> 00:29:08.606
-I just pasted convert size from
+&gt;&gt; Casey: I just pasted convert size from
 
 00:29:08.606 --> 00:29:10.974
-my p306 branch
+&gt;&gt; Casey: my p306 branch
 
 00:29:10.974 --> 00:29:13.628
-into the chat OK, you've got.
+&gt;&gt; Casey: into the chat.
+&gt;&gt; Stephan: OK, you've got.
 
 00:29:13.628 --> 00:29:15.980
-You've got just the right code.
+&gt;&gt; Stephan: You've got just the right code.
 
 00:29:15.980 --> 00:29:16.952
 There's your code,
@@ -2188,28 +2195,29 @@ why you can't see it on the the view.
 OK, so you've generalized in your code.
 
 00:29:32.370 --> 00:29:33.980
-Convert size to handle this.
+&gt;&gt; Stephan: Convert size to handle this.
+&gt;&gt; Casey: Yes
 
 00:29:36.110 --> 00:29:39.734
-That's interesting. OK, so for this link.
+&gt;&gt; Stephan: That's interesting. OK, so for this link.
 
 00:29:39.734 --> 00:29:42.830
-But yeah, this PR is going to need to.
+&gt;&gt; Casey: But yeah, this PR is going to need to.
 
 00:29:42.830 --> 00:29:44.306
-We need that that convert size
+&gt;&gt; Casey: We need that that convert size
 
 00:29:44.306 --> 00:29:45.760
-change one way or another,
+&gt;&gt; Casey: change one way or another,
 
 00:29:45.760 --> 00:29:47.638
-so maybe with this we should
+&gt;&gt; Casey: so maybe with this we should
 
 00:29:47.638 --> 00:29:50.816
-hold this up until applying P1206
+&gt;&gt; Casey: hold this up until applying P1206
 
 00:29:50.816 --> 00:29:53.028
-The other thing we could do
+&gt;&gt; Stephan: The other thing we could do
 
 00:29:53.028 --> 00:29:54.788
 is we could just say this is a
@@ -2356,7 +2364,7 @@ that is doing the wrong thing when we
 know what the right thing is to do. I'm OK,
 
 00:31:32.632 --> 00:31:35.060
-so we do need to mention unsigned, like.
+so we do need to mention unsigned like.
 
 00:31:37.820 --> 00:31:40.928
 Let's see if I can capture the
@@ -2392,28 +2400,28 @@ However in the new
 forward iterator code path. The.
 
 00:32:40.270 --> 00:32:41.566
-Let me say std::distance here.
+Let me say std::distance here
 
 00:32:41.570 --> 00:32:47.960
-to get clear the ranges distance
+to be clear the ranges distance
 
 00:32:47.960 --> 00:32:54.110
 might be larger than size_t,
 
 00:32:54.110 --> 00:32:59.704
-for example, iota view. For example,
+for example, iota_view. For example,
 
 00:32:59.704 --> 00:33:06.430
-a 64 bit iota view on a 32 bit
+a 64 bit iota_view on a 32 bit
 
 00:33:06.430 --> 00:33:09.210
 architecture. Uhm?
 
 00:33:11.290 --> 00:33:16.010
-The static cast size_t.
+The static_cast<size_t> 
 
 00:33:16.010 --> 00:33:20.620
-Might therefore truncate. OK.
+might therefore truncate. OK.
 
 00:33:22.710 --> 00:33:28.624
 We need. 2 steps here.
@@ -2467,7 +2475,7 @@ then we accept them.
 Which is why they they end up working
 
 00:34:10.788 --> 00:34:12.818
-like Reg Exaggerators they will,
+like regex iterators they will,
 
 00:34:12.820 --> 00:34:14.772
 I think work with this even though they
@@ -2515,16 +2523,16 @@ OK, so we need to steps here first is.
 The _To_unsigned_like.
 
 00:34:45.860 --> 00:34:53.140
-OK. I am. One call _To_unsigned_like
+OK. Um. 1) Call _To_unsigned_like
 
 00:34:53.140 --> 00:35:00.524
 to convert the signed distance type to
 
 00:35:00.524 --> 00:35:05.240
-its unsigned counterpart. And then two.
+its unsigned counterpart. And then
 
 00:35:07.280 --> 00:35:14.012
-Convert. That unsigned like type to
+2) Convert. That unsigned like type to
 
 00:35:14.012 --> 00:35:20.282
 the allocators size type. Which might
@@ -2542,13 +2550,15 @@ the issue number I should have?
 Shouldn't have closed it?
 
 00:35:39.390 --> 00:35:45.671
-The projects classic. I can tell
+&gt;&gt; Stephan: The projects classic.
+&gt;&gt; Casey: I can tell
 
 00:35:45.671 --> 00:35:49.760
-you the proposal number 2532. OK.
+&gt;&gt; Casey: you the proposal number. 
+&gt;&gt; Stephan: OK. 2532
 
 00:35:58.270 --> 00:36:01.978
-Contains such. Machinery.
+&gt;&gt; Stephan: Contains such. Machinery.
 
 00:36:05.570 --> 00:36:07.582
 Yeah, that will cite.
@@ -2575,19 +2585,20 @@ Since you copy pasting this or just
 doing the if constexpr,
 
 00:36:26.620 --> 00:36:27.460
-yeah that would be fine.
+&gt;&gt; Casey: yeah that would be fine.
 
 00:36:27.460 --> 00:36:30.547
-If they go ahead and steal this.
+&gt;&gt; Casey: If they go ahead and steal this.
 
 00:36:30.550 --> 00:36:33.198
-OK into that PR.
+&gt;&gt; Casey: into that PR.
+&gt;&gt; Stephan: OK
 
 00:36:33.198 --> 00:36:35.846
-Yeah benign merge conflict.
+&gt;&gt; Casey: Yeah benign merge conflict.
 
 00:36:35.850 --> 00:36:39.450
-OK Casey Carter recommends just
+&gt;&gt; Stephan: OK Casey Carter recommends just
 
 00:36:39.450 --> 00:36:44.116
 copying that function into your.
@@ -2596,13 +2607,13 @@ copying that function into your.
 into this PR and.
 
 00:36:54.160 --> 00:36:57.430
-Which, well, it's all a
+Which, will result in a
 
 00:36:57.430 --> 00:37:00.880
 trivial merge conflict to
 
 00:37:03.100 --> 00:37:03.490
-later.
+deal with later.
 
 00:37:05.520 --> 00:37:06.940
 OK, let's preview this.
@@ -2635,10 +2646,10 @@ the range's distance might be
 larger than size_t, for example,
 
 00:37:21.944 --> 00:37:25.400
-64 bit iota view on a 32 bit architecture.
+64 bit iota_view on a 32 bit architecture.
 
 00:37:25.400 --> 00:37:26.840
-The static cast size_t
+The static_cast<size_t>
 
 00:37:26.840 --> 00:37:27.704
 might therefore truncate.
@@ -2683,10 +2694,11 @@ branch rather than our own.
 OK, but we got the citation.
 
 00:37:52.820 --> 00:37:57.529
-It is unfortunate, yeah, the fork is not wide itself.
+&gt;&gt; Casey: It is unfortunate
+&gt;&gt; Stephan: yeah, the fork is not wide itself.
 
 00:37:57.529 --> 00:37:59.285
-Yeah, Casey recommends just
+&gt;&gt; Stephan: Yeah, Casey recommends just
 
 00:37:59.285 --> 00:38:01.760
 copying the function to this PR,
@@ -2695,7 +2707,7 @@ copying the function to this PR,
 which will result in a trivial
 
 00:38:03.650 --> 00:38:05.320
-merge conflict deal with later.
+merge conflict to deal with later.
 
 00:38:05.320 --> 00:38:07.056
 OK, yeah, I'd be fine with that.
@@ -2707,16 +2719,16 @@ And you added this to what?
 xmemory, yeah, good enough.
 
 00:38:10.950 --> 00:38:12.420
-It's already in xmemory, right?
+&gt;&gt; Casey: It's already in xmemory, right
 
 00:38:12.420 --> 00:38:14.625
-I've just updated the implementation
+&gt;&gt; Casey: I've just updated the implementation
 
 00:38:14.625 --> 00:38:15.948
-of convert size.
+&gt;&gt; Casey: of convert size.
 
 00:38:15.950 --> 00:38:16.922
-Oh I see.
+&gt;&gt; Stephan: Oh I see.
 
 00:38:16.922 --> 00:38:18.440
 OK yeah, because you're linked to the
@@ -2755,7 +2767,7 @@ Changed from tag dispatch to
 if constexpr. Where's that happening?
 
 00:38:52.340 --> 00:38:55.710
-That's happening down here, OK?
+That's happening down here, OK.
 
 00:38:55.710 --> 00:38:57.034
 We're essentially if constexpr
@@ -2791,7 +2803,7 @@ range and internal private ugly helper
 function with input iterator tag.
 
 00:39:12.712 --> 00:39:15.479
-Now it's being renamed to insert input range.
+Now it's being renamed to _Insert_input_range.
 
 00:39:15.480 --> 00:39:17.008
 I like that if we don't need to
@@ -2851,7 +2863,7 @@ It's definitely initialized,
 so it's OK for it to be uninitialized here.
 
 00:39:54.400 --> 00:39:56.890
-If we're in cpp lib concepts mode Ifdef,
+If we're in cpp lib concepts mode ifdef,
 
 00:39:56.890 --> 00:39:59.560
 then if we're forward iterator concept,
@@ -2980,7 +2992,7 @@ Previously all we always
 just called insert range.
 
 00:41:46.740 --> 00:41:48.990
-But we tagged dispatched here.
+But we tag dispatched here.
 
 00:41:48.990 --> 00:41:51.750
 And now we're going to have a bool.
@@ -3049,10 +3061,10 @@ This is more readable anyways.
 So then, if constexpr (_Is_fwd)
 
 00:42:34.870 --> 00:42:37.369
-then called the forward range,
+then call the forward range,
 
 00:42:37.370 --> 00:42:40.278
-otherwise called input range.
+otherwise call input range.
 
 00:42:40.280 --> 00:42:43.829
 We have not.
@@ -3133,67 +3145,67 @@ size that's going to definitely
 be initialized here. Yeah Nicole
 
 00:43:33.500 --> 00:43:37.748
-sorry I was just wanted to say it seems.
+&gt;&gt; Nicole: sorry I was just wanted to say it seems.
 
 00:43:37.750 --> 00:43:41.542
-I mean. Maybe I'm. Over.
+&gt;&gt; Nicole: I mean. Maybe I'm. Over.
 
 00:43:41.542 --> 00:43:44.786
-I don't know, uh, but I think it
+&gt;&gt; Nicole: I don't know, uh, but I think it
 
 00:43:44.786 --> 00:43:47.139
-might be nice if this was just one
+&gt;&gt; Nicole: might be nice if this was just one
 
 00:43:47.139 --> 00:43:49.680
-function assign range and then we if
+&gt;&gt; Nicole: function assign range and then we if
 
 00:43:49.680 --> 00:43:51.608
-constexpr it in assign range.
+&gt;&gt; Nicole: constexpr it in assign range.
 
 00:43:51.610 --> 00:43:54.434
-So as well as insert range so that
+&gt;&gt; Nicole: So as well as insert range so that
 
 00:43:54.434 --> 00:43:57.284
-we don't have this _Is_fwd copied
+&gt;&gt; Nicole: we don't have this _Is_fwd copied
 
 00:43:57.284 --> 00:43:59.912
-across all of these different places.
+&gt;&gt; Nicole: across all of these different places.
 
 00:44:02.390 --> 00:44:06.415
-Am. So you're suggesting fuse assign
+&gt;&gt; Stephan: Um. So you're suggesting fuse assign
 
 00:44:06.415 --> 00:44:09.352
-forward range and assign input range
+&gt;&gt; Stephan: forward range and assign input range
 
 00:44:09.352 --> 00:44:12.166
-into the caller or something larger.
+&gt;&gt; Stephan: into the caller or something larger?
 
 00:44:12.170 --> 00:44:15.050
-Like Fuse, assign forward range and
+&gt;&gt; Nicole: Like Fuse, assign forward range and
 
 00:44:15.050 --> 00:44:17.807
-assign range together uh and then
+&gt;&gt; Nicole: assign range together uh and then
 
 00:44:17.807 --> 00:44:20.439
-in the caller you can just call
+&gt;&gt; Nicole: in the caller you can just call
 
 00:44:20.439 --> 00:44:23.775
-assign range and it's fine. Uh, I I.
+&gt;&gt; Nicole: assign range and it's fine. Uh, I I.
 
 00:44:23.775 --> 00:44:26.888
-I don't know if that's good, that's bad.
+&gt;&gt; Nicole: I don't know if that's good, that's bad.
 
 00:44:26.888 --> 00:44:28.283
-That's just something that I
+&gt;&gt; Nicole: That's just something that I
 
 00:44:28.283 --> 00:44:30.086
-like saw and I was like, uh,
+&gt;&gt; Nicole: like saw and I was like, uh,
 
 00:44:30.086 --> 00:44:33.020
-that seems like it would be good to do.
+&gt;&gt; Nicole: that seems like it would be good to do.
 
 00:44:33.020 --> 00:44:35.852
-Yeah, that was that was something I asked
+&gt;&gt; Stephan: Yeah, that was that was something I asked
 
 00:44:35.852 --> 00:44:39.162
 very briefly when I saw this for the insert.
@@ -3223,19 +3235,19 @@ It's a large function,
 it's doing a lot of work.
 
 00:44:56.810 --> 00:44:57.750
-That's very good point.
+&gt;&gt; Nicole: That's very good point.
 
 00:44:57.750 --> 00:45:00.088
-I did not notice how big that function was.
+&gt;&gt; Nicole: I did not notice how big that function was.
 
 00:45:00.090 --> 00:45:00.388
-Yeah,
+&gt;&gt; Stephan: Yeah,
 
 00:45:00.388 --> 00:45:03.070
-they're my context is it takes having a lot?
+&gt;&gt; Nicole: they're my context is it takes having a lot?
 
 00:45:03.070 --> 00:45:04.981
-Yeah, there's a little bit of duplication
+&gt;&gt; Stephan: Yeah, there's a little bit of duplication
 
 00:45:04.981 --> 00:45:07.146
 where like it sets up my data and stuff,
@@ -3271,13 +3283,14 @@ And that is something we
 can do in the future.
 
 00:45:25.250 --> 00:45:26.440
-I appreciate if we keep them separate.
+&gt;&gt; Casey: I appreciate if we keep them separate.
 
 00:45:28.730 --> 00:45:31.663
-Because I need to reuse them in
+&gt;&gt; Casey: Because I need to reuse them in
 
 00:45:31.663 --> 00:45:34.506
-other new overloads for P1206. AH OK,
+&gt;&gt; Casey: other new overloads for P1206. 
+&gt;&gt; Stephan: AH OK,
 
 00:45:34.506 --> 00:45:35.858
 that's definitely an
@@ -3442,7 +3455,7 @@ I'm OK with this one more time.
 I would ask for it to be lifted out.
 
 00:47:18.860 --> 00:47:22.222
-OK, so if is forward iterator otherwise
+OK, so if _Is_fwd_iter_v otherwise
 
 00:47:22.222 --> 00:47:24.158
 or if it meets the forward_iterator concept.
@@ -3511,7 +3524,7 @@ Test code is tiny,
 excellent. Fancy pointers.
 
 00:48:14.018 --> 00:48:17.980
-We need to change the slightly because
+We need to change this slightly because
 
 00:48:18.068 --> 00:48:21.252
 let's see if I can intuit why. The
@@ -3547,7 +3560,7 @@ We're just going to provide the basic
 implementation operator++ returns by value.
 
 00:48:44.270 --> 00:48:47.195
-Results is deref this.
+Result is deref this.
 
 00:48:47.200 --> 00:48:49.615
 Bringing our Rep OK, that's the variable.
@@ -3580,46 +3593,46 @@ Not that efficiency matters for this test.
 Or sorry.
 
 00:49:06.216 --> 00:49:10.040
-Go ahead and suggest it's possible that we
+&gt;&gt; Casey: Go ahead and suggest it's possible that we
 
 00:49:10.133 --> 00:49:13.805
-can have these explode on instantiation.
+&gt;&gt; Casey: can have these explode on instantiation.
 
 00:49:13.810 --> 00:49:15.682
-On if if we make these explode when
+&gt;&gt; Casey: On if if we make these explode when
 
 00:49:15.682 --> 00:49:17.230
-the function body is instantiated,
+&gt;&gt; Casey: the function body is instantiated,
 
 00:49:17.230 --> 00:49:19.478
-we might be able to still satisfy the
+&gt;&gt; Casey: we might be able to still satisfy the
 
 00:49:19.478 --> 00:49:21.819
-concepts by having the right declarations,
+&gt;&gt; Casey: concepts by having the right declarations,
 
 00:49:21.820 --> 00:49:25.598
-but also achieve the same end of ensuring
+&gt;&gt; Casey: but also achieve the same end of ensuring
 
 00:49:25.598 --> 00:49:27.578
-that our our implementation doesn't
+&gt;&gt; Casey: that our our implementation doesn't
 
 00:49:27.578 --> 00:49:31.190
-use these by having them how about?
+&gt;&gt; Casey: use these by having them how about?
 
 00:49:31.190 --> 00:49:33.548
-How about just an assert false?
+&gt;&gt; Stephan: How about just an assert false?
 
 00:49:33.550 --> 00:49:35.944
-Or would you want like a static
+&gt;&gt; Stephan: Or would you want like a static
 
 00:49:35.944 --> 00:49:37.650
-assert of blah blah?
+&gt;&gt; Stephan: assert of blah blah?
 
 00:49:37.650 --> 00:49:41.220
-Yeah, static assert always false what I was thinking
+&gt;&gt; Casey: Yeah, static assert always false what I was thinking
 
 00:49:41.220 --> 00:49:43.260
-OK, is this thing templated.
+&gt;&gt; Stephan: OK, is this thing templated?
 
 00:49:43.260 --> 00:49:44.988
 It is indeed.
@@ -3631,19 +3644,19 @@ And let's say oh, it's a compile only
 test so hi wouldn't get us very far.
 
 00:49:50.070 --> 00:49:51.498
-So if it's a compiler test,
+&gt;&gt; Casey: So if it's a compiler test,
 
 00:49:51.500 --> 00:49:53.610
-these probably don't need to
+&gt;&gt; Casey: these probably don't need to
 
 00:49:53.610 --> 00:49:54.876
-have function bodies.
+&gt;&gt; Casey: have function bodies.
 
 00:49:54.880 --> 00:49:56.147
-Oh yeah, just semi-colons right
+&gt;&gt; Stephan: Oh yeah, just semi-colons right
 
 00:49:56.150 --> 00:49:58.790
-actually, none of these really need,
+&gt;&gt; Stephan: actually, none of these really need,
 
 00:49:58.790 --> 00:49:59.802
 and they're not constexpr,
@@ -3688,10 +3701,11 @@ asserts to make sure that we're not
 actually instantiating this stuff?
 
 00:50:21.070 --> 00:50:24.580
-Yeah, it would be nice. OK.
+&gt;&gt; Casey:Yeah, it would be nice. 
+&gt;&gt; Stephan: OK.
 
 00:50:24.580 --> 00:50:27.968
-UM? OK, I will add first check.
+&gt;&gt; Stephan: UM? OK, I will add first check.
 
 00:50:27.970 --> 00:50:29.538
 Yeah predac.
@@ -3778,31 +3792,33 @@ always false or?
 Should we recommend anything specific here?
 
 00:51:54.590 --> 00:51:56.678
-I'm pretty sure we do use
+&gt;&gt; Casey: I'm pretty sure we do use
 
 00:51:56.678 --> 00:51:58.520
-it and test somewhere else.
+&gt;&gt; Casey: it in test somewhere else.
 
 00:51:58.520 --> 00:52:02.870
-We can check so it would be consistently
+&gt;&gt; Stephan: We can check 
+&gt;&gt; Casey: so it would be consistently
 
 00:52:02.870 --> 00:52:03.420
-wrong.
+&gt;&gt; Casey: wrong.
 
 00:52:06.500 --> 00:52:09.140
-Or do we always define another one in?
+&gt;&gt; Casey: Or do we always define another one in
 
 00:52:09.140 --> 00:52:12.290
-No, we don't support so.
+&gt;&gt; Stephan: No, we don't 
+&gt;&gt; Casey: algorithm support.
 
 00:52:12.290 --> 00:52:14.486
-We always define the local one.
+&gt;&gt; Casey: We always define the local one.
 
 00:52:14.490 --> 00:52:17.112
-Yeah, we define a local always
+&gt;&gt; Stephan: Yeah, we define a local always
 
 00:52:17.112 --> 00:52:19.680
-false in yeah, the Alex support.
+false in yeah, the algo support.
 
 00:52:21.860 --> 00:52:23.380
 Or null forward iterators.
@@ -3811,13 +3827,13 @@ Or null forward iterators.
 This is the classic type I guess the.
 
 00:52:26.450 --> 00:52:28.445
-Asex boils the cooler one to depict.
+constexpr bool always_false = false; is  the cooler one to depict.
 
 00:52:28.450 --> 00:52:30.250
 When I show that range algorithm
 
 00:52:30.250 --> 00:52:31.150
-support tested include.
+support test include.
 
 00:52:33.570 --> 00:52:37.059
 tests, std, include.
@@ -3874,7 +3890,7 @@ which will be awesome so that
 we don't need to define these
 
 00:53:03.621 --> 00:53:05.559
-inline context rules all the time.
+inline constexpr bools all the time.
 
 00:53:05.560 --> 00:53:07.018
 Hopefully that might even be applied
@@ -3925,10 +3941,10 @@ I can show that. Link
 P2593.
 
 00:54:12.460 --> 00:54:13.828
-Yeah, allowing static assert
+Yeah, allowing static_assert(false)
 
 00:54:13.828 --> 00:54:15.196
-faults by Barry Revzin,
+by Barry Revzin,
 
 00:54:15.200 --> 00:54:18.440
 who has proposed other awesome
@@ -4102,10 +4118,10 @@ would that be ranges algo transform.
 Let's see if we can find that test
 
 00:56:28.800 --> 00:56:31.090
-p0896 ranges algo transform, yeah?
+&gt;&gt; Casey: p0896 ranges algo transform, yeah?
 
 00:56:40.740 --> 00:56:42.399
-There are two. There is unary and
+&gt;&gt; Stephan: There are two. There is unary and
 
 00:56:42.399 --> 00:56:44.698
 binary. This would be the unary 1.
@@ -4132,16 +4148,18 @@ we're not using the view.
 Is there a separate test for the views?
 
 00:57:14.770 --> 00:57:16.900
-You mean the transform view?
+&gt;&gt; Casey: You mean the transform view?
 
 00:57:16.900 --> 00:57:19.576
-Yeah, the transform view. it would be 0896R4
+&gt;&gt; Stephan: Yeah, the transform view. 
+&gt;&gt; Casey:it would be 0896R4
 
 00:57:19.576 --> 00:57:22.456
-views transform, views transform OK,
+&gt;&gt; Casey: views transform
+&gt;&gt; Stephan: views transform OK,
 
 00:57:22.460 --> 00:57:25.126
-that's the one I wanted because in this
+&gt;&gt; Stephan: that's the one I wanted because in this
 
 00:57:25.126 --> 00:57:27.160
 case it's is it the view that spits
@@ -4165,28 +4183,31 @@ It doesn't doesn't emit iterators.
 Or am I completely confused?
 
 00:57:39.810 --> 00:57:42.526
-We we want to use views transform
+&gt;&gt; Casey: We we want to use views transform
 
 00:57:42.526 --> 00:57:44.712
-the function object to this thing
+&gt;&gt; Casey: the function object to this thing
 
 00:57:44.712 --> 00:57:47.356
-and it will yeah pick the proper
+&gt;&gt; Casey:and it will pick the proper
+&gt;&gt; Stephan: yeah
 
 00:57:47.356 --> 00:57:49.204
-specialization of transform view.
+&gt;&gt; Casey: specialization of transform view.
 
 00:57:49.210 --> 00:57:50.540
-OK, but the other one.
+&gt;&gt; Stephan: OK, but the other one.
 
 00:57:50.540 --> 00:57:52.556
-The range is transform that wouldn't
+The ranges transform that wouldn't
 
 00:57:52.556 --> 00:57:54.720
-be what we want, right? Right?
+&gt;&gt; Stephan: be what we want, right? 
+&gt;&gt; Casey: Right
 
 00:57:54.720 --> 00:57:56.770
-Yeah, that's just an algorithm.
+&gt;&gt; Casey: that's just an algorithm.
+&gt;&gt; Stephan: Yeah,
 
 00:57:56.770 --> 00:57:59.129
 OK, yeah, just that would actually physically
@@ -4216,7 +4237,7 @@ OK so.
 I'll just link main here. Maybe
 
 00:58:18.688 --> 00:58:22.384
-permalink hit why there is the main.
+permalink hit Y there is the main.
 
 00:58:24.500 --> 00:58:27.868
 OK, and where's a good place to ask?
@@ -4225,10 +4246,10 @@ OK, and where's a good place to ask?
 Maybe just at the test.
 
 00:58:29.870 --> 00:58:33.486
-I really want the ability to like add.
+I really want the ability to like add
 
 00:58:33.490 --> 00:58:34.970
-Comments that are not attached
+comments that are not attached
 
 00:58:34.970 --> 00:58:36.154
 to any specific line.
@@ -4297,7 +4318,7 @@ the values that are value gets
 into the vector is good enough.
 
 01:00:34.830 --> 01:00:35.320
-I am.
+Uhm
 
 01:00:41.960 --> 01:00:45.950
 Asserting that one. Element.
@@ -4384,7 +4405,7 @@ And the new.
 This will ensure that there are no
 
 01:02:10.771 --> 01:02:11.894
-stealth build breaks, company warnings,
+stealth build breaks, compiler warnings,
 
 01:02:11.894 --> 01:02:13.903
 or compiler bugs in the new code.
@@ -4507,7 +4528,7 @@ Giving the contributor chance to
 read the feedback and think about
 
 01:03:37.902 --> 01:03:39.657
-how they like to handle it as good.
+how they like to handle it is good.
 
 01:03:39.660 --> 01:03:41.210
 But these are so targeted
@@ -4693,16 +4714,16 @@ UM, where do we define it?
 xutility, we ask,
 
 01:06:13.748 --> 01:06:15.877
-is convertible and not is base of
+is_convertible and not is_base_of
 
 01:06:15.877 --> 01:06:17.872
-because is base of will return true
+because is_base_of will return true
 
 01:06:17.872 --> 01:06:20.079
 even for things that are ambiguous,
 
 01:06:20.080 --> 01:06:22.294
-is convertible as essentially very similar
+is_convertible as essentially very similar
 
 01:06:22.294 --> 01:06:25.357
 to what we were doing with tag dispatch.
@@ -4714,7 +4735,7 @@ So if we were to hand write this.
 This is a course also an internal helper.
 
 01:06:33.310 --> 01:06:36.298
-I can show the definition of that item can't.
+I can show the definition of that _Iter_cat_t
 
 01:06:36.300 --> 01:06:38.210
 Is not actually referencing my
@@ -4897,7 +4918,7 @@ just reverse this for the sake of exposition.
 This would not have the same
 
 01:09:26.480 --> 01:09:28.769
-effect if we test by dye first,
+effect if we test bidirectional first,
 
 01:09:28.770 --> 01:09:30.882
 this would activate and absorb random
@@ -5179,16 +5200,16 @@ dispatch is only two cases,
 true type and false type.
 
 01:12:27.154 --> 01:12:27.620
-Yeah,
+&gt;&gt; Casey: Yeah,
 
 01:12:27.620 --> 01:12:29.412
-we haven't had a whole lot of
+&gt;&gt; Casey: we haven't had a whole lot of
 
 01:12:29.412 --> 01:12:30.380
-opportunities to screw up.
+&gt;&gt; Casey: opportunities to screw up.
 
 01:12:33.820 --> 01:12:35.924
-OK so I will go ahead and push
+&gt;&gt; Stephan: OK so I will go ahead and push
 
 01:12:35.924 --> 01:12:38.057
 changes to this PR later and thanks
@@ -5216,7 +5237,6 @@ I'd be like ohh _Is_fwd_iter_v?
 
 01:12:50.770 --> 01:12:52.492
 Yeah that's going to tag forward
-
 
 01:12:52.492 --> 01:12:53.913
 iterators and yeah concept should
