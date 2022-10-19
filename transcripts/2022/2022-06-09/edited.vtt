@@ -1,0 +1,5258 @@
+WEBVTT
+
+NOTE duration:"01:13:08"
+
+NOTE language:en-us
+
+00:00:11.630 --> 00:00:14.010
+&gt;&gt; Stephan: OK, hi and welcome back to another
+
+00:00:14.010 --> 00:00:16.010
+VC libraries, Open code review.
+
+00:00:16.010 --> 00:00:19.510
+Umm today we'll be looking at PR 1794.
+
+00:00:19.510 --> 00:00:22.090
+Use iterator concept in vector's range
+
+00:00:22.090 --> 00:00:24.450
+constructor. A PR from our
+
+00:00:24.450 --> 00:00:25.866
+contributor Adam Bucior.
+
+00:00:25.870 --> 00:00:32.064
+This is fixing an issue that we had filed
+
+00:00:32.064 --> 00:00:37.640
+by a user a little bit over a year ago.
+
+00:00:37.640 --> 00:00:38.920
+And this is about, Umm,
+
+00:00:38.920 --> 00:00:40.468
+constructing a std::vector
+
+00:00:40.468 --> 00:00:42.403
+from a range of iterators,
+
+00:00:42.410 --> 00:00:45.168
+so let me give you some background
+
+00:00:45.168 --> 00:00:48.288
+on how this works and then we can
+
+00:00:48.288 --> 00:00:51.419
+look at the issue and the PR itself.
+
+00:00:51.420 --> 00:00:54.318
+So here I'm opening up the latest
+
+00:00:54.318 --> 00:00:57.060
+draft copy of the C++ standard
+
+00:00:57.060 --> 00:01:01.200
+and let's go to containers,
+
+00:01:01.200 --> 00:01:07.000
+sequence containers and then vector.
+
+00:01:07.000 --> 00:01:08.220
+Let's just look at the class
+
+00:01:08.220 --> 00:01:11.170
+definition here.
+
+00:01:11.170 --> 00:01:13.870
+And zoom in.
+
+00:01:13.870 --> 00:01:16.886
+A little bit of a core language note
+
+00:01:16.890 --> 00:01:19.182
+when I say class definition that
+
+00:01:19.182 --> 00:01:21.778
+refers to the stuff starting from class
+
+00:01:21.778 --> 00:01:24.270
+here or template class all the way
+
+00:01:24.339 --> 00:01:26.775
+down to the closing brace semi colon.
+
+00:01:26.780 --> 00:01:29.135
+All the declarations of type
+
+00:01:29.135 --> 00:01:31.490
+defs and constructors and member
+
+00:01:31.572 --> 00:01:33.348
+functions and so forth.
+
+00:01:33.350 --> 00:01:35.080
+And the standard name for
+
+00:01:35.080 --> 00:01:36.464
+that is class definition.
+
+00:01:36.470 --> 00:01:38.300
+Even though most programmers would
+
+00:01:38.300 --> 00:01:41.030
+refer to that as a declaration,
+
+00:01:41.030 --> 00:01:43.340
+it's actually defining the class,
+
+00:01:43.340 --> 00:01:46.084
+and it's a layout because the data
+
+00:01:46.084 --> 00:01:48.618
+members are there and and so forth.
+
+00:01:48.620 --> 00:01:51.344
+Sometimes learning how the core language
+
+00:01:51.344 --> 00:01:54.510
+or compilers refer to things helps you
+
+00:01:54.510 --> 00:01:57.415
+understand how to read the standard itself.
+
+00:01:57.420 --> 00:01:59.716
+So vectors got a bunch of constructors,
+
+00:01:59.720 --> 00:02:01.100
+and of course member functions not
+
+00:02:01.100 --> 00:02:02.660
+quite as many as std::string.
+
+00:02:02.660 --> 00:02:05.680
+The one we're interested in looks
+
+00:02:05.680 --> 00:02:08.200
+like this here.
+
+00:02:08.200 --> 00:02:09.440
+So I can actually.
+
+00:02:09.440 --> 00:02:11.300
+Why don't we use compiler Explorer?
+
+00:02:11.300 --> 00:02:13.916
+I can maybe give a quick tour
+
+00:02:13.916 --> 00:02:16.316
+of how this works. Let's see,
+
+00:02:16.316 --> 00:02:18.917
+this should hopefully be big enough. OK,
+
+00:02:18.917 --> 00:02:22.733
+I don't want that compiler option for sure.
+
+00:02:22.740 --> 00:02:25.939
+OK, so we've got like a vector.
+
+00:02:25.940 --> 00:02:30.196
+Maybe I'll include some other examples here.
+
+00:02:30.200 --> 00:02:35.759
+List and iterator.
+
+00:02:35.760 --> 00:02:40.080
+And iostream.
+
+00:02:40.080 --> 00:02:45.440
+Yes. And maybe.
+
+00:02:45.440 --> 00:02:48.779
+A string OK, this is not quite sorted order.
+
+00:02:48.780 --> 00:02:50.418
+It's good enough.
+
+00:02:50.418 --> 00:02:53.694
+OK, so let's have our example.
+
+00:02:53.700 --> 00:02:54.808
+Have a print function.
+
+00:02:57.150 --> 00:02:58.228
+I'm just going to use a vector<int>
+
+00:02:58.228 --> 00:02:59.338
+because I don't really care
+
+00:02:59.338 --> 00:03:00.348
+about the element type here,
+
+00:03:00.350 --> 00:03:04.046
+but this of course applies to all elements.
+
+00:03:04.050 --> 00:03:08.820
+That's inspect everything in the vec.
+
+00:03:08.820 --> 00:03:10.890
+And print out that element.
+
+00:03:10.890 --> 00:03:13.720
+That's not going to work.
+
+00:03:13.720 --> 00:03:21.050
+This maybe just spaces. I'm here. OK.
+
+00:03:21.050 --> 00:03:25.740
+So we can have a vector of int I see.
+
+00:03:25.740 --> 00:03:27.545
+Let's start with the things
+
+00:03:27.545 --> 00:03:28.989
+I want to demonstrate.
+
+00:03:28.990 --> 00:03:31.540
+Are what if you have?
+
+00:03:34.390 --> 00:03:36.130
+One vector. Call this.
+
+00:03:38.900 --> 00:03:40.050
+Odd numbers
+
+00:03:44.000 --> 00:03:44.928
+1, 3, 5, 7, 9, 11, 13, 15 and so forth.
+
+00:03:47.040 --> 00:03:48.534
+And I can just make temporary
+
+00:03:48.534 --> 00:03:49.530
+vectors when I print.
+
+00:03:49.530 --> 00:03:54.392
+So print what if we want to print a
+
+00:03:54.392 --> 00:04:01.476
+vector<int> construct from on odds.begin() + 2
+
+00:04:01.480 --> 00:04:06.544
+odds.end() - 2,
+
+00:04:06.544 --> 00:04:09.000
+that is a thing that I can do OK.
+
+00:04:09.000 --> 00:04:10.480
+See if this all compiles.
+
+00:04:10.480 --> 00:04:12.146
+Hopefully this is big enough to see.
+
+00:04:12.150 --> 00:04:13.278
+Let me know.
+
+00:04:13.278 --> 00:04:15.158
+That's actually kind of tiny,
+
+00:04:15.160 --> 00:04:16.336
+maybe temporarily increased
+
+00:04:16.336 --> 00:04:18.296
+the zoom to 200 here.
+
+00:04:18.300 --> 00:04:19.592
+OK, hopefully this should
+
+00:04:19.592 --> 00:04:21.207
+be a little bit visible.
+
+00:04:21.210 --> 00:04:24.164
+OK, So what this code is doing?
+
+00:04:24.170 --> 00:04:26.048
+I start off with vector<int>.
+
+00:04:26.050 --> 00:04:27.556
+I'm going to call this one
+
+00:04:27.560 --> 00:04:30.400
+odds just contains a bunch of odd numbers.
+
+00:04:30.400 --> 00:04:32.535
+I can then construct temporary
+
+00:04:32.535 --> 00:04:34.670
+temporary vector<int> from a
+
+00:04:34.749 --> 00:04:36.959
+subrange of this other vector.
+
+00:04:36.960 --> 00:04:38.560
+I can say hey,
+
+00:04:38.560 --> 00:04:41.620
+I want to start at odds.begin() + 2,
+
+00:04:41.620 --> 00:04:43.559
+so skip those first two elements and
+
+00:04:43.559 --> 00:04:46.019
+I want to end at odds.end() - 2.
+
+00:04:46.020 --> 00:04:47.748
+So skip the last two elements
+
+00:04:47.748 --> 00:04:49.746
+so I should get 5, 7, 9 and 11,
+
+00:04:49.746 --> 00:04:51.720
+and indeed that is what's printed out,
+
+00:04:51.720 --> 00:04:54.667
+so we refer to this as vector
+
+00:04:54.670 --> 00:04:55.834
+range constructor because
+
+00:04:55.834 --> 00:04:57.774
+it's constructed from a range,
+
+00:04:57.780 --> 00:04:59.525
+possibly the entire range of
+
+00:04:59.525 --> 00:05:01.270
+some other container or array
+
+00:05:01.334 --> 00:05:02.958
+or some arbitrary subrange.
+
+00:05:02.960 --> 00:05:05.450
+In this case I'm using a
+
+00:05:05.450 --> 00:05:07.520
+subrange of another vector<int>,
+
+00:05:07.520 --> 00:05:09.692
+but I'm not limited to constructing
+
+00:05:09.692 --> 00:05:11.978
+from the exact same container type
+
+00:05:11.978 --> 00:05:14.294
+and the exact same element type.
+
+00:05:14.300 --> 00:05:15.698
+This would also work if this
+
+00:05:15.698 --> 00:05:17.000
+were a vector of short,
+
+00:05:17.000 --> 00:05:20.573
+so I can change this over to vector<short>.
+
+00:05:20.580 --> 00:05:24.149
+It will recompile and I still get 5, 7, 9 and 11,
+
+00:05:24.149 --> 00:05:25.464
+so I'm going to construct.
+
+00:05:25.470 --> 00:05:28.102
+My vector<int> from a subrange of
+
+00:05:28.102 --> 00:05:30.145
+vector<short>. Every short element
+
+00:05:30.145 --> 00:05:32.665
+in the original odds vector will
+
+00:05:32.665 --> 00:05:35.279
+be widened to an int element here.
+
+00:05:35.280 --> 00:05:36.086
+But again,
+
+00:05:36.086 --> 00:05:38.504
+I'm not restricted to the actual
+
+00:05:38.504 --> 00:05:39.782
+container type being the same.
+
+00:05:39.782 --> 00:05:41.676
+I could have a list of shorts so
+
+00:05:41.676 --> 00:05:43.260
+I could actually just change this
+
+00:05:43.260 --> 00:05:45.466
+in place to list and this will
+
+00:05:45.466 --> 00:05:47.998
+compile and this is no longer
+
+00:05:47.998 --> 00:05:50.168
+working because I said plus.
+
+00:05:50.170 --> 00:05:52.830
+So here I can use helper functions,
+
+00:05:52.830 --> 00:05:53.706
+there is next,
+
+00:05:53.706 --> 00:05:55.750
+which is a helper function in the
+
+00:05:55.818 --> 00:05:57.523
+iterator header that will advance
+
+00:05:57.523 --> 00:05:59.720
+an iterator by a given amount.
+
+00:05:59.720 --> 00:06:01.631
+It can also advance backwards so I
+
+00:06:01.631 --> 00:06:03.630
+can convert both of these to say next.
+
+00:06:03.630 --> 00:06:05.946
+The reason why is that random
+
+00:06:05.946 --> 00:06:06.718
+access iterators.
+
+00:06:06.720 --> 00:06:08.760
+Provide operator plus and operator minus,
+
+00:06:08.760 --> 00:06:10.188
+but bidirectional iterators don't
+
+00:06:10.188 --> 00:06:12.330
+because it would be too tempting
+
+00:06:12.330 --> 00:06:14.670
+to compile something and this has
+
+00:06:14.670 --> 00:06:16.876
+to be negative, not positive.
+
+00:06:16.876 --> 00:06:19.466
+Otherwise bad things will happen.
+
+00:06:19.470 --> 00:06:20.604
+There we go.
+
+00:06:20.604 --> 00:06:20.982
+OK,
+
+00:06:20.982 --> 00:06:22.494
+so I've successfully translated
+
+00:06:22.494 --> 00:06:25.127
+the code over to a list of short so
+
+00:06:25.127 --> 00:06:26.789
+I can take an arbitrary subrange,
+
+00:06:26.790 --> 00:06:29.460
+and in this case I'm grabbing
+
+00:06:29.460 --> 00:06:32.410
+from a bidirectional linked list,
+
+00:06:32.410 --> 00:06:34.825
+but I can give even weaker iterators,
+
+00:06:34.830 --> 00:06:38.990
+so if I have a.
+
+00:06:38.990 --> 00:06:41.030
+istringstream because I'm going
+
+00:06:41.030 --> 00:06:42.662
+to read from it.
+
+00:06:42.670 --> 00:06:48.863
+iss construct from and let's say 1,3,5,7,9,
+
+00:06:48.863 --> 00:06:50.342
+11, 13, 15, 17.
+
+00:06:50.342 --> 00:06:53.899
+This case I don't want to do
+
+00:06:53.899 --> 00:06:55.417
+this subrange thing.
+
+00:06:55.420 --> 00:07:01.297
+But what if I have an istream_iterator?
+
+00:07:01.300 --> 00:07:03.958
+I can read shorts from this
+
+00:07:03.960 --> 00:07:08.160
+from iss and then the same type but
+
+00:07:08.160 --> 00:07:11.618
+empty braces for the end iterator.
+
+00:07:11.620 --> 00:07:14.098
+Let's see if I remember my iostreams
+
+00:07:14.098 --> 00:07:17.050
+and does this work if I not counted
+
+00:07:17.050 --> 00:07:18.860
+the correct number of braces.
+
+00:07:18.860 --> 00:07:20.475
+Apparently I have. I forgot
+
+00:07:20.475 --> 00:07:21.767
+to semi colon here.
+
+00:07:23.920 --> 00:07:26.594
+OK, that compiles and there we go.
+
+00:07:26.600 --> 00:07:28.872
+So here I have an istringstream
+
+00:07:28.872 --> 00:07:30.750
+iss that I have constructed from
+
+00:07:30.750 --> 00:07:33.014
+a string with a bunch of space
+
+00:07:33.014 --> 00:07:35.702
+separated odd numbers and I can use an
+
+00:07:35.702 --> 00:07:37.604
+istream_iterator to parse integers.
+
+00:07:37.604 --> 00:07:41.200
+In this case I'm saying I want to read
+
+00:07:41.200 --> 00:07:43.546
+short values from this istringstream
+
+00:07:43.546 --> 00:07:45.795
+until I run out of them and
+
+00:07:45.795 --> 00:07:48.273
+the end istream_iterator is a default
+
+00:07:48.273 --> 00:07:50.293
+constructed one or value constructed one,
+
+00:07:50.300 --> 00:07:52.226
+value initialized and this will
+
+00:07:52.226 --> 00:07:54.819
+indeed read all of the values as shorts.
+
+00:07:54.820 --> 00:07:56.300
+from the istringstring.
+
+00:07:56.300 --> 00:07:58.150
+So what's happening here is
+
+00:07:58.150 --> 00:07:59.870
+actually kind of interesting.
+
+00:07:59.870 --> 00:08:02.012
+I'm giving the vector<int> the
+
+00:08:02.012 --> 00:08:04.150
+weakest possible range of iterators.
+
+00:08:04.150 --> 00:08:06.418
+These are input iterators and as
+
+00:08:06.418 --> 00:08:08.764
+a refresher for those who are new
+
+00:08:08.764 --> 00:08:11.070
+to the stl iterator strength
+
+00:08:11.070 --> 00:08:12.870
+hierarchy for reading,
+
+00:08:12.870 --> 00:08:15.530
+you've got input iterators,
+
+00:08:15.530 --> 00:08:18.190
+and you've got forward.
+
+00:08:18.190 --> 00:08:20.122
+You've got bidirectional.
+
+00:08:20.122 --> 00:08:22.698
+You've got random access,
+
+00:08:22.700 --> 00:08:26.473
+and in C++20 you have something even
+
+00:08:26.473 --> 00:08:30.339
+stronger which are contiguous iterators.
+
+00:08:30.340 --> 00:08:33.434
+That are like pointers and vectors and
+
+00:08:33.434 --> 00:08:36.119
+string iterators and things like that.
+
+00:08:36.120 --> 00:08:37.620
+So if you have input iterators,
+
+00:08:37.620 --> 00:08:39.138
+the thing that you're giving up
+
+00:08:39.138 --> 00:08:40.806
+is the ability to make multiple
+
+00:08:40.806 --> 00:08:42.316
+passes over the input data,
+
+00:08:42.320 --> 00:08:44.210
+because as you're incrementing an
+
+00:08:44.210 --> 00:08:47.820
+istream_iterator, you're consuming
+
+00:08:47.820 --> 00:08:48.864
+information from that stringstream
+
+00:08:48.864 --> 00:08:50.868
+and as soon as you increment
+
+00:08:50.868 --> 00:08:52.029
+that istream_iterator,
+
+00:08:52.030 --> 00:08:55.330
+you can't go back and read
+
+00:08:55.330 --> 00:08:56.980
+previously obtained values.
+
+00:08:56.980 --> 00:08:59.548
+This is relevant to vector because
+
+00:08:59.548 --> 00:09:02.060
+for forward and stronger iterators,
+
+00:09:02.060 --> 00:09:04.769
+vector can do something cool it can say OK,
+
+00:09:04.770 --> 00:09:06.540
+because I can make multiple passes
+
+00:09:06.540 --> 00:09:08.785
+over this input data if I have a
+
+00:09:08.785 --> 00:09:10.297
+first iterator and a last iterator,
+
+00:09:10.300 --> 00:09:12.960
+I can determine the distance between them.
+
+00:09:12.960 --> 00:09:14.310
+If it's random access or better,
+
+00:09:14.310 --> 00:09:16.302
+I can just subtract them and get that
+
+00:09:16.302 --> 00:09:18.379
+distance in constant time if it's forward.
+
+00:09:18.380 --> 00:09:20.294
+Or bidirectional only I can increment
+
+00:09:20.294 --> 00:09:22.480
+from the first to the last count
+
+00:09:22.480 --> 00:09:24.468
+how many times I had to increment,
+
+00:09:24.470 --> 00:09:25.646
+and that's the number of elements,
+
+00:09:25.650 --> 00:09:27.390
+and then I can allocate exactly
+
+00:09:27.390 --> 00:09:29.559
+that much memory and I don't need
+
+00:09:29.559 --> 00:09:30.507
+to repeatedly resize.
+
+00:09:30.510 --> 00:09:31.932
+This is efficient,
+
+00:09:31.932 --> 00:09:34.486
+much better than repeatedly reallocating
+
+00:09:34.486 --> 00:09:37.110
+and transferring elements over,
+
+00:09:37.110 --> 00:09:39.492
+but if I'm constructed from an
+
+00:09:39.492 --> 00:09:42.228
+input only range like the case here,
+
+00:09:42.230 --> 00:09:43.567
+I don't know how many elements they're
+
+00:09:43.567 --> 00:09:45.207
+going to be attempting to find that
+
+00:09:45.207 --> 00:09:46.482
+would actually consume the elements,
+
+00:09:46.490 --> 00:09:48.978
+and I'm not ready to do that so.
+
+00:09:48.980 --> 00:09:51.004
+Here the vector is no choice but to
+
+00:09:51.004 --> 00:09:52.832
+repeatedly in place back elements
+
+00:09:52.832 --> 00:09:54.098
+and geometrically reallocate,
+
+00:09:54.100 --> 00:09:56.837
+which is efficient but not as efficient
+
+00:09:56.837 --> 00:09:59.936
+as allocating the whole size up front.
+
+00:09:59.940 --> 00:10:01.974
+So this is what we're going
+
+00:10:01.974 --> 00:10:03.870
+to be looking at today.
+
+00:10:03.870 --> 00:10:05.422
+So end of refresher,
+
+00:10:05.422 --> 00:10:08.186
+let's take a look at this issue
+
+00:10:08.186 --> 00:10:10.366
+which I have not memorized,
+
+00:10:10.370 --> 00:10:12.230
+so I'll be reading it.
+
+00:10:12.230 --> 00:10:14.162
+The user says the stl loses the
+
+00:10:14.162 --> 00:10:15.703
+iterator category when range iterators
+
+00:10:15.703 --> 00:10:17.665
+are passed to the vector constructor.
+
+00:10:17.670 --> 00:10:19.269
+Consider the following code.
+
+00:10:19.269 --> 00:10:23.280
+So here we have C++20 ranges
+
+00:10:23.280 --> 00:10:25.960
+with some namespace aliases.
+
+00:10:25.960 --> 00:10:31.910
+sr is std::ranges, rv is sr::views
+
+00:10:31.910 --> 00:10:34.155
+Two vector takes a random
+
+00:10:34.155 --> 00:10:36.400
+access range and gets the
+
+00:10:36.492 --> 00:10:39.975
+begin and end from it and then makes a
+
+00:10:39.975 --> 00:10:43.424
+std::vector of that value type. Then here
+
+00:10:43.424 --> 00:10:46.098
+we start with the std::vector using
+
+00:10:46.098 --> 00:10:48.568
+class template argument deduction.
+
+00:10:48.570 --> 00:10:52.224
+So this is a vector of int storing 1,2,3,4,5.
+
+00:10:52.224 --> 00:10:55.368
+We're passing this or piping it
+
+00:10:55.368 --> 00:10:58.811
+through a ranges views transform that
+
+00:10:58.811 --> 00:11:02.363
+takes every element of that vector.
+
+00:11:02.370 --> 00:11:05.107
+Here v means value, not vector really
+
+00:11:05.107 --> 00:11:07.350
+and then converts it to a float.
+
+00:11:07.350 --> 00:11:10.225
+So we are going to transform this
+
+00:11:10.225 --> 00:11:12.425
+range of ints to a range of floats
+
+00:11:12.425 --> 00:11:14.874
+and we should get a vector<float> out.
+
+00:11:14.880 --> 00:11:16.230
+So the user says currently STL
+
+00:11:16.230 --> 00:11:16.680
+containers,
+
+00:11:16.680 --> 00:11:18.864
+lack constructors accepting ranges.
+
+00:11:18.864 --> 00:11:21.616
+I think there's an upcoming paper.
+
+00:11:21.616 --> 00:11:24.490
+Or actually I think it's in our.
+
+00:11:24.490 --> 00:11:26.570
+Let me see Casey's in this meeting so
+
+00:11:26.570 --> 00:11:29.073
+he'll be able to correct me if I forget it.
+
+00:11:29.080 --> 00:11:31.060
+I'm thinking of ranges too.
+
+00:11:31.060 --> 00:11:32.180
+1206 OK.
+
+00:11:34.370 --> 00:11:38.658
+OK, so we can look at the stl projects
+
+00:11:38.658 --> 00:11:41.249
+C++23 features.
+
+00:11:41.250 --> 00:11:44.830
+And I'm thinking of.
+
+00:11:44.830 --> 00:11:46.366
+Ohh is that this one here?
+
+00:11:46.370 --> 00:11:48.506
+Conversions of ranges to containers
+&gt;&gt; Casey: [unintelligible]
+
+00:11:48.506 --> 00:11:51.480
+&gt;&gt; Casey: of all because I've got it mostly
+
+00:11:51.480 --> 00:11:53.500
+implemented and I'm perennially
+
+00:11:53.500 --> 00:11:56.710
+&gt;&gt; Casey: 5% away from getting it finished.
+
+00:11:56.710 --> 00:11:58.050
+&gt;&gt; Stephan: Excellent.
+So we will be reviewing this at
+
+00:11:58.050 --> 00:11:59.390
+some point in the future,
+
+00:11:59.390 --> 00:12:02.144
+so there was machinery coming in C++23
+
+00:12:02.144 --> 00:12:04.824
+that will make this even easier to do.
+
+00:12:04.830 --> 00:12:06.423
+I'll just bring up the paper here real quick.
+
+00:12:06.430 --> 00:12:09.226
+Conversions from ranges to containers.
+
+00:12:09.230 --> 00:12:09.876
+Surprisingly,
+
+00:12:09.876 --> 00:12:13.106
+a coauthor is Casey Carter.
+
+00:12:13.110 --> 00:12:14.685
+So thank you for looking at that.
+
+00:12:14.690 --> 00:12:16.730
+We don't have the paper yet,
+
+00:12:16.730 --> 00:12:18.254
+so that's why this user saying
+
+00:12:18.254 --> 00:12:19.270
+currently stl containers
+
+00:12:19.270 --> 00:12:22.638
+lack constructors accepting ranges.
+
+00:12:22.640 --> 00:12:26.371
+And so here the user says that we
+
+00:12:26.371 --> 00:12:28.426
+are calling eventually an internal
+
+00:12:28.426 --> 00:12:30.545
+machinery as indicated by these
+
+00:12:30.545 --> 00:12:32.560
+underscore capital ugly names.
+
+00:12:32.560 --> 00:12:34.150
+It's invoking vector's
+
+00:12:34.150 --> 00:12:37.330
+_Range_construct_or_tidy from input iterators.
+
+00:12:37.330 --> 00:12:39.745
+So we have lost the iterator category.
+
+00:12:39.750 --> 00:12:44.270
+The interesting thing here is that in C++98
+
+00:12:44.270 --> 00:12:48.008
+through 17 we had only
+
+00:12:48.008 --> 00:12:49.254
+iterator categories.
+
+00:12:49.260 --> 00:12:51.240
+These were the input iterator tag,
+
+00:12:51.240 --> 00:12:52.710
+forward iterator tag,
+
+00:12:52.710 --> 00:12:54.180
+bidirectional iterator tag,
+
+00:12:54.180 --> 00:12:54.940
+random access iterator tag.
+
+00:12:54.940 --> 00:12:57.980
+in C++20 with the
+
+00:12:58.070 --> 00:13:01.018
+addition of ranges we gained iterator
+
+00:13:01.018 --> 00:13:03.934
+concept which is related to but
+
+00:13:03.934 --> 00:13:06.697
+different from the iterator category.
+
+00:13:06.700 --> 00:13:07.644
+In particular,
+
+00:13:07.644 --> 00:13:10.004
+you can express contiguous iterators
+
+00:13:10.004 --> 00:13:12.040
+with the iterator concept.
+
+00:13:12.040 --> 00:13:13.678
+I'm being a little bit vague here
+
+00:13:13.678 --> 00:13:15.399
+because I haven't completely memorized
+
+00:13:15.400 --> 00:13:16.988
+how all this stuff works.
+
+00:13:16.988 --> 00:13:19.850
+Eventually I'll learn how this stuff works,
+
+00:13:19.850 --> 00:13:20.852
+slowly internalizing it.
+
+00:13:20.852 --> 00:13:22.522
+I'm much more familiar with
+
+00:13:22.522 --> 00:13:24.358
+the old way of doing things,
+
+00:13:24.360 --> 00:13:26.730
+in C++17 and before,
+
+00:13:26.730 --> 00:13:28.658
+so the user has found a very valid
+
+00:13:28.658 --> 00:13:30.439
+issue here that we have something
+
+00:13:30.439 --> 00:13:31.989
+that should be pretty strong.
+
+00:13:31.990 --> 00:13:33.610
+We have a random access range,
+
+00:13:33.610 --> 00:13:37.806
+but vectors older implementation is
+
+00:13:37.806 --> 00:13:39.822
+only detecting these things as input
+
+00:13:39.822 --> 00:13:41.767
+iterators and using the fall back
+
+00:13:41.767 --> 00:13:43.804
+mechanism of calling in place back in
+
+00:13:43.862 --> 00:13:45.854
+a loop so it ends up being correct.
+
+00:13:45.860 --> 00:13:47.836
+It will correct in the sense of it
+
+00:13:47.836 --> 00:13:49.773
+actually does allocate the elements and
+
+00:13:49.773 --> 00:13:51.513
+we get everything transferred over,
+
+00:13:51.520 --> 00:13:54.928
+but it's less efficient than necessary.
+
+00:13:54.930 --> 00:13:55.485
+And then here,
+
+00:13:55.485 --> 00:13:56.225
+on the other hand,
+
+00:13:56.230 --> 00:13:57.610
+calling 2 vector and passing
+
+00:13:57.610 --> 00:13:58.990
+a correctly dispatches to the
+
+00:13:59.046 --> 00:14:00.430
+forward iterator tag version.
+
+00:14:00.430 --> 00:14:04.210
+So that is what Adam Bucior is fixing here.
+
+00:14:04.210 --> 00:14:08.289
+So let's take a look at the code.
+
+00:14:08.289 --> 00:14:11.367
+This is a relatively small change,
+
+00:14:11.370 --> 00:14:14.918
+only 64 additions, 17
+
+00:14:14.920 --> 00:14:18.376
+deletions, so it's a relatively small tweak,
+
+00:14:18.380 --> 00:14:20.288
+but it is affecting the most
+
+00:14:20.288 --> 00:14:22.259
+important container in the entire STL,
+
+00:14:22.260 --> 00:14:24.316
+which I claim is vector and not string,
+
+00:14:24.320 --> 00:14:25.699
+so we need to be very careful
+
+00:14:25.699 --> 00:14:26.093
+about correctness,
+
+00:14:26.100 --> 00:14:27.660
+performance and all that stuff.
+
+00:14:27.660 --> 00:14:31.240
+Vector is surprisingly complicated,
+
+00:14:31.240 --> 00:14:34.016
+so I have merged main into this PR,
+
+00:14:34.020 --> 00:14:36.281
+so we're looking at the most modern
+
+00:14:36.281 --> 00:14:38.651
+context. We have recently thanks to
+
+00:14:38.651 --> 00:14:40.270
+our contributors almost completely
+
+00:14:40.270 --> 00:14:42.460
+overhauled the STL to use if constexpr
+
+00:14:42.460 --> 00:14:44.159
+instead of tag dispatch,
+
+00:14:44.160 --> 00:14:46.200
+so this code is much easier to read
+
+00:14:46.200 --> 00:14:49.189
+than it used to be years ago.
+
+00:14:49.190 --> 00:14:51.848
+So here we can see vector's
+
+00:14:51.850 --> 00:14:52.726
+range constructor.
+
+00:14:52.726 --> 00:14:55.792
+I hope that this is big enough.
+
+00:14:55.800 --> 00:14:58.615
+Yeah, I've used 150% for other reviews.
+
+00:14:58.615 --> 00:15:01.855
+Let me know if this looks too small.
+
+00:15:01.860 --> 00:15:03.992
+So vector's range constructor.
+
+00:15:03.992 --> 00:15:06.657
+were templated on arbitrary iterators.
+
+00:15:06.660 --> 00:15:09.020
+We've got a constraint here,
+
+00:15:09.020 --> 00:15:09.917
+expressed through enable_if
+
+00:15:09.917 --> 00:15:11.711
+that these things have to
+
+00:15:11.711 --> 00:15:13.457
+at least look like iterators.
+
+00:15:13.460 --> 00:15:15.924
+This is something that goes back to C++98
+
+00:15:15.924 --> 00:15:19.249
+and has been refined since then.
+
+00:15:19.249 --> 00:15:22.164
+This helps this constructor avoid
+
+00:15:22.164 --> 00:15:24.202
+being ambiguous with vectors
+
+00:15:24.202 --> 00:15:26.242
+and copies of T constructor,
+
+00:15:26.242 --> 00:15:28.552
+because if you're constructing from
+
+00:15:28.552 --> 00:15:31.552
+like 5 copies of 1729, we don't want.
+
+00:15:31.552 --> 00:15:33.590
+iter to be deduced to be int.
+
+00:15:33.590 --> 00:15:34.978
+That would be bad.
+
+00:15:34.978 --> 00:15:36.568
+So this constraint says, hey,
+
+00:15:36.568 --> 00:15:37.756
+you at least need to kind
+
+00:15:37.756 --> 00:15:38.790
+of resemble an iterator.
+
+00:15:38.790 --> 00:15:39.700
+In particular,
+
+00:15:39.700 --> 00:15:41.975
+you can't be an arithmetic
+
+00:15:41.975 --> 00:15:43.938
+type or an integral type,
+
+00:15:43.938 --> 00:15:46.690
+so that's what that constraint is doing.
+
+00:15:46.690 --> 00:15:48.916
+And then at this point we're just
+
+00:15:48.916 --> 00:15:51.430
+templated on some arbitrary iterator type.
+
+00:15:51.430 --> 00:15:53.908
+We don't know how strong it is,
+
+00:15:53.910 --> 00:15:56.829
+so the code originally here was using
+
+00:15:56.829 --> 00:16:00.429
+one of our helper variable templates,
+
+00:16:00.430 --> 00:16:02.590
+saying if you're a forward iterator.
+
+00:16:02.590 --> 00:16:05.134
+Or better then we can take it the
+
+00:16:05.134 --> 00:16:06.860
+distance between these iterators.
+
+00:16:06.860 --> 00:16:09.540
+After doing our iterator unwrapping,
+
+00:16:09.540 --> 00:16:11.784
+which we'll do iterator checking and
+
+00:16:11.784 --> 00:16:14.636
+unwrap down to raw pointers if we
+
+00:16:14.636 --> 00:16:16.776
+recognize oh you're a vector or an iterator
+
+00:16:16.776 --> 00:16:19.098
+or something and we don't need to pay
+
+00:16:19.098 --> 00:16:20.580
+that checking cost over and over,
+
+00:16:20.580 --> 00:16:21.846
+so that's what that you first
+
+00:16:21.846 --> 00:16:23.020
+and you last are doing.
+
+00:16:23.020 --> 00:16:25.456
+So going back if we have a
+
+00:16:25.456 --> 00:16:26.500
+forward iterator or stronger,
+
+00:16:26.500 --> 00:16:28.140
+we can call std::distance,
+
+00:16:28.140 --> 00:16:30.710
+which is a generalized helper
+
+00:16:30.710 --> 00:16:32.766
+function that will subtract.
+
+00:16:32.770 --> 00:16:35.062
+If they are random access iterators
+
+00:16:35.062 --> 00:16:37.676
+or increment from first to last to
+
+00:16:37.676 --> 00:16:39.704
+count the number of elements between
+
+00:16:39.710 --> 00:16:40.954
+forward or bidirectional iterators.
+
+00:16:40.954 --> 00:16:42.820
+And once we have how many
+
+00:16:42.876 --> 00:16:44.508
+elements there are in the range,
+
+00:16:44.510 --> 00:16:47.072
+we can allocate that much memory and
+
+00:16:47.072 --> 00:16:49.748
+then construct from that range of elements.
+
+00:16:49.750 --> 00:16:52.245
+But in the old code, if we don't
+
+00:16:52.245 --> 00:16:53.570
+have forward or stronger iterators,
+
+00:16:53.570 --> 00:16:55.634
+we must be working with the
+
+00:16:55.634 --> 00:16:56.666
+weakest input iterators,
+
+00:16:56.670 --> 00:17:00.709
+in which case we need to repeatedly
+
+00:17:00.709 --> 00:17:02.698
+reallocate by calling in place
+
+00:17:02.698 --> 00:17:03.754
+in a loop.
+
+00:17:03.760 --> 00:17:05.097
+So that's what this code is doing,
+
+00:17:05.100 --> 00:17:09.138
+plus some iterator debugging stuff and.
+
+00:17:09.140 --> 00:17:11.688
+Tidying in case allocation fails for some
+
+00:17:11.688 --> 00:17:14.257
+reason because we are in the constructor.
+
+00:17:14.260 --> 00:17:16.997
+So what Adam Bucior is adding here
+
+00:17:17.000 --> 00:17:21.074
+is concepts powered logic. so #ifdef
+
+00:17:21.080 --> 00:17:23.390
+__cpp_lib_concepts
+
+00:17:23.390 --> 00:17:26.470
+will activate this only in C++20 and
+
+00:17:26.470 --> 00:17:28.630
+above when concepts are enabled as a
+
+00:17:28.630 --> 00:17:30.355
+separate unrelated thing that will
+
+00:17:30.355 --> 00:17:32.337
+eventually become just if has the C++20.
+
+00:17:32.340 --> 00:17:34.596
+As an aside and this says if we
+
+00:17:34.596 --> 00:17:37.151
+are not a classic forward iterator
+
+00:17:37.151 --> 00:17:39.067
+according to the iterator
+
+00:17:39.070 --> 00:17:39.478
+category,
+
+00:17:39.478 --> 00:17:42.334
+but if at compile time we meet
+
+00:17:42.334 --> 00:17:44.600
+the forward iterator concept,
+
+00:17:44.600 --> 00:17:46.560
+then we can do some cool stuff.
+
+00:17:46.560 --> 00:17:49.158
+So that's what this is doing.
+
+00:17:49.160 --> 00:17:51.155
+The question was raised when
+
+00:17:51.155 --> 00:17:53.755
+we first briefly looked at this
+
+00:17:53.755 --> 00:17:55.847
+during the maintainers meeting.
+
+00:17:55.850 --> 00:17:57.295
+Aren't these the same and
+
+00:17:57.295 --> 00:17:59.110
+they are not quite the same.
+
+00:17:59.110 --> 00:18:03.214
+There are iterators that meet the
+
+00:18:03.214 --> 00:18:05.950
+forward iterator concept that
+
+00:18:06.059 --> 00:18:08.810
+do not that aren't marked with
+
+00:18:08.810 --> 00:18:10.910
+the forward iterator category.
+
+00:18:10.910 --> 00:18:11.850
+Oh, Nicole, go ahead.
+
+00:18:13.940 --> 00:18:15.640
+&gt;&gt; Nicole: Sorry, I'm I'm still sick.
+
+00:18:15.640 --> 00:18:18.335
+&gt;&gt; Nicole: Uh, so that's why I sound terrible,
+
+00:18:18.340 --> 00:18:20.740
+&gt;&gt; Nicole: but my point in the meeting
+
+00:18:20.740 --> 00:18:22.397
+&gt;&gt; Nicole: yesterday was less, uh,
+
+00:18:22.397 --> 00:18:25.139
+&gt;&gt; Nicole: aren't these the same and more?
+
+00:18:25.140 --> 00:18:29.591
+&gt;&gt; Nicole: Uh, should _Is_fwd_iter_v uh,
+
+00:18:29.591 --> 00:18:32.398
+&gt;&gt; Nicole: be like only done in old code.
+
+00:18:32.400 --> 00:18:36.418
+&gt;&gt; Nicole: Given that I believe that forward iterator
+
+00:18:36.418 --> 00:18:40.000
+&gt;&gt; Nicole: like encompasses _Is_fwd_iter_v?
+
+00:18:40.000 --> 00:18:41.296
+&gt;&gt; Nicole: Does that make sense?
+
+00:18:41.296 --> 00:18:43.078
+&gt;&gt; Stephan: Yeah, OK, so the question is
+
+00:18:43.080 --> 00:18:44.088
+not is it redundant
+
+00:18:44.088 --> 00:18:45.768
+but could we simply replace
+
+00:18:45.768 --> 00:18:47.538
+the old code path? 
+
+00:18:47.540 --> 00:18:49.416
+&gt;&gt; Nicole: Right. And like obviously we would need to
+
+00:18:49.416 --> 00:18:51.740
+&gt;&gt; Nicole: like do an ifdef and then and else,
+
+00:18:51.740 --> 00:18:55.188
+&gt;&gt; Nicole: but in theory it's.
+
+00:18:55.190 --> 00:18:55.682
+&gt;&gt; Nicole: Reasonable,
+
+00:18:55.682 --> 00:18:59.618
+&gt;&gt; Nicole: I think everything that is a forward iterator
+
+00:18:59.618 --> 00:19:02.914
+&gt;&gt; Nicole: in C++ or C++17 classic forward iterator,
+
+00:19:02.914 --> 00:19:05.694
+&gt;&gt; Nicole: whatever is also a forward
+
+00:19:05.694 --> 00:19:08.327
+&gt;&gt; Nicole: iterator in the new ranges world.
+
+00:19:08.330 --> 00:19:11.270
+&gt;&gt; Nicole: I might be wrong though Casey.
+
+00:19:11.270 --> 00:19:11.888
+&gt;&gt; Stephan: Yeah, I'll let.
+
+00:19:11.888 --> 00:19:12.918
+I'll let Casey comment there.
+
+00:19:12.920 --> 00:19:14.796
+My initial reaction is that I think
+
+00:19:14.796 --> 00:19:17.125
+we may need to worry about iterators
+
+00:19:17.125 --> 00:19:19.315
+that essentially lie and they're tagged
+
+00:19:19.381 --> 00:19:22.940
+with _Is_fwd_iter_v without, um not
+
+00:19:22.940 --> 00:19:25.604
+technically meeting the requirements.
+
+00:19:25.610 --> 00:19:26.672
+In particular,
+
+00:19:26.672 --> 00:19:28.796
+I think Casey mentioned.
+
+00:19:28.800 --> 00:19:33.006
+Uh, that the forward iterator concept.
+
+00:19:33.010 --> 00:19:35.719
+Let see the forward iterator concept allows iterators
+
+00:19:35.719 --> 00:19:37.969
+that don't return true references.
+
+00:19:37.970 --> 00:19:40.278
+The classic forward iterator
+
+00:19:40.278 --> 00:19:42.586
+tag or category technically
+
+00:19:42.586 --> 00:19:45.170
+does require true references,
+
+00:19:45.170 --> 00:19:47.580
+but there are types like
+
+00:19:47.580 --> 00:19:49.508
+I think regex iterators.
+
+00:19:49.510 --> 00:19:51.550
+That don't really meet the requirements,
+
+00:19:51.550 --> 00:19:52.665
+but they claim to be
+
+00:19:52.665 --> 00:19:53.334
+forward iterators anyway,
+
+00:19:53.340 --> 00:19:55.060
+and this code actually works,
+
+00:19:55.060 --> 00:19:58.396
+so I would be worried about.
+
+00:19:58.400 --> 00:20:00.326
+Affecting the behavior of existing code,
+
+00:20:00.330 --> 00:20:02.108
+but I'll let Casey comment how close.
+
+00:20:02.110 --> 00:20:03.000
+How close did we get?
+
+00:20:06.480 --> 00:20:07.630
+Casey may have stepped away
+
+00:20:07.630 --> 00:20:09.286
+from his computer, so that's OK,
+
+00:20:09.286 --> 00:20:11.651
+&gt;&gt; Casey: Sorry. I'm I'm here. I I didn't.
+
+00:20:11.651 --> 00:20:13.079
+&gt;&gt; Casey: I was muted. Apologies.
+
+00:20:13.080 --> 00:20:16.825
+&gt;&gt; Casey: I think all actual things that comply
+
+00:20:16.825 --> 00:20:19.484
+&gt;&gt; Casey: with CPP 17 forward iterator will
+
+00:20:19.484 --> 00:20:22.139
+&gt;&gt; Casey: actually satisfy the forward iter concept,
+
+00:20:22.140 --> 00:20:24.205
+&gt;&gt; Casey: and I did just look at this.
+
+00:20:24.210 --> 00:20:26.660
+&gt;&gt; Casey: Right like moments ago because I was
+
+00:20:26.660 --> 00:20:29.403
+&gt;&gt; Casey: trying to make sure that it was kosher
+
+00:20:29.403 --> 00:20:31.869
+&gt;&gt; Casey: for us to check forward iterator on
+
+00:20:31.869 --> 00:20:34.592
+&gt;&gt; Casey: things that were CPP 17 input iterators,
+
+00:20:34.600 --> 00:20:37.120
+&gt;&gt; Casey: which it is because yeah,
+
+00:20:37.120 --> 00:20:38.872
+&gt;&gt; Casey: we checked that they've opted in
+
+00:20:38.872 --> 00:20:40.780
+&gt;&gt; Casey: by the iter concept value first,
+
+00:20:40.780 --> 00:20:43.198
+&gt;&gt; Casey: so it's clean.
+
+00:20:43.200 --> 00:20:45.279
+&gt;&gt; Casey: We can do this under as if and I
+
+00:20:45.279 --> 00:20:47.260
+&gt;&gt; Casey: actually had that concern with this PR,
+
+00:20:47.260 --> 00:20:48.334
+&gt;&gt; Casey: but it's fine.
+
+00:20:48.334 --> 00:20:51.247
+&gt;&gt; Casey: so the question now can we get
+
+00:20:51.247 --> 00:20:53.855
+&gt;&gt; Casey: rid of the old path and you are
+
+00:20:53.855 --> 00:20:56.650
+&gt;&gt; Casey: right that there are broken iterator
+
+00:20:56.650 --> 00:20:58.528
+&gt;&gt; Casey: types that will use the old path.
+
+00:20:58.530 --> 00:21:02.884
+&gt;&gt; Casey: Still that wouldn't make the new path.
+
+00:21:02.890 --> 00:21:05.362
+&gt;&gt; Stephan: OK, so in an ideal world we could
+
+00:21:05.362 --> 00:21:07.873
+do Nicole's suggests and just
+
+00:21:07.873 --> 00:21:11.058
+use forward iterator concept for C++20
+
+00:21:11.058 --> 00:21:14.334
+and above but old code broken code
+
+00:21:14.334 --> 00:21:17.025
+would possibly some in the standard
+
+00:21:17.025 --> 00:21:19.646
+itself would interfere with that.
+
+00:21:19.646 --> 00:21:23.050
+So here because vector is so central.
+
+00:21:23.050 --> 00:21:27.668
+I think this approach is good as is we
+
+00:21:27.668 --> 00:21:29.216
+could potentially in the future explore.
+
+00:21:29.220 --> 00:21:31.296
+OK like how many iterators would
+
+00:21:31.296 --> 00:21:33.380
+be broken by such a change.
+
+00:21:33.380 --> 00:21:34.958
+But I think that being noninvasive
+
+00:21:34.958 --> 00:21:36.719
+is probably the right approach here,
+
+00:21:36.720 --> 00:21:40.536
+because this PR as it stands,
+
+00:21:40.540 --> 00:21:44.296
+is only trying to improve performance.
+
+00:21:44.300 --> 00:21:47.198
+If we tried to replace this old code path,
+
+00:21:47.200 --> 00:21:49.209
+the advantage would be perhaps a little
+
+00:21:49.209 --> 00:21:51.059
+bit of throughput that we wouldn't
+
+00:21:51.059 --> 00:21:52.937
+need to test this additional condition,
+
+00:21:52.940 --> 00:21:55.676
+but this should be quite cheap to check.
+
+00:21:55.680 --> 00:21:59.568
+And if we did eliminate this and start
+
+00:21:59.568 --> 00:22:02.459
+changing behavior for broken iterators,
+
+00:22:02.460 --> 00:22:05.148
+then this would become more impactful.
+
+00:22:05.150 --> 00:22:07.089
+So I'm inclined to leave this code
+
+00:22:07.089 --> 00:22:10.067
+as is in the PR and simply add the
+
+00:22:10.067 --> 00:22:11.898
+additional else if constexpr under
+
+00:22:11.898 --> 00:22:14.018
+__cpp_lib_concepts. But I'm definitely.
+
+00:22:14.018 --> 00:22:15.698
+I'm interesting to look at.
+
+00:22:15.700 --> 00:22:19.668
+OK, I see Nicole's giving us thumbs up.
+
+00:22:19.670 --> 00:22:20.027
+OK,
+
+00:22:20.027 --> 00:22:22.526
+so we're returning back to this code
+
+00:22:22.530 --> 00:22:24.910
+if we have __cpp_lib_concepts
+
+00:22:24.910 --> 00:22:27.315
+then we can chain in
+
+00:22:27.315 --> 00:22:29.040
+an additional else if constexpr
+
+00:22:29.108 --> 00:22:31.467
+and if we meet the forward iterator
+
+00:22:31.467 --> 00:22:33.194
+concept then we can essentially
+
+00:22:33.194 --> 00:22:34.924
+do what we did before.
+
+00:22:34.930 --> 00:22:37.450
+We're also going to have
+
+00:22:37.450 --> 00:22:39.206
+const auto _Count except instead of calling
+
+00:22:39.206 --> 00:22:40.876
+std::distance we're gonna call
+
+00:22:40.876 --> 00:22:42.806
+ranges distance since that will be
+
+00:22:42.806 --> 00:22:44.910
+capable of handling forward iterator.
+
+00:22:44.910 --> 00:22:48.780
+Here we do have an assumption that.
+
+00:22:48.780 --> 00:22:51.420
+And this is very similar to the original
+
+00:22:51.420 --> 00:22:53.722
+code that if the incoming user defined
+
+00:22:53.722 --> 00:22:56.680
+iter meets the forward iterator concept,
+
+00:22:56.680 --> 00:22:58.432
+then surely we can call ranges
+
+00:22:58.432 --> 00:22:59.920
+distance on the unwrapped form.
+
+00:22:59.920 --> 00:23:02.518
+And I believe that holds because we
+
+00:23:02.518 --> 00:23:04.363
+control the unwrapping machinery and
+
+00:23:04.363 --> 00:23:05.919
+essentially if an iterator participates
+
+00:23:05.919 --> 00:23:07.499
+in the unwrapping scheme
+
+00:23:07.500 --> 00:23:09.180
+then the unwrapped version needs to
+
+00:23:09.180 --> 00:23:11.816
+be at least as strong as the user
+
+00:23:11.816 --> 00:23:13.676
+defined wrapped iterator coming in,
+
+00:23:13.680 --> 00:23:15.920
+so that looks fine.
+
+00:23:15.920 --> 00:23:18.985
+This calls ranges distance and
+
+00:23:18.985 --> 00:23:21.437
+then whatever that is.
+
+00:23:21.440 --> 00:23:23.312
+That in general will be something
+
+00:23:23.312 --> 00:23:25.640
+like a ptrdiff_t or a signed type.
+
+00:23:25.640 --> 00:23:29.132
+But what we do is if the
+
+00:23:29.132 --> 00:23:32.938
+iterators have passed our check.
+
+00:23:32.938 --> 00:23:35.272
+Our ADL verify range then
+
+00:23:35.272 --> 00:23:36.364
+we don't want to sign type.
+
+00:23:36.370 --> 00:23:38.602
+We know that it's non negative
+
+00:23:38.602 --> 00:23:41.206
+so we should be able to static
+
+00:23:41.206 --> 00:23:43.932
+cast to size_t and then we've got
+
+00:23:43.932 --> 00:23:45.612
+a helper function convert size
+
+00:23:45.612 --> 00:23:47.267
+that will potentially narrow it
+
+00:23:47.267 --> 00:23:49.019
+down to the allocators size type.
+
+00:23:49.020 --> 00:23:51.579
+Casey, go ahead.
+
+00:23:51.580 --> 00:23:54.254
+&gt;&gt; Casey: We can't static cast the results of
+
+00:23:54.254 --> 00:23:56.996
+&gt;&gt; Casey: ranges distance to size_t without
+
+00:23:56.996 --> 00:23:58.517
+&gt;&gt; Casey: possibly losing information.
+
+00:23:58.520 --> 00:24:02.684
+&gt;&gt; Stephan: Since, like the iota with 128 bit
+
+00:24:02.684 --> 00:24:03.860
+&gt;&gt; Stephan: or whatever stuff, 
+&gt;&gt; Casey: yes
+
+00:24:03.860 --> 00:24:06.296
+&gt;&gt; Casey: there it's possible that ranges have
+
+00:24:06.296 --> 00:24:09.098
+&gt;&gt; Casey: integer class type for their size type,
+
+00:24:09.100 --> 00:24:11.030
+&gt;&gt; Casey: which has values that aren't
+
+00:24:11.030 --> 00:24:12.574
+&gt;&gt; Casey: representable by size_t,
+
+00:24:12.580 --> 00:24:15.190
+&gt;&gt; Casey: and we'll be modulating the information
+
+00:24:15.190 --> 00:24:17.529
+&gt;&gt; Casey: away and that would be bad.
+
+00:24:17.530 --> 00:24:19.474
+&gt;&gt; Casey: So what we need to do here is instead
+
+00:24:19.474 --> 00:24:21.156
+&gt;&gt; Casey: of static casting the size_t,
+
+00:24:21.160 --> 00:24:24.345
+&gt;&gt; Casey: we need to use _To_unsigned_like.
+
+00:24:24.350 --> 00:24:27.128
+&gt;&gt; Casey: Internal helper function
+
+00:24:27.130 --> 00:24:31.240
+&gt;&gt; Stephan: Let's see if I can find that I do have my.
+
+00:24:31.240 --> 00:24:33.248
+Enlistment here or repo.
+
+00:24:33.248 --> 00:24:39.819
+OK so you said _To_unsigned_like_t?
+
+00:24:39.820 --> 00:24:41.500
+&gt;&gt; Casey: No t
+&gt;&gt; Stephan: I didn't get it right.
+
+00:24:41.500 --> 00:24:44.200
+&gt;&gt; Stephan: Oh, no t. There we go.
+
+00:24:44.200 --> 00:24:45.360
+_To_unsigned_like OK,
+
+00:24:45.360 --> 00:24:49.230
+&gt;&gt; Stephan: that lives in xutility.
+&gt;&gt; Casey: lives in xutility.
+
+00:24:49.230 --> 00:24:50.658
+&gt;&gt; Stephan: Yeah, OK, great.
+
+00:24:50.658 --> 00:24:53.990
+And this is is this only suit?
+
+00:24:53.990 --> 00:24:56.378
+Yeah, this is clearly concepts lands,
+
+00:24:56.380 --> 00:24:59.134
+so we shouldn't be using this in old code.
+
+00:24:59.140 --> 00:25:00.276
+But we should use it a new code.
+
+00:25:00.280 --> 00:25:02.196
+OK, that's 476 ish.
+
+00:25:02.196 --> 00:25:05.700
+OK let me get the citation here.
+
+00:25:05.700 --> 00:25:07.574
+stl, inc,
+
+00:25:07.574 --> 00:25:09.448
+xutility,
+
+00:25:13.670 --> 00:25:18.927
+_To_unsigned_like, hit Y for permalink.
+
+00:25:18.930 --> 00:25:20.904
+OK, and I'll copy the whole thing.
+
+00:25:25.420 --> 00:25:29.878
+OK, this is. It is mostly, no.
+
+00:25:29.878 --> 00:25:33.950
+I shouldn't say, mostly, UM.
+
+00:25:33.950 --> 00:25:36.305
+This would be observable because
+
+00:25:36.305 --> 00:25:39.790
+if I have let me see if I can
+
+00:25:39.790 --> 00:25:41.586
+get the right scenario here.
+
+00:25:41.586 --> 00:25:47.250
+If I have one of those iota views where I am
+
+00:25:47.250 --> 00:25:53.230
+going iota from some enormous range, UM.
+
+00:25:53.230 --> 00:25:56.317
+What would that be that would be?
+
+00:25:56.320 --> 00:25:57.952
+I have to be able to get something
+
+00:25:57.952 --> 00:25:59.960
+that's bigger than 64 bit, right?
+
+00:25:59.960 --> 00:26:01.480
+Oh no, it would be.
+
+00:26:01.480 --> 00:26:03.459
+It would be like iota view of here we go.
+
+00:26:03.460 --> 00:26:05.230
+Iota view of unsigned long
+
+00:26:05.230 --> 00:26:07.660
+long on a 32 bit system.
+
+00:26:07.660 --> 00:26:10.460
+I can totally do that here.
+
+00:26:10.460 --> 00:26:12.220
+The range of distance would be like a
+
+00:26:12.220 --> 00:26:13.754
+64 bit distance or something static
+
+00:26:13.754 --> 00:26:15.600
+cast to size T would be modular.
+
+00:26:15.600 --> 00:26:18.295
+So even though I can't really represent
+
+00:26:18.295 --> 00:26:20.935
+over 32 bits physically in memory
+
+00:26:20.935 --> 00:26:24.509
+iota view can make 64 bit stuff.
+
+00:26:24.510 --> 00:26:25.214
+Did Nicole did
+
+00:26:25.214 --> 00:26:26.270
+you have your hand up briefly?
+
+00:26:26.270 --> 00:26:28.265
+&gt;&gt; Nicole: Ohh yeah, I was just gonna say,
+
+00:26:28.270 --> 00:26:32.726
+&gt;&gt; Nicole: I assume that the convert size throws a.
+
+00:26:32.730 --> 00:26:36.546
+&gt;&gt; Nicole: Throws an exception if the thing is too big.
+
+00:26:36.550 --> 00:26:38.138
+&gt;&gt; Nicole: Why this is good?
+
+00:26:38.138 --> 00:26:40.123
+&gt;&gt; Nicole: Like the basically what what?
+
+00:26:40.130 --> 00:26:42.890
+&gt;&gt; Nicole: What will happen in the modulo case is?
+
+00:26:42.890 --> 00:26:44.240
+&gt;&gt; Nicole: You'll get a
+
+00:26:44.240 --> 00:26:48.350
+&gt;&gt; Nicole: bad codegen where or bad code where you like.
+
+00:26:48.350 --> 00:26:50.976
+&gt;&gt; Nicole: Create, uh? Uh.
+
+00:26:50.976 --> 00:26:53.824
+&gt;&gt; Nicole: Create a thing that's like if you have
+
+00:26:53.824 --> 00:26:56.938
+&gt;&gt; Nicole: a range from zero to two to the uh,
+
+00:26:56.940 --> 00:27:00.009
+&gt;&gt; Nicole: 33 you create a range of zero and then
+
+00:27:00.009 --> 00:27:02.348
+&gt;&gt; Nicole: construct n into that range of 0.
+
+00:27:04.980 --> 00:27:08.300
+&gt;&gt; Nicole: Which is obviously broken.
+
+00:27:08.300 --> 00:27:10.244
+&gt;&gt; Stephan: Yeah
+&gt;&gt; Nicole: and what you want is
+
+00:27:10.244 --> 00:27:12.219
+&gt;&gt; Nicole: that the this is too big.
+
+00:27:14.390 --> 00:27:16.532
+&gt;&gt; Nicole: My question is, isn't this broken
+
+00:27:16.532 --> 00:27:18.590
+&gt;&gt; Nicole: in the other code as well?
+
+00:27:18.590 --> 00:27:23.860
+&gt;&gt; Nicole: Like my understanding is that std::distance
+
+00:27:23.860 --> 00:27:27.626
+&gt;&gt; Nicole: On something similar to an iota of
+
+00:27:27.626 --> 00:27:31.290
+&gt;&gt; Nicole: you could still exist in C++17.
+
+00:27:31.290 --> 00:27:34.370
+&gt;&gt; Nicole: I guess. I guess it wouldn't be a.
+
+00:27:34.370 --> 00:27:35.875
+&gt;&gt; Nicole: It wouldn't be a forward iterator range,
+
+00:27:35.880 --> 00:27:37.644
+&gt;&gt; Nicole: though it would be an input iterator.
+
+00:27:37.650 --> 00:27:39.348
+&gt;&gt; Nicole:Never mind, right.
+&gt;&gt; Casey: Right, it wouldn't.
+
+00:27:39.350 --> 00:27:40.736
+&gt;&gt; Casey: We're protected by the fact that this
+
+00:27:40.736 --> 00:27:42.168
+&gt;&gt; Casey: is for working on forward iterators,
+
+00:27:42.170 --> 00:27:43.862
+&gt;&gt; Casey: and they have to refer to
+
+00:27:43.862 --> 00:27:44.990
+&gt;&gt; Casey: actual objects in memory,
+
+00:27:44.990 --> 00:27:46.558
+&gt;&gt; Casey: so we're basically guaranteed
+
+00:27:46.558 --> 00:27:49.331
+&gt;&gt; Casey: that no forward range is has a
+
+00:27:49.331 --> 00:27:51.390
+&gt;&gt; Casey: distance longer than size_t, right?
+
+00:27:54.590 --> 00:27:57.579
+&gt;&gt; Stephan: OK so I'm looking at convert size
+
+00:27:57.579 --> 00:28:00.241
+convert size expects its input to be
+
+00:28:00.241 --> 00:28:03.061
+whoops input to be size_t and then
+
+00:28:03.061 --> 00:28:05.431
+this is really intended to handle
+
+00:28:05.431 --> 00:28:07.966
+what if I'm in like X64 so size_t
+
+00:28:07.966 --> 00:28:10.309
+64 bit But I've got some 32 bits
+
+00:28:10.310 --> 00:28:12.750
+something allocator.
+
+00:28:12.750 --> 00:28:14.974
+Then I need to convert down to the
+
+00:28:14.974 --> 00:28:17.010
+allocator size type that could overflow,
+
+00:28:17.010 --> 00:28:18.480
+so that's what this check is doing.
+
+00:28:18.480 --> 00:28:20.829
+But if the allocator size type is size_t,
+
+00:28:20.830 --> 00:28:22.050
+this just becomes a no op,
+
+00:28:22.050 --> 00:28:23.988
+so that's what convert size does,
+
+00:28:23.990 --> 00:28:28.076
+so we should be using _To_unsigned_like here.
+
+00:28:28.080 --> 00:28:32.830
+And then. Going down to convert size,
+
+00:28:32.830 --> 00:28:34.188
+do we need like a handwritten check basically?
+
+00:28:34.190 --> 00:28:36.220
+Because the input still
+
+00:28:36.220 --> 00:28:38.250
+may not be size type.
+
+00:28:38.250 --> 00:28:41.436
+Let me bring up the _To_unsigned_like that
+
+00:28:41.436 --> 00:28:44.495
+was here and then close some of these.
+
+00:28:44.500 --> 00:28:48.043
+The bug OK, this just converts
+
+00:28:48.043 --> 00:28:50.848
+over to the unsigned counterpart.
+
+00:28:50.850 --> 00:28:52.874
+But then we still need to get to.
+
+00:28:55.520 --> 00:28:58.460
+We never want to accidentally truncate,
+
+00:28:58.460 --> 00:29:00.860
+so I think we need a handwritten check.
+
+00:29:00.860 --> 00:29:02.936
+Is that right? Essentially doing what
+
+00:29:02.936 --> 00:29:06.260
+convert size is doing, but handwritten?
+
+00:29:06.260 --> 00:29:08.606
+&gt;&gt; Casey: I just pasted convert size from
+
+00:29:08.606 --> 00:29:10.974
+my P1206 branch
+
+00:29:10.974 --> 00:29:13.628
+&gt;&gt; Casey: into the chat.
+&gt;&gt; Stephan: OK, you've got.
+
+00:29:13.628 --> 00:29:15.980
+&gt;&gt; Stephan: You've got just the right code.
+&gt;&gt; Casey: which does the right thing.
+
+00:29:15.980 --> 00:29:16.952
+There's your code,
+
+00:29:16.952 --> 00:29:19.220
+I cannot read it because the chat is
+
+00:29:19.292 --> 00:29:21.497
+literally like 10 characters wide,
+
+00:29:21.500 --> 00:29:24.680
+which is frustrating.
+
+00:29:24.680 --> 00:29:26.032
+It's on my other screen, which is
+
+00:29:26.032 --> 00:29:27.760
+why you can't see it on the the view.
+
+00:29:27.760 --> 00:29:32.370
+OK, so you've generalized in your code.
+
+00:29:32.370 --> 00:29:33.980
+Convert size to handle this.
+&gt;&gt; Casey: Yes
+
+00:29:36.110 --> 00:29:39.734
+&gt;&gt; Stephan: That's interesting. OK, so for this PR.
+&gt;&gt; Casey: So yeah, I can get a link if you want a link
+```suggestion
+
+00:29:39.734 --> 00:29:42.830
+&gt;&gt; Casey: But yeah, this PR is going to need to.
+
+00:29:42.830 --> 00:29:44.306
+&gt;&gt; Casey: We need that that convert size
+
+00:29:44.306 --> 00:29:45.760
+&gt;&gt; Casey: change one way or another,
+
+00:29:45.760 --> 00:29:47.638
+&gt;&gt; Casey: so maybe with this we should
+
+00:29:47.638 --> 00:29:50.816
+&gt;&gt; Casey: hold this up until applying P1206
+
+00:29:50.816 --> 00:29:53.028
+&gt;&gt; Stephan: The other thing we could do
+
+00:29:53.028 --> 00:29:54.788
+is we could just say this is a
+
+00:29:54.788 --> 00:29:56.096
+corner case for like iota views.
+
+00:29:56.100 --> 00:29:58.020
+Merge this as is and then
+
+00:29:58.020 --> 00:29:59.608
+patch it up in 1206.
+
+00:29:59.608 --> 00:30:02.096
+I would be OK with that if this
+
+00:30:02.096 --> 00:30:03.368
+is sufficiently obscure because
+
+00:30:03.368 --> 00:30:05.140
+it is really quite extreme.
+
+00:30:05.140 --> 00:30:07.850
+It's something that only happens
+
+00:30:07.850 --> 00:30:10.560
+with extremely large iota views,
+
+00:30:10.560 --> 00:30:11.704
+which hopefully I mean.
+
+00:30:11.704 --> 00:30:13.768
+On the other hand it is vector
+
+00:30:13.768 --> 00:30:15.188
+if you don't want to.
+&gt;&gt; Casey: Or user-defined range types.
+
+00:30:15.190 --> 00:30:17.070
+They can define their own range types
+
+00:30:17.070 --> 00:30:18.950
+that use or size so.
+
+00:30:18.950 --> 00:30:21.100
+Yeah, Nicole's questioning the chat.
+
+00:30:21.100 --> 00:30:22.935
+Does MSVC support 32 bit
+
+00:30:22.935 --> 00:30:24.036
+protected mode segmentation?
+
+00:30:24.040 --> 00:30:25.150
+I believe the answer is no.
+
+00:30:25.150 --> 00:30:26.695
+We always have flat memory
+
+00:30:26.695 --> 00:30:28.950
+models for all of our platforms,
+
+00:30:28.950 --> 00:30:30.119
+so we don't I think have to
+
+00:30:30.119 --> 00:30:31.029
+worry about things like that.
+
+00:30:34.110 --> 00:30:37.578
+OK, so thinking range's distance is
+
+00:30:37.578 --> 00:30:40.840
+returning some sign type we can use.
+
+00:30:43.170 --> 00:30:45.180
+_To_unsigned_like to get to
+
+00:30:45.180 --> 00:30:46.185
+the unsigned counterpart,
+
+00:30:46.190 --> 00:30:48.213
+but then we need to worry about
+
+00:30:48.213 --> 00:30:49.850
+getting down to the size type.
+
+00:30:49.850 --> 00:30:51.670
+I guess the other thing is we
+
+00:30:51.670 --> 00:30:53.545
+could use a handwritten check here
+
+00:30:53.545 --> 00:30:55.489
+to be strictly correct and then
+
+00:30:55.489 --> 00:30:57.139
+replace that with Casey's new
+
+00:30:57.140 --> 00:30:59.680
+function in 1206,
+
+00:30:59.680 --> 00:31:02.186
+and have his PR do that and after
+
+00:31:02.186 --> 00:31:03.726
+that everything is fine here.
+
+00:31:03.730 --> 00:31:04.670
+I think I might be.
+
+00:31:04.670 --> 00:31:06.098
+I might suggest that.
+
+00:31:08.390 --> 00:31:09.570
+Yeah, actually Casey can you.
+
+00:31:09.570 --> 00:31:11.424
+Can you send the link so I can at
+
+00:31:11.424 --> 00:31:12.927
+least bring it up on the screen
+
+00:31:12.927 --> 00:31:15.109
+so I can show our viewers and the
+
+00:31:15.109 --> 00:31:16.729
+recording what we're talking about.
+
+00:31:16.730 --> 00:31:19.530
+OK, that'll be faster than navigating there.
+
+00:31:19.530 --> 00:31:22.437
+I think I think probably that may be the
+
+00:31:22.437 --> 00:31:25.099
+best approach just so we never have a
+
+00:31:25.099 --> 00:31:27.604
+even a short time in Microsoft STL main
+
+00:31:27.604 --> 00:31:30.143
+that is doing the wrong thing when we
+
+00:31:30.143 --> 00:31:32.632
+know what the right thing is to do. I'm OK,
+
+00:31:32.632 --> 00:31:35.060
+so we do need to mention unsigned like.
+
+00:31:37.820 --> 00:31:40.928
+Let's see if I can capture the
+
+00:31:40.928 --> 00:31:45.390
+entire discussion. In the UM?
+
+00:31:45.390 --> 00:31:51.732
+Original _Is_fwd_iter_v code path.
+
+00:31:51.732 --> 00:31:57.168
+We're guaranteed to be looking at,
+
+00:31:57.170 --> 00:32:04.440
+uh, real elements. Or looking at UM?
+
+00:32:07.370 --> 00:32:09.978
+We're guaranteed that the
+
+00:32:09.978 --> 00:32:16.090
+source range consists of
+
+00:32:16.090 --> 00:32:23.140
+real references to memory so the
+
+00:32:23.140 --> 00:32:29.034
+distance will always fit in size_t.
+
+00:32:29.040 --> 00:32:32.448
+However in the new
+
+00:32:34.460 --> 00:32:40.270
+forward iterator code path. The.
+
+00:32:40.270 --> 00:32:41.566
+Let me say std::distance here
+
+00:32:41.570 --> 00:32:47.960
+to be clear the ranges distance
+
+00:32:47.960 --> 00:32:54.110
+might be larger than size_t,
+
+00:32:54.110 --> 00:32:59.704
+for example, iota_view. For example,
+
+00:32:59.704 --> 00:33:06.430
+a 64 bit iota_view on a 32 bit
+
+00:33:06.430 --> 00:33:09.210
+architecture. Uhm?
+
+00:33:11.290 --> 00:33:16.010
+The static_cast<size_t> 
+
+00:33:16.010 --> 00:33:20.620
+might therefore truncate. OK.
+
+00:33:22.710 --> 00:33:28.624
+We need. 2 steps here.
+
+00:33:28.624 --> 00:33:33.060
+OK, Casey's got the link and then Nicole asks,
+
+00:33:33.060 --> 00:33:35.517
+are we concerned about broken iterator types,
+
+00:33:35.520 --> 00:33:39.120
+IE stashing iterators?
+
+00:33:39.120 --> 00:33:41.530
+I think what the concept?
+
+00:33:41.530 --> 00:33:43.194
+Iterators are really they.
+
+00:33:43.194 --> 00:33:46.701
+Even if they were tending to like lie
+
+00:33:46.701 --> 00:33:49.314
+with the original categories when they
+
+00:33:49.314 --> 00:33:51.669
+satisfy the concept, we should. Ohh,
+
+00:33:51.669 --> 00:33:55.050
+the question is for the non concept code.
+
+00:33:55.050 --> 00:33:58.879
+There it's like we grudgingly tolerate them.
+
+00:33:58.880 --> 00:34:00.644
+Generally we will knockout go out of
+
+00:34:00.644 --> 00:34:02.698
+our way to try to make stuff work,
+
+00:34:02.700 --> 00:34:04.320
+but if the natural loop happens
+
+00:34:04.320 --> 00:34:05.990
+to work with broken iterators,
+
+00:34:05.990 --> 00:34:08.538
+then we accept them.
+
+00:34:08.540 --> 00:34:10.788
+Which is why they they end up working
+
+00:34:10.788 --> 00:34:12.818
+like regex iterators they will,
+
+00:34:12.820 --> 00:34:14.772
+I think work with this even though they
+
+00:34:14.772 --> 00:34:16.318
+return values from inside themselves
+
+00:34:16.320 --> 00:34:17.532
+because we don't do something like
+
+00:34:17.532 --> 00:34:18.819
+grab a reference from an iterator,
+
+00:34:18.820 --> 00:34:20.140
+increment it and then try to
+
+00:34:20.140 --> 00:34:21.020
+use the original reference,
+
+00:34:21.020 --> 00:34:23.340
+even if that technically should
+
+00:34:23.340 --> 00:34:25.660
+work according to the iterator
+
+00:34:25.741 --> 00:34:27.389
+strength requirements.
+
+00:34:27.390 --> 00:34:28.926
+The vector has no reason to do that,
+
+00:34:28.930 --> 00:34:31.845
+so users get away with
+
+00:34:31.845 --> 00:34:33.594
+such stashing iterators.
+
+00:34:33.600 --> 00:34:37.446
+Which is weird, but it works.
+
+00:34:37.450 --> 00:34:41.797
+OK, so we need to steps here first is.
+
+00:34:41.800 --> 00:34:43.388
+The _To_unsigned_like.
+
+00:34:45.860 --> 00:34:53.140
+OK. Um. 1) Call _To_unsigned_like
+
+00:34:53.140 --> 00:35:00.524
+to convert the signed distance type to
+
+00:35:00.524 --> 00:35:05.240
+its unsigned counterpart. And then
+
+00:35:07.280 --> 00:35:14.012
+2) Convert. That unsigned like type to
+
+00:35:14.012 --> 00:35:20.282
+the allocators size type. Which might
+
+00:35:20.282 --> 00:35:28.190
+need to throw a length error. Uhm?
+
+00:35:31.150 --> 00:35:34.066
+Casey Carter's branch for what's the
+
+00:35:34.066 --> 00:35:37.280
+the issue number I should have?
+
+00:35:37.280 --> 00:35:39.388
+Shouldn't have closed it?
+
+00:35:39.390 --> 00:35:45.671
+&gt;&gt; Stephan: The projects classic.
+&gt;&gt; Casey: I can tell
+
+00:35:45.671 --> 00:35:49.760
+&gt;&gt; Casey: you the proposal number. 
+&gt;&gt; Stephan: OK. 2532
+
+00:35:58.270 --> 00:36:01.978
+&gt;&gt; Stephan: Contains such. Machinery.
+
+00:36:05.570 --> 00:36:07.582
+Yeah, that will cite.
+
+00:36:07.582 --> 00:36:11.430
+This here I see just static assert,
+
+00:36:11.430 --> 00:36:12.674
+some basic things that
+
+00:36:12.674 --> 00:36:14.229
+they have to be unsigned,
+
+00:36:14.230 --> 00:36:15.628
+and then if it's too big.
+
+00:36:18.450 --> 00:36:22.060
+Yeah, so would you recommend?
+
+00:36:22.060 --> 00:36:24.335
+Since you copy pasting this or just
+
+00:36:24.335 --> 00:36:26.618
+doing the if constexpr,
+
+00:36:26.620 --> 00:36:27.460
+&gt;&gt; Casey: yeah that would be fine.
+
+00:36:27.460 --> 00:36:30.547
+&gt;&gt; Casey: If they go ahead and steal this.
+
+00:36:30.550 --> 00:36:33.198
+&gt;&gt; Casey: into that PR.
+&gt;&gt; Stephan: OK
+
+00:36:33.198 --> 00:36:35.846
+&gt;&gt; Casey: Yeah benign merge conflict.
+
+00:36:35.850 --> 00:36:39.450
+&gt;&gt; Stephan: OK Casey Carter recommends just
+
+00:36:39.450 --> 00:36:44.116
+copying that function into your.
+
+00:36:44.116 --> 00:36:49.190
+into this PR and.
+
+00:36:54.160 --> 00:36:57.430
+Which, will result in a
+
+00:36:57.430 --> 00:37:00.880
+trivial merge conflict to
+
+00:37:03.100 --> 00:37:03.490
+deal with later.
+
+00:37:05.520 --> 00:37:06.940
+OK, let's preview this.
+
+00:37:06.940 --> 00:37:08.634
+If it looks right. OK,
+
+00:37:08.634 --> 00:37:10.826
+in the original _Is_fwd_iter_v code path.
+
+00:37:10.830 --> 00:37:12.606
+We're guaranteed that the source range
+
+00:37:12.606 --> 00:37:14.289
+consists of real references to memory,
+
+00:37:14.290 --> 00:37:15.485
+so the std::distance will
+
+00:37:15.485 --> 00:37:16.935
+always fit in size_t. However,
+
+00:37:16.935 --> 00:37:18.720
+in the new forward iterator code path,
+
+00:37:18.720 --> 00:37:20.292
+the range's distance might be
+
+00:37:20.292 --> 00:37:21.944
+larger than size_t, for example,
+
+00:37:21.944 --> 00:37:25.400
+64 bit iota_view on a 32 bit architecture.
+
+00:37:25.400 --> 00:37:26.840
+The static_cast<size_t>
+
+00:37:26.840 --> 00:37:27.704
+might therefore truncate.
+
+00:37:27.710 --> 00:37:28.720
+We need 2 steps here,
+
+00:37:28.720 --> 00:37:31.464
+one called _To_unsigned_like to convert
+
+00:37:31.464 --> 00:37:34.476
+the signed distance type to its unsigned
+
+00:37:34.476 --> 00:37:36.052
+counterpart to convert that unsigned
+
+00:37:36.052 --> 00:37:38.060
+like type to the allocator size type,
+
+00:37:38.060 --> 00:37:39.768
+which might need to throw a length
+
+00:37:39.770 --> 00:37:42.005
+error. Casey Carter's branch for
+
+00:37:42.005 --> 00:37:44.240
+conversions from ranges to containers
+
+00:37:44.240 --> 00:37:45.284
+contains such machinery.
+
+00:37:45.284 --> 00:37:47.720
+Oh, we don't get the auto preview
+
+00:37:47.780 --> 00:37:49.490
+because it's just some random
+
+00:37:49.490 --> 00:37:51.200
+branch rather than our own.
+
+00:37:51.200 --> 00:37:52.820
+OK, but we got the citation.
+
+00:37:52.820 --> 00:37:57.529
+&gt;&gt; Casey: That's unfortunate... I hit y to make sure it was a permalink
+&gt;&gt; Stephan: yeah, the fork is not... the repo itself.
+
+00:37:57.529 --> 00:37:59.285
+Yeah, Casey recommends just
+
+00:37:59.285 --> 00:38:01.760
+copying the function to this PR,
+
+00:38:01.760 --> 00:38:03.650
+which will result in a trivial
+
+00:38:03.650 --> 00:38:05.320
+merge conflict to deal with later.
+
+00:38:05.320 --> 00:38:07.056
+OK, yeah, I'd be fine with that.
+
+00:38:07.060 --> 00:38:08.416
+And you added this to what?
+
+00:38:08.420 --> 00:38:10.950
+xmemory, yeah, good enough.
+
+00:38:10.950 --> 00:38:12.420
+&gt;&gt; Casey: It's already in xmemory, right
+
+00:38:12.420 --> 00:38:14.625
+&gt;&gt; Casey: I've just updated the implementation
+
+00:38:14.625 --> 00:38:15.948
+&gt;&gt; Casey: of convert size.
+
+00:38:15.950 --> 00:38:16.922
+&gt;&gt; Stephan: Oh I see.
+
+00:38:16.922 --> 00:38:18.440
+OK yeah, because you're linked to the
+
+00:38:18.440 --> 00:38:21.660
+branch and not to the diff. OK, cool.
+
+00:38:21.660 --> 00:38:26.190
+OK, we got a first comment here, great.
+
+00:38:26.190 --> 00:38:30.588
+Now onward. And that's about.
+
+00:38:30.590 --> 00:38:32.120
+It's about it. This it doesn't
+
+00:38:32.120 --> 00:38:33.410
+duplicate the construct in line.
+
+00:38:33.410 --> 00:38:36.050
+There's no good way to really avoid that.
+
+00:38:36.050 --> 00:38:37.746
+It's just one line.
+
+00:38:37.746 --> 00:38:42.679
+Yep, that's good. OK and then.
+
+00:38:42.680 --> 00:38:46.308
+This here is being.
+
+00:38:46.310 --> 00:38:49.620
+Changed from tag dispatch to
+
+00:38:49.620 --> 00:38:52.340
+if constexpr. Where's that happening?
+
+00:38:52.340 --> 00:38:55.710
+That's happening down here, OK.
+
+00:38:55.710 --> 00:38:57.034
+We're essentially if constexpr
+
+00:38:57.034 --> 00:38:57.696
+dispatching,
+
+00:38:57.700 --> 00:38:59.510
+because we are still calling
+
+00:38:59.510 --> 00:39:00.596
+a helper function.
+
+00:39:00.600 --> 00:39:01.800
+How big are these helper functions?
+
+00:39:01.800 --> 00:39:02.775
+They're pretty big.
+
+00:39:02.775 --> 00:39:04.400
+Having them separate is fine.
+
+00:39:04.400 --> 00:39:05.002
+OK,
+
+00:39:05.002 --> 00:39:07.906
+so previously we overloaded insert
+
+00:39:07.906 --> 00:39:10.882
+range and internal private ugly helper
+
+00:39:10.882 --> 00:39:12.712
+function with input iterator tag.
+
+00:39:12.712 --> 00:39:15.479
+Now it's being renamed to _Insert_input_range.
+
+00:39:15.480 --> 00:39:17.008
+I like that if we don't need to
+
+00:39:17.008 --> 00:39:17.976
+distinguish an overload resolution
+
+00:39:17.976 --> 00:39:19.326
+having a different name makes
+
+00:39:19.326 --> 00:39:20.600
+it clear what's happening.
+
+00:39:20.600 --> 00:39:23.100
+No ABI concerns or anything.
+
+00:39:23.100 --> 00:39:25.758
+OK, so that's good, same forward
+
+00:39:25.760 --> 00:39:26.266
+range
+
+00:39:26.266 --> 00:39:30.314
+but the forward range one is being enhanced.
+
+00:39:30.320 --> 00:39:31.916
+Previously we always just used up
+
+00:39:31.916 --> 00:39:33.800
+this going to need the same thing.
+
+00:39:36.370 --> 00:39:38.530
+We always used to take the distance because
+
+00:39:38.530 --> 00:39:40.218
+we're inserting instead of constructing.
+
+00:39:40.220 --> 00:39:42.416
+Take the distance and convert over.
+
+00:39:42.420 --> 00:39:44.880
+Now we have two code paths.
+
+00:39:44.880 --> 00:39:46.760
+We're going to definitely
+
+00:39:46.760 --> 00:39:48.640
+initialize a size type.
+
+00:39:48.640 --> 00:39:51.040
+Count, so that's not changing.
+
+00:39:51.040 --> 00:39:51.766
+It's definitely initialized,
+
+00:39:51.766 --> 00:39:54.399
+so it's OK for it to be uninitialized here.
+
+00:39:54.400 --> 00:39:56.890
+If we're in cpp lib concepts mode ifdef,
+
+00:39:56.890 --> 00:39:59.560
+then if we're forward iterator concept,
+
+00:39:59.560 --> 00:40:01.072
+then this is the code that we'll
+
+00:40:01.072 --> 00:40:02.320
+need to change accordingly.
+
+00:40:02.320 --> 00:40:04.800
+Otherwise, do the classic thing.
+
+00:40:04.800 --> 00:40:06.600
+Which is not changing at all.
+
+00:40:06.600 --> 00:40:08.076
+OK, how many occurrences of this?
+
+00:40:08.080 --> 00:40:11.150
+I'll just say Ditto below.
+
+00:40:11.150 --> 00:40:12.746
+I'll just say occurs below cause it
+
+00:40:12.746 --> 00:40:14.090
+clearly does occur several times.
+
+00:40:16.490 --> 00:40:22.446
+Edit. Occurs below for insertion, et cetera.
+
+00:40:25.700 --> 00:40:27.900
+OK yeah, once we get those helper functions,
+
+00:40:27.900 --> 00:40:29.684
+each line will be quite systematic so it
+
+00:40:29.684 --> 00:40:31.530
+should end up being a pretty small change.
+
+00:40:34.770 --> 00:40:38.725
+OK. Next I was wondering, should
+
+00:40:38.725 --> 00:40:40.510
+we request test coverage for that?
+
+00:40:40.510 --> 00:40:42.006
+It definitely is going to throw an exception.
+
+00:40:47.430 --> 00:40:48.948
+I think asking for test coverage
+
+00:40:48.948 --> 00:40:50.381
+is reasonable because this is a
+
+00:40:50.381 --> 00:40:51.503
+should be pretty easy to test,
+
+00:40:51.510 --> 00:40:52.470
+you just make a 60.
+
+00:40:52.470 --> 00:40:56.100
+Well, it's easy to test on 32
+
+00:40:56.100 --> 00:40:57.950
+bit architectures on 64 bit
+
+00:40:57.950 --> 00:40:59.060
+architectures it's annoying.
+
+00:41:01.180 --> 00:41:03.155
+OK, now I'm less inclined
+
+00:41:03.155 --> 00:41:05.130
+to ask for test coverage.
+
+00:41:05.130 --> 00:41:06.580
+OK, I think just inspecting
+
+00:41:06.580 --> 00:41:08.030
+the coach should be fine.
+
+00:41:08.030 --> 00:41:10.340
+I am lazy that way.
+
+00:41:10.340 --> 00:41:12.916
+OK, so returning to the insert
+
+00:41:12.916 --> 00:41:15.380
+forward range if the concepts end
+
+00:41:15.380 --> 00:41:17.983
+of concepts if forward iterator.
+
+00:41:17.983 --> 00:41:21.469
+Then we activate the new stuff.
+
+00:41:21.470 --> 00:41:24.134
+Otherwise, we already know we satisfy
+
+00:41:24.134 --> 00:41:26.250
+the original forward iterator tag.
+
+00:41:26.250 --> 00:41:28.138
+OK, that looks good,
+
+00:41:28.138 --> 00:41:30.970
+and this avoids repeating the code.
+
+00:41:30.970 --> 00:41:35.820
+Yep, that's our usual convention, OK then.
+
+00:41:35.820 --> 00:41:38.805
+This is the call site in insert
+
+00:41:38.805 --> 00:41:41.475
+some iterator or insert where and
+
+00:41:41.475 --> 00:41:44.039
+then an arbitrary iterator range.
+
+00:41:44.040 --> 00:41:45.388
+Previously all we always
+
+00:41:45.388 --> 00:41:46.736
+just called insert range.
+
+00:41:46.740 --> 00:41:48.990
+But we tag dispatched here.
+
+00:41:48.990 --> 00:41:51.750
+And now we're going to have a bool.
+
+00:41:51.750 --> 00:41:53.920
+And then use if constexpr
+
+00:41:53.920 --> 00:41:55.656
+to switch between them.
+
+00:41:55.660 --> 00:41:59.314
+OK, so ifdef __cpp_lib_concepts
+
+00:41:59.320 --> 00:42:02.694
+above yes below no and if no
+
+00:42:02.694 --> 00:42:04.448
+OK constexpr bool _Is_fwd
+
+00:42:04.448 --> 00:42:06.350
+If we either meet the classic
+
+00:42:06.413 --> 00:42:08.125
+_Is_fwd_iter_v or we meet
+
+00:42:08.125 --> 00:42:09.145
+the forward iterator concepts.
+
+00:42:09.150 --> 00:42:11.310
+So this ensures if you met the classic
+
+00:42:11.310 --> 00:42:13.078
+requirement we will still activate it.
+
+00:42:13.080 --> 00:42:14.538
+This is safe.
+
+00:42:14.538 --> 00:42:18.180
+I like this. If we don't have concepts
+
+00:42:18.180 --> 00:42:20.610
+then only check _Is_fwd_iter_v
+
+00:42:20.610 --> 00:42:20.911
+OK,
+
+00:42:20.911 --> 00:42:23.620
+I see no good way to extract this or
+
+00:42:23.696 --> 00:42:26.330
+anything other than like a horrible
+
+00:42:26.330 --> 00:42:28.605
+putting or is forward iterator and concepts.
+
+00:42:28.610 --> 00:42:29.816
+It's fine to just repeat the
+
+00:42:29.816 --> 00:42:30.870
+_Is_fwd line like this.
+
+00:42:30.870 --> 00:42:33.230
+This is more readable anyways.
+
+00:42:33.230 --> 00:42:34.870
+So then, if constexpr (_Is_fwd)
+
+00:42:34.870 --> 00:42:37.369
+then call the forward range,
+
+00:42:37.370 --> 00:42:40.278
+otherwise call input range.
+
+00:42:40.280 --> 00:42:43.829
+We have not.
+
+00:42:43.830 --> 00:42:45.330
+This doesn't result in multiple lines.
+
+00:42:45.330 --> 00:42:47.370
+There's no reason to ask like
+
+00:42:47.370 --> 00:42:48.930
+extract these in any variables.
+
+00:42:48.930 --> 00:42:49.926
+It's fine to just repeat it
+
+00:42:49.926 --> 00:42:50.810
+and wrap first and last.
+
+00:42:50.810 --> 00:42:51.839
+It's fine then,
+
+00:42:51.839 --> 00:42:53.554
+otherwise make iterator offset OK.
+
+00:42:53.560 --> 00:42:54.342
+That's good,
+
+00:42:54.342 --> 00:42:55.906
+same transformation being applied
+
+00:42:55.906 --> 00:42:57.930
+to assign where we're saying.
+
+00:42:57.930 --> 00:42:59.730
+Just replace the entire vector with
+
+00:42:59.730 --> 00:43:02.469
+this range, assign input range,
+
+00:43:02.469 --> 00:43:04.608
+assign forward range.
+
+00:43:04.610 --> 00:43:06.390
+OK stuff's happening here.
+
+00:43:06.390 --> 00:43:08.170
+This looks horrible because
+
+00:43:08.170 --> 00:43:10.589
+the white space change let me
+
+00:43:10.589 --> 00:43:12.404
+turn on ignore white space.
+
+00:43:12.410 --> 00:43:14.090
+Come back to assign forward range.
+
+00:43:14.090 --> 00:43:15.118
+That should look better.
+
+00:43:17.390 --> 00:43:20.250
+Indeed, it looks much better.
+
+00:43:20.250 --> 00:43:22.446
+OK, so assign forward range no
+
+00:43:22.446 --> 00:43:24.241
+longer taking the tag again,
+
+00:43:24.241 --> 00:43:26.889
+we're going to have a size type new
+
+00:43:26.889 --> 00:43:29.178
+size that's going to definitely
+
+00:43:29.178 --> 00:43:31.130
+be initialized here. Yeah Nicole
+
+00:43:33.500 --> 00:43:37.748
+&gt;&gt; Nicole: sorry I was just wanted to say it seems.
+
+00:43:37.750 --> 00:43:41.542
+&gt;&gt; Nicole: I mean. Maybe I'm. Over.
+
+00:43:41.542 --> 00:43:44.786
+&gt;&gt; Nicole: I don't know, uh, but I think it
+
+00:43:44.786 --> 00:43:47.139
+&gt;&gt; Nicole: might be nice if this was just one
+
+00:43:47.139 --> 00:43:49.680
+&gt;&gt; Nicole: function assign range and then we if
+
+00:43:49.680 --> 00:43:51.608
+&gt;&gt; Nicole: constexpr it in assign range.
+
+00:43:51.610 --> 00:43:54.434
+&gt;&gt; Nicole: So as well as insert range so that
+
+00:43:54.434 --> 00:43:57.284
+&gt;&gt; Nicole: we don't have this _Is_fwd copied
+
+00:43:57.284 --> 00:43:59.912
+&gt;&gt; Nicole: across all of these different places.
+
+00:44:02.390 --> 00:44:06.415
+&gt;&gt; Stephan: Um. So you're suggesting fuse assign
+
+00:44:06.415 --> 00:44:09.352
+&gt;&gt; Stephan: forward range and assign input range
+
+00:44:09.352 --> 00:44:12.166
+&gt;&gt; Stephan: into the caller or something larger?
+
+00:44:12.170 --> 00:44:15.050
+&gt;&gt; Nicole: Like Fuse, assign forward range and
+
+00:44:15.050 --> 00:44:17.807
+&gt;&gt; Nicole: assign range together uh and then
+
+00:44:17.807 --> 00:44:20.439
+&gt;&gt; Nicole: in the caller you can just call
+
+00:44:20.439 --> 00:44:23.775
+&gt;&gt; Nicole: assign range and it's fine. Uh, I I.
+
+00:44:23.775 --> 00:44:26.888
+&gt;&gt; Nicole: I don't know if that's good, that's bad.
+
+00:44:26.888 --> 00:44:28.283
+&gt;&gt; Nicole: That's just something that I
+
+00:44:28.283 --> 00:44:30.086
+&gt;&gt; Nicole: like saw and I was like, uh,
+
+00:44:30.086 --> 00:44:33.020
+&gt;&gt; Nicole: that seems like it would be good to do.
+
+00:44:33.020 --> 00:44:35.852
+&gt;&gt; Stephan: Yeah, that was that was something I asked
+
+00:44:35.852 --> 00:44:39.162
+very briefly when I saw this for the insert.
+
+00:44:39.162 --> 00:44:42.246
+Basically, if we're using if constexpr,
+
+00:44:42.250 --> 00:44:44.114
+why do we still need separate functions here,
+
+00:44:44.120 --> 00:44:47.030
+given that there's only one caller?
+
+00:44:47.030 --> 00:44:50.600
+And I think that these are large.
+
+00:44:50.600 --> 00:44:51.281
+That's the thing.
+
+00:44:51.281 --> 00:44:52.189
+Like insert forward range.
+
+00:44:52.190 --> 00:44:54.038
+It's a large function,
+
+00:44:54.038 --> 00:44:56.810
+it's doing a lot of work.
+
+00:44:56.810 --> 00:44:57.750
+&gt;&gt; Nicole: That's a very good point.
+
+00:44:57.750 --> 00:45:00.088
+&gt;&gt; Nicole: I did not notice how big that function was.
+
+00:45:00.090 --> 00:45:00.388
+&gt;&gt; Stephan: Yeah,
+
+00:45:00.388 --> 00:45:03.070
+&gt;&gt; Nicole: Never mind I take it back
+&gt;&gt; Stephan: the context is hiding a lot
+
+00:45:03.070 --> 00:45:04.981
+&gt;&gt; Stephan: Yeah, there's a little bit of duplication
+
+00:45:04.981 --> 00:45:07.146
+where like it sets up my data and stuff,
+
+00:45:07.150 --> 00:45:09.768
+but I think it would be in
+
+00:45:09.768 --> 00:45:12.170
+general harder to read that way.
+
+00:45:12.170 --> 00:45:13.634
+OK, but it is something to think about.
+
+00:45:13.640 --> 00:45:14.960
+If these functions were substantially
+
+00:45:14.960 --> 00:45:16.930
+smaller or if they had more useful
+
+00:45:16.930 --> 00:45:18.440
+duplication that could be extracted,
+
+00:45:18.440 --> 00:45:20.505
+there would be an argument
+
+00:45:20.505 --> 00:45:22.157
+for fully inlining them.
+
+00:45:22.160 --> 00:45:23.705
+And that is something we
+
+00:45:23.705 --> 00:45:25.250
+can do in the future.
+
+00:45:25.250 --> 00:45:26.440
+&gt;&gt; Casey: I appreciate if we keep them separate.
+
+00:45:28.730 --> 00:45:31.663
+&gt;&gt; Casey: Because I need to reuse them in
+
+00:45:31.663 --> 00:45:34.506
+&gt;&gt; Casey: other new overloads for P1206. 
+&gt;&gt; Stephan: AH OK,
+
+00:45:34.506 --> 00:45:35.858
+that's definitely an
+
+00:45:35.858 --> 00:45:37.850
+argument to keep them separate.
+
+00:45:37.850 --> 00:45:39.270
+Yeah, Casey says merge conflicts.
+
+00:45:39.270 --> 00:45:40.164
+Merge conflicts everywhere.
+
+00:45:40.164 --> 00:45:42.250
+I have some cleanup to do well
+
+00:45:42.305 --> 00:45:43.895
+that lives up to your nickname.
+
+00:45:43.900 --> 00:45:46.850
+Back when we installed offices,
+
+00:45:46.850 --> 00:45:48.460
+you and Billy had so you were
+
+00:45:48.460 --> 00:45:49.766
+constantly working on code making
+
+00:45:49.766 --> 00:45:50.906
+so many cool improvements,
+
+00:45:50.910 --> 00:45:52.510
+but you're constantly merge conflicting.
+
+00:45:52.510 --> 00:45:54.526
+So I put a little post notes
+
+00:45:54.526 --> 00:45:56.589
+over your names on your door
+
+00:45:56.589 --> 00:45:58.089
+saying Billy merge O'Neill.
+
+00:45:58.090 --> 00:46:01.370
+And Casey conflict Carter.
+
+00:46:01.370 --> 00:46:03.118
+So there you go.
+
+00:46:03.118 --> 00:46:04.429
+Merge conflicts everywhere.
+
+00:46:04.430 --> 00:46:08.175
+OK, so we were in assign
+
+00:46:08.180 --> 00:46:10.673
+forward range I was checking in the new size.
+
+00:46:10.680 --> 00:46:12.626
+This is a size type new size
+
+00:46:12.626 --> 00:46:14.502
+so the type is the same one.
+
+00:46:14.502 --> 00:46:16.118
+If I see code being transformed like this
+
+00:46:16.118 --> 00:46:17.808
+I want to make sure we're not changing
+
+00:46:17.808 --> 00:46:19.740
+the types of variables or things like that.
+
+00:46:19.740 --> 00:46:21.975
+It's always going to be
+
+00:46:21.975 --> 00:46:23.763
+initialized ifdef concepts.
+
+00:46:23.770 --> 00:46:24.580
+Then here.
+
+00:46:24.580 --> 00:46:27.010
+if constexpr(forward_iterator<_Iter>)
+
+00:46:27.010 --> 00:46:29.484
+OK, same pattern as before.
+
+00:46:29.484 --> 00:46:31.452
+Then again, this convert size will
+
+00:46:31.452 --> 00:46:33.150
+need to be changed ranges distance,
+
+00:46:33.150 --> 00:46:34.690
+and that's all good.
+
+00:46:34.690 --> 00:46:37.000
+Otherwise exactly the same as before.
+
+00:46:37.000 --> 00:46:37.555
+Yep.
+
+00:46:37.555 --> 00:46:40.885
+And then the caller ifdef concepts
+
+00:46:40.885 --> 00:46:43.430
+constexpr bool _Is_fwd
+
+00:46:43.430 --> 00:46:45.178
+This has occurred twice.
+
+00:46:45.178 --> 00:46:47.800
+If it occurred many more times,
+
+00:46:47.800 --> 00:46:50.236
+there would be an argument for extracting
+
+00:46:50.236 --> 00:46:52.530
+this into a variable template.
+
+00:46:52.530 --> 00:46:54.098
+If we could find like a good
+
+00:46:54.098 --> 00:46:55.659
+name with only two occurrences,
+
+00:46:55.660 --> 00:46:57.820
+even though this is somewhat verbose,
+
+00:46:57.820 --> 00:46:59.800
+I'm OK with this as is usually my rules.
+
+00:46:59.800 --> 00:47:01.015
+Like once we see something
+
+00:47:01.015 --> 00:47:01.744
+repeated three times,
+
+00:47:01.750 --> 00:47:03.650
+that's an argument to extract
+
+00:47:03.650 --> 00:47:06.160
+2 times is not quite enough.
+
+00:47:06.160 --> 00:47:09.470
+If extracting would be annoying.
+
+00:47:09.470 --> 00:47:10.920
+The argument there would be.
+
+00:47:10.920 --> 00:47:12.390
+Yeah, we'd loot the one.
+
+00:47:12.390 --> 00:47:13.130
+The one thing if does.
+
+00:47:13.130 --> 00:47:14.530
+I'm OK with this one more time.
+
+00:47:14.530 --> 00:47:16.762
+I would ask for it to be lifted out.
+
+00:47:18.860 --> 00:47:22.222
+OK, so if _Is_fwd_iter_v otherwise
+
+00:47:22.222 --> 00:47:24.158
+or if it meets the forward_iterator concept.
+
+00:47:24.160 --> 00:47:26.442
+So again this is being very cautious
+
+00:47:26.442 --> 00:47:28.279
+about not disrupting existing code.
+
+00:47:28.280 --> 00:47:31.752
+All the comments are good then if it is
+
+00:47:31.752 --> 00:47:33.520
+forward to assign forward range with unwrapped,
+
+00:47:33.520 --> 00:47:36.060
+otherwise assign input range unwrapped.
+
+00:47:36.060 --> 00:47:39.430
+OK, that looks good. Uhm?
+
+00:47:39.430 --> 00:47:40.926
+Oh, and here's the reason to have the
+
+00:47:40.926 --> 00:47:43.888
+separate functions for assign, because we do.
+
+00:47:43.890 --> 00:47:47.226
+Call the forward one only for init list,
+
+00:47:47.230 --> 00:47:48.570
+so having a separate function
+
+00:47:48.570 --> 00:47:50.760
+to call is very nice for input,
+
+00:47:50.760 --> 00:47:52.885
+the arguments for Casey's code,
+
+00:47:52.890 --> 00:47:55.706
+which is coming aside forward range of begin
+
+00:47:55.706 --> 00:47:58.929
+and end aside forward range because we know.
+
+00:47:58.930 --> 00:48:01.090
+Yeah, it's definitely random access.
+
+00:48:01.090 --> 00:48:03.568
+OK, that looks good. Product code.
+
+00:48:03.570 --> 00:48:06.062
+Aside from the conversion
+
+00:48:06.062 --> 00:48:09.177
+of the size looks great.
+
+00:48:09.180 --> 00:48:10.748
+OK, viewed. Test code.
+
+00:48:10.748 --> 00:48:12.316
+Test code is tiny,
+
+00:48:12.320 --> 00:48:14.018
+excellent. Fancy pointers.
+
+00:48:14.018 --> 00:48:17.980
+We need to change this slightly because
+
+00:48:18.068 --> 00:48:21.252
+let's see if I can intuit why. The
+
+00:48:21.252 --> 00:48:24.296
+concept for the range is probably
+
+00:48:24.296 --> 00:48:27.234
+inspecting operator plus plus and with
+
+00:48:27.234 --> 00:48:29.030
+this fancy pointer we were like, OK,
+
+00:48:29.030 --> 00:48:33.160
+we really never want to post increment.
+
+00:48:33.160 --> 00:48:35.560
+That's why it was being deleted.
+
+00:48:35.560 --> 00:48:35.832
+Here.
+
+00:48:35.832 --> 00:48:37.464
+We actually do need to provide
+
+00:48:37.464 --> 00:48:39.208
+it to meet the concept so.
+
+00:48:39.210 --> 00:48:41.590
+We're just going to provide the basic
+
+00:48:41.590 --> 00:48:44.270
+implementation operator++ returns by value.
+
+00:48:44.270 --> 00:48:47.195
+Result is deref this.
+
+00:48:47.200 --> 00:48:49.615
+Bringing our Rep OK, that's the variable.
+
+00:48:49.620 --> 00:48:51.335
+Restoring and then return the
+
+00:48:51.335 --> 00:48:53.570
+result by value the old result.
+
+00:48:53.570 --> 00:48:54.778
+Yep, that looks good.
+
+00:48:54.778 --> 00:48:56.288
+Sometimes this is written as
+
+00:48:56.288 --> 00:48:58.502
+like plus plus deref this but
+
+00:48:58.502 --> 00:48:59.916
+just directly saying plus plus
+
+00:48:59.916 --> 00:49:01.608
+Rep is fine and more efficient.
+
+00:49:01.610 --> 00:49:05.257
+Not that efficiency matters for this test.
+
+00:49:05.260 --> 00:49:06.216
+Or sorry.
+
+00:49:06.216 --> 00:49:10.040
+&gt;&gt; Casey: Go ahead and suggest it's possible that we
+
+00:49:10.133 --> 00:49:13.805
+&gt;&gt; Casey: can have these explode on instantiation.
+
+00:49:13.810 --> 00:49:15.682
+&gt;&gt; Casey: On if if we make these explode when
+
+00:49:15.682 --> 00:49:17.230
+&gt;&gt; Casey: the function body is instantiated,
+
+00:49:17.230 --> 00:49:19.478
+&gt;&gt; Casey: we might be able to still satisfy the
+
+00:49:19.478 --> 00:49:21.819
+&gt;&gt; Casey: concepts by having the right declarations,
+
+00:49:21.820 --> 00:49:25.598
+&gt;&gt; Casey: but also achieve the same end of ensuring
+
+00:49:25.598 --> 00:49:27.578
+&gt;&gt; Casey: that our our implementation doesn't
+
+00:49:27.578 --> 00:49:31.190
+&gt;&gt; Casey: use these by having them how about?
+
+00:49:31.190 --> 00:49:33.548
+&gt;&gt; Stephan: How about just an assert false?
+
+00:49:33.550 --> 00:49:35.944
+&gt;&gt; Stephan: Or would you want like a static
+
+00:49:35.944 --> 00:49:37.650
+&gt;&gt; Stephan: assert of blah blah?
+
+00:49:37.650 --> 00:49:41.220
+&gt;&gt; Casey: Yeah, static assert always false what I was thinking
+
+00:49:41.220 --> 00:49:43.260
+&gt;&gt; Stephan: OK, is this thing templated?
+
+00:49:43.260 --> 00:49:44.988
+It is indeed.
+
+00:49:44.990 --> 00:49:47.454
+And let's say oh, it's a compile only
+
+00:49:47.454 --> 00:49:50.068
+test so hi wouldn't get us very far.
+
+00:49:50.070 --> 00:49:51.498
+&gt;&gt; Casey: So if it's a compiler test,
+
+00:49:51.500 --> 00:49:53.610
+&gt;&gt; Casey: these probably don't need to
+
+00:49:53.610 --> 00:49:54.876
+&gt;&gt; Casey: have function bodies.
+
+00:49:54.880 --> 00:49:56.147
+&gt;&gt; Stephan: Oh yeah, just semi-colons right
+
+00:49:56.150 --> 00:49:58.790
+&gt;&gt; Stephan: actually, none of these really need,
+
+00:49:58.790 --> 00:49:59.802
+and they're not constexpr,
+
+00:49:59.802 --> 00:50:01.067
+so we couldn't be evaluated.
+
+00:50:01.070 --> 00:50:03.990
+Yeah, I wonder why we went to the.
+
+00:50:03.990 --> 00:50:06.430
+To bother.
+
+00:50:06.430 --> 00:50:07.310
+Yeah, because we're not
+
+00:50:07.310 --> 00:50:08.410
+actually going to execute code.
+
+00:50:08.410 --> 00:50:09.655
+The internal test harness we'll
+
+00:50:09.655 --> 00:50:11.190
+try to run the empty main,
+
+00:50:11.190 --> 00:50:12.457
+but in no event will any of
+
+00:50:12.457 --> 00:50:13.630
+this stuff be instantiated.
+
+00:50:13.630 --> 00:50:15.988
+Yeah, why do we go to all this effort?
+
+00:50:15.990 --> 00:50:17.642
+So would you still want the static
+
+00:50:17.642 --> 00:50:19.735
+asserts to make sure that we're not
+
+00:50:19.735 --> 00:50:21.063
+actually instantiating this stuff?
+
+00:50:21.070 --> 00:50:24.580
+&gt;&gt; Casey:Yeah, it would be nice. 
+&gt;&gt; Stephan: OK.
+
+00:50:24.580 --> 00:50:27.968
+&gt;&gt; Stephan: UM? OK, I will add first check.
+
+00:50:27.970 --> 00:50:29.538
+Yeah predac.
+
+00:50:29.538 --> 00:50:30.322
+OK,
+
+00:50:30.322 --> 00:50:31.890
+that's all good.
+
+00:50:31.890 --> 00:50:34.290
+OK. See.
+
+00:50:37.270 --> 00:50:38.510
+Although.
+
+00:50:41.110 --> 00:50:47.760
+Post increment and post decrement need to
+
+00:50:47.760 --> 00:50:53.902
+exist in order to satisfy the concept. Umm?
+
+00:50:53.902 --> 00:51:00.174
+Casey Carter notes that we'd still like
+
+00:51:00.174 --> 00:51:05.860
+to avoid actually using these operations.
+
+00:51:09.460 --> 00:51:14.510
+In the product code. It should be
+
+00:51:14.510 --> 00:51:20.950
+sufficient to add a
+
+00:51:20.950 --> 00:51:23.098
+static assert Ohh Casey remarks we
+
+00:51:23.098 --> 00:51:25.407
+do need bodies since the internal
+
+00:51:25.407 --> 00:51:27.843
+test runner links compile only tests.
+
+00:51:27.850 --> 00:51:30.238
+Yeah, this would attempt to link.
+
+00:51:30.240 --> 00:51:33.660
+If it if we instantiate code
+
+00:51:33.660 --> 00:51:36.700
+that calls fancy pointer stuff,
+
+00:51:36.700 --> 00:51:38.499
+they need to link to the function.
+
+00:51:38.500 --> 00:51:39.580
+Bodies do need to exist,
+
+00:51:39.580 --> 00:51:41.038
+but Casey knows they don't need
+
+00:51:41.038 --> 00:51:42.519
+to do actually useful work here.
+
+00:51:42.520 --> 00:51:43.968
+It's reasonable to provide
+
+00:51:43.968 --> 00:51:45.054
+useful work anyways.
+
+00:51:45.060 --> 00:51:46.692
+It should be sufficient
+
+00:51:46.692 --> 00:51:48.732
+to add a static assert.
+
+00:51:48.740 --> 00:51:49.856
+Should we just use the internal
+
+00:51:49.860 --> 00:51:51.435
+always false or?
+
+00:51:51.435 --> 00:51:54.585
+Should we recommend anything specific here?
+
+00:51:54.590 --> 00:51:56.678
+&gt;&gt; Casey: I'm pretty sure we do use
+
+00:51:56.678 --> 00:51:58.520
+&gt;&gt; Casey: it in test somewhere else.
+
+00:51:58.520 --> 00:52:02.870
+&gt;&gt; Stephan: We can check 
+&gt;&gt; Casey: so it would be consistently
+
+00:52:02.870 --> 00:52:03.420
+&gt;&gt; Casey: wrong.
+
+00:52:06.500 --> 00:52:09.140
+&gt;&gt; Casey: Or do we always define... I know there's one in
+
+00:52:09.140 --> 00:52:12.290
+&gt;&gt; Stephan: No, we don't 
+&gt;&gt; Casey: algorithm support.
+
+00:52:12.290 --> 00:52:14.486
+&gt;&gt; Casey: We always define the local one.
+
+00:52:14.490 --> 00:52:17.112
+&gt;&gt; Stephan: Yeah, we define a local always
+
+00:52:17.112 --> 00:52:19.680
+false in yeah, the algo support.
+
+00:52:21.860 --> 00:52:23.380
+Or null forward iterators.
+
+00:52:23.380 --> 00:52:26.449
+This is the classic type I guess the.
+
+00:52:26.450 --> 00:52:28.445
+constexpr bool always_false = false; is  the cooler one to depict.
+
+00:52:28.450 --> 00:52:30.250
+When I show that range algorithm
+
+00:52:30.250 --> 00:52:31.150
+support test include.
+
+00:52:33.570 --> 00:52:37.059
+tests, std, include.
+
+00:52:37.060 --> 00:52:38.396
+range algorithm support background here
+
+00:52:38.396 --> 00:52:40.066
+For those who are unfamiliar
+
+00:52:40.066 --> 00:52:41.647
+with this fun bit of standardese
+
+00:52:41.647 --> 00:52:43.458
+is that if you just say
+
+00:52:43.458 --> 00:52:45.156
+static assert false in a template,
+
+00:52:45.160 --> 00:52:46.600
+the compiler is permitted to say
+
+00:52:46.600 --> 00:52:48.109
+ha, that will never compile and
+
+00:52:48.109 --> 00:52:49.484
+just fill your compile dead,
+
+00:52:49.484 --> 00:52:51.460
+which is not what you want you.
+
+00:52:51.460 --> 00:52:53.147
+You basically always want a static
+
+00:52:53.147 --> 00:52:55.095
+assert false to be enforced on demand
+
+00:52:55.095 --> 00:52:56.853
+when The thing is actually instantiated.
+
+00:52:56.860 --> 00:52:58.216
+I believe there's work in the
+
+00:52:58.216 --> 00:52:59.120
+committee happening right now
+
+00:52:59.162 --> 00:53:00.386
+to actually make that a reality,
+
+00:53:00.390 --> 00:53:01.908
+which will be awesome so that
+
+00:53:01.908 --> 00:53:03.621
+we don't need to define these
+
+00:53:03.621 --> 00:53:05.559
+inline constexpr bools all the time.
+
+00:53:05.560 --> 00:53:07.018
+Hopefully that might even be applied
+
+00:53:07.020 --> 00:53:09.390
+as defect report one could hope.
+
+00:53:09.390 --> 00:53:12.230
+OK, so let's recommend this.
+
+00:53:12.230 --> 00:53:14.855
+It should be sufficient to add a
+
+00:53:14.855 --> 00:53:19.670
+static assert with an always false helper.
+
+00:53:24.290 --> 00:53:28.676
+Then this would fail to compile
+
+00:53:28.676 --> 00:53:33.610
+if any product code attempted to
+
+00:53:33.610 --> 00:53:37.070
+instantiate operator or post increment.
+
+00:53:39.130 --> 00:53:46.210
+Post meowcrement but the
+
+00:53:46.210 --> 00:53:50.085
+function signatures will still be
+
+00:53:50.085 --> 00:53:55.769
+visible for the purpose of the concepts.
+
+00:53:55.770 --> 00:53:58.910
+OK, how does this look?
+
+00:53:58.910 --> 00:54:03.026
+Casey notes it is P2593,
+
+00:54:03.026 --> 00:54:04.850
+allowing static assert false.
+
+00:54:04.850 --> 00:54:07.350
+I can show that. Link
+
+00:54:09.370 --> 00:54:10.020
+P2593.
+
+00:54:12.460 --> 00:54:13.828
+Yeah, allowing static_assert(false)
+
+00:54:13.828 --> 00:54:15.196
+by Barry Revzin,
+
+00:54:15.200 --> 00:54:18.440
+who has proposed other awesome
+
+00:54:18.440 --> 00:54:20.922
+standard features like constexpr
+
+00:54:20.922 --> 00:54:25.055
+bool, sorry explicit bool which
+
+00:54:25.055 --> 00:54:27.642
+is an incredible help in tuple
+
+00:54:27.642 --> 00:54:29.814
+and pair and things like that.
+
+00:54:29.820 --> 00:54:32.179
+So thank you Barry for that paper.
+
+00:54:32.180 --> 00:54:33.455
+OK so although post increment
+
+00:54:33.455 --> 00:54:35.032
+and post decrement need to exist
+
+00:54:35.032 --> 00:54:36.520
+in order to satisfy the concept,
+
+00:54:36.520 --> 00:54:38.038
+Casey notes that we'd still like
+
+00:54:38.038 --> 00:54:39.382
+to avoid actually using these
+
+00:54:39.382 --> 00:54:40.777
+operations in the product code.
+
+00:54:40.780 --> 00:54:42.540
+It should be sufficient to add a static.
+
+00:54:42.540 --> 00:54:44.731
+assert with an always false helper blah,
+
+00:54:44.731 --> 00:54:46.177
+then this would fail to compile
+
+00:54:46.177 --> 00:54:47.675
+if any product code attempted
+
+00:54:47.675 --> 00:54:49.127
+to instantiate postmeowcrement,
+
+00:54:49.130 --> 00:54:50.936
+but the function signatures will still
+
+00:54:50.936 --> 00:54:53.457
+be visible for the purpose of the concepts.
+
+00:54:53.460 --> 00:54:53.770
+OK.
+
+00:54:56.850 --> 00:54:59.896
+Cameron notes I can hear John John Caves.
+
+00:54:59.896 --> 00:55:01.234
+I presume, crying over the
+
+00:55:01.234 --> 00:55:02.498
+paper because he did so much
+
+00:55:02.498 --> 00:55:03.662
+compiler work to ensure we error.
+
+00:55:03.670 --> 00:55:06.166
+Check nondependent static assert false cases.
+
+00:55:06.170 --> 00:55:08.658
+Yeah, the compiler went to so much effort
+
+00:55:08.658 --> 00:55:11.464
+and then we're just gonna wash it all away.
+
+00:55:11.470 --> 00:55:13.090
+OK, and that's the only
+
+00:55:13.090 --> 00:55:14.386
+product code change needed,
+
+00:55:14.390 --> 00:55:17.606
+because this is a performance change.
+
+00:55:17.610 --> 00:55:19.465
+We have existing code that
+
+00:55:19.465 --> 00:55:20.949
+already exercises vector of
+
+00:55:20.949 --> 00:55:23.000
+input iterator forward iterator.
+
+00:55:25.350 --> 00:55:28.530
+I wonder if we should ask for test
+
+00:55:28.530 --> 00:55:31.750
+coverage to exercise the new code path,
+
+00:55:31.750 --> 00:55:34.570
+not necessarily the check here,
+
+00:55:34.570 --> 00:55:36.075
+but just the essentially along
+
+00:55:36.075 --> 00:55:37.910
+the lines of the original code,
+
+00:55:37.910 --> 00:55:39.326
+just to make sure we're instantiating,
+
+00:55:39.330 --> 00:55:40.786
+I think I would want to see that.
+
+00:55:43.390 --> 00:55:45.567
+Because if the danger is always.
+
+00:55:45.570 --> 00:55:47.313
+What about stealth build breaks where we
+
+00:55:47.313 --> 00:55:49.087
+do something that looks like it compiles,
+
+00:55:49.090 --> 00:55:51.106
+but the moment you instantiated it fails.
+
+00:55:53.310 --> 00:55:56.278
+Where's a good test to add that?
+
+00:55:56.280 --> 00:55:57.980
+It would be ranges,
+
+00:55:57.980 --> 00:56:00.530
+but is there a good ranges
+
+00:56:00.625 --> 00:56:03.269
+test where? ranges transform maybe?
+
+00:56:03.270 --> 00:56:07.030
+because the original code
+
+00:56:07.030 --> 00:56:08.590
+involved to transform.
+
+00:56:12.650 --> 00:56:13.310
+Yeah.
+
+00:56:15.650 --> 00:56:16.530
+Even yeah, even something
+
+00:56:16.530 --> 00:56:17.630
+very very similar to this,
+
+00:56:17.630 --> 00:56:19.160
+you know, slightly cleaned up.
+
+00:56:21.400 --> 00:56:23.464
+Would be reasonable. OK, so that
+
+00:56:23.464 --> 00:56:25.890
+would that be ranges algo transform.
+
+00:56:25.890 --> 00:56:28.794
+Let's see if we can find that test
+
+00:56:28.800 --> 00:56:31.090
+&gt;&gt; Casey: p0896 ranges algo transform, yeah?
+
+00:56:40.740 --> 00:56:42.399
+&gt;&gt; Stephan: There are two. There is unary and
+
+00:56:42.399 --> 00:56:44.698
+binary. This would be the unary 1.
+
+00:56:48.560 --> 00:56:51.476
+And we do use what views?
+
+00:56:51.480 --> 00:56:52.705
+Oh, we don't test the view here.
+
+00:56:55.410 --> 00:56:57.811
+Here we just say std::transform or
+
+00:56:57.811 --> 00:56:59.669
+something. Can't type transform.
+
+00:57:03.630 --> 00:57:04.950
+Here we're just calling we're
+
+00:57:04.950 --> 00:57:06.270
+we're not using the view.
+
+00:57:10.610 --> 00:57:12.170
+Is there a separate test for the views?
+
+00:57:14.770 --> 00:57:16.900
+&gt;&gt; Casey: You mean the transform view?
+
+00:57:16.900 --> 00:57:19.576
+&gt;&gt; Stephan: Yeah, the transform view. 
+&gt;&gt; Casey:it would be 0896R4
+
+00:57:19.576 --> 00:57:22.456
+&gt;&gt; Casey: views transform
+&gt;&gt; Stephan: views transform OK,
+
+00:57:22.460 --> 00:57:25.126
+&gt;&gt; Stephan: that's the one I wanted because in this
+
+00:57:25.126 --> 00:57:27.160
+case it's is it the view that spits
+
+00:57:27.160 --> 00:57:29.134
+out the iterator that we care about.
+
+00:57:29.140 --> 00:57:31.316
+Because if we just run it through the.
+
+00:57:31.320 --> 00:57:33.455
+Function object ish thing that
+
+00:57:33.455 --> 00:57:35.163
+actually does the transform.
+
+00:57:35.170 --> 00:57:36.580
+It doesn't doesn't emit iterators.
+
+00:57:36.580 --> 00:57:37.780
+Or am I completely confused?
+
+00:57:39.810 --> 00:57:42.526
+&gt;&gt; Casey: We we want to use views transform
+
+00:57:42.526 --> 00:57:44.712
+&gt;&gt; Casey: the function object to this thing
+
+00:57:44.712 --> 00:57:47.356
+&gt;&gt; Casey:and it will pick the proper
+&gt;&gt; Stephan: yeah
+
+00:57:47.356 --> 00:57:49.204
+&gt;&gt; Casey: specialization of transform view.
+
+00:57:49.210 --> 00:57:50.540
+&gt;&gt; Stephan: OK, but the other one.
+
+00:57:50.540 --> 00:57:52.556
+The ranges transform that wouldn't
+
+00:57:52.556 --> 00:57:54.720
+&gt;&gt; Stephan: be what we want, right? 
+&gt;&gt; Casey: Right
+
+00:57:54.720 --> 00:57:56.770
+&gt;&gt; Casey: that's just an algorithm.
+&gt;&gt; Stephan: Yeah,
+
+00:57:56.770 --> 00:57:59.129
+OK, yeah, just that would actually physically
+
+00:57:59.129 --> 00:58:00.948
+do the transformation in place right?
+
+00:58:00.950 --> 00:58:02.250
+Not not emit the view.
+
+00:58:02.250 --> 00:58:05.460
+OK, so this is the one we want to ask for.
+
+00:58:05.460 --> 00:58:07.560
+Basically yeah, just depend to the test.
+
+00:58:07.560 --> 00:58:10.140
+Yeah, just add to main.
+
+00:58:10.140 --> 00:58:11.355
+Yeah, I think this is a good ask for.
+
+00:58:11.360 --> 00:58:12.420
+OK so.
+
+00:58:16.400 --> 00:58:18.688
+I'll just link main here. Maybe
+
+00:58:18.688 --> 00:58:22.384
+permalink hit Y there is the main.
+
+00:58:24.500 --> 00:58:27.868
+OK, and where's a good place to ask?
+
+00:58:27.870 --> 00:58:29.870
+Maybe just at the test.
+
+00:58:29.870 --> 00:58:33.486
+I really want the ability to like add
+
+00:58:33.490 --> 00:58:34.970
+comments that are not attached
+
+00:58:34.970 --> 00:58:36.154
+to any specific line.
+
+00:58:38.210 --> 00:58:40.190
+I guess the product code too.
+
+00:58:40.190 --> 00:58:41.378
+Yeah cause it's not specific tests.
+
+00:58:41.380 --> 00:58:43.500
+I'll add it to the end of the product code.
+
+00:58:45.730 --> 00:58:52.820
+OK. Umm? It would be good to add
+
+00:58:52.820 --> 00:58:57.916
+a small amount of test coverage
+
+00:58:57.916 --> 00:59:04.168
+to exercise these new code paths
+
+00:59:04.170 --> 00:59:09.290
+I'd recommend. Adding. This to.
+
+00:59:12.740 --> 00:59:18.720
+The end of main in. Views transform.
+
+00:59:23.370 --> 00:59:29.450
+And let's cite AlexBAV's code here.
+
+00:59:33.550 --> 00:59:36.894
+It should be sufficient
+
+00:59:36.894 --> 00:59:41.459
+to use code like. The.
+
+00:59:44.520 --> 00:59:47.580
+Like the original report.
+
+00:59:50.540 --> 00:59:56.360
+Like the original test case in. 1709
+
+00:59:59.710 --> 01:00:06.199
+but also. Calling was it?
+
+01:00:08.600 --> 01:00:09.490
+Covering
+
+01:00:11.710 --> 01:00:18.899
+the constructor, insert  and assign
+
+01:00:23.760 --> 01:00:25.370
+Honestly, if they're like instantiated,
+
+01:00:25.370 --> 01:00:27.240
+that's good enough for me.
+
+01:00:27.240 --> 01:00:28.420
+Probably just checking that
+
+01:00:28.420 --> 01:00:30.190
+the values that are value gets
+
+01:00:30.242 --> 01:00:31.820
+into the vector is good enough.
+
+01:00:34.830 --> 01:00:35.320
+Uhm
+
+01:00:41.960 --> 01:00:45.950
+Asserting that one. Element.
+
+01:00:48.690 --> 01:00:53.740
+Asserting that one element is
+
+01:00:53.740 --> 01:00:56.452
+successfully transformed each
+
+01:00:56.452 --> 01:01:00.707
+time should be sufficient to.
+
+01:01:00.710 --> 01:01:06.240
+Verify that we've. Successfully.
+
+01:01:09.140 --> 01:01:13.156
+Stored elements in the
+
+01:01:13.156 --> 01:01:15.427
+vector. OK, it would be good to add
+
+01:01:15.427 --> 01:01:16.739
+a small amount of test coverage
+
+01:01:16.739 --> 01:01:18.179
+to exercise these new code paths.
+
+01:01:18.180 --> 01:01:19.812
+I'd recommend adding this to the
+
+01:01:19.812 --> 01:01:22.178
+end of main in views transform blob.
+
+01:01:22.180 --> 01:01:24.190
+It should be sufficient to use
+
+01:01:24.190 --> 01:01:26.106
+code like the original test case
+
+01:01:26.106 --> 01:01:27.756
+in 1709 covering the constructor,
+
+01:01:27.756 --> 01:01:29.850
+insert and assign asserting that one
+
+01:01:29.910 --> 01:01:31.350
+element is successfully transformed
+
+01:01:31.350 --> 01:01:33.150
+each time should be sufficient
+
+01:01:33.150 --> 01:01:34.977
+to verify that we've successfully
+
+01:01:34.977 --> 01:01:36.742
+stored elements in the vector.
+
+01:01:38.980 --> 01:01:40.390
+I mean, maybe add the rationale.
+
+01:01:45.960 --> 01:01:48.474
+This will ensure.
+
+01:01:48.474 --> 01:01:53.063
+That there are no stealth
+
+01:01:53.063 --> 01:01:56.550
+build breaks compiler warnings.
+
+01:01:56.550 --> 01:01:59.610
+Or compiler bugs always got to
+
+01:01:59.610 --> 01:02:02.314
+worry about the compiler bugs
+
+01:02:02.314 --> 01:02:04.979
+with this advanced concept stuff.
+
+01:02:04.980 --> 01:02:07.080
+And the new.
+
+01:02:09.490 --> 01:02:10.771
+This will ensure that there are no
+
+01:02:10.771 --> 01:02:11.894
+stealth build breaks, compiler warnings,
+
+01:02:11.894 --> 01:02:13.903
+or compiler bugs in the new code.
+
+01:02:13.910 --> 01:02:15.809
+Yeah, just a good habit to get into that.
+
+01:02:15.810 --> 01:02:17.672
+Try to instantiate all the new stuff
+
+01:02:17.672 --> 01:02:19.774
+that you write, because even if like
+
+01:02:19.774 --> 01:02:21.846
+99% of the time it works 1% of time.
+
+01:02:21.846 --> 01:02:23.214
+Oh, there's a compiler bug that
+
+01:02:23.214 --> 01:02:24.410
+nobody would have thought of.
+
+01:02:24.410 --> 01:02:26.489
+Or oh, we forgot to assign.
+
+01:02:26.490 --> 01:02:28.724
+Not usually that bad these days, but a
+
+01:02:28.724 --> 01:02:30.446
+compiler warning like truncation or whatever.
+
+01:02:30.450 --> 01:02:32.590
+Very easy to encounter.
+
+01:02:32.590 --> 01:02:34.844
+So a little bit of test coverage
+
+01:02:34.844 --> 01:02:35.810
+would be good.
+
+01:02:35.810 --> 01:02:38.729
+OK, so three comments
+
+01:02:38.730 --> 01:02:40.270
+1) dealing with the size,
+
+01:02:40.270 --> 01:02:41.467
+2) add a little bit of test coverage.
+
+01:02:41.470 --> 01:02:42.540
+3) add the static assert.
+
+01:02:42.540 --> 01:02:44.496
+Otherwise this looks good to go.
+
+01:02:44.500 --> 01:02:45.484
+I like it.
+
+01:02:45.484 --> 01:02:47.452
+OK, so I think we can
+
+01:02:47.452 --> 01:02:49.557
+mark all this as viewed.
+
+01:02:51.790 --> 01:02:55.810
+And this is changes requested.
+
+01:02:55.810 --> 01:02:58.093
+This is close enough that we
+
+01:02:58.093 --> 01:03:00.608
+could even just push changes.
+
+01:03:00.610 --> 01:03:01.978
+And move it forward.
+
+01:03:04.520 --> 01:03:05.675
+I think I know exactly what I
+
+01:03:05.675 --> 01:03:07.680
+want to see here. I could just
+
+01:03:07.680 --> 01:03:09.510
+push changes and that way.
+
+01:03:12.300 --> 01:03:14.135
+Expedite this for merging because
+
+01:03:14.135 --> 01:03:16.751
+I think this should be ready to
+
+01:03:16.751 --> 01:03:18.869
+merge once these changes are made.
+
+01:03:18.870 --> 01:03:20.725
+This is one of our older PRs.
+
+01:03:20.730 --> 01:03:21.910
+We're really trying to
+
+01:03:21.910 --> 01:03:23.385
+clear the the PR backlog.
+
+01:03:23.390 --> 01:03:26.854
+I think I'll do that when changes need
+
+01:03:26.854 --> 01:03:28.490
+more when they're more open ended,
+
+01:03:28.490 --> 01:03:30.950
+and we're not sure exactly
+
+01:03:30.950 --> 01:03:33.806
+what should be done.
+
+01:03:33.806 --> 01:03:36.438
+Giving the contributor chance to
+
+01:03:36.438 --> 01:03:37.902
+read the feedback and think about
+
+01:03:37.902 --> 01:03:39.657
+how they like to handle it is good.
+
+01:03:39.660 --> 01:03:41.210
+But these are so targeted
+
+01:03:41.210 --> 01:03:42.450
+now mostly pretty tiny.
+
+01:03:42.450 --> 01:03:45.090
+This PR is really high quality.
+
+01:03:45.090 --> 01:03:46.370
+I think I can just go ahead and
+
+01:03:46.370 --> 01:03:47.710
+push changes so I will hold off
+
+01:03:47.710 --> 01:03:48.490
+and actually submitting this.
+
+01:03:48.490 --> 01:03:49.554
+I'll make the changes.
+
+01:03:49.554 --> 01:03:51.500
+I'll push it and then speed this
+
+01:03:51.500 --> 01:03:52.965
+forward to final review later
+
+01:03:52.965 --> 01:03:54.712
+and then this should be actually
+
+01:03:54.712 --> 01:03:56.539
+possibly even ready to go in the
+
+01:03:56.539 --> 01:03:59.458
+next batch of PRs that we merge.
+
+01:03:59.460 --> 01:04:02.223
+So I think that does it for this review.
+
+01:04:02.230 --> 01:04:04.547
+Are there any other questions I don't
+
+01:04:04.547 --> 01:04:07.330
+haven't seen any accumulated in the the chat?
+
+01:04:07.330 --> 01:04:09.282
+I think we were able to look at
+
+01:04:09.282 --> 01:04:11.336
+a bunch of cool stuff in vector.
+
+01:04:11.340 --> 01:04:13.548
+And I've learned some things about
+
+01:04:13.548 --> 01:04:16.000
+how the concepts world works as well,
+
+01:04:16.000 --> 01:04:19.080
+slowly catching up to all the stuff
+
+01:04:19.080 --> 01:04:22.195
+that they've added in C++20 and now 23.
+
+01:04:22.200 --> 01:04:23.265
+So.
+
+01:04:23.265 --> 01:04:24.330
+OK.
+
+01:04:26.340 --> 01:04:27.455
+Cameron says my first question
+
+01:04:27.455 --> 01:04:28.720
+isn't directly related to this PR.
+
+01:04:28.720 --> 01:04:31.359
+It's OK if something comes up that
+
+01:04:31.359 --> 01:04:34.872
+makes you wonder what's going on.
+
+01:04:34.872 --> 01:04:36.898
+Then it is cool to talk about.
+
+01:04:36.900 --> 01:04:38.236
+Oh, here we go.
+
+01:04:38.236 --> 01:04:39.848
+Here's the question. Cameron asks.
+
+01:04:39.848 --> 01:04:42.280
+So you noted earlier that the STL is
+
+01:04:42.347 --> 01:04:44.723
+greatly favoring if constexpr as the
+
+01:04:44.723 --> 01:04:47.160
+method of dispatching versus tag dispatch.
+
+01:04:47.160 --> 01:04:48.618
+There's an implied behavior change here,
+
+01:04:48.620 --> 01:04:50.708
+and that is that the old tag dispatch
+
+01:04:50.708 --> 01:04:51.978
+behavior worked by best match.
+
+01:04:51.980 --> 01:04:54.044
+Well, if constexpr works by first match
+
+01:04:54.044 --> 01:04:56.217
+has the STL observed this behavior changed?
+
+01:04:56.220 --> 01:04:57.668
+It's an excellent question,
+
+01:04:57.668 --> 01:05:00.758
+so Cameron is asking is that let me
+
+01:05:00.758 --> 01:05:03.470
+see if I can maybe just sketch something.
+
+01:05:03.470 --> 01:05:06.459
+I will actually try to compile it.
+
+01:05:06.460 --> 01:05:12.718
+So. If you have something like uhm.
+
+01:05:12.720 --> 01:05:15.030
+Let's add some template stuff so it's
+
+01:05:15.030 --> 01:05:16.590
+vaguely realistic template type name.
+
+01:05:16.590 --> 01:05:22.810
+Iter void helper taking Iter, it and then.
+
+01:05:22.810 --> 01:05:25.280
+input
+
+01:05:25.280 --> 01:05:31.264
+iterator tag that's then going to do stuff.
+
+01:05:31.270 --> 01:05:33.002
+Like this?
+
+01:05:33.002 --> 01:05:38.198
+And then replicate several different ways.
+
+01:05:38.200 --> 01:05:44.590
+Forward. Bidirectional.
+
+01:05:44.590 --> 01:05:47.850
+And random access something like
+
+01:05:47.850 --> 01:05:51.680
+this versus the new World order
+
+01:05:51.680 --> 01:05:56.310
+of template type name iter.
+
+01:05:56.310 --> 01:06:00.125
+void do_stuff taking the iter it,
+
+01:06:00.130 --> 01:06:02.794
+and then we would have if constexpr and I
+
+01:06:02.794 --> 01:06:05.730
+can actually bring up the definition of 
+
+01:06:05.730 --> 01:06:07.940
+_Is_fwd_iter_v because this is
+
+01:06:07.940 --> 01:06:10.760
+not what one would always expect.
+
+01:06:10.760 --> 01:06:12.560
+UM, where do we define it?
+
+01:06:12.560 --> 01:06:13.748
+xutility, we ask,
+
+01:06:13.748 --> 01:06:15.877
+is_convertible and not is_base_of
+
+01:06:15.877 --> 01:06:17.872
+because is_base_of will return true
+
+01:06:17.872 --> 01:06:20.079
+even for things that are ambiguous,
+
+01:06:20.080 --> 01:06:22.294
+is_convertible as essentially very similar
+
+01:06:22.294 --> 01:06:25.357
+to what we were doing with tag dispatch.
+
+01:06:25.360 --> 01:06:27.408
+So if we were to hand write this.
+
+01:06:31.530 --> 01:06:33.306
+This is a course also an internal helper.
+
+01:06:33.310 --> 01:06:36.298
+I can show the definition of that _Iter_cat_t
+
+01:06:36.300 --> 01:06:38.210
+Is not actually referencing my
+
+01:06:38.210 --> 01:06:40.231
+favorite animal, but it's asking
+
+01:06:40.231 --> 01:06:42.316
+what is the iterator category.
+
+01:06:42.320 --> 01:06:45.930
+So if we were to fully expand this thing out.
+
+01:06:45.930 --> 01:06:48.114
+Do a little bit of copy pasting
+
+01:06:48.114 --> 01:06:50.190
+here make this somewhat realistic.
+
+01:06:50.190 --> 01:06:51.510
+OK like that.
+
+01:06:54.830 --> 01:06:56.496
+And I can actually look this out.
+
+01:07:05.840 --> 01:07:08.675
+We could let's make this fully realistic,
+
+01:07:08.680 --> 01:07:11.800
+so. Do a little copy pasting.
+
+01:07:18.360 --> 01:07:19.419
+Yeah, looks good.
+
+01:07:22.570 --> 01:07:25.580
+Multi cursor editing. I love it. OK.
+
+01:07:31.660 --> 01:07:33.900
+This last one is really an implied else,
+
+01:07:33.900 --> 01:07:36.828
+so we can go like this.
+
+01:07:36.830 --> 01:07:40.250
+OK, so Cameron's question is,
+
+01:07:40.250 --> 01:07:41.894
+there's an implied behavior
+
+01:07:41.894 --> 01:07:43.984
+change here when you had.
+
+01:07:43.984 --> 01:07:46.973
+Let me show the new stuff too.
+
+01:07:50.880 --> 01:07:54.170
+This is old. This is new.
+
+01:07:57.970 --> 01:08:01.785
+Helper of iter and category brace brace.
+
+01:08:01.790 --> 01:08:05.050
+Just make A tag type or object of that tag
+
+01:08:05.137 --> 01:08:08.249
+type versus the new way of doing things.
+
+01:08:08.250 --> 01:08:11.066
+So in the old way we're asking the
+
+01:08:11.066 --> 01:08:12.826
+compiler hey, do overload resolution.
+
+01:08:12.826 --> 01:08:15.854
+We're going to give you an object of this
+
+01:08:15.854 --> 01:08:19.746
+tag type and choose the best match here.
+
+01:08:19.750 --> 01:08:21.175
+Sometimes this could even involve
+
+01:08:21.175 --> 01:08:23.470
+a conversion, for example in the
+
+01:08:23.470 --> 01:08:26.050
+vector case we only care about.
+
+01:08:26.050 --> 01:08:27.922
+Are you input only or are
+
+01:08:27.922 --> 01:08:29.170
+you stronger than forward?
+
+01:08:29.170 --> 01:08:32.506
+So if you have a random access iterator
+
+01:08:32.506 --> 01:08:35.275
+tag and these let me comment these out.
+
+01:08:37.320 --> 01:08:39.574
+If categories are random access iterator tag,
+
+01:08:39.580 --> 01:08:42.040
+you would need a conversion
+
+01:08:42.040 --> 01:08:43.740
+to call both of these.
+
+01:08:43.740 --> 01:08:45.216
+But thanks to the core language,
+
+01:08:45.220 --> 01:08:47.470
+which is awesome.
+
+01:08:47.470 --> 01:08:49.615
+The conversion from random access
+
+01:08:49.615 --> 01:08:52.285
+iterator tag to its base class
+
+01:08:52.285 --> 01:08:54.525
+forward iterator tag is better,
+
+01:08:54.530 --> 01:08:56.426
+meaning less severe than the conversion
+
+01:08:56.426 --> 01:08:59.032
+all the way up to its even higher
+
+01:08:59.032 --> 01:09:00.627
+base class input iterator tag.
+
+01:09:00.630 --> 01:09:01.840
+So this is more preferred
+
+01:09:01.840 --> 01:09:03.050
+if you have an random access.
+
+01:09:03.050 --> 01:09:03.678
+iterator,
+
+01:09:03.678 --> 01:09:06.190
+which is exactly the behavior that we want,
+
+01:09:06.190 --> 01:09:07.335
+so that overload resolution is
+
+01:09:07.335 --> 01:09:08.980
+happening all at once in some sense.
+
+01:09:08.980 --> 01:09:10.905
+But if you have if constexpr now,
+
+01:09:10.910 --> 01:09:12.548
+you have essentially classic control flow,
+
+01:09:12.550 --> 01:09:14.220
+you can control the order
+
+01:09:14.220 --> 01:09:15.890
+in which things are tested.
+
+01:09:15.890 --> 01:09:17.678
+Here we test random access iterator.
+
+01:09:17.680 --> 01:09:18.588
+1st and so forth.
+
+01:09:18.588 --> 01:09:20.790
+But if we had done this the other way,
+
+01:09:20.790 --> 01:09:21.538
+I mean,
+
+01:09:21.538 --> 01:09:24.530
+just reverse this for the sake of exposition.
+
+01:09:24.530 --> 01:09:26.480
+This would not have the same
+
+01:09:26.480 --> 01:09:28.769
+effect if we test bidirectional first,
+
+01:09:28.770 --> 01:09:30.882
+this would activate and absorb random
+
+01:09:30.882 --> 01:09:32.909
+access iterators and we would never
+
+01:09:32.909 --> 01:09:35.125
+get a chance for this to be correct.
+
+01:09:35.130 --> 01:09:36.590
+So to answer Cameron's question,
+
+01:09:36.590 --> 01:09:38.326
+have we ever observed a behavior change here?
+
+01:09:38.330 --> 01:09:39.974
+The answer is no,
+
+01:09:39.974 --> 01:09:42.440
+because we have always been very
+
+01:09:42.522 --> 01:09:45.107
+careful when transforming old tag
+
+01:09:45.107 --> 01:09:47.692
+dispatch to new if constexpr.
+
+01:09:47.700 --> 01:09:49.640
+We're very careful to test
+
+01:09:49.640 --> 01:09:51.580
+things in the correct order.
+
+01:09:51.580 --> 01:09:52.714
+Not this order,
+
+01:09:52.714 --> 01:09:54.604
+but the original order where
+
+01:09:54.604 --> 01:09:56.852
+we test the most specific thing
+
+01:09:56.852 --> 01:09:59.348
+first and then gradually test to
+
+01:09:59.348 --> 01:10:01.739
+more and more general things,
+
+01:10:01.740 --> 01:10:03.235
+which exactly replicates the behavior
+
+01:10:03.235 --> 01:10:05.619
+that we wanted from the old tag dispatch.
+
+01:10:05.620 --> 01:10:07.978
+Essentially the what the STL does,
+
+01:10:07.980 --> 01:10:09.402
+although we could do a lot
+
+01:10:09.402 --> 01:10:10.880
+of things with tag dispatch,
+
+01:10:10.880 --> 01:10:13.178
+we generally only do two things.
+
+01:10:13.180 --> 01:10:14.811
+The most one of the most popular
+
+01:10:14.811 --> 01:10:16.480
+is testing on iterator strength,
+
+01:10:16.480 --> 01:10:18.990
+where iterators fall into this.
+
+01:10:18.990 --> 01:10:23.029
+Power hierarchy and we can test from
+
+01:10:23.029 --> 01:10:25.660
+strongest to weakest or we all.
+
+01:10:25.660 --> 01:10:27.460
+We have a lot of yes,
+
+01:10:27.460 --> 01:10:30.012
+no tests like is this thing a map
+
+01:10:30.012 --> 01:10:33.280
+versus a set? Is it trivial or not?
+
+01:10:33.280 --> 01:10:35.476
+Is it copy constructible or not?
+
+01:10:35.480 --> 01:10:37.400
+Only occasionally do we have something
+
+01:10:37.400 --> 01:10:39.204
+even more complicated like think I
+
+01:10:39.204 --> 01:10:40.620
+think one of the most complicated
+
+01:10:40.620 --> 01:10:42.653
+ones I can think of is a vector
+
+01:10:42.653 --> 01:10:46.064
+reallocation where we need a three part test.
+
+01:10:46.064 --> 01:10:49.069
+Are you noexcept movable?
+
+01:10:49.070 --> 01:10:50.294
+If you're not,
+
+01:10:50.294 --> 01:10:51.926
+are you copy constructible?
+
+01:10:51.930 --> 01:10:52.908
+If you're not,
+
+01:10:52.908 --> 01:10:53.234
+well,
+
+01:10:53.234 --> 01:10:55.190
+then you're throw movable and we'll
+
+01:10:55.249 --> 01:10:57.865
+just move you and hope there's no exceptions.
+
+01:10:57.870 --> 01:10:59.910
+And so in that one actually,
+
+01:10:59.910 --> 01:11:01.440
+if constexpr is much more natural
+
+01:11:01.440 --> 01:11:03.249
+because we do want that sequencing
+
+01:11:03.250 --> 01:11:05.044
+compared to tag dispatch where we
+
+01:11:05.044 --> 01:11:07.059
+had to sort of enforce sequencing
+
+01:11:07.059 --> 01:11:09.677
+with a specific pattern of true false
+
+01:11:09.677 --> 01:11:12.365
+and true type and false type parameters.
+
+01:11:12.370 --> 01:11:14.170
+So it is something to keep in mind.
+
+01:11:14.170 --> 01:11:16.630
+But if constexpr is actually
+
+01:11:16.630 --> 01:11:17.450
+completely fine,
+
+01:11:17.450 --> 01:11:19.263
+as long as we're careful about the
+
+01:11:19.263 --> 01:11:21.048
+order in which things are tested.
+
+01:11:21.050 --> 01:11:21.296
+Really,
+
+01:11:21.296 --> 01:11:23.018
+it hasn't really been an issue because
+
+01:11:23.018 --> 01:11:24.883
+the nice thing is that because if
+
+01:11:24.883 --> 01:11:26.203
+constexpr looks like control flow,
+
+01:11:26.210 --> 01:11:27.935
+all of our intuitions for
+
+01:11:27.935 --> 01:11:29.660
+testing things in the correct
+
+01:11:29.726 --> 01:11:31.788
+order completely apply. If anything,
+
+01:11:31.788 --> 01:11:33.951
+it's the sort of unsorted nature of
+
+01:11:33.951 --> 01:11:35.598
+overload resolution that makes things
+
+01:11:35.598 --> 01:11:37.931
+a little bit harder and scary, right?
+
+01:11:37.931 --> 01:11:40.397
+Like here, when I look at
+
+01:11:40.397 --> 01:11:42.480
+this classic tag dispatch.
+
+01:11:42.480 --> 01:11:43.638
+Overload set I'm not too worried
+
+01:11:43.638 --> 01:11:44.760
+because I see this pattern.
+
+01:11:44.760 --> 01:11:45.800
+I know how it works,
+
+01:11:45.800 --> 01:11:47.240
+but if it gets more complicated
+
+01:11:47.240 --> 01:11:48.731
+with we've got like ones that
+
+01:11:48.731 --> 01:11:50.177
+were like true type false type,
+
+01:11:50.180 --> 01:11:51.965
+any tag where any tag was like
+
+01:11:51.965 --> 01:11:52.999
+convertible from anything there
+
+01:11:52.999 --> 01:11:54.497
+we really need to sit down and
+
+01:11:54.497 --> 01:11:56.348
+think real hard about OK does this
+
+01:11:56.348 --> 01:11:57.718
+produce you know unambiguous results
+
+01:11:57.720 --> 01:12:00.180
+for every possible combination,
+
+01:12:00.180 --> 01:12:01.326
+but when we have if constexpr
+
+01:12:01.326 --> 01:12:02.260
+we can just say OK,
+
+01:12:02.260 --> 01:12:04.227
+we're going to test the thing we
+
+01:12:04.227 --> 01:12:05.939
+care about first otherwise then
+
+01:12:05.940 --> 01:12:07.422
+we've sort of examined that thing
+
+01:12:07.422 --> 01:12:09.338
+we no longer need to worry about it.
+
+01:12:09.340 --> 01:12:11.720
+It's much more than methodical.
+
+01:12:11.720 --> 01:12:14.100
+So I would say the changes there
+
+01:12:14.100 --> 01:12:15.790
+have been entirely positive,
+
+01:12:15.790 --> 01:12:19.080
+but it is something to worry about.
+
+01:12:19.080 --> 01:12:22.168
+OK and yeah, Casey says in fairness,
+
+01:12:22.170 --> 01:12:23.808
+the vast majority of our tag
+
+01:12:23.808 --> 01:12:25.290
+dispatch is only two cases,
+
+01:12:25.290 --> 01:12:27.154
+true type and false type.
+
+01:12:27.154 --> 01:12:27.620
+&gt;&gt; Casey: Yeah,
+
+01:12:27.620 --> 01:12:29.412
+&gt;&gt; Casey: we haven't had a whole lot of
+
+01:12:29.412 --> 01:12:30.380
+&gt;&gt; Casey: opportunities to screw up.
+
+01:12:33.820 --> 01:12:35.924
+&gt;&gt; Stephan: OK so I will go ahead and push
+
+01:12:35.924 --> 01:12:38.057
+changes to this PR later and thanks
+
+01:12:38.057 --> 01:12:40.445
+to Adam Bucior for this excellent PR
+
+01:12:40.445 --> 01:12:42.400
+that will improve the performance
+
+01:12:42.400 --> 01:12:44.378
+of using C++20 ranges with the
+
+01:12:44.378 --> 01:12:45.974
+most popular container in the STL.
+
+01:12:45.980 --> 01:12:47.753
+I did not even realize this was an issue
+
+01:12:47.753 --> 01:12:49.187
+because I would look at the old code.
+
+01:12:49.190 --> 01:12:50.765
+I'd be like ohh _Is_fwd_iter_v?
+
+01:12:50.770 --> 01:12:52.492
+Yeah that's going to tag forward
+
+01:12:52.492 --> 01:12:53.913
+iterators and yeah concept should
+
+01:12:53.913 --> 01:12:56.385
+be fine but the STL is always
+
+01:12:56.385 --> 01:12:58.488
+full of surprises so thanks and I
+
+01:12:58.488 --> 01:13:00.139
+think we'll see you next time on
+
+01:13:00.139 --> 01:13:01.705
+the VC libraries Open code review.
