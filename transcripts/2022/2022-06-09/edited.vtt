@@ -2,12 +2,10 @@ WEBVTT
 
 NOTE duration:"01:13:08"
 
-NOTE recognizability:0.764
-
 NOTE language:en-us
 
 00:00:11.630 --> 00:00:14.010
-OK, hi and welcome back to another
+&gt;&gt; Stephan: OK, hi and welcome back to another
 
 00:00:14.010 --> 00:00:16.010
 VC libraries, Open code review.
@@ -853,13 +851,14 @@ And I'm thinking of.
 Ohh is that this one here?
 
 00:11:46.370 --> 00:11:48.506
-Conversions ranges to containers
+Conversions of ranges to containers
+&gt;&gt; Casey: [unintelligible]
 
 00:11:48.506 --> 00:11:51.480
 &gt;&gt; Casey: of all because I've got it mostly
 
 00:11:51.480 --> 00:11:53.500
-&gt;&gt; Casey: implemented and I'm perennially
+implemented and I'm perennially
 
 00:11:53.500 --> 00:11:56.710
 &gt;&gt; Casey: 5% away from getting it finished.
@@ -1340,7 +1339,7 @@ according to the iterator
 category,
 
 00:17:39.478 --> 00:17:42.334
-but if I compile time we meet
+but if at compile time we meet
 
 00:17:42.334 --> 00:17:44.600
 the forward iterator concept,
@@ -2164,7 +2163,7 @@ convert size is doing, but handwritten?
 &gt;&gt; Casey: I just pasted convert size from
 
 00:29:08.606 --> 00:29:10.974
-&gt;&gt; Casey: my p306 branch
+my P1206 branch
 
 00:29:10.974 --> 00:29:13.628
 &gt;&gt; Casey: into the chat.
@@ -2172,6 +2171,7 @@ convert size is doing, but handwritten?
 
 00:29:13.628 --> 00:29:15.980
 &gt;&gt; Stephan: You've got just the right code.
+&gt;&gt; Casey: which does the right thing.
 
 00:29:15.980 --> 00:29:16.952
 There's your code,
@@ -2195,11 +2195,13 @@ why you can't see it on the the view.
 OK, so you've generalized in your code.
 
 00:29:32.370 --> 00:29:33.980
-&gt;&gt; Stephan: Convert size to handle this.
+Convert size to handle this.
 &gt;&gt; Casey: Yes
 
 00:29:36.110 --> 00:29:39.734
-&gt;&gt; Stephan: That's interesting. OK, so for this link.
+&gt;&gt; Stephan: That's interesting. OK, so for this PR.
+&gt;&gt; Casey: So yeah, I can get a link if you want a link
+```suggestion
 
 00:29:39.734 --> 00:29:42.830
 &gt;&gt; Casey: But yeah, this PR is going to need to.
@@ -2229,7 +2231,7 @@ corner case for like iota views.
 Merge this as is and then
 
 00:29:58.020 --> 00:29:59.608
-catch it up in 1206.
+patch it up in 1206.
 
 00:29:59.608 --> 00:30:02.096
 I would be OK with that if this
@@ -2254,9 +2256,10 @@ On the other hand it is vector
 
 00:30:13.768 --> 00:30:15.188
 if you don't want to.
+&gt;&gt; Casey: Or user-defined range types.
 
 00:30:15.190 --> 00:30:17.070
-Find their own range types
+They can define their own range types
 
 00:30:17.070 --> 00:30:18.950
 that use or size so.
@@ -2694,11 +2697,11 @@ branch rather than our own.
 OK, but we got the citation.
 
 00:37:52.820 --> 00:37:57.529
-&gt;&gt; Casey: It is unfortunate
-&gt;&gt; Stephan: yeah, the fork is not wide itself.
+&gt;&gt; Casey: That's unfortunate... I hit y to make sure it was a permalink
+&gt;&gt; Stephan: yeah, the fork is not... the repo itself.
 
 00:37:57.529 --> 00:37:59.285
-&gt;&gt; Stephan: Yeah, Casey recommends just
+Yeah, Casey recommends just
 
 00:37:59.285 --> 00:38:01.760
 copying the function to this PR,
@@ -3031,7 +3034,7 @@ requirement we will still activate it.
 This is safe.
 
 00:42:14.538 --> 00:42:18.180
-I like this if we don't have concepts
+I like this. If we don't have concepts
 
 00:42:18.180 --> 00:42:20.610
 then only check _Is_fwd_iter_v
@@ -3235,7 +3238,7 @@ It's a large function,
 it's doing a lot of work.
 
 00:44:56.810 --> 00:44:57.750
-&gt;&gt; Nicole: That's very good point.
+&gt;&gt; Nicole: That's a very good point.
 
 00:44:57.750 --> 00:45:00.088
 &gt;&gt; Nicole: I did not notice how big that function was.
@@ -3244,7 +3247,8 @@ it's doing a lot of work.
 &gt;&gt; Stephan: Yeah,
 
 00:45:00.388 --> 00:45:03.070
-&gt;&gt; Nicole: they're my context is it takes having a lot?
+&gt;&gt; Nicole: Never mind I take it back
+&gt;&gt; Stephan: the context is hiding a lot
 
 00:45:03.070 --> 00:45:04.981
 &gt;&gt; Stephan: Yeah, there's a little bit of duplication
@@ -3805,7 +3809,7 @@ Should we recommend anything specific here?
 &gt;&gt; Casey: wrong.
 
 00:52:06.500 --> 00:52:09.140
-&gt;&gt; Casey: Or do we always define another one in
+&gt;&gt; Casey: Or do we always define... I know there's one in
 
 00:52:09.140 --> 00:52:12.290
 &gt;&gt; Stephan: No, we don't 
