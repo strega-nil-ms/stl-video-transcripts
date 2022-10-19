@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "#1794: Use iterator concept in vector's range constructor",
+  "description": "In this video we review GH-1794: https://github.com/microsoft/STL/pull/1794, titled \"Use iterator concept in vector's range constructor\"",
   "private-link": "https://youtu.be/i2wzjRJjuKY",
   "public-link": ""
 }
