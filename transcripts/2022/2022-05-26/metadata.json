@@ -1,5 +1,5 @@
 {
-  "name": "GH-2580: Implement P2440R1 ranges::iota, ranges::shift_left, ranges::shift_right",
+  "name": "GH-2580, Implement P2440R1 ranges::iota, ranges::shift_left, ranges::shift_right",
   "description": "In this video we review GH-2580: https://github.com/microsoft/STL/pull/2580, titled \"Implement P2440R1 ranges::iota, ranges::shift_left, ranges::shift_right\"",
   "private-link": "https://youtu.be/6hbMmwCopfA",
   "public-link": ""
