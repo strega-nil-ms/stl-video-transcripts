@@ -145,19 +145,19 @@ Test case. And configurations for
 test, test, test configuration.
 
 00:02:30.040 --> 00:02:32.137
-I was going to change the future test macro,
+We've got a change to the feature test macro,
 
 00:02:32.140 --> 00:02:33.724
 presumably because this paper
 
 00:02:33.724 --> 00:02:36.100
-adds a future test marker that
+adds a feature test macro that
 
 00:02:36.172 --> 00:02:37.888
-will not need to test for.
+we'll now need to test for.
 
 00:02:37.890 --> 00:02:38.640
-Changes yvals_core,
+Changes to core,
 
 00:02:38.640 --> 00:02:39.890
 probably to show that the
@@ -172,10 +172,10 @@ Interesting, did we add ranges::iota
 in the numeric header? We must have.
 
 00:02:57.800 --> 00:03:00.032
-That's just to me. I thought we were
+That's news to me. I thought we were
 
 00:03:00.032 --> 00:03:01.858
-gonna have them on algorithms.
+gonna add them on algorithms.
 
 00:03:01.860 --> 00:03:03.400
 But I was apparently wrong.
@@ -217,10 +217,10 @@ This is a the shift_left test.
 And both of its files are there.
 
 00:03:37.940 --> 00:03:41.100
-shift_right? Ohh
+shift_right? Uh-oh
 
 00:03:44.220 --> 00:03:47.268
-I know this is a change to the
+Oh no, this is a change to the
 
 00:03:47.270 --> 00:03:49.230
 existing shift_right test.
@@ -268,7 +268,7 @@ isn't bright enough to tell us.
 If the names are spelled incorrectly,
 
 00:04:26.160 --> 00:04:28.185
-it will just run those tests and be happy.
+it will just run no tests and be happy.
 
 00:04:30.840 --> 00:04:33.948
 Next step, let's pop into yvals_core.
@@ -328,7 +328,7 @@ Looks like we have pulled __cpp_lib_shift
 out of the C++ 17
 
 00:05:27.770 --> 00:05:31.400
-section of future test macros.
+section of feature test macros.
 
 00:05:31.400 --> 00:05:33.338
 Probably to move it down to
@@ -358,10 +358,10 @@ commented that this is the wrong place.
 It needs to move down to
 
 00:06:08.880 --> 00:06:10.024
-the macros with language,
+the macros with language
 
 00:06:10.024 --> 00:06:12.080
-but it's to be section we have.
+mode sensitivity section. We have
 
 00:06:12.080 --> 00:06:13.452
 Four different sections of
@@ -370,10 +370,10 @@ Four different sections of
 feature test macros we defined
 
 00:06:15.167 --> 00:06:16.960
-here that are C++17 macros.
+here. There are C++17 macros.
 
 00:06:16.960 --> 00:06:18.802
-These that are defined in 20
+Things that are defined in 20
 
 00:06:18.802 --> 00:06:20.440
 things that were defined in 23.
@@ -430,7 +430,7 @@ Is in fact defined to 202202?
 So this was added in February.
 
 00:07:12.460 --> 00:07:14.970
-We've got into comments that
+We've got endif comment that
 
 00:07:14.970 --> 00:07:16.978
 matches correctly matches the
@@ -442,7 +442,7 @@ condition on the if so, that's all good.
 Addition of the new feature
 
 00:07:24.845 --> 00:07:27.380
-test macro for c++ lib ranges iota
+test macro for __cpp_lib_ranges_iota
 
 00:07:27.380 --> 00:07:30.086
 This is out of order.
@@ -454,7 +454,7 @@ It was added to the end of this
 section instead of being added
 
 00:07:35.609 --> 00:07:37.818
-into this section and sorted order,
+into this section in sorted order,
 
 00:07:37.818 --> 00:07:41.556
 which would put it somewhere up here.
@@ -677,7 +677,7 @@ conditional for C++23.
 Which is all correct.
 
 00:10:58.570 --> 00:11:00.720
-There's the indef there's commentary.
+There's the endif, there's commentary.
 
 00:11:00.720 --> 00:11:01.530
 It does match.
@@ -998,7 +998,7 @@ I haven't completely searched thoroughly yet.
 &gt;&gt; Casey: Uh we. I guess consistency
 
 00:16:00.085 --> 00:16:01.919
-is the hard ground on the small minds.
+is the hobgoblin of small minds.
 
 00:16:01.920 --> 00:16:03.020
 I think is what Einstein said
@@ -1019,10 +1019,10 @@ That the target type _OOut is convertible
 from a const lvalue out,
 
 00:16:19.238 --> 00:16:21.320
-and that's gonna be constant value
+and that's gonna be const lvalue
 
 00:16:21.383 --> 00:16:23.763
-because this is a const l value
+because this is a const lvalue
 
 00:16:23.763 --> 00:16:26.160
 qualified conversion operator.
@@ -1031,10 +1031,10 @@ qualified conversion operator.
 And. Same for the other type.
 
 00:16:29.910 --> 00:16:33.720
-That const _Ty& is convertible.
+That const _Ty&amp; is convertible.
 
 00:16:33.720 --> 00:16:38.770
-Sorry, the type 2 is convertible from const _Ty&.
+Sorry, that _Ty2 is convertible from const _Ty&amp;.
 
 00:16:38.770 --> 00:16:41.278
 And little helper concept.
@@ -1070,28 +1070,28 @@ and it's hard to type.
 And the other one.
 
 00:16:59.196 --> 00:17:01.260
-This is going to be the R
+This is going to be the
 
 00:17:01.260 --> 00:17:03.150
-value converting constructor.
+rvalue converting constructor.
 
 00:17:03.150 --> 00:17:05.468
-Yep, our our value qualified.
+Yep, it's rvalue qualified.
 
 00:17:08.290 --> 00:17:12.700
-And we require that. Our value out.
+And we require that. rvalue out.
 
 00:17:12.700 --> 00:17:16.270
-Sorry an X value out I guess.
+Sorry an xvalue out I guess.
 
 00:17:16.270 --> 00:17:18.115
 Right that out is convertible
 
 00:17:18.115 --> 00:17:19.960
-from an out X value.
+from an out xvalue.
 
 00:17:19.960 --> 00:17:23.540
-The ref ref here is extraneous.
+The &amp;&amp; here is extraneous.
 
 00:17:23.540 --> 00:17:25.364
 This is one of those things that we
@@ -1106,16 +1106,16 @@ type traits and or concepts that use.
 declval essentially
 
 00:17:32.670 --> 00:17:35.310
-in their implementation the T ref ref
+in their implementation the T&amp;&amp;
 
 00:17:35.310 --> 00:17:39.248
 is the same as T and is equivalent.
 
 00:17:39.250 --> 00:17:41.770
-And we try to keep the excess rest the sorry,
+And we try to keep the excess &amp;s the sorry,
 
 00:17:41.770 --> 00:17:45.144
-the extraneous ref refs out of the code,
+the extraneous &amp;&amp;s out of the code,
 
 00:17:45.150 --> 00:17:46.956
 because it's just a little more
@@ -1154,10 +1154,10 @@ the difference here being that
 we're moving these members to
 
 00:18:10.456 --> 00:18:13.286
-get conversions from our values.
+get conversions from rvalues.
 
 00:18:13.290 --> 00:18:15.201
-Which is consistent with the R value
+Which is consistent with the rvalue
 
 00:18:15.201 --> 00:18:17.029
 qualification of the conversion operator,
@@ -1241,7 +1241,7 @@ OK, where was that when I disconnected?
 &gt;&gt; Stephan: You were talking about potentially
 
 00:20:00.045 --> 00:20:02.041
-moving something to find an
+moving something defined in
 
 00:20:02.041 --> 00:20:03.346
 xutility down to the header
@@ -1254,10 +1254,10 @@ in the central header for potential
 
 00:20:07.737 --> 00:20:09.962
 &gt;&gt; Stephan: future use 
-&gt;&gt; Casey: right, out value results.
+&gt;&gt; Casey: right, out_value_result.
 
 00:20:09.962 --> 00:20:11.752
-&gt;&gt; Casey: This lvalue result apparently is
+&gt;&gt; Casey: This out_value_result apparently is
 
 00:20:11.752 --> 00:20:13.668
 only used in numeric right now.
@@ -1422,13 +1422,13 @@ Make sure that they match
 the standard. OK. We have
 
 00:22:43.360 --> 00:22:45.428
-input or output iterator,
+input_or_output_iterator,
 
 00:22:48.360 --> 00:22:52.248
-sentinel for that input or output
+sentinel_for that input_or_output_iterator
 
 00:22:52.248 --> 00:22:55.560
-iterator and weakly_incrementable.
+and weakly_incrementable.
 
 00:22:55.560 --> 00:22:59.670
 requires indirectly_writable.
@@ -1437,7 +1437,7 @@ requires indirectly_writable.
 First type comma,
 
 00:23:01.914 --> 00:23:05.654
-cons l value of third type.
+const lvalue of third type.
 
 00:23:05.660 --> 00:23:08.390
 Those that agrees
@@ -1449,7 +1449,7 @@ constexpr iota_result
 First parameter, third parameter.
 
 00:23:17.450 --> 00:23:19.790
-iota, the Silverload takes
+iota, this overload takes
 
 00:23:19.790 --> 00:23:22.715
 an iterator and a sentinel
@@ -1476,7 +1476,7 @@ const lvalue of first parameter type.
 constexpr, returns an iota result
 
 00:23:49.688 --> 00:23:53.689
-of borrowed iterator. R comma T
+of borrowed_iterator&lt;R&gt; comma T
 
 00:23:53.690 --> 00:23:57.758
 iota.
@@ -1509,7 +1509,7 @@ For ranges algorithms
 That specifies.
 
 00:24:25.630 --> 00:24:26.960
-We get the standard open.
+Lemme get the standard open.
 
 00:24:30.110 --> 00:24:32.060
 Which I lost somewhere here.
@@ -1572,10 +1572,10 @@ Hmm, this is the right stuff I will find.
 Parameters otherwise specified.
 
 00:25:39.880 --> 00:25:43.338
-There we go. The entity is defined
+There we go. The entities defined
 
 00:25:43.338 --> 00:25:45.598
-as the std::ranges namespace.
+in the std::ranges namespace.
 
 00:25:45.600 --> 00:25:46.948
 Let's make this bigger.
@@ -1590,10 +1590,10 @@ who can see what I'm reading.
 OK, look at paragraph 2 here in
 
 00:25:56.526 --> 00:25:57.910
-algorithms that requirements the
+algorithms.requirements. The
 
 00:25:57.910 --> 00:25:59.630
-new disappointing the std::ranges
+entities defined in the std::ranges
 
 00:25:59.630 --> 00:26:02.049
 namespace in this clause are not found
@@ -1629,10 +1629,10 @@ introduce this property so that.
 Calls to ranges algorithms would be
 
 00:26:27.592 --> 00:26:30.726
-unambiguous and they wouldn't be actually.
+unambiguous and they wouldn't be, actually
 
 00:26:30.726 --> 00:26:33.156
-Only ambiguous isn't the problem.
+unambiguous isn't the problem.
 
 00:26:33.160 --> 00:26:36.116
 If you think about calling find,
@@ -1728,7 +1728,7 @@ but function templates that have
 the same property of inhibiting ADL
 
 00:27:50.197 --> 00:27:52.633
-or not being fined found by ADL.
+or not being found by ADL.
 
 00:27:52.640 --> 00:27:56.258
 But that hasn't happened yet.
@@ -1749,7 +1749,7 @@ So that's the thing,
 we have lots of things that are not really
 
 00:28:09.945 --> 00:28:12.090
-specified as objects that are amplified,
+specified as objects that are implemented by,
 
 00:28:12.090 --> 00:28:14.490
 implemented as objects in the STL.
@@ -1764,7 +1764,7 @@ referred to colloquially as niebloids.
 Thanks to Tim Song who is a
 
 00:28:25.130 --> 00:28:27.340
-CPP reference maintainer and
+cppreference maintainer and
 
 00:28:27.340 --> 00:28:30.016
 occasionally shows up at WG21.
@@ -2035,10 +2035,10 @@ Let them be things and somebody had
 to decided to come up with the name.
 
 00:31:56.790 --> 00:31:58.422
-The document that right Tim is a I
+The document that right Tim is a, I
 
 00:31:58.422 --> 00:32:00.101
-said he was a CPP reference maintainer
+said he was a cppreference maintainer
 
 00:32:00.101 --> 00:32:02.430
 and he came up with a name to be able
@@ -2127,10 +2127,10 @@ implement these things as functions.
 I'm sorry as objects.
 
 00:33:03.586 --> 00:33:05.981
-Despite him being depicted as
+Despite them being depicted as
 
 00:33:05.981 --> 00:33:08.058
-function templates in the is.
+function templates in the IS.
 
 00:33:08.060 --> 00:33:11.007
 &gt;&gt; Nicole: Cool 
@@ -2222,10 +2222,10 @@ doing this unless otherwise specified
 has solved both those problems and more.
 
 00:34:23.910 --> 00:34:25.800
-&gt;&gt; Casey: Yes, and for Britain take.
+&gt;&gt; Casey: Yes, and forbidding taking
 
 00:34:25.800 --> 00:34:27.885
-The admissions is also conveniently
+the address has also conveniently
 
 00:34:27.885 --> 00:34:30.832
 allowed us to make some more
@@ -2252,19 +2252,19 @@ you for the explanation.
 &gt;&gt; Casey: Yeah. That's what this process is all about.
 
 00:34:46.760 --> 00:34:50.185
-So anyway, here's an example of find
+So anyway, here's an example of
 
 00:34:50.185 --> 00:34:51.610
-first of the implementation of
+find_first_of, the implementation of
 
 00:34:51.610 --> 00:34:53.340
-the find first of algorithm,
+the find_first_of algorithm,
 
 00:34:53.340 --> 00:34:57.400
 it is defined as a again a class object,
 
 00:34:57.400 --> 00:35:01.481
-and we have a helper called not quite object
+and we have a helper called _Not_quite_object
 
 00:35:01.481 --> 00:35:04.904
 that we derive these from whose purpose.
@@ -2291,13 +2291,13 @@ taking advantage of what's
 effectively implementation details.
 
 00:35:21.870 --> 00:35:24.858
-So not quite object.
+So _Not_quite_object.
 
 00:35:27.980 --> 00:35:29.530
-It's got to be an xutility, right?
+It's got to be in xutility, right?
 
 00:35:42.900 --> 00:35:45.508
-tada here we go. Not quite object.
+tada here we go. _Not_quite_object.
 
 00:35:45.508 --> 00:35:48.280
 Actually describes its what its purpose is.
@@ -2372,7 +2372,7 @@ to have your objects to have if
 they were intentionally objects.
 
 00:36:45.080 --> 00:36:49.010
-So these to the two template
+So these, tada, two template
 
 00:36:49.010 --> 00:36:50.975
 overloads of iota
@@ -2429,7 +2429,7 @@ Algorithms are not functions
 or function templates.
 
 00:37:56.786 --> 00:37:59.258
-But our currently implemented as niebloids
+But are currently implemented as niebloids
 
 00:37:59.258 --> 00:38:01.890
 Those are objects with the call operator.
@@ -2453,7 +2453,7 @@ other ranges algorithms are implemented.
 The general starting point is something like.
 
 00:38:16.490 --> 00:38:20.960
-Class. Algorithm name underscore font yes
+Class. Algorithm name underscore fn yes
 
 00:38:20.960 --> 00:38:23.620
 This is how we name them all consistently.
@@ -2468,7 +2468,7 @@ inherit privately from _Not_quite_object.
 Make its constructor set available
 
 00:38:33.490 --> 00:38:35.458
-without using declaration.
+with a using declaration.
 
 00:38:35.460 --> 00:38:36.650
 Then implement.
@@ -2489,10 +2489,10 @@ Object of that type.
 The type of your function object.
 
 00:38:53.270 --> 00:38:56.750
-And initialize it with not quite
+And initialize it with _Not_quite_object
 
 00:38:56.750 --> 00:38:59.570
-an object secret construct tag.
+secret _Construct_tag.
 
 00:38:59.570 --> 00:39:04.650
 So. This is a great comment.
@@ -2528,7 +2528,7 @@ Anyway, that's awesome.
 It's fun having a community.
 
 00:39:30.360 --> 00:39:32.390
-Or around the STL to do our work for us.
+Around the STL to do our work for us.
 
 00:39:36.530 --> 00:39:38.528
 Alright, coming back here so that
@@ -2561,16 +2561,16 @@ Paper, which I've lost track of.
 Add the following, effects equivalent to.
 
 00:40:11.390 --> 00:40:13.945
-Our first is not equal to last.
+While first is not equal to last.
 
 00:40:13.950 --> 00:40:16.998
-Well, first not equal to last.
+while first not equal to last.
 
 00:40:17.000 --> 00:40:19.250
-Start first equals as const value.
+*first = as_const(value).
 
 00:40:22.370 --> 00:40:24.729
-We are as const the value to
+We are as_const'ing the value to
 
 00:40:24.729 --> 00:40:27.200
 enforce the value doesn't get modified.
@@ -2660,13 +2660,13 @@ The iterator sentinel range using our
 iterator checking machinery we have.
 
 00:41:43.782 --> 00:41:45.880
-This is a standard adl verify
+This is a standard, _Adl_verify_range
 
 00:41:45.880 --> 00:41:48.295
-range doesn't look up to figure out
+does a look up to figure out
 
 00:41:48.295 --> 00:41:50.779
-if these iterators are iterator in
+if these iterators are, iterator and
 
 00:41:50.779 --> 00:41:53.332
 sentinel type are opting into our
@@ -2726,10 +2726,10 @@ Yeah, this is potentially
 a single pass iterator.
 
 00:42:45.660 --> 00:42:49.126
-We have to pass in our
+We have to pass in
 
 00:42:49.126 --> 00:42:51.414
-value to get unwrapped.
+rvalue to _Get_unwrapped.
 
 00:42:51.420 --> 00:42:53.055
 Since input iterators may have
@@ -2902,11 +2902,8 @@ The built-in operator comma.
 00:45:15.000 --> 00:45:15.710
 All right,
 
-00:45:15.710 --> 00:45:18.195
-and we've got a start first equals.
-
-00:45:18.200 --> 00:45:18.610
-constcast.
+00:45:15.710 -->  00:45:18.610
+and we've got a *first = const_cast.
 
 00:45:18.610 --> 00:45:21.480
 This is a handy way of implementing,
@@ -2924,23 +2921,23 @@ Instead of calling as_const
 make the argument here that it
 
 00:45:29.656 --> 00:45:31.859
-should probably use static cast.
+should probably use static_cast.
 
 00:45:31.860 --> 00:45:32.280
 Umm?
 
 00:45:35.140 --> 00:45:36.685
 &gt;&gt; Nicole: Because 
-&gt;&gt; Casey: so there I am
+&gt;&gt; Casey: so would I
 
 00:45:36.685 --> 00:45:40.290
-&gt;&gt; Nicole: So we're we're not casting away consent,
+&gt;&gt; Nicole: So we're we're not casting away const,
 
 00:45:40.290 --> 00:45:41.850
 so we I, in my opinion,
 
 00:45:41.850 --> 00:45:43.535
-&gt;&gt; Casey: should be suggestion to actually
+&gt;&gt; Casey: should we suggestion to actually
 
 00:45:43.535 --> 00:45:45.220
 call std::as_const instead.
@@ -2952,7 +2949,7 @@ I don't think that's a great idea either.
 I think we can get away
 
 00:45:49.100 --> 00:45:50.450
-with the static cast here.
+with the static_cast here.
 
 00:45:50.450 --> 00:45:53.327
 &gt;&gt; Stephan: And I have offered a third alternative
@@ -2961,10 +2958,10 @@ with the static cast here.
 because and you can read my comment there.
 
 00:45:55.530 --> 00:45:58.306
-Static cast is powerful in a different way.
+static_cast is powerful in a different way.
 
 00:45:58.310 --> 00:46:00.060
-It can't remove Constness but
+It can't remove constness but
 
 00:46:00.060 --> 00:46:01.816
 it's willing to, you know,
@@ -2994,7 +2991,7 @@ so if we're willing to spend an extra line,
 we could just implicitly
 
 00:46:14.142 --> 00:46:15.807
-bind a const _Ty ref.
+bind a const _Ty&amp;.
 
 00:46:15.810 --> 00:46:16.820
 I think that would probably
@@ -3010,7 +3007,7 @@ or at least less scary looking.
 &gt;&gt; Stephan: Yeah, because the the
 
 00:46:24.895 --> 00:46:27.732
-thing about static cast is it's willing
+thing about static_cast is it's willing
 
 00:46:27.732 --> 00:46:29.560
 to reverse implicit conversions,
@@ -3028,7 +3025,7 @@ conversion of adding constness,
 but there's no like super safe
 
 00:46:35.698 --> 00:46:37.420
-static cast that'll do just that.
+static_cast that'll do just that.
 
 00:46:37.420 --> 00:46:38.910
 So that's why I suggest.
@@ -3049,7 +3046,7 @@ I wouldn't write this.
 I would write it
 
 00:46:50.480 --> 00:46:52.419
-I would write the static cast I.
+I would write the static_cast I.
 
 00:46:52.420 --> 00:46:54.114
 I wonder why it matters to me.
@@ -3058,7 +3055,7 @@ I wonder why it matters to me.
 It's interesting.
 
 00:46:56.020 --> 00:46:58.050
-I would write the static cast probably
+I would write the static_cast probably
 
 00:46:58.050 --> 00:46:59.700
 cause this consumes an extra line.
@@ -3142,7 +3139,7 @@ And that that's really the issue,
 it's it's much more readable to see std::move(blah)
 
 00:48:05.956 --> 00:48:09.478
-than it is see static_cast<x&&>(blah)
+than it is see static_cast&lt;X&amp;&amp;&gt;(blah)
 
 00:48:09.480 --> 00:48:13.250
 and then have to go back
@@ -3160,7 +3157,7 @@ is it doing something else?
 And in that sense,
 
 00:48:22.826 --> 00:48:25.070
-having the actual names moving forward
+having the actual names move and forward
 
 00:48:25.137 --> 00:48:27.495
 as vocabularies is nice for readers.
@@ -3298,7 +3295,7 @@ and this seemed like a reasonably
 cheap way to do so that didn't involve
 
 00:50:24.437 --> 00:50:26.152
-like obnoxious static_cast<T&&>
+like obnoxious static_cast&lt;T&amp;&amp;&gt;
 
 00:50:26.160 --> 00:50:27.165
 or anything,
@@ -3310,7 +3307,7 @@ but I would be fine with as_const myself.
 &gt;&gt; Nicole: Also, this is totally gross and I hate it,
 
 00:50:34.060 --> 00:50:38.618
-but you could put the const _Ty&
+but you could put the const _Ty&amp;
 
 00:50:38.618 --> 00:50:42.776
 const Val equals Val above the loop. Uh. 
@@ -3846,7 +3843,7 @@ Which we then return.
 In our out_result.
 
 01:00:22.324 --> 01:00:25.809
-iota_result<_It, _Ty> we're returning.
+iota_result&lt;_It, _Ty&gt; we're returning.
 
 01:00:25.810 --> 01:00:28.568
 There's lots of moving 1st and _Ty,
