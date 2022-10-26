@@ -1,0 +1,5629 @@
+WEBVTT
+
+NOTE duration:"01:29:15"
+
+NOTE language:en-us
+
+00:00:07.100 --> 00:00:09.804
+&gt;&gt; Casey: No. Apparently transcription has
+
+00:00:09.804 --> 00:00:12.222
+started itself. Hello everyone.
+
+00:00:12.222 --> 00:00:14.346
+Welcome to yet another
+
+00:00:14.346 --> 00:00:17.220
+Visual C++ Open code review.
+
+00:00:17.220 --> 00:00:18.366
+I'm Casey Carter.
+
+00:00:18.366 --> 00:00:20.276
+Remember the library's team here?
+
+00:00:20.280 --> 00:00:22.488
+I spent a lot of time working on
+
+00:00:22.488 --> 00:00:25.397
+the STL and quite a bit of time
+
+00:00:25.397 --> 00:00:26.917
+working on standardization with
+
+00:00:26.992 --> 00:00:28.927
+WG 21 of the actual C++ language.
+
+00:00:28.930 --> 00:00:31.317
+Today we're going to be talking about.
+
+00:00:34.920 --> 00:00:37.804
+PR2580 for the STL,
+
+00:00:37.804 --> 00:00:41.172
+which is implementing P2440R1 ranges::iota,
+
+00:00:41.172 --> 00:00:43.576
+ranges::shift_left, 
+
+00:00:43.576 --> 00:00:45.980
+and ranges::shift_right.
+
+00:00:45.980 --> 00:00:47.737
+I'm gonna pull up the paper real
+
+00:00:47.737 --> 00:00:49.587
+quick since I didn't do that yet.
+
+00:00:55.280 --> 00:00:58.850
+Ohh no. Sorry I don't have my
+
+00:00:58.850 --> 00:01:00.026
+shortcuts configured correctly here.
+
+00:01:02.160 --> 00:01:03.010
+2040
+
+00:01:09.160 --> 00:01:12.499
+No, this is a relatively short paper.
+
+00:01:12.500 --> 00:01:15.460
+&gt;&gt; Casey: Adding
+&gt;&gt; Stephan: you are not yet sharing your screen,
+
+00:01:15.460 --> 00:01:17.228
+&gt;&gt; Stephan: by the way
+&gt;&gt; Casey: I'm not yet sharing my screen.
+
+00:01:19.720 --> 00:01:20.510
+&gt;&gt; Casey: Thank you.
+
+00:01:25.240 --> 00:01:29.887
+OK. This is the paper of P2440R1.
+
+00:01:29.887 --> 00:01:33.529
+It adds 3 new ranges algorithms.
+
+00:01:33.530 --> 00:01:35.150
+The things that were already
+
+00:01:35.150 --> 00:01:36.770
+existing algorithms in pre ranges,
+
+00:01:36.770 --> 00:01:38.366
+world right? iota exists,
+
+00:01:38.366 --> 00:01:41.310
+except it's not in the algorithms header,
+
+00:01:41.310 --> 00:01:43.040
+it's in the numerics header.
+
+00:01:43.040 --> 00:01:45.770
+But it's nonetheless an algorithm.
+
+00:01:45.770 --> 00:01:49.290
+This adds iota, shift_left and shift_right.
+
+00:01:49.290 --> 00:01:50.554
+As ranges algorithms,
+
+00:01:50.554 --> 00:01:51.818
+in addition to their
+
+00:01:51.818 --> 00:01:52.970
+std algorithm versions.
+
+00:01:55.000 --> 00:02:00.223
+So let's get the PR
+
+00:02:00.223 --> 00:02:04.088
+and the paper. Side by side.
+
+00:02:07.340 --> 00:02:09.050
+We'll go into the files here.
+
+00:02:11.560 --> 00:02:13.870
+Alright, in my usual alt click
+
+00:02:13.870 --> 00:02:15.763
+trick to compress everything down
+
+00:02:15.763 --> 00:02:18.059
+and wow this is touching a lot of
+
+00:02:18.059 --> 00:02:20.237
+files for adding three algorithms.
+
+00:02:20.240 --> 00:02:23.537
+We've got a new test for each.
+
+00:02:23.540 --> 00:02:27.553
+Test case. And configurations for
+
+00:02:27.553 --> 00:02:30.037
+test, test, test configuration.
+
+00:02:30.040 --> 00:02:32.137
+We've got a change to the feature test macro,
+
+00:02:32.140 --> 00:02:33.724
+presumably because this paper
+
+00:02:33.724 --> 00:02:36.100
+adds a feature test macro that
+
+00:02:36.172 --> 00:02:37.888
+we'll now need to test for.
+
+00:02:37.890 --> 00:02:38.640
+Changes to core,
+
+00:02:38.640 --> 00:02:39.890
+probably to show that the
+
+00:02:39.890 --> 00:02:41.260
+paper has been implemented.
+
+00:02:44.300 --> 00:02:47.360
+Interesting, did we add ranges::iota
+
+00:02:47.360 --> 00:02:50.180
+in the numeric header? We must have.
+
+00:02:57.800 --> 00:03:00.032
+That's news to me. I thought we were
+
+00:03:00.032 --> 00:03:01.858
+gonna add them on algorithms.
+
+00:03:01.860 --> 00:03:03.400
+But I was apparently wrong.
+
+00:03:06.370 --> 00:03:08.491
+Yeah, even says the feature test macros
+
+00:03:08.491 --> 00:03:10.660
+in numeric. Alright, awesome.
+
+00:03:10.660 --> 00:03:12.730
+It's more fun to discover these
+
+00:03:12.730 --> 00:03:14.627
+things as we go than to read
+
+00:03:14.627 --> 00:03:16.360
+the paper ahead of time right. So?
+
+00:03:16.360 --> 00:03:18.526
+And we know why that's changing
+
+00:03:18.526 --> 00:03:19.970
+all of these headers.
+
+00:03:19.970 --> 00:03:23.258
+Let's, uh, start from the top.
+
+00:03:23.260 --> 00:03:26.662
+Let's make sure the new tests are in here.
+
+00:03:26.670 --> 00:03:28.588
+And that the names are spelled correctly.
+
+00:03:28.590 --> 00:03:31.930
+This is a the shift_left test.
+
+00:03:31.930 --> 00:03:34.420
+And both of its files are there.
+
+00:03:37.940 --> 00:03:41.100
+shift_right? Uh-oh
+
+00:03:44.220 --> 00:03:47.268
+Oh no, this is a change to the
+
+00:03:47.270 --> 00:03:49.230
+existing shift_right test.
+
+00:03:56.930 --> 00:03:59.828
+Now I'm very confused why we're
+
+00:03:59.830 --> 00:04:01.486
+choosing the existing test
+
+00:04:01.486 --> 00:04:03.556
+and adding a new test.
+
+00:04:03.560 --> 00:04:07.270
+But we'll work that out when we get to it.
+
+00:04:07.270 --> 00:04:08.730
+Addition is actually correct.
+
+00:04:08.730 --> 00:04:10.190
+The correctly spelled name,
+
+00:04:10.190 --> 00:04:12.950
+and that's all I'm concerned about right now.
+
+00:04:12.950 --> 00:04:14.290
+Again, these three new tests
+
+00:04:14.290 --> 00:04:15.970
+have been added and the spelling
+
+00:04:15.970 --> 00:04:17.390
+of the names is correct.
+
+00:04:17.390 --> 00:04:20.085
+We actually have to double check that
+
+00:04:20.085 --> 00:04:22.568
+because otherwise the our test automation
+
+00:04:22.570 --> 00:04:24.736
+isn't bright enough to tell us.
+
+00:04:24.740 --> 00:04:26.156
+If the names are spelled incorrectly,
+
+00:04:26.160 --> 00:04:28.185
+it will just run no tests and be happy.
+
+00:04:30.840 --> 00:04:33.948
+Next step, let's pop into yvals_core.
+
+00:04:33.950 --> 00:04:36.200
+Yeah, there's the addition of
+
+00:04:36.200 --> 00:04:38.522
+the comment that says we've
+
+00:04:38.522 --> 00:04:39.926
+implemented this proposal.
+
+00:04:39.930 --> 00:04:42.710
+It is in sorted order.
+
+00:04:42.710 --> 00:04:45.398
+I'm not sure if the name matches.
+
+00:04:48.410 --> 00:04:49.964
+#2537 the name in our issue,
+
+00:04:49.970 --> 00:04:52.502
+we're usually really.
+
+00:04:52.502 --> 00:04:54.190
+Sticklers about.
+
+00:04:54.190 --> 00:04:57.530
+Using a simplified name.
+
+00:04:57.530 --> 00:04:59.505
+This simplified titles for papers
+
+00:04:59.505 --> 00:05:02.179
+that are easier to keep track of.
+
+00:05:02.180 --> 00:05:04.960
+That's not the right one.
+
+00:05:04.960 --> 00:05:08.560
+537 OK. The transposition.
+
+00:05:11.910 --> 00:05:14.124
+Yep, that's exactly the title we
+
+00:05:14.124 --> 00:05:17.279
+listed it with in our issue for the
+
+00:05:17.279 --> 00:05:19.408
+proposal. So that's all correct.
+
+00:05:21.580 --> 00:05:24.424
+Looks like we have pulled __cpp_lib_shift
+
+00:05:24.424 --> 00:05:27.769
+out of the C++ 17
+
+00:05:27.770 --> 00:05:31.400
+section of feature test macros.
+
+00:05:31.400 --> 00:05:33.338
+Probably to move it down to
+
+00:05:33.338 --> 00:05:34.307
+the conditional section.
+
+00:05:42.560 --> 00:05:43.418
+Make this bigger.
+
+00:05:51.350 --> 00:05:53.018
+Too many comments.
+
+00:05:57.620 --> 00:05:58.760
+23 section now that we've
+
+00:05:58.760 --> 00:06:00.250
+got this in the wrong place.
+
+00:06:02.620 --> 00:06:03.884
+Apparently Stephan has already
+
+00:06:03.884 --> 00:06:06.140
+commented that this is the wrong place.
+
+00:06:06.140 --> 00:06:08.876
+It needs to move down to
+
+00:06:08.880 --> 00:06:10.024
+the macros with language
+
+00:06:10.024 --> 00:06:12.080
+mode sensitivity section. We have
+
+00:06:12.080 --> 00:06:13.452
+Four different sections of
+
+00:06:13.452 --> 00:06:15.167
+feature test macros we defined
+
+00:06:15.167 --> 00:06:16.960
+here. There are C++17 macros.
+
+00:06:16.960 --> 00:06:18.802
+Things that are defined in 20
+
+00:06:18.802 --> 00:06:20.440
+things that were defined in 23.
+
+00:06:20.440 --> 00:06:22.582
+Whenever the macro depends on language
+
+00:06:22.582 --> 00:06:24.939
+mode or pretty much anything else,
+
+00:06:24.940 --> 00:06:28.162
+it gets pulled out and goes into a fourth
+
+00:06:28.162 --> 00:06:31.306
+section for the whatever configurable things.
+
+00:06:31.310 --> 00:06:32.828
+And just needs to go there,
+
+00:06:32.830 --> 00:06:34.394
+but isn't yet so.
+
+00:06:34.394 --> 00:06:35.567
+That's already noted,
+
+00:06:35.570 --> 00:06:37.370
+we don't need to note again.
+
+00:06:37.370 --> 00:06:40.650
+We'll make sure that the value is right.
+
+00:06:40.650 --> 00:06:44.226
+Yeah, it's 202202,
+
+00:06:44.226 --> 00:06:47.418
+which is the February.
+
+00:06:47.420 --> 00:06:47.781
+Waiting,
+
+00:06:47.781 --> 00:06:49.586
+I'll check that in there.
+
+00:06:51.760 --> 00:06:54.875
+Good that I conveniently have the
+
+00:06:54.875 --> 00:06:58.720
+working draft open before. __cpp_lib_shift
+
+00:06:58.720 --> 00:07:03.254
+Is in fact defined to 202202?
+
+00:07:03.254 --> 00:07:05.222
+So this was added in February.
+
+00:07:12.460 --> 00:07:14.970
+We've got endif comment that
+
+00:07:14.970 --> 00:07:16.978
+matches correctly matches the
+
+00:07:16.980 --> 00:07:20.290
+condition on the if so, that's all good.
+
+00:07:22.940 --> 00:07:24.845
+Addition of the new feature
+
+00:07:24.845 --> 00:07:27.380
+test macro for __cpp_lib_ranges_iota
+
+00:07:27.380 --> 00:07:30.086
+This is out of order.
+
+00:07:32.100 --> 00:07:34.180
+It was added to the end of this
+
+00:07:34.180 --> 00:07:35.609
+section instead of being added
+
+00:07:35.609 --> 00:07:37.818
+into this section in sorted order,
+
+00:07:37.818 --> 00:07:41.556
+which would put it somewhere up here.
+
+00:07:41.560 --> 00:07:43.480
+In between invoking this snooping on
+
+00:07:43.480 --> 00:07:45.209
+Stephan has already commented on that.
+
+00:07:49.010 --> 00:07:52.546
+&gt;&gt; Stephan: It should actually move up just one because
+
+00:07:52.546 --> 00:07:55.420
+&gt;&gt; Stephan: it's __cpp_lib_ranges_iota. 
+&gt;&gt; Casey: Thank you.
+
+00:07:58.210 --> 00:07:59.725
+Luckily I didn't comment incorrectly
+
+00:07:59.725 --> 00:08:01.660
+and I don't have to fix it.
+
+00:08:01.660 --> 00:08:05.629
+Anyway, we have feature test macros
+
+00:08:05.630 --> 00:08:07.555
+that's presumably all of them
+
+00:08:07.555 --> 00:08:09.960
+that were defined by the paper.
+
+00:08:09.960 --> 00:08:11.455
+I don't understand why people
+
+00:08:11.455 --> 00:08:13.300
+can't put the feature test macro
+
+00:08:13.300 --> 00:08:14.770
+wording in the right order.
+
+00:08:14.770 --> 00:08:17.030
+Like we never do.
+
+00:08:17.030 --> 00:08:18.598
+Update the value __cpp_lib_shift
+
+00:08:18.598 --> 00:08:20.166
+in version.syn
+
+00:08:24.780 --> 00:08:26.730
+Find __cpp_lib_ranges_iota.
+
+00:08:30.630 --> 00:08:31.790
+Those are all the features
+
+00:08:31.790 --> 00:08:33.526
+test macros, so this header
+
+00:08:33.526 --> 00:08:35.214
+has everything correct
+
+00:08:37.230 --> 00:08:38.902
+There's nothing additional to
+
+00:08:38.902 --> 00:08:41.710
+comment on in this header I should say.
+
+00:08:44.500 --> 00:08:47.308
+They are all commented on.
+
+00:08:47.310 --> 00:08:52.820
+Moving on. Let's do product code.
+
+00:08:52.820 --> 00:08:55.760
+I'm going to look at xutility
+
+00:08:55.760 --> 00:08:58.030
+first because it's a.
+
+00:08:58.030 --> 00:08:59.926
+A higher order header than algorithm
+
+00:08:59.926 --> 00:09:02.051
+and numeric that users include, right?
+
+00:09:02.051 --> 00:09:03.856
+This is an internal header.
+
+00:09:03.860 --> 00:09:05.645
+And this one happens to be included
+
+00:09:05.645 --> 00:09:07.040
+by both algorithm and numeric,
+
+00:09:07.040 --> 00:09:09.029
+so I assume there's a common code in here.
+
+00:09:11.790 --> 00:09:14.919
+And this is adding the out_value_result
+
+00:09:14.919 --> 00:09:16.822
+algorithm result type.
+
+00:09:16.822 --> 00:09:20.469
+There are a whole bunch of these things
+
+00:09:20.469 --> 00:09:22.282
+that we call result types whose names
+
+00:09:22.282 --> 00:09:24.578
+all in with under score results that
+
+00:09:24.578 --> 00:09:28.286
+were added to be types with pretty user.
+
+00:09:28.286 --> 00:09:30.381
+respellable names for the return
+
+00:09:30.381 --> 00:09:32.359
+values of the ranges algorithms
+
+00:09:32.359 --> 00:09:34.591
+because we wanted to avoid ever
+
+00:09:34.665 --> 00:09:37.273
+having anything return tuple or pair,
+
+00:09:37.273 --> 00:09:39.559
+we wanted to always return names
+
+00:09:39.559 --> 00:09:42.032
+types with named members that people
+
+00:09:42.032 --> 00:09:44.840
+would refer to that would be stable.
+
+00:09:44.840 --> 00:09:47.246
+Because it's very hard when you're
+
+00:09:47.246 --> 00:09:49.340
+writing fresh code that takes.
+
+00:09:49.340 --> 00:09:51.290
+A pair, right? If you're using,
+
+00:09:51.290 --> 00:09:54.010
+say, insert into a std::map.
+
+00:09:54.010 --> 00:09:56.026
+Returns a pair of an iterator and a bool,
+
+00:09:56.030 --> 00:09:58.118
+and people can never remember if it's an
+
+00:09:58.118 --> 00:10:00.247
+iterator and a bool or bool and an iterator,
+
+00:10:00.250 --> 00:10:02.308
+so having actual names you can see
+
+00:10:02.308 --> 00:10:04.577
+you don't have to remember the order.
+
+00:10:07.680 --> 00:10:10.235
+Anyway, this is called out_value_result,
+
+00:10:10.240 --> 00:10:11.630
+which means it's going to
+
+00:10:11.630 --> 00:10:13.020
+have a member named out.
+
+00:10:13.020 --> 00:10:14.940
+and a member named value.
+
+00:10:14.940 --> 00:10:17.208
+We have a very very simple.
+
+00:10:17.210 --> 00:10:19.218
+naming rule that wg21
+
+00:10:19.218 --> 00:10:21.728
+uses for these types.
+
+00:10:21.730 --> 00:10:24.076
+Uh, these are gonna have
+
+00:10:24.076 --> 00:10:26.090
+[[no_unique_address]] applied to them,
+
+00:10:26.090 --> 00:10:27.658
+which is a pretty much a good
+
+00:10:27.658 --> 00:10:28.760
+idea with anything generic.
+
+00:10:32.140 --> 00:10:34.900
+In C++20, I'm going to go find.
+
+00:10:34.900 --> 00:10:39.520
+Here's the declaration of this class template.
+
+00:10:39.520 --> 00:10:41.830
+It's supposed to be in std::ranges.
+
+00:10:45.330 --> 00:10:47.328
+Make sure we're within ranges, yes?
+
+00:10:47.328 --> 00:10:51.654
+Within ranges we're in the concept section.
+
+00:10:51.660 --> 00:10:53.232
+This is being made
+
+00:10:53.232 --> 00:10:55.197
+conditional for C++23.
+
+00:10:55.200 --> 00:10:58.568
+Which is all correct.
+
+00:10:58.570 --> 00:11:00.720
+There's the endif, there's commentary.
+
+00:11:00.720 --> 00:11:01.530
+It does match.
+
+00:11:05.430 --> 00:11:06.790
+The detailed specification of
+
+00:11:06.790 --> 00:11:09.221
+this and I didn't want to click
+
+00:11:09.221 --> 00:11:10.866
+that that's going to link.
+
+00:11:10.870 --> 00:11:12.890
+Yeah, you got the standard.
+
+00:11:12.890 --> 00:11:14.411
+Alright, details back.
+
+00:11:14.411 --> 00:11:19.090
+This is again a class with two parameters.
+
+00:11:19.090 --> 00:11:20.540
+The members are both there.
+
+00:11:20.540 --> 00:11:23.510
+They're types are the first parameter.
+
+00:11:23.510 --> 00:11:25.772
+The first template argument and the
+
+00:11:25.772 --> 00:11:27.280
+first second template arguments.
+
+00:11:27.280 --> 00:11:28.720
+There [[no_unique_address]].
+
+00:11:28.720 --> 00:11:29.080
+Appropriately,
+
+00:11:29.080 --> 00:11:31.618
+we are leaving these commented out.
+
+00:11:31.620 --> 00:11:33.520
+In the STL, for now,
+
+00:11:33.520 --> 00:11:36.175
+because MSVC didn't support 
+
+00:11:36.175 --> 00:11:39.879
+[[no_unique_address]] for a very long time,
+
+00:11:39.880 --> 00:11:42.184
+and what we did do was add the
+
+00:11:42.184 --> 00:11:44.604
+attribute to the compiler so the
+
+00:11:44.604 --> 00:11:46.380
+compiler understood the attribute
+
+00:11:46.380 --> 00:11:48.696
+and didn't do anything with it.
+
+00:11:48.700 --> 00:11:50.835
+And then by the time it came,
+
+00:11:50.840 --> 00:11:51.338
+you know,
+
+00:11:51.338 --> 00:11:53.081
+by the time we decided we needed
+
+00:11:53.081 --> 00:11:54.574
+to actually implement the
+
+00:11:54.574 --> 00:11:56.154
+semantics of the attribute.
+
+00:11:56.160 --> 00:11:57.648
+It became clear that doing so
+
+00:11:57.648 --> 00:11:59.344
+would be an ABI break because
+
+00:11:59.344 --> 00:12:00.959
+we had been compiling code,
+
+00:12:00.960 --> 00:12:03.158
+they had that attribute in it already
+
+00:12:03.158 --> 00:12:05.666
+for a couple of point releases and
+
+00:12:05.666 --> 00:12:07.922
+not doing anything with the attribute.
+
+00:12:07.930 --> 00:12:09.415
+Since we really,
+
+00:12:09.415 --> 00:12:11.890
+really don't like breaking ABI,
+
+00:12:11.890 --> 00:12:13.555
+that meant we decided to
+
+00:12:13.555 --> 00:12:14.887
+have [[no_unique_address]]
+
+00:12:14.890 --> 00:12:18.787
+do nothing in MSVC until the next ABI break.
+
+00:12:18.790 --> 00:12:21.320
+We do have another attribute
+
+00:12:21.320 --> 00:12:23.850
+that's in the MSVC namespace.
+
+00:12:23.850 --> 00:12:26.090
+It's [[msvc::no_unique_address]]
+
+00:12:27.770 --> 00:12:30.226
+which does do the it does have the
+
+00:12:30.226 --> 00:12:32.063
+semantic effect that the standard
+
+00:12:32.063 --> 00:12:33.983
+specifies for [[no_unique_address]],
+
+00:12:33.990 --> 00:12:34.413
+right?
+
+00:12:34.413 --> 00:12:36.528
+There are no backwards compatibility
+
+00:12:36.528 --> 00:12:38.604
+concerns because we added that
+
+00:12:38.604 --> 00:12:40.426
+with the semantic in place right
+
+00:12:40.426 --> 00:12:41.606
+when that attribute was new,
+
+00:12:41.610 --> 00:12:44.118
+but unfortunately that means we still
+
+00:12:44.118 --> 00:12:46.829
+can't use [[no_unique_address]] even
+
+00:12:46.829 --> 00:12:49.239
+with the MSVC specific attribute.
+
+00:12:49.240 --> 00:12:50.566
+In the STL,
+
+00:12:50.566 --> 00:12:53.218
+because clang doesn't support it yet.
+
+00:12:53.220 --> 00:12:54.998
+And clang largely doesn't support it yet,
+
+00:12:55.000 --> 00:12:59.130
+because they're waiting on me to get
+
+00:12:59.130 --> 00:13:00.705
+information to them about exactly
+
+00:13:00.705 --> 00:13:02.000
+how our implementation works,
+
+00:13:02.000 --> 00:13:04.637
+and I haven't had time to do that lately.
+
+00:13:04.640 --> 00:13:06.922
+So for now we have [[no_unique_address]]
+
+00:13:06.922 --> 00:13:08.640
+with comments and many
+
+00:13:08.640 --> 00:13:10.315
+places in our header files.
+
+00:13:10.320 --> 00:13:12.480
+Is there a reminder that eventually?
+
+00:13:12.480 --> 00:13:14.312
+There needs to be 
+
+00:13:14.312 --> 00:13:15.920
+[[no_unique_address]] there.
+
+00:13:15.920 --> 00:13:16.568
+Or the equivalent.
+
+00:13:19.470 --> 00:13:21.846
+OK, again, this is result type.
+
+00:13:21.850 --> 00:13:24.197
+They have the standard format they
+
+00:13:24.197 --> 00:13:26.819
+have named fields in a struct.
+
+00:13:26.820 --> 00:13:29.658
+And they should be convertible to
+
+00:13:29.658 --> 00:13:32.113
+other specializations of the same
+
+00:13:32.113 --> 00:13:34.672
+class template when the types of
+
+00:13:34.672 --> 00:13:37.060
+the members are convertible from the
+
+00:13:37.141 --> 00:13:39.661
+types used in this specialization to
+
+00:13:39.661 --> 00:13:42.530
+the types in another specialization.
+
+00:13:42.530 --> 00:13:46.555
+So here is a conversion operator to.
+
+00:13:46.560 --> 00:13:50.790
+out_value_result with
+
+00:13:50.790 --> 00:13:54.200
+_OOut and _Ty2. Interesting.
+
+00:13:57.710 --> 00:14:00.806
+I would expect to use the same convention
+
+00:14:00.806 --> 00:14:03.416
+either adding two to both of the names.
+
+00:14:03.420 --> 00:14:06.458
+Or doubling the character at the beginning
+
+00:14:06.460 --> 00:14:08.000
+I I wouldn't care about a convention,
+
+00:14:08.000 --> 00:14:09.816
+but it's kind of strange that we picked
+
+00:14:09.820 --> 00:14:12.088
+two different conventions for naming these,
+
+00:14:12.090 --> 00:14:15.150
+so I wanna comment on that.
+
+00:14:15.150 --> 00:14:19.919
+It's odd that we're using
+
+00:14:23.010 --> 00:14:23.200
+two different
+
+00:14:25.370 --> 00:14:27.560
+"name adjustment"
+
+00:14:33.000 --> 00:14:34.389
+"name adjustment" conventions
+
+00:14:38.840 --> 00:14:41.540
+to get the parameter name
+
+00:14:41.540 --> 00:14:44.270
+for the conversion operators.
+
+00:14:50.910 --> 00:14:51.600
+Please pick one.
+
+00:15:06.850 --> 00:15:08.380
+I'm going to go ahead and edit this point.
+
+00:15:08.380 --> 00:15:09.868
+I thought it applies to both.
+
+00:15:14.300 --> 00:15:17.037
+&gt;&gt; Stephan: Looking at other examples in the STL,
+
+00:15:17.040 --> 00:15:19.441
+it does appear that the repeated character
+
+00:15:19.441 --> 00:15:21.820
+is the current convention. We've got
+
+00:15:23.980 --> 00:15:24.670
+I in, O out, F fun.
+
+00:15:35.750 --> 00:15:38.606
+&gt;&gt; Casey: Wonder if _TTy was a problem.
+
+00:15:38.610 --> 00:15:39.996
+Can't imagine what it would be.
+
+00:15:43.180 --> 00:15:44.260
+&gt;&gt; Stephan: Interestingly, for like minmax
+
+00:15:44.260 --> 00:15:45.880
+result we do use _Ty2,
+
+00:15:45.880 --> 00:15:47.740
+so there's Preston for both,
+
+00:15:47.740 --> 00:15:48.830
+just not in the same type
+
+00:15:51.190 --> 00:15:52.348
+Actually, maybe there is one I.
+
+00:15:52.350 --> 00:15:54.288
+I haven't completely searched thoroughly yet.
+
+00:15:56.780 --> 00:16:00.085
+&gt;&gt; Casey: Uh we. I guess consistency
+
+00:16:00.085 --> 00:16:01.919
+is the hobgoblin of small minds.
+
+00:16:01.920 --> 00:16:03.020
+I think is what Einstein said
+
+00:16:05.120 --> 00:16:08.618
+Anyway, we'll we'll work that out.
+
+00:16:08.620 --> 00:16:10.816
+Alright, so it's a conversion operator.
+
+00:16:10.820 --> 00:16:13.946
+It is correctly constrained to require.
+
+00:16:13.950 --> 00:16:17.359
+That the target type _OOut is convertible
+
+00:16:17.359 --> 00:16:19.238
+from a const lvalue out,
+
+00:16:19.238 --> 00:16:21.320
+and that's gonna be const lvalue
+
+00:16:21.383 --> 00:16:23.763
+because this is a const lvalue
+
+00:16:23.763 --> 00:16:26.160
+qualified conversion operator.
+
+00:16:26.160 --> 00:16:29.910
+And. Same for the other type.
+
+00:16:29.910 --> 00:16:33.720
+That const _Ty&amp; is convertible.
+
+00:16:33.720 --> 00:16:38.770
+Sorry, that _Ty2 is convertible from const _Ty&amp;.
+
+00:16:38.770 --> 00:16:41.278
+And little helper concept.
+
+00:16:41.280 --> 00:16:42.636
+And of course,
+
+00:16:42.636 --> 00:16:44.896
+it just has to return.
+
+00:16:44.900 --> 00:16:45.610
+Members
+
+00:16:47.690 --> 00:16:49.890
+yes, this is an aggregate.
+
+00:16:49.890 --> 00:16:51.636
+It's not not. It's an aggregate.
+
+00:16:51.640 --> 00:16:53.615
+We don't need to worry
+
+00:16:53.615 --> 00:16:54.800
+about explicit conversions.
+
+00:16:54.800 --> 00:16:56.000
+So so it doesn't need a name
+
+00:16:56.000 --> 00:16:58.240
+and it's hard to type.
+
+00:16:58.240 --> 00:16:59.196
+And the other one.
+
+00:16:59.196 --> 00:17:01.260
+This is going to be the
+
+00:17:01.260 --> 00:17:03.150
+rvalue converting constructor.
+
+00:17:03.150 --> 00:17:05.468
+Yep, it's rvalue qualified.
+
+00:17:08.290 --> 00:17:12.700
+And we require that. rvalue out.
+
+00:17:12.700 --> 00:17:16.270
+Sorry an xvalue out I guess.
+
+00:17:16.270 --> 00:17:18.115
+Right that out is convertible
+
+00:17:18.115 --> 00:17:19.960
+from an out xvalue.
+
+00:17:19.960 --> 00:17:23.540
+The &amp;&amp; here is extraneous.
+
+00:17:23.540 --> 00:17:25.364
+This is one of those things that we
+
+00:17:25.364 --> 00:17:27.653
+like to harp on a lot in the code with
+
+00:17:27.653 --> 00:17:30.824
+type traits and or concepts that use.
+
+00:17:30.830 --> 00:17:32.670
+declval essentially
+
+00:17:32.670 --> 00:17:35.310
+in their implementation the T&amp;&amp;
+
+00:17:35.310 --> 00:17:39.248
+is the same as T and is equivalent.
+
+00:17:39.250 --> 00:17:41.770
+And we try to keep the excess &amp;s the sorry,
+
+00:17:41.770 --> 00:17:45.144
+the extraneous &amp;&amp;s out of the code,
+
+00:17:45.150 --> 00:17:46.956
+because it's just a little more
+
+00:17:46.956 --> 00:17:48.760
+garbage to read and decipher.
+
+00:17:48.760 --> 00:17:50.072
+Someone has already commented
+
+00:17:50.072 --> 00:17:52.450
+this so I won't comment it again.
+
+00:17:52.450 --> 00:17:54.698
+Thank you miscco
+
+00:17:54.698 --> 00:17:56.384
+for catching that.
+
+00:17:56.390 --> 00:17:58.618
+Otherwise, this is a
+
+00:17:58.618 --> 00:18:01.960
+constexpr conversion operator to out value
+
+00:18:01.960 --> 00:18:05.187
+result of those types once again.
+
+00:18:05.190 --> 00:18:06.598
+We're returning, you know,
+
+00:18:06.598 --> 00:18:08.358
+the difference here being that
+
+00:18:08.358 --> 00:18:10.456
+we're moving these members to
+
+00:18:10.456 --> 00:18:13.286
+get conversions from rvalues.
+
+00:18:13.290 --> 00:18:15.201
+Which is consistent with the rvalue
+
+00:18:15.201 --> 00:18:17.029
+qualification of the conversion operator,
+
+00:18:17.030 --> 00:18:17.856
+all good.
+
+00:18:17.856 --> 00:18:20.334
+So this is matching the pattern
+
+00:18:20.334 --> 00:18:22.769
+that we use elsewhere for.
+
+00:18:22.770 --> 00:18:25.098
+A great many algorithm result types.
+
+00:18:27.390 --> 00:18:28.530
+And that's the only change
+
+00:18:28.530 --> 00:18:30.120
+we have here in xutility.
+
+00:18:32.540 --> 00:18:34.240
+Personally, that's gonna be used
+
+00:18:34.240 --> 00:18:36.879
+in at least one or two of these.
+
+00:18:36.880 --> 00:18:38.670
+It's also possible that they
+
+00:18:38.670 --> 00:18:41.080
+just put it in the header.
+
+00:18:41.080 --> 00:18:43.020
+No, it uses out value results.
+
+00:18:48.830 --> 00:18:52.288
+Sorry, I'm going to scan through quickly.
+
+00:18:52.290 --> 00:18:53.970
+No, these return subrange.
+
+00:18:53.970 --> 00:18:56.940
+So it's actually only gonna be used.
+
+00:19:01.180 --> 00:19:02.050
+In numeric.
+
+00:19:04.750 --> 00:19:06.862
+But presumably someday we might have
+
+00:19:06.862 --> 00:19:08.490
+another algorithm that needs it,
+
+00:19:08.490 --> 00:19:10.270
+and it might make sense for it to be an
+
+00:19:10.322 --> 00:19:12.194
+xutility instead of pushing it down and.
+
+00:19:22.640 --> 00:19:26.819
+&gt;&gt; Stephan: Ohh, it looks like we lost Casey.
+
+00:19:26.820 --> 00:19:31.410
+OK, maybe his teams crashed.
+
+00:19:34.350 --> 00:19:35.640
+Please stand by.
+
+00:19:47.320 --> 00:19:51.760
+&gt;&gt; Casey: Hello, welcome to another another
+
+00:19:51.760 --> 00:19:54.000
+Visual C++ Open code review.
+
+00:19:54.000 --> 00:19:56.289
+OK, where was that when I disconnected?
+
+00:19:58.370 --> 00:20:00.045
+&gt;&gt; Stephan: You were talking about potentially
+
+00:20:00.045 --> 00:20:02.041
+moving something defined in
+
+00:20:02.041 --> 00:20:03.346
+xutility down to the header
+
+00:20:03.350 --> 00:20:05.542
+it's used or whether it should be kept
+
+00:20:05.542 --> 00:20:07.737
+in the central header for potential
+
+00:20:07.737 --> 00:20:09.962
+&gt;&gt; Stephan: future use 
+&gt;&gt; Casey: right, out_value_result.
+
+00:20:09.962 --> 00:20:11.752
+&gt;&gt; Casey: This out_value_result apparently is
+
+00:20:11.752 --> 00:20:13.668
+only used in numeric right now.
+
+00:20:13.670 --> 00:20:16.001
+We could put it in numeric instead
+
+00:20:16.001 --> 00:20:18.190
+of putting it in xutility.
+
+00:20:18.190 --> 00:20:20.182
+I'm tempted to leave it in xutility
+
+00:20:20.182 --> 00:20:21.608
+because that's where the majority,
+
+00:20:21.610 --> 00:20:23.608
+if not all.
+
+00:20:23.610 --> 00:20:24.794
+Of the other algorithm
+
+00:20:24.794 --> 00:20:25.978
+result types are defined.
+
+00:20:29.810 --> 00:20:32.340
+Yeah, they did put this. Together with
+
+00:20:32.340 --> 00:20:34.860
+other algorithm result types in the header.
+
+00:20:37.340 --> 00:20:39.384
+&gt;&gt; Stephan: You might want to reshare your screen.
+
+00:20:44.420 --> 00:20:45.292
+&gt;&gt; Casey: I did it but apparently
+
+00:20:45.292 --> 00:20:46.600
+I didn't do it hard enough.
+
+00:20:46.600 --> 00:20:48.390
+There we go. We are online.
+
+00:20:53.780 --> 00:20:54.310
+OK.
+
+00:20:57.290 --> 00:21:01.036
+Tiny little throughput cost. Or one
+
+00:21:01.036 --> 00:21:03.226
+class template that's not instantiated?
+
+00:21:07.210 --> 00:21:09.316
+I don't see this being a
+
+00:21:09.316 --> 00:21:10.369
+huge throughput problem.
+
+00:21:10.370 --> 00:21:12.210
+If we do leave it in xutility,
+
+00:21:12.210 --> 00:21:13.974
+so I'm not gonna complain about it.
+
+00:21:13.980 --> 00:21:15.104
+But then again, I've.
+
+00:21:15.104 --> 00:21:17.178
+I wouldn't refuse a change if somebody
+
+00:21:17.178 --> 00:21:19.128
+else said they wanted one either,
+
+00:21:19.130 --> 00:21:21.640
+so I'm just gonna let that one go for now.
+
+00:21:24.700 --> 00:21:26.815
+And we're going to move
+
+00:21:26.815 --> 00:21:28.930
+on to more product code.
+
+00:21:28.930 --> 00:21:32.080
+We're going to numeric
+
+00:21:32.080 --> 00:21:33.520
+and take a look at iota.
+
+00:21:36.940 --> 00:21:39.060
+OK, I need a little more context to
+
+00:21:39.060 --> 00:21:41.380
+see where we are in the header where
+
+00:21:41.380 --> 00:21:42.825
+right after std::iota. Excellent,
+
+00:21:42.825 --> 00:21:45.105
+that's where I would want this to be.
+
+00:21:48.110 --> 00:21:49.442
+Right off the bat,
+
+00:21:49.442 --> 00:21:52.290
+we're defining the alias for the result type.
+
+00:21:52.290 --> 00:21:54.278
+This again is also part of the
+
+00:21:54.278 --> 00:21:56.209
+Convention used for ranges algorithms.
+
+00:21:56.210 --> 00:21:58.695
+We'll have a result type
+
+00:21:58.695 --> 00:22:01.180
+called a generic result type.
+
+00:22:01.180 --> 00:22:03.284
+It's name is exactly the same as the
+
+00:22:03.284 --> 00:22:05.278
+names of its members member name,
+
+00:22:05.280 --> 00:22:07.100
+member name, etcetera under score
+
+00:22:07.100 --> 00:22:09.320
+result and then we'll have a
+
+00:22:09.320 --> 00:22:10.990
+specific alias for each algorithm
+
+00:22:10.990 --> 00:22:13.360
+for the result type that it returns.
+
+00:22:13.360 --> 00:22:16.006
+Since this algorithm is named iota
+
+00:22:16.010 --> 00:22:18.450
+it's iota_result
+
+00:22:18.450 --> 00:22:21.978
+is an alias of out_value_result and that
+
+00:22:21.978 --> 00:22:23.950
+again is exactly as specified in the paper.
+
+00:22:26.560 --> 00:22:29.608
+Moving on, this is internal machinery.
+
+00:22:29.610 --> 00:22:33.058
+I'd like to get down to see the
+
+00:22:33.060 --> 00:22:37.090
+actual user public declarations first.
+
+00:22:37.090 --> 00:22:39.050
+Make sure that they match
+
+00:22:39.050 --> 00:22:41.040
+the standard. OK. We have
+
+00:22:43.360 --> 00:22:45.428
+input_or_output_iterator,
+
+00:22:48.360 --> 00:22:52.248
+sentinel_for that input_or_output_iterator
+
+00:22:52.248 --> 00:22:55.560
+and weakly_incrementable.
+
+00:22:55.560 --> 00:22:59.670
+requires indirectly_writable.
+
+00:22:59.670 --> 00:23:01.914
+First type comma,
+
+00:23:01.914 --> 00:23:05.654
+const lvalue of third type.
+
+00:23:05.660 --> 00:23:08.390
+Those that agrees
+
+00:23:08.390 --> 00:23:10.958
+constexpr iota_result
+
+00:23:14.210 --> 00:23:17.450
+First parameter, third parameter.
+
+00:23:17.450 --> 00:23:19.790
+iota, this overload takes
+
+00:23:19.790 --> 00:23:22.715
+an iterator and a sentinel
+
+00:23:22.720 --> 00:23:26.580
+And another type initial value.
+
+00:23:26.580 --> 00:23:29.580
+So this does appear. Exactly.
+
+00:23:31.620 --> 00:23:35.130
+Like the declaration in the paper.
+
+00:23:35.130 --> 00:23:38.200
+And this next one also.
+
+00:23:38.200 --> 00:23:41.768
+weakly_incrementable, output_range
+
+00:23:41.768 --> 00:23:44.636
+const lvalue of first parameter type.
+
+00:23:46.820 --> 00:23:49.688
+constexpr, returns an iota result
+
+00:23:49.688 --> 00:23:53.689
+of borrowed_iterator&lt;R&gt; comma T
+
+00:23:53.690 --> 00:23:57.758
+iota.
+
+00:23:57.760 --> 00:24:01.790
+A forwarding reference to RNG.
+
+00:24:01.790 --> 00:24:03.786
+Range type and value.
+
+00:24:03.786 --> 00:24:06.281
+So these declarations do look
+
+00:24:06.281 --> 00:24:09.109
+exactly like they do in the paper,
+
+00:24:09.110 --> 00:24:11.040
+which means they are wrong.
+
+00:24:14.540 --> 00:24:17.312
+Yes, this is one of these weird
+
+00:24:17.312 --> 00:24:19.620
+things we have front matter.
+
+00:24:19.620 --> 00:24:22.836
+For ranges algorithms
+
+00:24:22.840 --> 00:24:25.630
+That specifies.
+
+00:24:25.630 --> 00:24:26.960
+Lemme get the standard open.
+
+00:24:30.110 --> 00:24:32.060
+Which I lost somewhere here.
+
+00:24:35.570 --> 00:24:37.730
+&gt;&gt; Stephan: And while you find that I'll read out
+
+00:24:37.730 --> 00:24:39.026
+Cameron's question, Cameron asks,
+
+00:24:39.026 --> 00:24:41.288
+I have a question unrelated to this
+
+00:24:41.288 --> 00:24:43.143
+specific PR rather ranges as a whole.
+
+00:24:43.150 --> 00:24:45.306
+I notice that some algorithms like for_each
+
+00:24:45.306 --> 00:24:47.867
+are not available for ADL to find.
+
+00:24:47.870 --> 00:24:49.610
+That's argument dependent lookup because
+
+00:24:49.610 --> 00:24:51.830
+they're implemented as an inline variable.
+
+00:24:51.830 --> 00:24:54.336
+But others, like this iota are not.
+
+00:24:54.340 --> 00:24:56.175
+What is the motivation for
+
+00:24:56.175 --> 00:24:58.010
+one method versus the other?
+
+00:24:58.010 --> 00:25:00.160
+&gt;&gt; Casey: What is strangely pertinent question.
+
+00:25:02.930 --> 00:25:07.620
+So. The reason for the difference is
+
+00:25:07.620 --> 00:25:10.859
+that these in the PR are incorrect.
+
+00:25:10.860 --> 00:25:13.512
+We have front matter that states
+
+00:25:13.512 --> 00:25:15.458
+various requirements for, uh,
+
+00:25:15.458 --> 00:25:18.548
+overloads of algorithms and ranges.
+
+00:25:22.250 --> 00:25:25.490
+Hmm, this is the right stuff I will find.
+
+00:25:28.150 --> 00:25:30.160
+Parameters otherwise specified.
+
+00:25:39.880 --> 00:25:43.338
+There we go. The entities defined
+
+00:25:43.338 --> 00:25:45.598
+in the std::ranges namespace.
+
+00:25:45.600 --> 00:25:46.948
+Let's make this bigger.
+
+00:25:49.410 --> 00:25:50.761
+So that I'm not the only one
+
+00:25:50.761 --> 00:25:52.218
+who can see what I'm reading.
+
+00:25:54.230 --> 00:25:56.526
+OK, look at paragraph 2 here in
+
+00:25:56.526 --> 00:25:57.910
+algorithms.requirements. The
+
+00:25:57.910 --> 00:25:59.630
+entities defined in the std::ranges
+
+00:25:59.630 --> 00:26:02.049
+namespace in this clause are not found
+
+00:26:02.049 --> 00:26:03.689
+by argument dependent name lookup.
+
+00:26:03.690 --> 00:26:07.380
+When found by unqualified name lookup.
+
+00:26:07.380 --> 00:26:09.264
+Or the postfix expression and the
+
+00:26:09.264 --> 00:26:10.520
+function call basically unqualified
+
+00:26:10.574 --> 00:26:11.759
+lookup or a function call.
+
+00:26:11.760 --> 00:26:14.220
+They inhibit argument dependent lookup.
+
+00:26:16.430 --> 00:26:19.520
+This is an intentional bit of
+
+00:26:19.520 --> 00:26:22.098
+design weirdness where we had to
+
+00:26:22.098 --> 00:26:24.033
+introduce this property so that.
+
+00:26:24.040 --> 00:26:27.592
+Calls to ranges algorithms would be
+
+00:26:27.592 --> 00:26:30.726
+unambiguous and they wouldn't be, actually
+
+00:26:30.726 --> 00:26:33.156
+unambiguous isn't the problem.
+
+00:26:33.160 --> 00:26:36.116
+If you think about calling find,
+
+00:26:36.116 --> 00:26:38.716
+for example the the the two
+
+00:26:38.716 --> 00:26:41.462
+iterator version of find in std
+
+00:26:41.462 --> 00:26:44.042
+has a corresponding iterator sentinel
+
+00:26:44.042 --> 00:26:46.470
+implementation defined in ranges
+
+00:26:46.470 --> 00:26:48.804
+and if you wanted to call
+
+00:26:48.804 --> 00:26:50.360
+find with two iterators.
+
+00:26:52.370 --> 00:26:55.510
+And those two were somehow
+
+00:26:55.510 --> 00:26:57.130
+in the same lookup set.
+
+00:26:57.130 --> 00:27:00.146
+You would end up calling the std version.
+
+00:27:00.150 --> 00:27:01.370
+Instead of the ranges version,
+
+00:27:01.370 --> 00:27:03.620
+because it is more specialized
+
+00:27:03.620 --> 00:27:04.970
+since std::find,
+
+00:27:04.970 --> 00:27:07.147
+takes two first arguments by the same
+
+00:27:07.147 --> 00:27:10.019
+type and the ranges one takes those two
+
+00:27:10.019 --> 00:27:11.889
+arguments could be different types.
+
+00:27:11.890 --> 00:27:15.614
+It is less specialized. Anyway,
+
+00:27:15.614 --> 00:27:19.026
+and in order to get around this problem,
+
+00:27:19.026 --> 00:27:22.171
+we decided to make the ranges things
+
+00:27:22.171 --> 00:27:24.373
+not findable by ADL and inhibit
+
+00:27:24.373 --> 00:27:27.019
+ADL when they are found otherwise.
+
+00:27:27.020 --> 00:27:29.330
+So that these calls will work.
+
+00:27:29.330 --> 00:27:30.794
+And of course,
+
+00:27:30.794 --> 00:27:33.722
+implementing that means we have to
+
+00:27:33.722 --> 00:27:36.449
+implement them currently as objects.
+
+00:27:36.450 --> 00:27:39.323
+It would be nice if C++ gave us
+
+00:27:39.323 --> 00:27:41.010
+a better tool so that we could
+
+00:27:41.072 --> 00:27:42.937
+go ahead and actually implement
+
+00:27:42.937 --> 00:27:44.802
+these things as function templates,
+
+00:27:44.810 --> 00:27:47.290
+but function templates that have
+
+00:27:47.290 --> 00:27:50.197
+the same property of inhibiting ADL
+
+00:27:50.197 --> 00:27:52.633
+or not being found by ADL.
+
+00:27:52.640 --> 00:27:56.258
+But that hasn't happened yet.
+
+00:27:56.260 --> 00:27:58.816
+There are proposals in the works.
+
+00:27:58.820 --> 00:28:00.815
+In the standard, but none of them,
+
+00:28:00.820 --> 00:28:02.446
+to my knowledge, is actually progressing.
+
+00:28:05.070 --> 00:28:06.738
+So that's the thing,
+
+00:28:06.738 --> 00:28:09.945
+we have lots of things that are not really
+
+00:28:09.945 --> 00:28:12.090
+specified as objects that are implemented by,
+
+00:28:12.090 --> 00:28:14.490
+implemented as objects in the STL.
+
+00:28:14.490 --> 00:28:17.850
+For ranges algorithms, they're often
+
+00:28:17.850 --> 00:28:21.210
+referred to colloquially as niebloids.
+
+00:28:21.210 --> 00:28:25.130
+Thanks to Tim Song who is a
+
+00:28:25.130 --> 00:28:27.340
+cppreference maintainer and
+
+00:28:27.340 --> 00:28:30.016
+occasionally shows up at WG21.
+
+00:28:30.020 --> 00:28:32.309
+He came up with this name niebloids
+
+00:28:32.309 --> 00:28:35.540
+to basically mock Eric Niebler.
+
+00:28:35.540 --> 00:28:37.514
+Since Eric wanted them to be objects,
+
+00:28:37.520 --> 00:28:40.249
+and I argued that we should probably
+
+00:28:40.249 --> 00:28:42.583
+force the language to make functions
+
+00:28:42.583 --> 00:28:45.153
+work so that libraries could use
+
+00:28:45.153 --> 00:28:47.368
+functions instead of having to
+
+00:28:47.368 --> 00:28:49.199
+have everything be an object.
+
+00:28:49.200 --> 00:28:50.490
+Anyway, until that day comes,
+
+00:28:50.490 --> 00:28:53.120
+that means these things have
+
+00:28:53.120 --> 00:28:54.698
+to be implemented.
+
+00:28:54.700 --> 00:28:57.550
+As sort of object likes.
+
+00:28:57.550 --> 00:29:00.914
+We have a convenient pattern we
+
+00:29:00.914 --> 00:29:03.540
+use for that in the STL already.
+
+00:29:10.670 --> 00:29:12.558
+Go into algorithm here.
+
+00:29:21.010 --> 00:29:22.190
+&gt;&gt; Stephan: While you're looking that up,
+
+00:29:22.190 --> 00:29:23.442
+I have a question.
+
+00:29:23.442 --> 00:29:25.320
+So in the the standard there's
+
+00:29:25.384 --> 00:29:27.169
+been some movement towards trying
+
+00:29:27.169 --> 00:29:29.765
+to name things by what they are
+
+00:29:29.765 --> 00:29:31.985
+rather than after people because the
+
+00:29:31.985 --> 00:29:33.876
+people based names are confusing
+
+00:29:33.876 --> 00:29:35.404
+like argument dependent lookup,
+
+00:29:35.410 --> 00:29:37.245
+occasionally used to be called
+
+00:29:37.245 --> 00:29:39.080
+Koenig lookup after Andrew Koenig
+
+00:29:39.138 --> 00:29:41.028
+who was the one who specified it,
+
+00:29:41.030 --> 00:29:42.230
+but Koenig lookup tells you
+
+00:29:42.230 --> 00:29:43.430
+nothing unless you know who
+
+00:29:43.473 --> 00:29:44.628
+he was and what he did and
+
+00:29:44.630 --> 00:29:47.059
+argument dependent lookup at least
+
+00:29:47.059 --> 00:29:49.420
+says what it does with the niebloids
+
+00:29:49.420 --> 00:29:50.645
+is there a formal term
+
+00:29:50.645 --> 00:29:51.899
+that we should be using?
+
+00:29:51.900 --> 00:29:54.210
+I know that customization point
+
+00:29:54.210 --> 00:29:56.520
+object is related but different
+
+00:29:56.598 --> 00:29:58.776
+and I can never remember if.
+
+00:29:58.776 --> 00:30:02.104
+&gt;&gt; Stephan: Yeah
+&gt;&gt; Casey: and people get the two things mixed
+
+00:30:02.104 --> 00:30:04.622
+&gt;&gt; Casey: up all the time because one of them
+
+00:30:04.622 --> 00:30:06.809
+has a name and the other one doesn't.
+
+00:30:06.810 --> 00:30:08.917
+And because we added both things in
+
+00:30:08.917 --> 00:30:11.489
+ranges at the same time to the standard,
+
+00:30:11.490 --> 00:30:14.130
+so a customization point object is
+
+00:30:14.130 --> 00:30:16.659
+something that is explicitly an object.
+
+00:30:16.660 --> 00:30:18.152
+Right, it's a call.
+
+00:30:18.152 --> 00:30:20.790
+It's callable it's a function object type.
+
+00:30:20.790 --> 00:30:22.463
+But it is definitely an object you're
+
+00:30:22.463 --> 00:30:24.027
+allowed to treat it like an object,
+
+00:30:24.030 --> 00:30:26.046
+which means you can pass them around as
+
+00:30:26.046 --> 00:30:27.870
+arguments to things that take function...
+
+00:30:27.870 --> 00:30:30.312
+that take function
+
+00:30:30.312 --> 00:30:31.126
+object arguments,
+
+00:30:31.130 --> 00:30:33.308
+which of course is extremely handy,
+
+00:30:33.310 --> 00:30:35.438
+and it would be really handy to have
+
+00:30:35.438 --> 00:30:37.548
+for the rest of these algorithms.
+
+00:30:37.550 --> 00:30:38.402
+But again,
+
+00:30:38.402 --> 00:30:41.772
+since I would like the core language to
+
+00:30:41.772 --> 00:30:44.446
+be usable by people who write libraries.
+
+00:30:44.450 --> 00:30:47.530
+I I would like if we had first
+
+00:30:47.530 --> 00:30:49.070
+class overload sets or.
+
+00:30:49.070 --> 00:30:50.302
+Overloads of function templates
+
+00:30:50.302 --> 00:30:52.530
+and we didn't need to make again,
+
+00:30:52.530 --> 00:30:53.990
+we didn't have to artificially
+
+00:30:53.990 --> 00:30:55.743
+force things to the objects so
+
+00:30:55.743 --> 00:30:56.958
+that they would be useful.
+
+00:30:59.320 --> 00:31:01.903
+So it would probably be nice if
+
+00:31:01.903 --> 00:31:04.959
+we had a name for this thing,
+
+00:31:04.960 --> 00:31:07.010
+especially if it's gonna stick
+
+00:31:07.010 --> 00:31:10.130
+around for much longer. Umm?
+
+00:31:10.130 --> 00:31:13.370
+I think maybe in one or two more cycles
+
+00:31:13.370 --> 00:31:16.300
+of the standard at most will either
+
+00:31:16.300 --> 00:31:18.670
+have changes in the core language
+
+00:31:18.670 --> 00:31:21.289
+that let us use all these things,
+
+00:31:21.290 --> 00:31:22.871
+actual function templates,
+
+00:31:22.871 --> 00:31:25.626
+but function templates with an attribute
+
+00:31:25.626 --> 00:31:27.241
+on them that gives
+
+00:31:27.241 --> 00:31:28.910
+them the right semantics,
+
+00:31:28.910 --> 00:31:30.210
+or we'll have given up,
+
+00:31:30.210 --> 00:31:32.758
+and these will become
+
+00:31:32.760 --> 00:31:34.479
+actual explicit objects,
+
+00:31:34.479 --> 00:31:38.490
+in which case they'll just be Cpos.
+
+00:31:38.490 --> 00:31:40.818
+Like the other Cpos.
+
+00:31:40.820 --> 00:31:44.444
+And we won't need a name for niebloids.
+
+00:31:44.450 --> 00:31:45.630
+Anyway, the the transient,
+
+00:31:45.630 --> 00:31:47.622
+the intended transient nature is why we
+
+00:31:47.622 --> 00:31:49.510
+never had a name for it in the 1st place.
+
+00:31:49.510 --> 00:31:51.400
+We just called.
+
+00:31:51.400 --> 00:31:54.130
+Let them be things and somebody had
+
+00:31:54.130 --> 00:31:56.790
+to decided to come up with the name.
+
+00:31:56.790 --> 00:31:58.422
+The document that right Tim is a, I
+
+00:31:58.422 --> 00:32:00.101
+said he was a cppreference maintainer
+
+00:32:00.101 --> 00:32:02.430
+and he came up with a name to be able
+
+00:32:02.430 --> 00:32:04.600
+to document these things as a class.
+
+00:32:06.710 --> 00:32:08.593
+&gt;&gt; Stephan: Thanks, that explains a lot and I've
+
+00:32:08.593 --> 00:32:10.079
+been reviewing this for a couple
+
+00:32:10.079 --> 00:32:11.836
+of years now and I didn't know the
+
+00:32:11.836 --> 00:32:15.238
+&gt;&gt; Stephan: whole story.
+&gt;&gt; Casey: Well, now you do.
+
+00:32:15.240 --> 00:32:18.019
+&gt;&gt; Nicole: I also have a question about these
+
+00:32:18.019 --> 00:32:21.540
+things, uh, which might be.
+
+00:32:21.540 --> 00:32:23.240
+Unrelated, and if it is,
+
+00:32:23.240 --> 00:32:25.470
+you know we can talk about it later, but.
+
+00:32:28.840 --> 00:32:30.190
+How do you get a function
+
+00:32:30.190 --> 00:32:31.090
+pointer to these things?
+
+00:32:31.090 --> 00:32:32.326
+Because I don't see in the
+
+00:32:32.326 --> 00:32:33.669
+standard that you can't take a
+
+00:32:33.669 --> 00:32:34.849
+function pointer to these things,
+
+00:32:34.850 --> 00:32:36.782
+but I don't see how it's implemented
+
+00:32:36.782 --> 00:32:38.699
+to take a function pointer.
+
+00:32:38.700 --> 00:32:40.095
+&gt;&gt; Casey: Sorry it's not implemented because
+
+00:32:40.095 --> 00:32:41.809
+you're not allowed to take the
+
+00:32:41.809 --> 00:32:43.149
+address of things in namespace
+
+00:32:43.149 --> 00:32:46.628
+std except when explicitly allowed.
+
+00:32:46.628 --> 00:32:49.640
+&gt;&gt; Nicole: Ah. fair enough.
+&gt;&gt; Casey: another one of the
+
+00:32:49.640 --> 00:32:52.669
+changes that came there in C++ 20.
+
+00:32:52.670 --> 00:32:55.196
+Yeah, we we have algorithm requirements
+
+00:32:55.196 --> 00:32:57.289
+and or blanket requirements that
+
+00:32:57.289 --> 00:32:59.662
+have just enough magic to let you
+
+00:32:59.662 --> 00:33:01.668
+implement these things as functions.
+
+00:33:01.670 --> 00:33:03.586
+I'm sorry as objects.
+
+00:33:03.586 --> 00:33:05.981
+Despite them being depicted as
+
+00:33:05.981 --> 00:33:08.058
+function templates in the IS.
+
+00:33:08.060 --> 00:33:11.007
+&gt;&gt; Nicole: Cool 
+&gt;&gt; Casey: for example we have word
+
+00:33:11.007 --> 00:33:13.397
+that says you can't pass explicit
+
+00:33:13.397 --> 00:33:16.007
+template argument list to these.
+
+00:33:16.010 --> 00:33:17.991
+Because that would break if it was
+
+00:33:17.991 --> 00:33:20.198
+an object and not actually a template.
+
+00:33:22.860 --> 00:33:25.776
+&gt;&gt; Casey: Anyway, there, 
+&gt;&gt; Stephan: and it's worth noting.
+
+00:33:25.780 --> 00:33:27.915
+It's a it's worth noting that users
+
+00:33:27.915 --> 00:33:30.090
+taking the address of standard library
+
+00:33:30.090 --> 00:33:32.095
+functions or passing explicit template
+
+00:33:32.095 --> 00:33:34.800
+arguments to them was problematic even
+
+00:33:34.800 --> 00:33:38.040
+before these object imitators were added.
+
+00:33:38.040 --> 00:33:40.674
+For example, people doing that with
+
+00:33:40.674 --> 00:33:43.798
+std::make_pair back in C++98/03.
+
+00:33:43.798 --> 00:33:45.678
+were broken when the signature
+
+00:33:45.678 --> 00:33:48.093
+of make pair changed in C++11
+
+00:33:48.093 --> 00:33:50.680
+to be perfect forwarding.
+
+00:33:50.680 --> 00:33:53.816
+It would create a totally you know,
+
+00:33:53.820 --> 00:33:55.272
+undesirable templates specialization.
+
+00:33:55.272 --> 00:33:59.393
+If you said make pair angle bracket you know
+
+00:33:59.393 --> 00:34:01.350
+int comma double you would now get int,
+
+00:34:01.350 --> 00:34:02.412
+ref, ref, comma,
+
+00:34:02.412 --> 00:34:04.890
+double ref ref as your function parameters
+
+00:34:04.956 --> 00:34:07.105
+and that is not something that code
+
+00:34:07.105 --> 00:34:10.206
+written in C + 98/03 was expecting so it
+
+00:34:10.206 --> 00:34:12.642
+had always been problematic and with the
+
+00:34:12.642 --> 00:34:14.827
+addition of these object like things,
+
+00:34:14.830 --> 00:34:17.962
+the standard flatly forbidding users from
+
+00:34:17.962 --> 00:34:20.599
+doing this unless otherwise specified
+
+00:34:20.599 --> 00:34:23.903
+has solved both those problems and more.
+
+00:34:23.910 --> 00:34:25.800
+&gt;&gt; Casey: Yes, and forbidding taking
+
+00:34:25.800 --> 00:34:27.885
+the address has also conveniently
+
+00:34:27.885 --> 00:34:30.832
+allowed us to make some more
+
+00:34:30.832 --> 00:34:32.828
+optimizations to the STL that
+
+00:34:32.828 --> 00:34:34.500
+we couldn't do otherwise.
+
+00:34:36.960 --> 00:34:38.211
+Sorry Nicole,
+
+00:34:38.211 --> 00:34:40.296
+I think I interrupted you.
+
+00:34:40.300 --> 00:34:42.094
+&gt;&gt; Nicole: Ohh I was just saying thank
+
+00:34:42.094 --> 00:34:43.723
+you for the explanation. 
+
+00:34:43.723 --> 00:34:46.754
+&gt;&gt; Casey: Yeah. That's what this process is all about.
+
+00:34:46.760 --> 00:34:50.185
+So anyway, here's an example of
+
+00:34:50.185 --> 00:34:51.610
+find_first_of, the implementation of
+
+00:34:51.610 --> 00:34:53.340
+the find_first_of algorithm,
+
+00:34:53.340 --> 00:34:57.400
+it is defined as a again a class object,
+
+00:34:57.400 --> 00:35:01.481
+and we have a helper called _Not_quite_object
+
+00:35:01.481 --> 00:35:04.904
+that we derive these from whose purpose.
+
+00:35:04.910 --> 00:35:06.398
+Is to make impossible.
+
+00:35:06.398 --> 00:35:08.630
+Some of the behaviors that you
+
+00:35:08.707 --> 00:35:11.115
+would expect to work with this if
+
+00:35:11.115 --> 00:35:13.767
+it was supposed to be an object
+
+00:35:13.767 --> 00:35:15.697
+to keep people from accidentally
+
+00:35:15.697 --> 00:35:18.979
+taking advantage of what's
+
+00:35:18.979 --> 00:35:21.868
+effectively implementation details.
+
+00:35:21.870 --> 00:35:24.858
+So _Not_quite_object.
+
+00:35:27.980 --> 00:35:29.530
+It's got to be in xutility, right?
+
+00:35:42.900 --> 00:35:45.508
+tada here we go. _Not_quite_object.
+
+00:35:45.508 --> 00:35:48.280
+Actually describes its what its purpose is.
+
+00:35:48.280 --> 00:35:51.206
+Because this is a really weird thing.
+
+00:35:51.210 --> 00:35:54.437
+It has deleted default constructor to keep
+
+00:35:54.437 --> 00:35:57.650
+you from constructing objects of this type
+
+00:35:57.650 --> 00:36:00.284
+without knowing the magic construct tag.
+
+00:36:00.290 --> 00:36:02.874
+For example, right, we have a secret tag
+
+00:36:02.874 --> 00:36:05.706
+type that's necessary to construct these.
+
+00:36:05.710 --> 00:36:08.810
+They're not copyable or movable,
+
+00:36:08.810 --> 00:36:10.674
+and we've even deleted
+
+00:36:10.674 --> 00:36:12.538
+the address of operator.
+
+00:36:12.540 --> 00:36:13.919
+You can't try and take the address
+
+00:36:13.919 --> 00:36:15.210
+of it like it's an object.
+
+00:36:17.370 --> 00:36:18.789
+And. Ohh protected,
+
+00:36:18.789 --> 00:36:20.681
+default protected destructor always
+
+00:36:20.681 --> 00:36:23.813
+a nice thing with the base class to
+
+00:36:23.813 --> 00:36:26.496
+have either a virtual or a protected
+
+00:36:26.496 --> 00:36:28.931
+destructor to keep people from
+
+00:36:28.931 --> 00:36:32.570
+destroying through pointers to base.
+
+00:36:32.570 --> 00:36:35.058
+With the undefined behavior.
+
+00:36:35.058 --> 00:36:37.584
+So this is designed to be a base class
+
+00:36:37.584 --> 00:36:39.483
+and it inhibits lots of otherwise
+
+00:36:39.483 --> 00:36:41.523
+useful things that you would want
+
+00:36:41.588 --> 00:36:43.674
+to have your objects to have if
+
+00:36:43.674 --> 00:36:45.078
+they were intentionally objects.
+
+00:36:45.080 --> 00:36:49.010
+So these, tada, two template
+
+00:36:49.010 --> 00:36:50.975
+overloads of iota
+
+00:36:50.980 --> 00:36:52.880
+There are only two right, yes?
+
+00:36:56.080 --> 00:36:57.310
+Ditto niebloid
+
+00:37:03.030 --> 00:37:05.490
+sorry. I'm scanning the existing comments.
+
+00:37:05.490 --> 00:37:08.679
+It looks like we actually have an an attempt.
+
+00:37:12.180 --> 00:37:16.720
+Let's clarify this a little bit. Clarifying:
+
+00:37:19.440 --> 00:37:20.770
+ranges algorithms
+
+00:37:23.760 --> 00:37:26.365
+&gt;&gt; Stephan: I think did you look at miscco's first
+
+00:37:26.365 --> 00:37:27.775
+comment because I think in his
+
+00:37:27.775 --> 00:37:29.255
+first comment he did at least try
+
+00:37:29.255 --> 00:37:30.579
+to explain what niebloids are.
+
+00:37:30.580 --> 00:37:32.700
+This is the this is the second occurrence,
+
+00:37:32.700 --> 00:37:34.500
+that's why he just said ditto.
+
+00:37:34.500 --> 00:37:36.570
+&gt;&gt; Casey: Yes, I get that and.
+
+00:37:47.030 --> 00:37:50.390
+Let's look just search for niebl
+
+00:37:50.390 --> 00:37:53.038
+So now this is unfortunately in ranges.
+
+00:37:53.038 --> 00:37:55.550
+Algorithms are not functions
+
+00:37:55.550 --> 00:37:56.786
+or function templates.
+
+00:37:56.786 --> 00:37:59.258
+But are currently implemented as niebloids
+
+00:37:59.258 --> 00:38:01.890
+Those are objects with the call operator.
+
+00:38:01.890 --> 00:38:05.736
+The reason for that is that it inhibits ADL.
+
+00:38:05.736 --> 00:38:08.028
+Close enough.
+
+00:38:08.030 --> 00:38:09.885
+There are some conventions to follow here,
+
+00:38:09.890 --> 00:38:11.744
+and you should have a look at how the
+
+00:38:11.744 --> 00:38:13.447
+other ranges algorithms are implemented.
+
+00:38:13.450 --> 00:38:16.488
+The general starting point is something like.
+
+00:38:16.490 --> 00:38:20.960
+Class. Algorithm name underscore fn yes
+
+00:38:20.960 --> 00:38:23.620
+This is how we name them all consistently.
+
+00:38:23.620 --> 00:38:25.920
+Name under score fn.
+
+00:38:25.920 --> 00:38:30.210
+inherit privately from _Not_quite_object.
+
+00:38:30.210 --> 00:38:33.490
+Make its constructor set available
+
+00:38:33.490 --> 00:38:35.458
+with a using declaration.
+
+00:38:35.460 --> 00:38:36.650
+Then implement.
+
+00:38:36.650 --> 00:38:40.220
+Overloads of the function call operator
+
+00:38:40.220 --> 00:38:44.010
+to implement your actual algorithm.
+
+00:38:44.010 --> 00:38:46.690
+Declare an inline variable.
+
+00:38:46.690 --> 00:38:49.370
+Object of that type.
+
+00:38:49.370 --> 00:38:53.270
+The type of your function object.
+
+00:38:53.270 --> 00:38:56.750
+And initialize it with _Not_quite_object
+
+00:38:56.750 --> 00:38:59.570
+secret _Construct_tag.
+
+00:38:59.570 --> 00:39:04.650
+So. This is a great comment.
+
+00:39:04.650 --> 00:39:06.242
+I think he actually did a pretty good
+
+00:39:06.242 --> 00:39:09.210
+job of explaining what to do here, yeah?
+
+00:39:09.210 --> 00:39:11.829
+&gt;&gt; Stephan: I just wanted to save you the work
+
+00:39:11.829 --> 00:39:14.627
+of writing all that again from scratch.
+
+00:39:14.630 --> 00:39:16.358
+&gt;&gt; Casey: Yeah, miscco has implemented quite a
+
+00:39:16.358 --> 00:39:17.990
+few ranges algorithms in his time,
+
+00:39:17.990 --> 00:39:20.470
+so I I'm not at all surprised that
+
+00:39:20.470 --> 00:39:22.829
+he knows how to do it correctly.
+
+00:39:22.830 --> 00:39:27.279
+Anyway, that's awesome.
+
+00:39:27.280 --> 00:39:30.360
+It's fun having a community.
+
+00:39:30.360 --> 00:39:32.390
+Around the STL to do our work for us.
+
+00:39:36.530 --> 00:39:38.528
+Alright, coming back here so that
+
+00:39:38.528 --> 00:39:39.914
+that's already clear, right?
+
+00:39:39.914 --> 00:39:41.450
+Uh, they are nibloids
+
+00:39:41.450 --> 00:39:43.430
+Presumably they will understand if
+
+00:39:43.430 --> 00:39:45.850
+they read miscco's comments in order.
+
+00:39:45.850 --> 00:39:48.426
+What that is trying to tell them?
+
+00:39:48.430 --> 00:39:53.798
+So we will go ahead and review the algorithm.
+
+00:39:53.800 --> 00:39:57.720
+See what the paper had to say.
+
+00:39:57.720 --> 00:39:59.220
+Paper, which I've lost track of.
+
+00:40:04.640 --> 00:40:06.968
+Add the following, effects equivalent to.
+
+00:40:11.390 --> 00:40:13.945
+While first is not equal to last.
+
+00:40:13.950 --> 00:40:16.998
+while first not equal to last.
+
+00:40:17.000 --> 00:40:19.250
+*first = as_const(value).
+
+00:40:22.370 --> 00:40:24.729
+We are as_const'ing the value to
+
+00:40:24.729 --> 00:40:27.200
+enforce the value doesn't get modified.
+
+00:40:27.200 --> 00:40:29.559
+Which I don't think std::iota does,
+
+00:40:29.560 --> 00:40:31.132
+but hey, that's OK.
+
+00:40:31.132 --> 00:40:32.704
+It's still pretty close.
+
+00:40:34.720 --> 00:40:36.644
+We increment the iterator.
+
+00:40:36.644 --> 00:40:38.568
+We increment the value.
+
+00:40:38.570 --> 00:40:39.850
+Move one around until we
+
+00:40:39.850 --> 00:40:41.130
+get to see the range,
+
+00:40:41.130 --> 00:40:43.698
+and then we return the final
+
+00:40:43.698 --> 00:40:45.898
+value of the iterator and
+
+00:40:45.898 --> 00:40:48.338
+the final value of the.
+
+00:40:50.790 --> 00:40:53.590
+Object that we're using to
+
+00:40:53.590 --> 00:40:55.853
+initialize things. Pick your name.
+
+00:40:55.853 --> 00:40:58.900
+Accumulator would be the name if it was.
+
+00:40:58.900 --> 00:41:03.170
+Uh. std::accumulate, but it isn't so.
+
+00:41:03.170 --> 00:41:05.228
+Accumulator is nevertheless what it's doing.
+
+00:41:09.840 --> 00:41:12.522
+And let's go see what the
+
+00:41:12.522 --> 00:41:13.863
+actual implementation does.
+
+00:41:13.870 --> 00:41:14.926
+Is this going to be hard to read?
+
+00:41:14.930 --> 00:41:16.540
+It's a shame there's no
+
+00:41:16.540 --> 00:41:18.380
+way to collapse comments
+
+00:41:22.020 --> 00:41:24.780
+in GitHub that would be really nice.
+
+00:41:24.780 --> 00:41:27.930
+Anyway. Let's look at the
+
+00:41:27.930 --> 00:41:29.290
+iterator sentinel overload first.
+
+00:41:29.290 --> 00:41:31.129
+We've already checked.
+
+00:41:31.130 --> 00:41:32.398
+The signature is correct.
+
+00:41:34.930 --> 00:41:38.990
+He the first step is to verify.
+
+00:41:38.990 --> 00:41:41.714
+The iterator sentinel range using our
+
+00:41:41.714 --> 00:41:43.782
+iterator checking machinery we have.
+
+00:41:43.782 --> 00:41:45.880
+This is a standard, _Adl_verify_range
+
+00:41:45.880 --> 00:41:48.295
+does a look up to figure out
+
+00:41:48.295 --> 00:41:50.779
+if these iterators are, iterator and
+
+00:41:50.779 --> 00:41:53.332
+sentinel type are opting into our
+
+00:41:53.332 --> 00:41:55.412
+iterator checking machinery and it's
+
+00:41:55.412 --> 00:41:58.540
+so it does any checking necessary.
+
+00:41:58.540 --> 00:42:02.761
+After which it's safe for us to unwrap the
+
+00:42:02.761 --> 00:42:05.999
+iterator types into an unchecked type.
+
+00:42:06.000 --> 00:42:11.054
+Let's the STL use checked iterators and
+
+00:42:11.054 --> 00:42:14.972
+still. it allows the STL to use
+
+00:42:14.972 --> 00:42:17.892
+checked iterators in APIs so that we
+
+00:42:17.892 --> 00:42:20.657
+can ensure users are using the iterators
+
+00:42:20.748 --> 00:42:24.460
+correctly and then unwrap them and have fast,
+
+00:42:24.460 --> 00:42:27.466
+unchecked iterators that we use internally
+
+00:42:27.466 --> 00:42:30.499
+for the actual implementations of algorithms.
+
+00:42:30.500 --> 00:42:33.284
+In any case, we're verifying the
+
+00:42:33.284 --> 00:42:36.630
+range and then we're going to unwrap.
+
+00:42:36.630 --> 00:42:38.298
+Those first and last.
+
+00:42:40.350 --> 00:42:42.429
+Since this is.
+
+00:42:42.430 --> 00:42:43.273
+Potentially an input iterator.
+
+00:42:43.273 --> 00:42:44.397
+Yeah, this is potentially
+
+00:42:44.397 --> 00:42:45.660
+a single pass iterator.
+
+00:42:45.660 --> 00:42:49.126
+We have to pass in
+
+00:42:49.126 --> 00:42:51.414
+rvalue to _Get_unwrapped.
+
+00:42:51.420 --> 00:42:53.055
+Since input iterators may have
+
+00:42:53.055 --> 00:42:55.150
+things that need to be moved.
+
+00:42:58.750 --> 00:43:00.010
+So we are wrapping our value.
+
+00:43:00.010 --> 00:43:01.606
+We unwrapping our value of the Sentinel.
+
+00:43:01.610 --> 00:43:04.010
+We'll pass all of this to.
+
+00:43:04.010 --> 00:43:05.930
+The helper _Iota_unchecked,
+
+00:43:05.930 --> 00:43:09.529
+which is a common name that we use
+
+00:43:09.530 --> 00:43:13.898
+for helpers that implement the algorithm.
+
+00:43:13.900 --> 00:43:15.604
+After the unwrapping.
+
+00:43:15.604 --> 00:43:16.740
+Right there,
+
+00:43:16.740 --> 00:43:18.273
+using unchecked iterators
+
+00:43:18.273 --> 00:43:20.317
+instead of checked iterators.
+
+00:43:20.320 --> 00:43:23.799
+And _Iota_unchecked is up here
+
+00:43:23.800 --> 00:43:26.900
+It takes an iterator.
+
+00:43:26.900 --> 00:43:28.650
+Const reference to the sentinel.
+
+00:43:28.650 --> 00:43:30.480
+Instead of taking the sentinel value.
+
+00:43:30.480 --> 00:43:31.408
+That's kind of odd.
+
+00:43:34.160 --> 00:43:34.956
+That was already a commented
+
+00:43:34.956 --> 00:43:36.150
+here on the thing that I'm
+
+00:43:36.193 --> 00:43:37.369
+calling out as being kind of odd.
+
+00:43:43.540 --> 00:43:44.596
+I don't know if this is a different
+
+00:43:44.596 --> 00:43:45.970
+thing, sorry. miscco's comment was
+
+00:43:45.970 --> 00:43:47.830
+suggesting that we could take _Val
+
+00:43:47.883 --> 00:43:50.007
+by constant reference instead of by
+
+00:43:50.007 --> 00:43:51.620
+mutable reference, which doesn't work.
+
+00:43:53.720 --> 00:43:55.380
+As Stephan has already pointed
+
+00:43:55.380 --> 00:43:57.330
+out here. And I'm gonna go
+
+00:43:57.330 --> 00:43:58.930
+ahead and resolve this comment.
+
+00:44:03.820 --> 00:44:06.761
+Just to draw attention to the to the fact
+
+00:44:06.761 --> 00:44:09.320
+that there's no action to be taken here.
+
+00:44:09.320 --> 00:44:11.230
+So the the author of the of the PR can
+
+00:44:11.286 --> 00:44:13.099
+read the comments that they like to,
+
+00:44:13.100 --> 00:44:14.288
+but they will hopefully know that
+
+00:44:14.288 --> 00:44:15.580
+they don't need to do anything.
+
+00:44:20.370 --> 00:44:22.044
+Here's the body we're using that
+
+00:44:22.044 --> 00:44:23.920
+for loop instead of a while loop.
+
+00:44:23.920 --> 00:44:25.900
+First, not equal to last, increment
+
+00:44:25.900 --> 00:44:27.766
+first, increment Val.
+
+00:44:27.766 --> 00:44:30.254
+It's got the mandatory
+
+00:44:30.254 --> 00:44:32.700
+mandatory void cast here.
+
+00:44:32.700 --> 00:44:35.140
+Which hopefully keeps, uh,
+
+00:44:35.140 --> 00:44:38.800
+overloaded comma operator from being called.
+
+00:44:38.800 --> 00:44:41.466
+As always in the STL, we have to
+
+00:44:41.466 --> 00:44:43.776
+defend against hijacking of operators
+
+00:44:43.776 --> 00:44:47.176
+that we use by strange ADL overloads.
+
+00:44:47.180 --> 00:44:49.370
+Right, this algorithm is not.
+
+00:44:49.370 --> 00:44:52.335
+Specified as comma
+
+00:44:52.335 --> 00:44:55.270
+operator with an iterator and this
+
+00:44:55.270 --> 00:44:57.930
+whenever object type we're passed in,
+
+00:44:57.930 --> 00:45:00.758
+so we can't observably call that operator.
+
+00:45:00.760 --> 00:45:03.088
+We have to make sure that.
+
+00:45:03.090 --> 00:45:04.970
+It's not observable by user,
+
+00:45:04.970 --> 00:45:07.354
+and we do that by basically ensuring
+
+00:45:07.354 --> 00:45:09.646
+that no ADL lookup will find
+
+00:45:09.646 --> 00:45:11.728
+an operator comma and invoke it.
+
+00:45:11.730 --> 00:45:14.998
+The built-in operator comma.
+
+00:45:15.000 --> 00:45:15.710
+All right,
+
+00:45:15.710 -->  00:45:18.610
+and we've got a *first = const_cast.
+
+00:45:18.610 --> 00:45:21.480
+This is a handy way of implementing,
+
+00:45:21.480 --> 00:45:23.349
+as_const directly.
+
+00:45:23.349 --> 00:45:26.464
+Instead of calling as_const
+
+00:45:26.470 --> 00:45:27.532
+&gt;&gt; Nicole: I would, uh,
+
+00:45:27.532 --> 00:45:29.656
+make the argument here that it
+
+00:45:29.656 --> 00:45:31.859
+should probably use static_cast.
+
+00:45:31.860 --> 00:45:32.280
+Umm?
+
+00:45:35.140 --> 00:45:36.685
+&gt;&gt; Nicole: Because 
+&gt;&gt; Casey: so would I
+
+00:45:36.685 --> 00:45:40.290
+&gt;&gt; Nicole: So we're we're not casting away const,
+
+00:45:40.290 --> 00:45:41.850
+so we I, in my opinion,
+
+00:45:41.850 --> 00:45:43.535
+&gt;&gt; Casey: should we suggestion to actually
+
+00:45:43.535 --> 00:45:45.220
+call std::as_const instead.
+
+00:45:45.220 --> 00:45:47.596
+I don't think that's a great idea either.
+
+00:45:47.600 --> 00:45:49.100
+I think we can get away
+
+00:45:49.100 --> 00:45:50.450
+with the static_cast here.
+
+00:45:50.450 --> 00:45:53.327
+&gt;&gt; Stephan: And I have offered a third alternative
+
+00:45:53.330 --> 00:45:55.530
+because and you can read my comment there.
+
+00:45:55.530 --> 00:45:58.306
+static_cast is powerful in a different way.
+
+00:45:58.310 --> 00:46:00.060
+It can't remove constness but
+
+00:46:00.060 --> 00:46:01.816
+it's willing to, you know,
+
+00:46:01.816 --> 00:46:04.287
+make temporaries and that sort of thing.
+
+00:46:04.290 --> 00:46:05.326
+Or maybe not temporaries,
+
+00:46:05.326 --> 00:46:06.880
+but it's willing to do fairly
+
+00:46:06.931 --> 00:46:08.109
+powerful transformations.
+
+00:46:08.110 --> 00:46:09.795
+So here we want something
+
+00:46:09.795 --> 00:46:10.806
+that happens implicitly,
+
+00:46:10.810 --> 00:46:12.808
+so if we're willing to spend an extra line,
+
+00:46:12.810 --> 00:46:14.142
+we could just implicitly
+
+00:46:14.142 --> 00:46:15.807
+bind a const _Ty&amp;.
+
+00:46:15.810 --> 00:46:16.820
+I think that would probably
+
+00:46:16.820 --> 00:46:17.830
+be safer than a cast,
+
+00:46:17.830 --> 00:46:20.200
+or at least less scary looking.
+
+00:46:23.040 --> 00:46:24.895
+&gt;&gt; Casey: Interesting. 
+&gt;&gt; Stephan: Yeah, because the the
+
+00:46:24.895 --> 00:46:27.732
+thing about static_cast is it's willing
+
+00:46:27.732 --> 00:46:29.560
+to reverse implicit conversions,
+
+00:46:29.560 --> 00:46:30.768
+which is actually what we don't want here.
+
+00:46:30.770 --> 00:46:32.560
+We want the forward implicit
+
+00:46:32.560 --> 00:46:33.992
+conversion of adding constness,
+
+00:46:34.000 --> 00:46:35.698
+but there's no like super safe
+
+00:46:35.698 --> 00:46:37.420
+static_cast that'll do just that.
+
+00:46:37.420 --> 00:46:38.910
+So that's why I suggest.
+
+00:46:38.910 --> 00:46:41.360
+Just make a temporary variable
+
+00:46:41.360 --> 00:46:43.320
+or a local variable.
+
+00:46:43.320 --> 00:46:45.750
+&gt;&gt; Casey: I wouldn't say no to this.
+
+00:46:45.750 --> 00:46:46.878
+I wouldn't write this.
+
+00:46:49.560 --> 00:46:50.478
+I would write it
+
+00:46:50.480 --> 00:46:52.419
+I would write the static_cast I.
+
+00:46:52.420 --> 00:46:54.114
+I wonder why it matters to me.
+
+00:46:54.120 --> 00:46:56.020
+It's interesting.
+
+00:46:56.020 --> 00:46:58.050
+I would write the static_cast probably
+
+00:46:58.050 --> 00:46:59.700
+cause this consumes an extra line.
+
+00:46:59.700 --> 00:47:02.868
+There's another name to reason about.
+
+00:47:02.870 --> 00:47:05.156
+We avoid that with the cast.
+
+00:47:05.160 --> 00:47:07.330
+It is unfortunate that there's
+
+00:47:07.330 --> 00:47:09.745
+no clean cast that just says add
+
+00:47:09.745 --> 00:47:11.880
+const to this other than the one.
+
+00:47:11.880 --> 00:47:13.535
+Of course that we define in
+
+00:47:13.535 --> 00:47:14.528
+the standard library.
+
+00:47:14.530 --> 00:47:17.880
+Which requires instantiating a function
+
+00:47:17.880 --> 00:47:20.590
+template and suffer the throughput cost.
+
+00:47:20.590 --> 00:47:21.478
+So yeah, I will.
+
+00:47:21.478 --> 00:47:22.366
+I'm happy with this,
+
+00:47:22.370 --> 00:47:24.068
+I'm I'm not gonna add another
+
+00:47:24.068 --> 00:47:25.770
+comment here just to be clear.
+
+00:47:25.770 --> 00:47:28.116
+&gt;&gt; Nicole: One thing I will say is, uh,
+
+00:47:28.116 --> 00:47:31.098
+something that is confusing to me is
+
+00:47:31.098 --> 00:47:36.444
+why we are not OK with as_const
+
+00:47:36.450 --> 00:47:39.950
+but are OK with move.
+
+00:47:39.950 --> 00:47:41.060
+Because that that.
+
+00:47:41.060 --> 00:47:42.540
+Seems odd to me.
+
+00:47:44.700 --> 00:47:48.656
+&gt;&gt; Casey: We're not really OK with move either. 
+
+00:47:48.656 --> 00:47:51.918
+&gt;&gt; Stephan: Yeah you gotta, that's it's an excellent point.
+
+00:47:51.920 --> 00:47:54.875
+Like we we do spend move, oh sorry go ahead
+
+00:47:54.875 --> 00:47:57.125
+&gt;&gt; Casey: the the the cognitive overhead
+
+00:47:57.125 --> 00:48:00.332
+of implementing move directly is high.
+
+00:48:00.332 --> 00:48:02.858
+And that that's really the issue,
+
+00:48:02.860 --> 00:48:05.956
+it's it's much more readable to see std::move(blah)
+
+00:48:05.956 --> 00:48:09.478
+than it is see static_cast&lt;X&amp;&amp;&gt;(blah)
+
+00:48:09.480 --> 00:48:13.250
+and then have to go back
+
+00:48:13.347 --> 00:48:17.115
+and determine OK is X actually the type?
+
+00:48:17.120 --> 00:48:19.248
+Is this move, or is it forward or
+
+00:48:19.248 --> 00:48:21.329
+is it doing something else?
+
+00:48:21.330 --> 00:48:22.826
+And in that sense,
+
+00:48:22.826 --> 00:48:25.070
+having the actual names move and forward
+
+00:48:25.137 --> 00:48:27.495
+as vocabularies is nice for readers.
+
+00:48:30.880 --> 00:48:32.424
+&gt;&gt; Nicole: Fair enough
+&gt;&gt; Casey: that said,
+
+00:48:32.424 --> 00:48:34.740
+there is a throughput cost and
+
+00:48:34.740 --> 00:48:36.889
+it would be nice if we didn't
+
+00:48:36.889 --> 00:48:39.390
+have to pay the throughput cost.
+
+00:48:39.390 --> 00:48:41.438
+You know, I could be convinced that we
+
+00:48:41.438 --> 00:48:43.240
+should have forward and move macros.
+
+00:48:45.290 --> 00:48:47.670
+Even though I despise macros,
+
+00:48:47.670 --> 00:48:50.050
+I could be talked into it as a way to
+
+00:48:50.117 --> 00:48:53.020
+&gt;&gt; Casey: improve throughput. If 
+&gt;&gt; Nicole: I I would be,
+
+00:48:53.020 --> 00:48:56.940
+&gt;&gt; Nicole: I would be interested in the like.
+
+00:48:56.940 --> 00:49:00.475
+Amount of actual speed you'd get from
+
+00:49:00.475 --> 00:49:03.760
+switching to move and forward macros. Uh.
+
+00:49:05.820 --> 00:49:08.788
+Especially since move, I think you still
+
+00:49:08.788 --> 00:49:12.220
+need to instantiate, remove, remove_ref_t.
+
+00:49:15.070 --> 00:49:17.527
+which is a template, I don't know.
+
+00:49:17.530 --> 00:49:20.370
+&gt;&gt; Nicole: Anyway, beside the point 
+&gt;&gt; Stephan: and we have we,
+
+00:49:20.370 --> 00:49:22.194
+we have active conversations with the
+
+00:49:22.194 --> 00:49:24.309
+front end team about making at least
+
+00:49:24.309 --> 00:49:26.674
+forward and move compiler known so that
+
+00:49:26.674 --> 00:49:28.960
+it can just directly transform them
+
+00:49:29.025 --> 00:49:31.660
+without emitting real function calls for
+
+00:49:31.660 --> 00:49:33.280
+reference clang and I believe GCC
+
+00:49:33.280 --> 00:49:35.070
+have already done so,
+
+00:49:35.070 --> 00:49:37.912
+and MSVC does similar things to things
+
+00:49:37.912 --> 00:49:40.736
+like remove_cv_t just not move and forward,
+
+00:49:40.736 --> 00:49:43.977
+so that's that would be my preference
+
+00:49:43.977 --> 00:49:45.510
+compared to macros and honestly,
+
+00:49:45.510 --> 00:49:47.430
+I mean now looking at my comment here,
+
+00:49:47.430 --> 00:49:48.864
+it sounds like I'm advocating that
+
+00:49:48.864 --> 00:49:50.270
+we shouldn't use as_const
+
+00:49:50.270 --> 00:49:52.166
+I'm actually fine with as_const here.
+
+00:49:52.170 --> 00:49:55.074
+I mean, it is one call per element,
+
+00:49:55.080 --> 00:49:58.696
+which is a little bit more expensive than
+
+00:49:58.696 --> 00:50:02.497
+one call per outer call to the function.
+
+00:50:02.500 --> 00:50:04.411
+I had just recommended ohh you know
+
+00:50:04.411 --> 00:50:06.793
+we could use a local variable here in
+
+00:50:06.793 --> 00:50:08.951
+case you know throughput was a concern
+
+00:50:08.951 --> 00:50:11.016
+because I know that I personally have
+
+00:50:11.016 --> 00:50:15.100
+been relatively unconcerned about debug
+
+00:50:15.100 --> 00:50:18.229
+performance over the years and I should
+
+00:50:18.229 --> 00:50:20.200
+probably care a little bit more,
+
+00:50:20.200 --> 00:50:21.880
+and this seemed like a reasonably
+
+00:50:21.880 --> 00:50:24.437
+cheap way to do so that didn't involve
+
+00:50:24.437 --> 00:50:26.152
+like obnoxious static_cast&lt;T&amp;&amp;&gt;
+
+00:50:26.160 --> 00:50:27.165
+or anything,
+
+00:50:27.165 --> 00:50:30.586
+but I would be fine with as_const myself.
+
+00:50:30.586 --> 00:50:34.060
+&gt;&gt; Nicole: Also, this is totally gross and I hate it,
+
+00:50:34.060 --> 00:50:38.618
+but you could put the const _Ty&amp;
+
+00:50:38.618 --> 00:50:42.776
+const Val equals Val above the loop. Uh. 
+
+00:50:42.780 --> 00:50:45.052
+&gt;&gt; Casey: Yeah.
+
+00:50:45.052 --> 00:50:47.376
+&gt;&gt; Nicole: Which would result 
+&gt;&gt; Stephan: And keep it bound
+
+00:50:47.376 --> 00:50:51.270
+&gt;&gt; Stephan: even though the value changes 
+&gt;&gt; Nicole: yeah
+
+00:50:51.270 --> 00:50:55.686
+&gt;&gt; Stephan: Yeah, that it. It still spends a line.
+
+00:50:55.690 --> 00:50:57.514
+I don't think it would necessarily
+
+00:50:57.514 --> 00:50:58.730
+interfere with compiler optimizations,
+
+00:50:58.730 --> 00:51:00.907
+but it is weird to reason about.
+
+00:51:00.910 --> 00:51:02.878
+&gt;&gt; Casey: It would be a line you wouldn't have to
+
+00:51:02.878 --> 00:51:04.628
+skip over every time you're going
+
+00:51:04.628 --> 00:51:06.750
+through the loop in single step mode.
+
+00:51:06.750 --> 00:51:08.430
+&gt;&gt; Stephan: Sure there would be that improvement, yeah
+
+00:51:08.430 --> 00:51:12.108
+&gt;&gt; Casey: A little bit of UX.
+
+00:51:12.110 --> 00:51:14.840
+If you're debugging through this, but.
+
+00:51:14.840 --> 00:51:18.408
+Yeah, we can argue there's lots of reasons.
+
+00:51:18.410 --> 00:51:19.556
+Lots of little reasons to prefer
+
+00:51:19.556 --> 00:51:20.649
+one thing or another thing I.
+
+00:51:20.650 --> 00:51:22.512
+I don't think any of them is
+
+00:51:22.512 --> 00:51:24.010
+actually the best suggestion.
+
+00:51:24.010 --> 00:51:25.978
+Sorry I don't think any of them is
+
+00:51:25.978 --> 00:51:27.329
+clearly better than the others.
+
+00:51:27.330 --> 00:51:29.150
+Except of course getting rid of const_cast.
+
+00:51:29.150 --> 00:51:31.160
+I think we all agree.
+
+00:51:31.160 --> 00:51:33.116
+If we don't like the const_cast,
+
+00:51:33.120 --> 00:51:35.750
+&gt;&gt; Nicole: no const_cast everywhere, please God.
+
+00:51:38.000 --> 00:51:39.750
+&gt;&gt; Stephan: Well, we we do have some const_cast
+
+00:51:39.750 --> 00:51:41.410
+in the code base I believe,
+
+00:51:41.410 --> 00:51:43.288
+but keeping them to where they're
+
+00:51:43.288 --> 00:51:45.185
+necessary is like really unavoidable is
+
+00:51:45.185 --> 00:51:47.521
+ideal because that way we can focus all
+
+00:51:47.575 --> 00:51:49.702
+of our attention on them and say, OK,
+
+00:51:49.702 --> 00:51:51.754
+we're doing something super scary here.
+
+00:51:51.760 --> 00:51:53.290
+Let's make really sure that
+
+00:51:53.290 --> 00:51:55.249
+this is the right thing to do.
+
+00:51:55.250 --> 00:51:56.738
+Which is generally true for cast,
+
+00:51:56.740 --> 00:51:59.548
+but especially for const_cast.
+
+00:51:59.550 --> 00:52:01.008
+&gt;&gt; Nicole: It really seems like we should
+
+00:52:01.008 --> 00:52:02.400
+have this like unsafe keyword
+
+00:52:02.400 --> 00:52:05.697
+maybe that puts all of our focus
+
+00:52:05.697 --> 00:52:08.937
+on unsafety into like 1 area maybe.
+
+00:52:08.940 --> 00:52:10.048
+&gt;&gt; Casey: We already have one.
+
+00:52:10.048 --> 00:52:11.710
+We have a lot of them in C++
+
+00:52:17.120 --> 00:52:18.608
+We have as many unsafe keywords
+
+00:52:18.608 --> 00:52:20.515
+as you like in C++. That's one
+
+00:52:20.515 --> 00:52:22.345
+one advantage it has over rust.
+
+00:52:27.060 --> 00:52:30.712
+Advantage OK. Moving on.
+
+00:52:30.712 --> 00:52:32.417
+I think we've beaten this
+
+00:52:32.417 --> 00:52:33.980
+point into the ground.
+
+00:52:33.980 --> 00:52:35.112
+We've got this loop.
+
+00:52:35.112 --> 00:52:37.330
+We're happy that the loop is correct.
+
+00:52:37.330 --> 00:52:38.910
+We don't like the const_cast
+
+00:52:38.910 --> 00:52:40.678
+We've made recommendations about
+
+00:52:40.678 --> 00:52:42.446
+putting something different there.
+
+00:52:42.450 --> 00:52:45.805
+Umm? I don't think we need this move.
+
+00:52:50.850 --> 00:52:55.258
+_First is the name of a variable with
+
+00:52:55.258 --> 00:52:58.920
+automatic storage duration. Right?
+
+00:52:58.920 --> 00:53:01.818
+&gt;&gt; Nicole: Does that mean that gets UM
+
+00:53:01.818 --> 00:53:05.970
+&gt;&gt; Casey:  get the magic value treatment and return right?
+&gt;&gt; Nicole: Yep.
+
+00:53:05.970 --> 00:53:07.790
+&gt;&gt; Stephan: They they added that though after 11.
+
+00:53:07.790 --> 00:53:10.414
+I think that's why I missed it because
+
+00:53:10.414 --> 00:53:13.010
+in 11 original the function parameters I
+
+00:53:13.010 --> 00:53:15.238
+think were not eligible for auto moving
+
+00:53:15.238 --> 00:53:17.184
+and that did change at some point.
+
+00:53:17.190 --> 00:53:19.260
+All the standard versions blur
+
+00:53:19.260 --> 00:53:21.530
+together for me now. Umm?
+
+00:53:24.330 --> 00:53:28.068
+&gt;&gt; Nicole: Right, because function parameters cannot be
+
+00:53:28.070 --> 00:53:32.427
+Like nrvo'd like they can't be like without
+
+00:53:32.427 --> 00:53:34.988
+&gt;&gt; Casey: Right they they can't be RVO
+
+00:53:34.990 --> 00:53:36.820
+you can't do return value optimization
+
+00:53:36.820 --> 00:53:38.640
+because the parameter has to get
+
+00:53:38.640 --> 00:53:40.272
+stored where parameters go like they can't get
+
+00:53:40.272 --> 00:53:41.678
+stored where return values go.
+
+00:53:43.980 --> 00:53:46.420
+But nevertheless, I think the
+
+00:53:46.420 --> 00:53:48.226
+implicit move rule works here,
+
+00:53:48.226 --> 00:53:49.402
+so we don't really need this move.
+
+00:53:51.440 --> 00:53:53.702
+&gt;&gt; Stephan: And I think Nicole was correct
+
+00:53:53.702 --> 00:53:55.210
+to say nrvo specifically
+
+00:53:55.284 --> 00:53:57.330
+because it is a named parameter.
+
+00:54:05.420 --> 00:54:07.560
+&gt;&gt; Nicole: Although now return value optimization
+
+00:54:07.560 --> 00:54:10.834
+is not a thing in C++ because
+
+00:54:10.834 --> 00:54:12.900
+prvalues are actually a real thing,
+
+00:54:12.900 --> 00:54:15.320
+I'm so happy they finally fixed that.
+
+00:54:17.760 --> 00:54:22.220
+&gt;&gt; Casey: Here we go. class.copy.elision 1.1.
+
+00:54:28.770 --> 00:54:30.948
+This move is extraneous
+
+00:54:39.490 --> 00:54:41.530
+&gt;&gt; Stephan: Looking at this makes me wonder
+
+00:54:41.530 --> 00:54:43.336
+if this is potentially a global
+
+00:54:43.336 --> 00:54:44.850
+problem throughout the code base,
+
+00:54:44.850 --> 00:54:47.560
+like if we're redundantly moving
+
+00:54:47.560 --> 00:54:51.290
+parameters that are non cv-qualified.
+
+00:54:51.290 --> 00:54:52.436
+I bet you there's other occurrences,
+
+00:54:52.440 --> 00:54:53.784
+not that we would ask this contributor
+
+00:54:53.784 --> 00:54:55.129
+to go clean up things globally.
+
+00:54:55.130 --> 00:54:57.018
+If anything, it should be a separate PR.
+
+00:54:57.020 --> 00:54:59.580
+&gt;&gt; Casey: Should we do a global global thing for this.
+
+00:54:59.580 --> 00:55:01.670
+I'm not terribly concerned because
+
+00:55:01.670 --> 00:55:04.230
+it's not really a throughput issue.
+
+00:55:04.230 --> 00:55:06.005
+Redundant move is only a
+
+00:55:06.005 --> 00:55:07.425
+problem when it inhibits.
+
+00:55:07.430 --> 00:55:09.768
+&gt;&gt; Stephan: Ohh that's right, yeah
+
+00:55:09.770 --> 00:55:12.250
+So it most. It's in the extra call
+
+00:55:12.250 --> 00:55:15.008
+&gt;&gt; Casey: so it's just extra words to look at.
+
+00:55:15.010 --> 00:55:17.746
+&gt;&gt; Stephan: Yeah 
+&gt;&gt; Nicole: I believe.
+
+00:55:17.750 --> 00:55:20.810
+&gt;&gt; Nicole: I, I believe that this should be paragraph 3.
+
+00:55:20.810 --> 00:55:25.224
+Uh. Paragraph 1.1 is about r
+
+00:55:25.224 --> 00:55:27.920
+named return value optimization.
+
+00:55:27.920 --> 00:55:29.208
+So, uh.
+
+00:55:29.208 --> 00:55:31.140
+In a return statement,
+
+00:55:31.140 --> 00:55:32.472
+when the expression is the name
+
+00:55:32.472 --> 00:55:34.053
+of a non volatile object with
+
+00:55:34.053 --> 00:55:35.019
+automatic storage duration
+
+00:55:35.019 --> 00:55:36.629
+other than a function parameter,
+
+00:55:36.630 --> 00:55:38.520
+the copy move operation can be emitted.
+
+00:55:38.520 --> 00:55:41.660
+&gt;&gt; Casey: Throw, coroutine, exception declaration.
+
+00:55:47.030 --> 00:55:49.238
+And implicitly movable entity.
+
+00:55:49.238 --> 00:55:54.339
+This wording got changed. Recently for 23.
+
+00:55:54.340 --> 00:55:56.270
+More things became implicitly movable.
+
+00:56:08.420 --> 00:56:09.980
+automatic storage duration that's non-volatile,
+
+00:56:09.980 --> 00:56:11.800
+or rvalue reference to
+
+00:56:11.800 --> 00:56:13.620
+a non-volatile object type. OK.
+
+00:56:16.790 --> 00:56:18.458
+So they haven't broken this wording.
+
+00:56:18.460 --> 00:56:21.316
+It's still 3 and 3.1 specifically.
+
+00:56:28.120 --> 00:56:30.542
+&gt;&gt; Stephan: And I do recommend citing a working
+
+00:56:30.542 --> 00:56:33.020
+paper number when you cite a paragraph,
+
+00:56:33.020 --> 00:56:36.480
+particularly when they are
+
+00:56:36.480 --> 00:56:38.348
+editing the the standardease.
+
+00:56:38.348 --> 00:56:40.683
+Those paragraph numbers can be
+
+00:56:40.683 --> 00:56:43.372
+moved around, as we've seen here,
+
+00:56:43.372 --> 00:56:46.335
+so saying like in 4910 if that's
+
+00:56:46.335 --> 00:56:48.099
+the latest one could be helpful.
+
+00:56:48.099 --> 00:56:49.320
+If we got to go look this up,
+
+00:56:49.320 --> 00:56:51.035
+you know in five years and wonder,
+
+00:56:51.040 --> 00:56:52.300
+wait what we're what we're reciting,
+
+00:56:52.300 --> 00:56:53.788
+what paragraph with the was this?
+
+00:57:13.510 --> 00:57:19.530
+&gt;&gt; Nicole: Should this use Tim Song's cppwp.
+
+00:57:19.530 --> 00:57:20.538
+So that it's stable.
+
+00:57:25.160 --> 00:57:26.660
+&gt;&gt; Casey: That's a really good idea.
+
+00:57:36.000 --> 00:57:37.190
+Don't remember.
+
+00:57:49.830 --> 00:57:51.258
+What? no 4910?
+
+00:57:55.700 --> 00:57:59.248
+&gt;&gt; Casey: Attack the. 
+&gt;&gt; Stephan: I didn't see a tip of trunk,
+
+00:57:59.250 --> 00:58:02.586
+&gt;&gt; Stephan: but I don't know which that corresponds to.
+
+00:58:02.590 --> 00:58:04.004
+I haven't. I haven't used this myself.
+
+00:58:04.010 --> 00:58:06.530
+I was just proposing citing the actual just
+
+00:58:06.530 --> 00:58:08.970
+name to say 4910 and let them look up.
+
+00:58:08.970 --> 00:58:10.500
+Look it up necessary because mostly
+
+00:58:10.500 --> 00:58:12.230
+concerned about us looking at this comment.
+
+00:58:12.230 --> 00:58:13.693
+&gt;&gt; Casey: The problem for years down the road
+
+00:58:13.693 --> 00:58:15.490
+right now I have to go look at 4910.
+
+00:58:18.700 --> 00:58:21.616
+Because I never used the working,
+
+00:58:21.620 --> 00:58:23.933
+I never used the working draft I always use
+
+00:58:26.410 --> 00:58:30.990
+my own copy. That I regenerate every day.
+
+00:58:30.990 --> 00:58:35.870
+All right, where were we? Class dot copy.
+
+00:58:45.830 --> 00:58:47.498
+Alright, there we go.
+
+00:58:47.498 --> 00:58:50.040
+It's paragraph 3. In in 4868.
+
+00:58:52.060 --> 00:58:53.980
+It probably also isn't in 4910.
+
+00:58:59.600 --> 00:59:01.048
+&gt;&gt; Stephan: Yeah, as long as it hasn't changed recently,
+
+00:59:01.050 --> 00:59:04.538
+most time I was just suggesting citing a
+
+00:59:04.538 --> 00:59:06.688
+specific graph so that if we ever needed
+
+00:59:06.688 --> 00:59:09.459
+to look this up later, we could find
+
+00:59:09.459 --> 00:59:12.210
+exactly which paragraph we meant. So.
+
+00:59:24.300 --> 00:59:25.330
+&gt;&gt; Casey: _First is.
+
+00:59:37.490 --> 00:59:38.318
+Alright, moving on.
+
+00:59:41.570 --> 00:59:43.004
+Next overload now this is
+
+00:59:43.004 --> 00:59:44.130
+the overload we're working on.
+
+00:59:44.130 --> 00:59:46.503
+Still sorry, this again returns the final
+
+00:59:46.503 --> 00:59:49.029
+value of the iterator from the loop.
+
+00:59:49.030 --> 00:59:51.228
+We don't need to return the final
+
+00:59:51.228 --> 00:59:53.608
+value of _Val because we're using.
+
+00:59:53.610 --> 00:59:56.160
+An lvalue that references the original
+
+00:59:56.160 --> 00:59:59.281
+value of _Val in the caller, tada!
+
+00:59:59.281 --> 01:00:02.827
+There so. We get first back
+
+01:00:02.827 --> 01:00:06.529
+from this _Iota_unchecked call.
+
+01:00:06.530 --> 01:00:09.400
+It's an rvalue, so we don't need to move it.
+
+01:00:09.400 --> 01:00:11.830
+We wrap it back up inside.
+
+01:00:14.250 --> 01:00:16.539
+The original iterator.
+
+01:00:16.540 --> 01:00:18.732
+Which we then return.
+
+01:00:18.732 --> 01:00:20.924
+In our out_result.
+
+01:00:22.324 --> 01:00:25.809
+iota_result&lt;_It, _Ty&gt; we're returning.
+
+01:00:25.810 --> 01:00:28.568
+The result of moving _First and _Ty,
+
+01:00:28.570 --> 01:00:32.650
+and the paper did want us to move.
+
+01:00:32.650 --> 01:00:35.690
+_Ty. Didn't it?
+
+01:00:38.060 --> 01:00:39.750
+Return move first move value.
+
+01:00:44.310 --> 01:00:47.088
+The other other overload for ranges.
+
+01:00:49.350 --> 01:00:50.670
+let's take some iota.
+
+01:00:50.670 --> 01:00:53.050
+It takes a range and a _Ty.
+
+01:00:53.050 --> 01:00:56.546
+There's not gonna be any wording for this
+
+01:00:56.550 --> 01:00:59.766
+in the paper or in the working draft.
+
+01:00:59.770 --> 01:01:02.306
+No, because again, we're lazy and we had
+
+01:01:02.306 --> 01:01:04.928
+like to have magical blanket wording.
+
+01:01:04.930 --> 01:01:06.262
+That means we don't have to
+
+01:01:06.262 --> 01:01:07.420
+repeat things over and over.
+
+01:01:07.420 --> 01:01:09.610
+So we have.
+
+01:01:09.610 --> 01:01:12.310
+Magic wording in the algorithms
+
+01:01:12.310 --> 01:01:14.935
+requirements again that say that
+
+01:01:14.935 --> 01:01:17.230
+range algorithms to take a range
+
+01:01:17.230 --> 01:01:19.090
+are equivalent to the taking the
+
+01:01:19.156 --> 01:01:21.016
+result of calling begin and end
+
+01:01:21.016 --> 01:01:23.510
+on the range and passing it to
+
+01:01:23.510 --> 01:01:25.094
+the iterator sentinel overload.
+
+01:01:27.940 --> 01:01:30.684
+So now we'll look at this and make
+
+01:01:30.684 --> 01:01:33.010
+sure that that's what it does.
+
+01:01:33.010 --> 01:01:34.985
+Luckily, we don't need the
+
+01:01:34.985 --> 01:01:36.565
+any kind of verification.
+
+01:01:36.570 --> 01:01:39.102
+The major advantage, one of the
+
+01:01:39.102 --> 01:01:41.459
+many advantages of ranges is that.
+
+01:01:41.460 --> 01:01:43.523
+They are correct by construction, right?
+
+01:01:43.523 --> 01:01:44.738
+Somebody passed in a range.
+
+01:01:44.740 --> 01:01:46.792
+We don't need to worry about
+
+01:01:46.792 --> 01:01:48.589
+mismatching begin and end.
+
+01:01:48.589 --> 01:01:51.004
+Units indicating where that range
+
+01:01:51.004 --> 01:01:53.566
+lies straight out of the range itself.
+
+01:01:53.570 --> 01:01:56.920
+So we're pulling first out.
+
+01:01:56.920 --> 01:01:59.728
+Of that range with ranges::begin.
+
+01:02:02.200 --> 01:02:05.596
+OK, yeah. Going out first.
+
+01:02:05.596 --> 01:02:07.648
+And then we're going to call
+
+01:02:07.648 --> 01:02:09.458
+the same _Iota_unchecked,
+
+01:02:09.460 --> 01:02:13.048
+with the result of unwrapping first.
+
+01:02:13.050 --> 01:02:16.266
+And calling, tada, _Uend range.
+
+01:02:18.380 --> 01:02:22.097
+_Uend is a magic accessor that
+
+01:02:22.097 --> 01:02:24.979
+basically does the unwrapping for
+
+01:02:24.979 --> 01:02:28.566
+us of getting the end of the range.
+
+01:02:28.570 --> 01:02:31.042
+It's sometimes more efficient.
+
+01:02:31.042 --> 01:02:34.160
+if for uh range types that
+
+01:02:34.160 --> 01:02:35.840
+are implemented specifically to
+
+01:02:35.840 --> 01:02:38.298
+have access to an unchecked end,
+
+01:02:38.300 --> 01:02:39.637
+which is the thing in our design.
+
+01:02:39.640 --> 01:02:41.964
+This will grab it directly instead of
+
+01:02:41.964 --> 01:02:44.889
+calling end and then unwrapping the iterator.
+
+01:02:44.890 --> 01:02:46.170
+It may be more efficient.
+
+01:02:48.890 --> 01:02:50.750
+So we're taking those.
+
+01:02:50.750 --> 01:02:53.075
+We're passing 3 arguments to
+
+01:02:53.075 --> 01:02:55.164
+_Iota_unchecked, which doesn't.
+
+01:02:55.164 --> 01:02:56.766
+We already know that it does.
+
+01:02:56.770 --> 01:03:00.487
+It returns the final value of first,
+
+01:03:00.490 --> 01:03:02.590
+which we wrap back up.
+
+01:03:02.590 --> 01:03:04.660
+Iterator that we have and we
+
+01:03:04.660 --> 01:03:06.738
+return the first move out just
+
+01:03:06.738 --> 01:03:08.936
+as we did on the other overload.
+
+01:03:08.940 --> 01:03:11.528
+So this is correct.
+
+01:03:11.530 --> 01:03:14.956
+It can be implemented a little more
+
+01:03:14.956 --> 01:03:16.742
+efficiently using _Rewrap_iterator.
+
+01:03:16.742 --> 01:03:18.358
+We have a helper.
+
+01:03:21.830 --> 01:03:23.000
+Lots and lots of helpers.
+
+01:03:25.800 --> 01:03:27.558
+This is probably in xutil.
+
+01:03:40.650 --> 01:03:41.160
+Yes.
+
+01:03:51.780 --> 01:03:56.168
+&gt;&gt; Casey: _rewrap. 
+&gt;&gt; Nicole: You gotta turn off related matches.
+
+01:03:56.170 --> 01:04:00.408
+&gt;&gt; Nicole: It is the. Dumbest feature
+
+01:04:00.408 --> 01:04:05.378
+so so frustrating.
+
+01:04:05.380 --> 01:04:07.298
+&gt;&gt; Casey: I guess if you don't remember what
+
+01:04:07.298 --> 01:04:10.860
+you're looking for, it could be handy.
+
+01:04:10.860 --> 01:04:12.438
+You know, if it's something like
+
+01:04:12.438 --> 01:04:14.618
+this then then I might use that tool,
+
+01:04:14.620 --> 01:04:16.066
+but when I know exactly what
+
+01:04:16.066 --> 01:04:17.420
+I'm looking for there anyway,
+
+01:04:17.420 --> 01:04:20.297
+we have a utility called _Rewrap_iterator.
+
+01:04:20.300 --> 01:04:24.348
+That takes a range and an unwrapped iterator.
+
+01:04:26.570 --> 01:04:29.700
+And it will you either.
+
+01:04:29.700 --> 01:04:32.003
+Sorry if the unwrapped iterator type is
+
+01:04:32.003 --> 01:04:34.740
+the same as the wrapped iterator type.
+
+01:04:34.740 --> 01:04:36.938
+That's what this is trying to say.
+
+01:04:36.940 --> 01:04:39.076
+Right, if this unwrapped iterator type,
+
+01:04:39.080 --> 01:04:41.257
+_It is the same as the actual
+
+01:04:41.257 --> 01:04:42.959
+iterator type of the range.
+
+01:04:42.960 --> 01:04:44.600
+Then we don't need to do anything funny
+
+01:04:44.600 --> 01:04:47.560
+in rewrap, we just return it.
+
+01:04:47.560 --> 01:04:49.672
+If the unwrapped and wraps types
+
+01:04:49.672 --> 01:04:51.928
+are different, this meaning this is
+
+01:04:51.928 --> 01:04:53.863
+a range that has checked iterators.
+
+01:04:53.870 --> 01:04:55.886
+Then we'll go ahead and grab
+
+01:04:55.886 --> 01:04:58.060
+a new begin from the range.
+
+01:04:58.060 --> 01:05:00.880
+And we'll wrap up our.
+
+01:05:00.880 --> 01:05:04.296
+Unwrapped iterator inside that and return it.
+
+01:05:04.300 --> 01:05:07.142
+This is constrained to only work
+
+01:05:07.142 --> 01:05:09.274
+with forward ranges by necessity
+
+01:05:09.274 --> 01:05:11.794
+because you're only allowed to call
+
+01:05:11.794 --> 01:05:14.318
+begin once on a single pass range.
+
+01:05:14.320 --> 01:05:16.364
+Like calling begin on an input range
+
+01:05:16.364 --> 01:05:18.350
+or an output range can suck the
+
+01:05:18.350 --> 01:05:20.568
+magic smoke out of it and make you
+
+01:05:20.568 --> 01:05:22.605
+unable to call again on that again.
+
+01:05:22.610 --> 01:05:27.650
+Since this takes an. output_range _Rng.
+
+01:05:27.650 --> 01:05:29.030
+It may be single pass.
+
+01:05:35.180 --> 01:05:36.880
+And that means we can't
+
+01:05:36.880 --> 01:05:38.240
+really use _Rewrap_iterator.
+
+01:05:38.240 --> 01:05:41.420
+We don't have any facility for.
+
+01:05:41.420 --> 01:05:43.670
+Yeah, we're dealing with that.
+
+01:05:43.670 --> 01:05:46.480
+Unfortunately.
+
+01:05:46.480 --> 01:05:48.432
+&gt;&gt; Stephan: So if we if we tried to it
+
+01:05:48.432 --> 01:05:50.079
+would but fail to compile,
+
+01:05:50.080 --> 01:05:51.984
+but only if our test coverage calls
+
+01:05:51.984 --> 01:05:54.337
+it with an actual output only range.
+
+01:05:54.340 --> 01:05:57.140
+&gt;&gt; Stephan: Is that correct? 
+&gt;&gt; Casey: Yes.
+
+01:05:57.140 --> 01:06:00.290
+&gt;&gt; Stephan: OK
+&gt;&gt; Casey: yeah it will fail to compile but
+
+01:06:00.290 --> 01:06:02.839
+&gt;&gt; Casey: only when called with a sub-forward.
+
+01:06:02.840 --> 01:06:04.808
+Single pass range.
+
+01:06:04.810 --> 01:06:06.530
+&gt;&gt; Stephan: And to check my understanding
+
+01:06:06.530 --> 01:06:08.108
+because I I actually hadn't
+
+01:06:08.108 --> 01:06:09.160
+looked into this commentary,
+
+01:06:09.160 --> 01:06:10.298
+I was like, oh _Rewrap_iterator.
+
+01:06:10.298 --> 01:06:11.930
+That sounds good because
+
+01:06:11.930 --> 01:06:13.970
+I hadn't used it myself.
+
+01:06:13.970 --> 01:06:15.308
+Even in the case where we
+
+01:06:15.308 --> 01:06:16.650
+do have like a strong,
+
+01:06:16.650 --> 01:06:20.012
+you know forward range in this code,
+
+01:06:20.012 --> 01:06:22.350
+we need to start off by calling
+
+01:06:22.431 --> 01:06:24.807
+ranges begin and then unwrap it.
+
+01:06:24.810 --> 01:06:26.210
+I guess we could call _Ubegin,
+
+01:06:26.210 --> 01:06:29.106
+&gt;&gt; Stephan: I suppose
+&gt;&gt; Casey: Yes
+
+01:06:29.110 --> 01:06:30.706
+&gt;&gt; Casey: We would call _Ubegin
+
+01:06:30.710 --> 01:06:32.850
+&gt;&gt; Stephan: I see _Ubegin, OK,
+
+01:06:32.850 --> 01:06:34.464
+&gt;&gt; Casey: checked right into.
+
+01:06:34.464 --> 01:06:35.540
+range
+
+01:06:35.540 --> 01:06:38.468
+wrap with the idea idea that it doesn't
+
+01:06:38.468 --> 01:06:40.570
+necessarily even need to keep first
+
+01:06:40.570 --> 01:06:42.700
+around if they're the same iterator types,
+
+01:06:42.700 --> 01:06:44.730
+for example.
+
+01:06:44.730 --> 01:06:48.944
+&gt;&gt; Stephan: Right 
+&gt;&gt; Nicole: and not a use after move?
+
+01:06:48.950 --> 01:06:50.330
+&gt;&gt; Nicole: I guess it's not.
+
+01:06:50.330 --> 01:06:52.055
+I guess _First is
+
+01:06:52.055 --> 01:06:53.946
+&gt;&gt; Casey: technically it is a use after move,
+
+01:06:53.950 --> 01:06:54.348
+yes
+
+01:06:54.348 --> 01:06:57.134
+&gt;&gt; Nicole: OK, but are we like asserting that
+
+01:06:57.134 --> 01:06:59.850
+this must be OK for anything that
+
+01:06:59.850 --> 01:07:02.659
+&gt;&gt; Nicole: deals with our
+&gt;&gt; Casey: it's an OK use after move
+
+01:07:02.660 --> 01:07:03.062
+&gt;&gt; Nicole: OK
+
+01:07:03.062 --> 01:07:06.278
+&gt;&gt; Casey: it's it's part of the design of the
+
+01:07:06.278 --> 01:07:08.780
+iterator unwrapping design that.
+
+01:07:08.780 --> 01:07:10.810
+_Seek_wrap.
+
+01:07:10.810 --> 01:07:13.022
+_Seek_wrapped could take can have a
+
+01:07:13.022 --> 01:07:15.549
+a moved from input iterator.
+
+01:07:15.550 --> 01:07:16.100
+&gt;&gt; Nicole: OK cool.
+
+01:07:19.700 --> 01:07:21.662
+&gt;&gt; Casey: OK
+&gt;&gt; Stephan: yeah essentially the the wrap
+
+01:07:21.662 --> 01:07:23.649
+&gt;&gt; Stephan: state has not been changed the
+
+01:07:23.649 --> 01:07:25.497
+like the pointer to the parent
+
+01:07:25.497 --> 01:07:27.690
+but the pointer to the element is
+
+01:07:27.690 --> 01:07:29.260
+what's getting totally reset here.
+
+01:07:29.260 --> 01:07:31.548
+Most I was wondering like I see what
+
+01:07:31.548 --> 01:07:33.491
+that would do for like a forward_list
+
+01:07:33.491 --> 01:07:35.358
+or a std::list for vector.
+
+01:07:35.358 --> 01:07:37.032
+Though it seems like we would
+
+01:07:37.032 --> 01:07:38.699
+actually be calling begin twice.
+
+01:07:40.940 --> 01:07:42.578
+Ohh no, not if we called
+
+01:07:42.578 --> 01:07:44.060
+_Ubegin to begin with.
+
+01:07:44.060 --> 01:07:46.594
+We would at most have one begin.
+
+01:07:46.600 --> 01:07:49.540
+OK, never mind, only the
+
+01:07:49.540 --> 01:07:51.500
+single pass thing is preventing
+
+01:07:51.500 --> 01:07:53.068
+this from being desirable.
+
+01:07:56.200 --> 01:07:57.950
+&gt;&gt; Casey: Obviously you could sandwich something
+
+01:07:57.950 --> 01:08:00.000
+together with if constexpr here.
+
+01:08:00.000 --> 01:08:01.500
+But it's probably more
+
+01:08:01.500 --> 01:08:03.000
+trouble than it's worth.
+
+01:08:03.000 --> 01:08:04.130
+We're talking about a pretty
+
+01:08:04.130 --> 01:08:05.540
+minimal benefit in the first place.
+
+01:08:09.420 --> 01:08:10.764
+Let's go ahead and say I
+
+01:08:10.764 --> 01:08:11.660
+don't think it's worth.
+
+01:08:17.490 --> 01:08:20.480
+to if constexpr.
+
+01:08:25.250 --> 01:08:26.930
+And sub.
+
+01:08:33.370 --> 01:08:36.905
+Separately, I don't know spell
+
+01:08:36.905 --> 01:08:39.410
+that word. I'd leave this as-is.
+
+01:08:49.410 --> 01:08:51.768
+Oh, no. Somebody say something.
+
+01:08:55.220 --> 01:08:58.195
+Am I not? Am I dropping again?
+
+01:08:58.200 --> 01:08:58.989
+&gt;&gt; Stephan: No, you're fine.
+
+01:08:58.989 --> 01:09:00.567
+It just looked like GitHub took
+
+01:09:00.567 --> 01:09:02.517
+a little second to respond there,
+
+01:09:02.520 --> 01:09:03.608
+possibly because you just
+
+01:09:03.608 --> 01:09:05.240
+pushed a comment with a typo oh no.
+
+01:09:09.140 --> 01:09:11.724
+&gt;&gt; Casey: Because what I pushed a comment with a typo?
+
+01:09:11.730 --> 01:09:13.188
+&gt;&gt; Stephan: Yeah, you're you're separately, you didn't.
+
+01:09:13.190 --> 01:09:14.990
+You didn't fix it before submitting.
+
+01:09:14.990 --> 01:09:16.560
+It's like my eyebrows twitching.
+
+01:09:16.560 --> 01:09:17.740
+I'm like no, never,
+
+01:09:17.740 --> 01:09:19.038
+never mind, it doesn't matter.
+
+01:09:21.110 --> 01:09:21.560
+&gt;&gt; Casey: Uh.
+
+01:09:24.300 --> 01:09:25.719
+I spelled concepts correctly.
+
+01:09:28.890 --> 01:09:30.370
+&gt;&gt; Casey: OK
+&gt;&gt; Stephan: yeah, separately should be
+
+01:09:30.370 --> 01:09:31.850
+&gt;&gt; Stephan: designed to be spelled correctly.
+
+01:09:31.850 --> 01:09:33.936
+&gt;&gt; Casey: It took three seconds and I realized
+
+01:09:33.936 --> 01:09:35.943
+nobody had said anything for 10
+
+01:09:35.943 --> 01:09:38.043
+seconds and thought that it was
+
+01:09:38.043 --> 01:09:40.760
+disconnecting it again. Anyone?
+
+01:09:40.760 --> 01:09:42.940
+OK, let's take deep breaths.
+
+01:09:42.940 --> 01:09:44.540
+Everything's fine.
+
+01:09:44.540 --> 01:09:47.740
+We are through iota.
+
+01:09:47.740 --> 01:09:49.039
+I should verify.
+
+01:09:51.150 --> 01:09:54.760
+This new endif comment matches.
+
+01:09:54.760 --> 01:09:57.767
+And if comment. if _HAS_CXX23
+
+01:09:57.767 --> 01:10:03.423
+and __cpp_lib_concepts is defined.
+
+01:10:03.430 --> 01:10:05.262
+Yes. That's also correct,
+
+01:10:05.262 --> 01:10:09.378
+because this is a C++23 addition.
+
+01:10:09.380 --> 01:10:11.056
+And we don't want
+
+01:10:11.056 --> 01:10:13.978
+to define it that code and or
+
+01:10:13.978 --> 01:10:15.755
+test it when we're running,
+
+01:10:15.755 --> 01:10:17.680
+EDG in a test suite.
+
+01:10:17.680 --> 01:10:19.420
+Because EDG concept support
+
+01:10:19.420 --> 01:10:21.595
+is still not quite ready.
+
+01:10:21.600 --> 01:10:24.368
+For the STL, although it works well enough
+
+01:10:24.368 --> 01:10:27.067
+that it's been enabled in Intellisense.
+
+01:10:27.070 --> 01:10:28.425
+So Intellisense does see all
+
+01:10:28.425 --> 01:10:30.040
+the concepts code in the STL.
+
+01:10:33.810 --> 01:10:36.180
+OK. Moving on to algorithm.
+
+01:10:39.160 --> 01:10:41.240
+Same gaurd, which is again
+
+01:10:41.240 --> 01:10:43.840
+right for the same reasons.
+
+01:10:43.840 --> 01:10:47.420
+OK, let's slide down to.
+
+01:10:47.420 --> 01:10:50.760
+Again, the public interface.
+
+01:10:50.760 --> 01:10:52.252
+Definitions we've got the
+
+01:10:52.252 --> 01:10:52.998
+niebloid comment.
+
+01:10:53.000 --> 01:10:54.165
+you'll recall, so we don't
+
+01:10:54.165 --> 01:10:55.330
+need to worry about that.
+
+01:10:58.250 --> 01:11:00.340
+Where did the paper go?
+
+01:11:00.340 --> 01:11:02.240
+Shift left and shift right.
+
+01:11:04.990 --> 01:11:05.790
+Oh, this is weird.
+
+01:11:14.160 --> 01:11:15.960
+Whatever we used to write,
+
+01:11:15.960 --> 01:11:18.438
+the paper has kept the enormous
+
+01:11:18.438 --> 01:11:20.730
+margins on my narrow window.
+
+01:11:20.730 --> 01:11:23.516
+Which makes it pretty hard to read.
+
+01:11:23.520 --> 01:11:26.628
+Anyway, uh. This is the template.
+
+01:11:26.630 --> 01:11:28.790
+It takes. A first argument.
+
+01:11:28.790 --> 01:11:30.690
+Must satisfy permutable and the
+
+01:11:30.690 --> 01:11:33.489
+second must be a sentinel for the first.
+
+01:11:33.490 --> 01:11:36.166
+Which is exactly what this says.
+
+01:11:36.170 --> 01:11:38.845
+constexpr returning a
+
+01:11:38.845 --> 01:11:41.520
+subrange of the first parameter.
+
+01:11:41.520 --> 01:11:42.530
+shift_right.
+
+01:11:45.540 --> 01:11:48.480
+First template parameter named first.
+
+01:11:48.480 --> 01:11:51.270
+Second template parameter named last.
+
+01:11:51.270 --> 01:11:54.258
+And iter_difference_t
+
+01:11:54.260 --> 01:11:55.460
+Of the iterator type.
+
+01:12:01.400 --> 01:12:05.387
+All right, this person is using _Iter_diff_t
+
+01:12:05.390 --> 01:12:09.086
+which is an internal thing we had
+
+01:12:09.090 --> 01:12:12.710
+even before it was added in C++20.
+
+01:12:12.710 --> 01:12:14.270
+That does effectively the same thing,
+
+01:12:14.270 --> 01:12:16.085
+but by going through iterator
+
+01:12:16.085 --> 01:12:18.435
+traits in sub C++20 mode
+
+01:12:18.435 --> 01:12:20.834
+and by going through the actual
+
+01:12:20.834 --> 01:12:24.540
+iter_difference_t alias in C++20 mode.
+
+01:12:26.730 --> 01:12:29.790
+Yeah, I think if I recall.
+
+01:12:29.790 --> 01:12:32.016
+miscco had already commented on that.
+
+01:12:34.310 --> 01:12:39.950
+But I don't see it. Is this above? Yes.
+
+01:12:42.280 --> 01:12:43.864
+miscco commented the first
+
+01:12:43.864 --> 01:12:44.920
+occurrence and Stephan pointed
+
+01:12:44.972 --> 01:12:46.247
+out that there were several,
+
+01:12:46.250 --> 01:12:48.786
+so this is already taken care of alright?
+
+01:12:48.790 --> 01:12:49.958
+Somebody already caught the
+
+01:12:49.958 --> 01:12:51.126
+iter_difference_t issue.
+
+01:12:51.130 --> 01:12:53.434
+I won't come on it on it again.
+
+01:12:53.440 --> 01:12:56.645
+That probably came from copying our C++17.
+
+01:12:56.645 --> 01:12:58.160
+Implementations of these
+
+01:12:58.160 --> 01:13:00.685
+algorithms in the 1st place,
+
+01:13:00.690 --> 01:13:04.466
+at least that that name _Pos_to_shift
+
+01:13:04.470 --> 01:13:05.720
+seems really familiar to me.
+
+01:13:08.750 --> 01:13:10.549
+&gt;&gt; Stephan: I'm glad that miscco caught it cause
+
+01:13:10.549 --> 01:13:12.370
+I probably would have missed that one.
+
+01:13:12.370 --> 01:13:14.057
+I do know enough about like remove_cv_t
+
+01:13:14.057 --> 01:13:16.213
+that if I see the ugly one being
+
+01:13:16.213 --> 01:13:18.300
+used in modern code I'm like ohh we
+
+01:13:18.300 --> 01:13:19.962
+can unconditionally is the modern one
+
+01:13:19.970 --> 01:13:21.468
+but with _Iter_diff_t I think if miscco
+
+01:13:21.468 --> 01:13:22.768
+hadn't noticed I probably would say
+
+01:13:22.768 --> 01:13:24.483
+yeah I know what that does that looks
+
+01:13:24.483 --> 01:13:25.633
+right and wouldn't have realized
+
+01:13:25.633 --> 01:13:26.808
+oh we should just unconditionally
+
+01:13:26.808 --> 01:13:28.048
+use the standard one there.
+
+01:13:28.050 --> 01:13:29.366
+So I'm very glad you noticed it.
+
+01:13:29.370 --> 01:13:30.270
+&gt;&gt; Casey: It's correct right?
+
+01:13:30.270 --> 01:13:31.770
+It would have been correct.
+
+01:13:31.770 --> 01:13:33.090
+Again it does the same thing in C++20 mode
+
+01:13:33.090 --> 01:13:36.970
+it's just a readability
+
+01:13:36.970 --> 01:13:38.290
+problem only.
+
+01:13:41.600 --> 01:13:43.288
+You know it's uh look at the other.
+
+01:13:45.630 --> 01:13:48.975
+Template forward range. Requires
+
+01:13:48.975 --> 01:13:51.405
+that the iterator type is permutable.
+
+01:13:53.520 --> 01:13:55.872
+We're returning a borrowed
+
+01:13:55.872 --> 01:13:59.478
+subrange of that range shift_left.
+
+01:13:59.478 --> 01:14:01.974
+Takes the range argument
+
+01:14:01.974 --> 01:14:03.846
+by forwarding reference.
+
+01:14:03.850 --> 01:14:06.890
+And it also takes a range_difference_t
+
+01:14:06.890 --> 01:14:08.612
+which is spelled correctly here because
+
+01:14:08.612 --> 01:14:10.560
+we don't have another version of that.
+
+01:14:10.560 --> 01:14:12.016
+And at the same
+
+01:14:12.016 --> 01:14:13.836
+that parameter name _Pos_to_shift.
+
+01:14:16.530 --> 01:14:17.550
+So let's go ahead and look
+
+01:14:17.550 --> 01:14:18.500
+at what these are doing.
+
+01:14:20.970 --> 01:14:23.515
+This looks strangely similar to
+
+01:14:23.515 --> 01:14:26.630
+the iota thing in that it's.
+
+01:14:26.630 --> 01:14:28.162
+Checking the range right,
+
+01:14:28.162 --> 01:14:29.694
+doing the validation first
+
+01:14:29.694 --> 01:14:31.780
+of the range. And then.
+
+01:14:34.670 --> 01:14:36.498
+Auto result equals first.
+
+01:14:41.020 --> 01:14:43.388
+I'm sure that should mean something to me.
+
+01:14:43.390 --> 01:14:45.010
+Let's go back and find this.
+
+01:14:48.600 --> 01:14:53.019
+OK preconditions. Zero is true.
+
+01:14:58.070 --> 01:14:59.966
+Effects, if it is zero or it is
+
+01:14:59.966 --> 01:15:01.630
+greater than or equal to last minus
+
+01:15:01.630 --> 01:15:03.386
+first right if N is greater than
+
+01:15:03.386 --> 01:15:05.360
+a number of elements in the range.
+
+01:15:05.360 --> 01:15:08.169
+What that means. It does nothing.
+
+01:15:12.070 --> 01:15:12.560
+Hmm.
+
+01:15:15.610 --> 01:15:19.966
+Returns: define something called NEW_LAST.
+
+01:15:19.970 --> 01:15:22.341
+We return the {first, NEW_LAST} for
+
+01:15:22.341 --> 01:15:23.726
+the overloads in namespace ranges.
+
+01:15:23.730 --> 01:15:26.738
+So we need to make sure that this.
+
+01:15:26.740 --> 01:15:32.942
+Is the unmodified. First argument.
+
+01:15:32.942 --> 01:15:36.424
+OK. And we do that by making a copy.
+
+01:15:43.110 --> 01:15:45.006
+To rewrap alright, this is this
+
+01:15:45.006 --> 01:15:47.604
+is clear to me and we're making a
+
+01:15:47.604 --> 01:15:52.748
+copy the first we're unwrapping.
+
+01:15:52.750 --> 01:15:53.862
+There's no move here,
+
+01:15:53.862 --> 01:15:55.530
+so let's make sure this is.
+
+01:15:55.530 --> 01:15:58.570
+Yeah, Permutable refines forward.
+
+01:15:58.570 --> 01:16:01.556
+No, it's OK that we're not moving
+
+01:16:01.556 --> 01:16:04.670
+first when we pass it to get unwrapped.
+
+01:16:04.670 --> 01:16:06.360
+Which should leave it unmodified.
+
+01:16:08.510 --> 01:16:10.758
+And we're going to wrap the return value
+
+01:16:10.758 --> 01:16:13.308
+in this copy we've made called result.
+
+01:16:15.940 --> 01:16:18.509
+So hopefully with the return value from
+
+01:16:18.509 --> 01:16:20.588
+shift left unchecked is going to be.
+
+01:16:20.590 --> 01:16:23.089
+This NEW_LAST that the paper says
+
+01:16:23.089 --> 01:16:25.598
+it's calculating, which is the.
+
+01:16:25.600 --> 01:16:28.240
+Well, whenever that pointer, sorry,
+
+01:16:28.240 --> 01:16:31.152
+the iterator after the final element
+
+01:16:31.152 --> 01:16:34.184
+that was that contains a value that
+
+01:16:34.184 --> 01:16:36.684
+was in the original range, right?
+
+01:16:36.684 --> 01:16:38.696
+We're gonna ignore the the tail
+
+01:16:38.696 --> 01:16:40.364
+of elements after that that are
+
+01:16:40.364 --> 01:16:42.306
+going to be moved from when we
+
+01:16:42.306 --> 01:16:44.209
+shift all the elements to the left.
+
+01:16:46.460 --> 01:16:50.010
+So we checked this already, right?
+
+01:16:50.010 --> 01:16:51.978
+It's unwrapping first unwrapping
+
+01:16:51.978 --> 01:16:54.625
+last and passing _Pos_to_shift
+
+01:16:54.625 --> 01:16:57.358
+left unchecked, let's go take a
+
+01:16:57.358 --> 01:16:59.693
+look at that unchecked algorithm.
+
+01:16:59.700 --> 01:17:03.347
+Which I'm certain was defined above here.
+
+01:17:03.350 --> 01:17:04.620
+Is that against our style?
+
+01:17:07.080 --> 01:17:09.705
+Yeah, it takes an iterator and a
+
+01:17:09.705 --> 01:17:13.268
+Sentinel returns the iterator type.
+
+01:17:13.270 --> 01:17:15.014
+Doesn't need to modify the sentinel
+
+01:17:17.160 --> 01:17:19.304
+Again, this needs to be iter_difference_t
+
+01:17:22.700 --> 01:17:24.668
+And its behavior is.
+
+01:17:24.668 --> 01:17:27.620
+We're shifting by less than 0.
+
+01:17:29.700 --> 01:17:32.067
+We advance first to the end of
+
+01:17:32.070 --> 01:17:34.566
+the original range, and return it.
+
+01:17:36.840 --> 01:17:39.756
+And that is going to be first plus.
+
+01:17:39.756 --> 01:17:44.380
+The original number of elements in the range.
+
+01:17:44.380 --> 01:17:45.883
+Minus. Zero, right?
+
+01:17:45.883 --> 01:17:48.955
+If it is zero, then we that's
+
+01:17:48.955 --> 01:17:50.730
+number of elements minus zero.
+
+01:17:50.730 --> 01:17:53.474
+So NEW_LAST will actually be the
+
+01:17:53.474 --> 01:17:54.920
+iterator that corresponds to.
+
+01:17:54.920 --> 01:17:57.329
+The sentinel last.
+
+01:17:57.330 --> 01:17:58.690
+And that's what we're doing.
+
+01:17:58.690 --> 01:18:01.230
+We're advancing first until it's.
+
+01:18:01.230 --> 01:18:02.970
+equivalent to last and we're returning it.
+
+01:18:06.160 --> 01:18:09.527
+Otherwise, we want to start at first.
+
+01:18:21.670 --> 01:18:25.300
+believe that only equals zero, this is.
+
+01:18:28.790 --> 01:18:30.240
+Interesting.
+
+01:18:34.000 --> 01:18:34.840
+I think.
+
+01:18:39.850 --> 01:18:41.728
+I thought there was a change.
+
+01:18:43.780 --> 01:18:46.772
+To allow negative N
+
+01:18:46.772 --> 01:18:49.948
+with no effect. Or maybe the paper?
+
+01:18:49.948 --> 01:18:51.692
+Sorry, May actually maybe shift
+
+01:18:51.692 --> 01:18:53.204
+originally allowed negative N
+
+01:18:53.204 --> 01:18:55.646
+with no effect. And the change was
+
+01:18:55.646 --> 01:18:58.460
+to make it a precondition.
+
+01:18:58.460 --> 01:19:00.620
+You go look at what the standard says.
+
+01:19:03.210 --> 01:19:03.800
+Or
+
+01:19:08.000 --> 01:19:10.268
+the existing shift left of C++ 17
+
+01:19:10.268 --> 01:19:12.130
+Yeah, precondition.
+
+01:19:14.800 --> 01:19:16.984
+So this was not an error in
+
+01:19:16.984 --> 01:19:18.900
+the context cited in the paper.
+
+01:19:18.900 --> 01:19:21.060
+That's what the paper says.
+
+01:19:21.060 --> 01:19:23.448
+So yeah, that must have originally
+
+01:19:23.448 --> 01:19:25.040
+allowed in negative values,
+
+01:19:25.040 --> 01:19:28.698
+and it was later changed by lwg issue,
+
+01:19:28.698 --> 01:19:31.128
+and I got the order.
+
+01:19:31.130 --> 01:19:34.040
+Mixed up in my memory.
+
+01:19:34.040 --> 01:19:36.530
+Alright, I I won't argue
+
+01:19:36.530 --> 01:19:38.024
+with Stephan's comment.
+
+01:19:38.030 --> 01:19:38.900
+This is reasonable.
+
+01:19:41.470 --> 01:19:42.628
+And if anything.
+
+01:19:47.220 --> 01:19:50.228
+If you do and I agree we should.
+
+01:19:53.640 --> 01:19:57.050
+The assertion should
+
+01:20:01.600 --> 01:20:03.800
+shift left itself.
+
+01:20:07.040 --> 01:20:09.176
+Should be in the caller
+
+01:20:09.176 --> 01:20:11.270
+instead of in this helper.
+
+01:20:15.780 --> 01:20:18.438
+Easier for users if we report
+
+01:20:18.438 --> 01:20:20.977
+errors inside something with a name
+
+01:20:20.977 --> 01:20:23.047
+that they called in their code.
+
+01:20:25.670 --> 01:20:28.166
+Which is probably obvious to Stephan
+
+01:20:28.170 --> 01:20:29.666
+and obvious to me, but may not be
+
+01:20:29.666 --> 01:20:31.227
+obvious to the person that wrote this,
+
+01:20:31.230 --> 01:20:34.850
+so we'll include that comment.
+
+01:20:34.850 --> 01:20:38.802
+&gt;&gt; Stephan: We would need two assertions right for the
+
+01:20:38.802 --> 01:20:41.529
+Iterator Sentinel and the ranges form.
+
+01:20:41.530 --> 01:20:43.780
+&gt;&gt; Stephan: I think. Is that right? 
+&gt;&gt; Casey: Yes.
+
+01:20:45.870 --> 01:20:46.850
+&gt;&gt; Stephan: Did we do that elsewhere?
+
+01:20:46.850 --> 01:20:48.750
+Where we repeat the assertions
+
+01:20:48.750 --> 01:20:51.610
+in each public entry?
+
+01:20:51.610 --> 01:20:53.560
+Rather than centralized or does it?
+
+01:20:53.560 --> 01:20:55.320
+Has it not just come up with enough
+
+01:20:55.320 --> 01:20:56.669
+that we've got preconditions?
+
+01:20:56.670 --> 01:20:58.290
+&gt;&gt; Casey: I think we'd usually do that.
+
+01:20:58.290 --> 01:21:00.140
+Yes, we usually apply preconditions
+
+01:21:00.140 --> 01:21:02.679
+as close as we can to users.
+
+01:21:02.680 --> 01:21:03.848
+&gt;&gt; Stephan: OK, I couldn't remember,
+
+01:21:03.848 --> 01:21:04.668
+uh, what we do.
+
+01:21:08.560 --> 01:21:09.694
+&gt;&gt; Casey: If we don't, we should fix it.
+
+01:21:13.430 --> 01:21:15.419
+&gt;&gt; Stephan: I think I I think we may have some
+
+01:21:15.419 --> 01:21:17.029
+cases where we do centralized,
+
+01:21:17.030 --> 01:21:19.774
+but we're careful that the I think
+
+01:21:19.774 --> 01:21:22.079
+I recall the message will
+
+01:21:22.079 --> 01:21:24.308
+sometimes mention the the standard
+
+01:21:24.308 --> 01:21:26.282
+pretty name rather than the under
+
+01:21:26.282 --> 01:21:28.567
+score ugly name and say
+
+01:21:28.567 --> 01:21:30.480
+ranges::shift_left requires blah,
+
+01:21:30.480 --> 01:21:32.160
+even if it's being emitted
+
+01:21:32.160 --> 01:21:33.504
+within the internal helper.
+
+01:21:33.510 --> 01:21:34.886
+But I would need to go check to
+
+01:21:34.886 --> 01:21:36.318
+see what the actual precedent is.
+
+01:21:44.190 --> 01:21:46.038
+&gt;&gt; Casey: I believe we should not do
+
+01:21:46.038 --> 01:21:47.270
+anything here except checking
+
+01:21:47.331 --> 01:21:49.039
+this. I can't see the code.
+
+01:21:49.040 --> 01:21:51.088
+Can't see the forest for the trees OK?
+
+01:21:53.700 --> 01:21:55.080
+We make a copy of first.
+
+01:21:58.690 --> 01:22:02.026
+If we have a sized sentinel.
+
+01:22:02.030 --> 01:22:04.285
+Recheck that positive shift if
+
+01:22:04.285 --> 01:22:06.540
+positive shift is greater than.
+
+01:22:06.540 --> 01:22:07.620
+Yeah, again, the entire
+
+01:22:07.620 --> 01:22:08.970
+length of the input range,
+
+01:22:08.970 --> 01:22:13.588
+and if so. We return first.
+
+01:22:17.800 --> 01:22:19.780
+Which is correct?
+
+01:22:22.850 --> 01:22:25.558
+Now do last would be, I lost the definition.
+
+01:22:28.610 --> 01:22:30.086
+I still looking at shift left.
+
+01:22:30.090 --> 01:22:33.000
+Now I'm looking at shift right.
+
+01:22:33.000 --> 01:22:34.032
+Alright, NEW_LAST
+
+01:22:34.032 --> 01:22:36.440
+is first plus the number of elements
+
+01:22:36.501 --> 01:22:38.398
+in the range minus n, OK.
+
+01:22:38.400 --> 01:22:42.140
+Except n caps. Effectively.
+
+01:22:44.220 --> 01:22:45.744
+At last, minus first.
+
+01:22:45.744 --> 01:22:49.588
+So if n is larger than last minus first.
+
+01:22:49.590 --> 01:22:51.777
+Then we return the NEW_LAST is just first,
+
+01:22:51.780 --> 01:22:53.340
+which would be the result of
+
+01:22:53.340 --> 01:22:55.541
+doing all this math. If this was.
+
+01:22:55.541 --> 01:22:57.863
+Max of N and last minus first.
+
+01:23:00.110 --> 01:23:01.550
+OK, so that's correct.
+
+01:23:03.990 --> 01:23:09.406
+If it's sized_sentinel_for if that's not greater,
+
+01:23:09.410 --> 01:23:12.870
+we advance _Start_at,
+
+01:23:12.870 --> 01:23:16.718
+_Pos_to_shift. skip over
+
+01:23:16.720 --> 01:23:19.408
+You take this copy of first and we
+
+01:23:19.408 --> 01:23:22.020
+skip over the the first N elements.
+
+01:23:22.020 --> 01:23:25.539
+Now that we know that N is somewhere within.
+
+01:23:25.540 --> 01:23:28.832
+The the range. This is gonna give
+
+01:23:28.832 --> 01:23:30.639
+us a a copy from the point right?
+
+01:23:30.640 --> 01:23:32.400
+We're gonna end up copying
+
+01:23:32.400 --> 01:23:34.300
+from here into first later on.
+
+01:23:36.700 --> 01:23:38.565
+OK, otherwise if we don't
+
+01:23:38.565 --> 01:23:40.057
+have a sized sentinel.
+
+01:23:42.350 --> 01:23:44.178
+We're going to start.
+
+01:23:46.270 --> 01:23:49.474
+We're going to. Index our way into the range
+
+01:23:49.474 --> 01:23:51.789
+manually instead of calling advance.
+
+01:23:58.880 --> 01:24:02.432
+Decrememnt _Pos_to_shift and for each
+
+01:24:02.432 --> 01:24:04.838
+decrement. We'll increment _Start_at
+
+01:24:07.900 --> 01:24:09.015
+But not if it's already
+
+01:24:09.015 --> 01:24:10.520
+at the end of the range.
+
+01:24:10.520 --> 01:24:13.337
+If it has hit the end of the range.
+
+01:24:13.340 --> 01:24:14.519
+We return first.
+
+01:24:16.540 --> 01:24:17.540
+Which we already decided
+
+01:24:17.540 --> 01:24:18.896
+was the right thing, right?
+
+01:24:18.896 --> 01:24:21.032
+If the shift count was greater
+
+01:24:21.032 --> 01:24:22.160
+than the length of the range,
+
+01:24:22.160 --> 01:24:23.256
+they should return first.
+
+01:24:23.256 --> 01:24:25.269
+This is just another way to do it.
+
+01:24:32.370 --> 01:24:34.295
+We try to avoid the other conditionals.
+
+01:24:39.540 --> 01:24:41.860
+And I've afflicted miscco
+
+01:24:41.860 --> 01:24:44.760
+with my hatred of multiple
+
+01:24:44.760 --> 01:24:45.980
+Blank lines, oh no
+
+01:24:45.980 --> 01:24:47.810
+He just doesn't like this blank
+
+01:24:47.876 --> 01:24:50.074
+line in between the If constexpr and
+
+01:24:50.074 --> 01:24:52.484
+the definition of the variable.
+
+01:24:52.490 --> 01:24:54.002
+I believe we should not do
+
+01:24:54.002 --> 01:24:55.356
+anything here except checking the
+
+01:24:55.356 --> 01:24:56.556
+distance via _Ranges_distance.
+
+01:25:01.840 --> 01:25:04.666
+If difference is less than 0.
+
+01:25:04.670 --> 01:25:05.530
+It's less than zero.
+
+01:25:05.530 --> 01:25:06.605
+We we have a problem.
+
+01:25:06.610 --> 01:25:08.206
+If it's zero this does nothing.
+
+01:25:23.390 --> 01:25:26.270
+Just familiarize yourself with debuggers.
+
+01:25:26.270 --> 01:25:28.604
+Usually we use an internal helper
+
+01:25:28.604 --> 01:25:30.160
+function for both implementations.
+
+01:25:30.160 --> 01:25:31.632
+Without the balance checks.
+
+01:25:31.632 --> 01:25:33.472
+But here the implementation might
+
+01:25:33.472 --> 01:25:35.675
+be simple enough to do it inline.
+
+01:25:38.580 --> 01:25:40.070
+All right, I'm not sure.
+
+01:25:42.380 --> 01:25:43.930
+Entirely what he's talking about.
+
+01:25:46.540 --> 01:25:47.518
+I do see.
+
+01:25:56.280 --> 01:25:58.555
+Wondering if we could use the three
+
+01:25:58.555 --> 01:26:00.988
+argument form of ranges::advance here?
+
+01:26:00.990 --> 01:26:04.000
+There's a form of ranges::advance that
+
+01:26:04.000 --> 01:26:07.140
+takes an iterator, a count, and a sentinel.
+
+01:26:07.140 --> 01:26:09.195
+It tries to advance the
+
+01:26:09.195 --> 01:26:11.250
+iterator count steps and stops
+
+01:26:11.326 --> 01:26:13.606
+if it reaches sentinel before.
+
+01:26:13.610 --> 01:26:14.879
+Going count steps.
+
+01:26:20.450 --> 01:26:23.380
+I think that's how I would do this.
+
+01:26:25.770 --> 01:26:27.870
+Because I could get start
+
+01:26:27.870 --> 01:26:31.220
+&gt;&gt; Stephan: I wonder if it would result in the
+
+01:26:31.305 --> 01:26:34.657
+same behavior when you do reach that last,
+
+01:26:34.660 --> 01:26:37.387
+because here it looks like we need to return
+
+01:26:37.387 --> 01:26:40.240
+the first iterator if the user has asked
+
+01:26:40.240 --> 01:26:42.699
+for an unreasonably large pause to shift.
+
+01:26:42.700 --> 01:26:44.870
+But if we use the three Arg
+
+01:26:44.870 --> 01:26:46.879
+clamped version of ranges advance,
+
+01:26:46.880 --> 01:26:49.517
+I think we might not end up returning first.
+
+01:26:49.520 --> 01:26:50.280
+I could be wrong though.
+
+01:26:50.280 --> 01:26:52.408
+I haven't traced through all the logic.
+
+01:26:55.440 --> 01:26:57.325
+And with the miscco suggestion
+
+01:26:57.325 --> 01:26:58.833
+to use move unchecked,
+
+01:26:58.840 --> 01:27:00.793
+I also am not sure exactly what it means
+
+01:27:00.793 --> 01:27:02.815
+now that you've pointed it out. Yeah,
+
+01:27:02.815 --> 01:27:05.720
+because there's no like move unchecked in.
+
+01:27:05.720 --> 01:27:07.742
+We're trying to find the specific
+
+01:27:07.742 --> 01:27:09.090
+iterator in the middle.
+
+01:27:09.090 --> 01:27:11.239
+yeah, we do call it there,
+
+01:27:11.240 --> 01:27:13.400
+so I'm not sure what the suggestion is.
+
+01:27:17.420 --> 01:27:20.048
+Oh, and time check it has been one hour
+
+01:27:20.048 --> 01:27:22.798
+&gt;&gt; Stephan: and 31 minutes 
+&gt;&gt; Casey: Oh we're at time check already
+
+01:27:22.800 --> 01:27:25.430
+&gt;&gt; Casey: Oh, this is so much fun. OK.
+
+01:27:28.540 --> 01:27:30.773
+The nice thing about the three argument
+
+01:27:30.773 --> 01:27:32.569
+range is advanced is it returns.
+
+01:27:32.570 --> 01:27:35.696
+Uh, you know count that's leftover.
+
+01:27:35.700 --> 01:27:37.806
+So if there is a nonzero if it returns
+
+01:27:37.806 --> 01:27:40.600
+nonzero, we could return first.
+
+01:27:40.600 --> 01:27:44.359
+As we're advancing whatever is _Start_at,
+
+01:27:44.360 --> 01:27:45.914
+we will advance _Start_at by _Pos_to_shift
+
+01:27:45.920 --> 01:27:47.498
+towards last.
+
+01:27:50.830 --> 01:27:52.410
+So it would work here.
+
+01:27:52.410 --> 01:27:53.859
+I don't know if it's better or
+
+01:27:53.859 --> 01:27:54.890
+not without thinking about it,
+
+01:27:54.890 --> 01:27:55.970
+and we've run out of time
+
+01:27:55.970 --> 01:27:56.690
+for thinking about it.
+
+01:27:56.690 --> 01:27:58.580
+Unfortunately, so why don't we
+
+01:27:58.580 --> 01:28:00.900
+go ahead and knock off here?
+
+01:28:03.280 --> 01:28:05.500
+Yeah, it'll take at least another
+
+01:28:05.500 --> 01:28:07.960
+15 minutes to finish shift left.
+
+01:28:10.040 --> 01:28:12.336
+So we're going to go ahead and stop,
+
+01:28:12.340 --> 01:28:14.279
+apologize for starting a little bit late.
+
+01:28:14.280 --> 01:28:16.269
+We might have been able to get to the
+
+01:28:16.269 --> 01:28:18.496
+end of it if we had that 5 minutes back.
+
+01:28:18.500 --> 01:28:21.076
+Sorry I haven't used this particular machine.
+
+01:28:21.080 --> 01:28:22.820
+I haven't driven here before,
+
+01:28:22.820 --> 01:28:25.634
+so I wasn't set up and prepared.
+
+01:28:25.640 --> 01:28:28.628
+Anyway, let's, uh go to questions.
+
+01:28:28.630 --> 01:28:30.366
+Are there any questions in the chat?
+
+01:28:30.370 --> 01:28:31.618
+Has everybody been asking?
+
+01:28:33.920 --> 01:28:35.486
+&gt;&gt; Stephan: No outstanding questions,
+
+01:28:35.486 --> 01:28:39.660
+just some talk about, uh.
+
+01:28:39.660 --> 01:28:41.532
+Why are we using those nibloids
+
+01:28:41.532 --> 01:28:43.580
+and the std move optimization?
+
+01:28:43.580 --> 01:28:45.500
+So you, you've already covered everything.
+
+01:28:45.500 --> 01:28:47.610
+&gt;&gt; Casey: Ohh, there's a suggestion from
+
+01:28:47.610 --> 01:28:50.610
+Cameron that we assign our suggestion.
+
+01:28:50.610 --> 01:28:53.580
+Our suggestion to him to implement
+
+01:28:53.580 --> 01:28:55.065
+move compiler running.
+
+01:28:57.460 --> 01:29:00.869
+Anyway, OK. Thank you all for coming.
+
+01:29:00.870 --> 01:29:02.934
+And I actually like the live
+
+01:29:02.934 --> 01:29:04.605
+question format better than people
+
+01:29:04.605 --> 01:29:06.375
+type things in chat and having
+
+01:29:06.375 --> 01:29:08.497
+to go back and get them later.
+
+01:29:08.500 --> 01:29:10.960
+It worked well. Yeah thanks.
+
+01:29:10.960 --> 01:29:12.466
+I will stop the recording now.
