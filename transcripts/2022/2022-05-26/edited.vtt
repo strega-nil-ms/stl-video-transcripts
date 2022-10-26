@@ -3198,13 +3198,13 @@ I could be talked into it as a way to
 Amount of actual speed you'd get from
 
 00:49:00.475 --> 00:49:03.760
-switching to moving forward macros. Uh.
+switching to move and forward macros. Uh.
 
 00:49:05.820 --> 00:49:08.788
 Especially since move, I think you still
 
 00:49:08.788 --> 00:49:12.220
-need to instantiate, remove, remove ref t.
+need to instantiate, remove, remove_ref_t.
 
 00:49:15.070 --> 00:49:17.527
 which is a template, I don't know.
@@ -3229,7 +3229,7 @@ it can just directly transform them
 without emitting real function calls for
 
 00:49:31.660 --> 00:49:33.280
-reference claiming and I believe GCC
+reference clang and I believe GCC
 
 00:49:33.280 --> 00:49:35.070
 have already done so,
@@ -3238,7 +3238,7 @@ have already done so,
 and MSVC does similar things to things
 
 00:49:37.912 --> 00:49:40.736
-like remove CVT just not move and forward,
+like remove_cv_t just not move and forward,
 
 00:49:40.736 --> 00:49:43.977
 so that's that would be my preference
@@ -3336,13 +3336,13 @@ interfere with compiler optimizations,
 but it is weird to reason about.
 
 00:51:00.910 --> 00:51:02.878
-&gt;&gt; Casey: It would be aligned you wouldn't have to
+&gt;&gt; Casey: It would be a line you wouldn't have to
 
 00:51:02.878 --> 00:51:04.628
 skip over every time you're going
 
 00:51:04.628 --> 00:51:06.750
-through the loop and single step mode.
+through the loop in single step mode.
 
 00:51:06.750 --> 00:51:08.430
 &gt;&gt; Stephan: Sure there would be that improvement, yeah
@@ -3429,7 +3429,7 @@ have this like unsafe keyword
 maybe that puts all of our focus
 
 00:52:05.697 --> 00:52:08.937
-on unsafely into like 1 area maybe.
+on unsafety into like 1 area maybe.
 
 00:52:08.940 --> 00:52:10.048
 &gt;&gt; Casey: We already have one.
@@ -3474,7 +3474,7 @@ putting something different there.
 Umm? I don't think we need this move.
 
 00:52:50.850 --> 00:52:55.258
-1st. Is the name of a variable with
+_First is the name of a variable with
 
 00:52:55.258 --> 00:52:58.920
 automatic storage duration. Right?
@@ -3511,7 +3511,7 @@ together for me now. Umm?
 &gt;&gt; Nicole: Right, because function parameters cannot be
 
 00:53:28.070 --> 00:53:32.427
-Like nrvo like they can't be like without
+Like nrvo'd like they can't be like without
 
 00:53:32.427 --> 00:53:34.988
 &gt;&gt; Casey: Right they they can't be RVO
@@ -3523,10 +3523,10 @@ you can't do return value optimization
 because the parameter has to get
 
 00:53:38.640 --> 00:53:40.272
-stored parameters go like can't get
+stored where parameters go like they can't get
 
 00:53:40.272 --> 00:53:41.678
-stored when it returned by your house.
+stored where return values go.
 
 00:53:43.980 --> 00:53:46.420
 But nevertheless, I think the
@@ -3550,19 +3550,19 @@ because it is a named parameter.
 &gt;&gt; Nicole: Although now return value optimization
 
 00:54:07.560 --> 00:54:10.834
-is not a thing in C++ because PR
+is not a thing in C++ because
 
 00:54:10.834 --> 00:54:12.900
-values are actually a real thing,
+prvalues are actually a real thing,
 
 00:54:12.900 --> 00:54:15.320
 I'm so happy they finally fixed that.
 
 00:54:17.760 --> 00:54:22.220
-&gt;&gt; Casey: Here we go. First, I copied our class.copy.elision 1.1.
+&gt;&gt; Casey: Here we go. class.copy.elision 1.1.
 
 00:54:28.770 --> 00:54:30.948
-The move is extraneous
+This move is extraneous
 
 00:54:39.490 --> 00:54:41.530
 &gt;&gt; Stephan: Looking at this makes me wonder
@@ -3577,7 +3577,7 @@ problem throughout the code base,
 like if we're redundantly moving
 
 00:54:47.560 --> 00:54:51.290
-parameters that are non CV qualified.
+parameters that are non cv-qualified.
 
 00:54:51.290 --> 00:54:52.436
 I bet you there's other occurrences,
@@ -3623,7 +3623,7 @@ So it most. It's in the extra call
 &gt;&gt; Nicole: I, I believe that this should be paragraph 3.
 
 00:55:20.810 --> 00:55:25.224
-Uh. Paragraph 1.1 is about are
+Uh. Paragraph 1.1 is about r
 
 00:55:25.224 --> 00:55:27.920
 named return value optimization.
@@ -3713,7 +3713,7 @@ wait what we're what we're reciting,
 what paragraph with the was this?
 
 00:57:13.510 --> 00:57:19.530
-&gt;&gt; Nicole: Should this use Tim Song cppwp.
+&gt;&gt; Nicole: Should this use Tim Song's cppwp.
 
 00:57:19.530 --> 00:57:20.538
 So that it's stable.
@@ -3792,7 +3792,7 @@ to look this up later, we could find
 exactly which paragraph we meant. So.
 
 00:59:24.300 --> 00:59:25.330
-&gt;&gt; Casey: 1st is.
+&gt;&gt; Casey: _First is.
 
 00:59:37.490 --> 00:59:38.318
 Alright, moving on.
@@ -3813,19 +3813,19 @@ value of the iterator from the loop.
 We don't need to return the final
 
 00:59:51.228 --> 00:59:53.608
-value of Val because we're using.
+value of _Val because we're using.
 
 00:59:53.610 --> 00:59:56.160
 An lvalue that references the original
 
 00:59:56.160 --> 00:59:59.281
-value of Val in the 
+value of _Val in the caller, tada!
 
 00:59:59.281 --> 01:00:02.827
 There so. We get first back
 
 01:00:02.827 --> 01:00:06.529
-from this iota unchecked call.
+from this _Iota_unchecked call.
 
 01:00:06.530 --> 01:00:09.400
 It's an rvalue, so we don't need to move it.
@@ -3846,7 +3846,7 @@ In our out_result.
 iota_result&lt;_It, _Ty&gt; we're returning.
 
 01:00:25.810 --> 01:00:28.568
-There's lots of moving 1st and _Ty,
+The result of moving _First and _Ty,
 
 01:00:28.570 --> 01:00:32.650
 and the paper did want us to move.
@@ -3948,7 +3948,7 @@ lies straight out of the range itself.
 So we're pulling first out.
 
 01:01:56.920 --> 01:01:59.728
-Of that range with ranges begin.
+Of that range with ranges::begin.
 
 01:02:02.200 --> 01:02:05.596
 OK, yeah. Going out first.
@@ -3957,13 +3957,13 @@ OK, yeah. Going out first.
 And then we're going to call
 
 01:02:07.648 --> 01:02:09.458
-the same iota unchecked,
+the same _Iota_unchecked,
 
 01:02:09.460 --> 01:02:13.048
 with the result of unwrapping first.
 
 01:02:13.050 --> 01:02:16.266
-And calling to the _Uend range.
+And calling, tada, _Uend range.
 
 01:02:18.380 --> 01:02:22.097
 _Uend is a magic accessor that
@@ -4005,7 +4005,7 @@ So we're taking those.
 We're passing 3 arguments to
 
 01:02:53.075 --> 01:02:55.164
-iota unchecked, which doesn't.
+_Iota_unchecked, which doesn't.
 
 01:02:55.164 --> 01:02:56.766
 We already know that it does.
@@ -4032,7 +4032,7 @@ So this is correct.
 It can be implemented a little more
 
 01:03:14.956 --> 01:03:16.742
-efficiently using rewrap iterator.
+efficiently using _Rewrap_iterator.
 
 01:03:16.742 --> 01:03:18.358
 We have a helper.
@@ -4075,7 +4075,7 @@ but when I know exactly what
 I'm looking for there anyway,
 
 01:04:17.420 --> 01:04:20.297
-we have a utility called rewrap iterator.
+we have a utility called _Rewrap_iterator.
 
 01:04:20.300 --> 01:04:24.348
 That takes a range and an unwrapped iterator.
@@ -4114,7 +4114,7 @@ If the unwrapped and wraps types
 are different, this meaning this is
 
 01:04:51.928 --> 01:04:53.863
-arranged that has checked iterators.
+a range that has checked iterators.
 
 01:04:53.870 --> 01:04:55.886
 Then we'll go ahead and grab
@@ -4129,10 +4129,10 @@ And we'll wrap up our.
 Unwrapped iterator inside that and return it.
 
 01:05:04.300 --> 01:05:07.142
-This is constrained to we're only work
+This is constrained to only work
 
 01:05:07.142 --> 01:05:09.274
-with forward ranges and necessity
+with forward ranges by necessity
 
 01:05:09.274 --> 01:05:11.794
 because you're only allowed to call
@@ -4153,7 +4153,7 @@ magic smoke out of it and make you
 unable to call again on that again.
 
 01:05:22.610 --> 01:05:27.650
-Since this takes an. Output range range.
+Since this takes an. output_range _Rng.
 
 01:05:27.650 --> 01:05:29.030
 It may be single pass.
@@ -4162,7 +4162,7 @@ It may be single pass.
 And that means we can't
 
 01:05:36.880 --> 01:05:38.240
-really use rewrap iterator.
+really use _Rewrap_iterator.
 
 01:05:38.240 --> 01:05:41.420
 We don't have any facility for.
@@ -4194,7 +4194,7 @@ it with an actual output only range.
 &gt;&gt; Casey: yeah it will fail to compile but
 
 01:06:00.290 --> 01:06:02.839
-&gt;&gt; Casey: only when called with us sub forward.
+&gt;&gt; Casey: only when called with a sub-forward.
 
 01:06:02.840 --> 01:06:04.808
 Single pass range.
@@ -4209,7 +4209,7 @@ because I I actually hadn't
 looked into this commentary,
 
 01:06:09.160 --> 01:06:10.298
-I was like, oh rewrap, iterator.
+I was like, oh _Rewrap_iterator.
 
 01:06:10.298 --> 01:06:11.930
 That sounds good because
@@ -4265,16 +4265,16 @@ for example.
 
 01:06:44.730 --> 01:06:48.944
 &gt;&gt; Stephan: Right 
-&gt;&gt; Nicole: and not a use after move.
+&gt;&gt; Nicole: and not a use after move?
 
 01:06:48.950 --> 01:06:50.330
 &gt;&gt; Nicole: I guess it's not.
 
 01:06:50.330 --> 01:06:52.055
-I guess first is
+I guess _First is
 
 01:06:52.055 --> 01:06:53.946
-&gt;&gt; Casey: technically it is a used after move,
+&gt;&gt; Casey: technically it is a use after move,
 
 01:06:53.950 --> 01:06:54.348
 yes
@@ -4287,7 +4287,7 @@ this must be OK for anything that
 
 01:06:59.850 --> 01:07:02.659
 &gt;&gt; Nicole: deals with our
-&gt;&gt; Casey: it's OK use after move
+&gt;&gt; Casey: it's an OK use after move
 
 01:07:02.660 --> 01:07:03.062
 &gt;&gt; Nicole: OK
@@ -4296,16 +4296,16 @@ this must be OK for anything that
 &gt;&gt; Casey: it's it's part of the design of the
 
 01:07:06.278 --> 01:07:08.780
-iterator and wrapping design that.
+iterator unwrapping design that.
 
 01:07:08.780 --> 01:07:10.810
-Seek wrap.
+_Seek_wrap.
 
 01:07:10.810 --> 01:07:13.022
-Seek wrapped could take can have a
+_Seek_wrapped could take can have a
 
 01:07:13.022 --> 01:07:15.549
-a boot from and input iterator.
+a moved from input iterator.
 
 01:07:15.550 --> 01:07:16.100
 &gt;&gt; Nicole: OK cool.
@@ -4321,7 +4321,7 @@ a boot from and input iterator.
 like the pointer to the parent
 
 01:07:25.497 --> 01:07:27.690
-but the printer to the element is
+but the pointer to the element is
 
 01:07:27.690 --> 01:07:29.260
 what's getting totally reset here.
@@ -4330,10 +4330,10 @@ what's getting totally reset here.
 Most I was wondering like I see what
 
 01:07:31.548 --> 01:07:33.491
-that would do for like a forward
+that would do for like a forward_list
 
 01:07:33.491 --> 01:07:35.358
-list or a std::list for vector.
+or a std::list for vector.
 
 01:07:35.358 --> 01:07:37.032
 Though it seems like we would
@@ -4384,7 +4384,7 @@ Let's go ahead and say I
 don't think it's worth.
 
 01:08:17.490 --> 01:08:20.480
-2. If constexpr.
+to if constexpr.
 
 01:08:25.250 --> 01:08:26.930
 And sub.
@@ -4417,7 +4417,7 @@ possibly because you just
 pushed a comment with a typo oh no.
 
 01:09:09.140 --> 01:09:11.724
-&gt;&gt; Casey: Because what I pushed comma of the typo.
+&gt;&gt; Casey: Because what I pushed a comment with a typo?
 
 01:09:11.730 --> 01:09:13.188
 &gt;&gt; Stephan: Yeah, you're you're separately, you didn't.
@@ -4438,7 +4438,7 @@ never mind, it doesn't matter.
 &gt;&gt; Casey: Uh.
 
 01:09:24.300 --> 01:09:25.719
-I spell concepts pretty correctly.
+I spelled concepts correctly.
 
 01:09:28.890 --> 01:09:30.370
 &gt;&gt; Casey: OK
@@ -4484,7 +4484,7 @@ and __cpp_lib_concepts is defined.
 Yes. That's also correct,
 
 01:10:05.262 --> 01:10:09.378
-because this is a C++23 EDITION.
+because this is a C++23 addition.
 
 01:10:09.380 --> 01:10:11.056
 And we don't want
@@ -4496,7 +4496,7 @@ to define it that code and or
 test it when we're running,
 
 01:10:15.755 --> 01:10:17.680
-EGG in a test suite.
+EDG in a test suite.
 
 01:10:17.680 --> 01:10:19.420
 Because EDG concept support
@@ -4520,7 +4520,7 @@ the concepts code in the STL.
 OK. Moving on to algorithm.
 
 01:10:39.160 --> 01:10:41.240
-Sungard, which is again
+Same gaurd, which is again
 
 01:10:41.240 --> 01:10:43.840
 right for the same reasons.
@@ -4574,19 +4574,19 @@ It takes. A first argument.
 Must satisfy permutable and the
 
 01:11:30.690 --> 01:11:33.489
-second must be a symbol for the 1st.
+second must be a sentinel for the first.
 
 01:11:33.490 --> 01:11:36.166
 Which is exactly what this says.
 
 01:11:36.170 --> 01:11:38.845
-constexpr returning a sub
+constexpr returning a
 
 01:11:38.845 --> 01:11:41.520
-range of the first parameter.
+subrange of the first parameter.
 
 01:11:41.520 --> 01:11:42.530
-Shift right.
+shift_right.
 
 01:11:45.540 --> 01:11:48.480
 First template parameter named first.
@@ -4628,7 +4628,7 @@ iter_difference_t alias in C++20 mode.
 Yeah, I think if I recall.
 
 01:12:29.790 --> 01:12:32.016
-Let's go ahead already. Comment on that.
+miscco had already commented on that.
 
 01:12:34.310 --> 01:12:39.950
 But I don't see it. Is this above? Yes.
@@ -4676,10 +4676,10 @@ seems really familiar to me.
 I probably would have missed that one.
 
 01:13:12.370 --> 01:13:14.057
-I do know enough about like remove
+I do know enough about like remove_cv_t
 
 01:13:14.057 --> 01:13:16.213
-CVT that if I see the ugly one being
+that if I see the ugly one being
 
 01:13:16.213 --> 01:13:18.300
 used in modern code I'm like ohh we
@@ -4736,7 +4736,7 @@ that the iterator type is permutable.
 We're returning a borrowed
 
 01:13:55.872 --> 01:13:59.478
-subrange of that range shift left.
+subrange of that range shift_left.
 
 01:13:59.478 --> 01:14:01.974
 Takes the range argument
@@ -4811,7 +4811,7 @@ What that means. It does nothing.
 Hmm.
 
 01:15:15.610 --> 01:15:19.966
-Returned to find something called NEW_LAST.
+Returns: define something called NEW_LAST.
 
 01:15:19.970 --> 01:15:22.341
 We return the {first, NEW_LAST} for
@@ -5072,7 +5072,7 @@ Should be in the caller
 instead of in this helper.
 
 01:20:15.780 --> 01:20:18.438
-Easier for users. i, we report
+Easier for users if we report
 
 01:20:18.438 --> 01:20:20.977
 errors inside something with a name
@@ -5148,7 +5148,7 @@ cases where we do centralized,
 but we're careful that the I think
 
 01:21:19.774 --> 01:21:22.079
-we're called the message will
+I recall the message will
 
 01:21:22.079 --> 01:21:24.308
 sometimes mention the the standard
@@ -5157,10 +5157,10 @@ sometimes mention the the standard
 pretty name rather than the under
 
 01:21:26.282 --> 01:21:28.567
-score ugly name and say range is
+score ugly name and say
 
 01:21:28.567 --> 01:21:30.480
-double colon shift left requires blah,
+ranges::shift_left requires blah,
 
 01:21:30.480 --> 01:21:32.160
 even if it's being emitted
@@ -5298,10 +5298,10 @@ We're going to. Index our way into the range
 manually instead of calling advance.
 
 01:23:58.880 --> 01:24:02.432
-Decorate _Pos_to_shift and for each
+Decrememnt _Pos_to_shift and for each
 
 01:24:02.432 --> 01:24:04.838
-decrement. Will increment _Start_at
+decrement. We'll increment _Start_at
 
 01:24:07.900 --> 01:24:09.015
 But not if it's already
@@ -5403,16 +5403,16 @@ Entirely what he's talking about.
 I do see.
 
 01:25:56.280 --> 01:25:58.555
-What if we could use the three
+Wondering if we could use the three
 
 01:25:58.555 --> 01:26:00.988
-argument form of ranges advance here?
+argument form of ranges::advance here?
 
 01:26:00.990 --> 01:26:04.000
-There's a form of ranges advanced that
+There's a form of ranges::advance that
 
 01:26:04.000 --> 01:26:07.140
-takes an iterator account and a sentinel.
+takes an iterator, a count, and a sentinel.
 
 01:26:07.140 --> 01:26:09.195
 It tries to advance the
