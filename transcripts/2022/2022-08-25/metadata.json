@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "GH-2211, [[nodiscard]] messages",
+  "description": "In this video we review GH-2211: https://github.com/microsoft/STL/pull/2211 titled \"[[nodiscard]] messages\".",
   "private-link": "https://youtu.be/Yk-lLkNGboI",
   "public-link": ""
 }
