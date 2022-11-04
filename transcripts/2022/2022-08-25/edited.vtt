@@ -2,8 +2,6 @@ WEBVTT
 
 NOTE duration:"01:16:50"
 
-NOTE recognizability:0.763
-
 NOTE language:en-us
 
 00:00:02.000 --> 00:00:09.340
@@ -58,7 +56,7 @@ and what do we want to do in this PR?
 Umm, so if you haven't heard of nodiscard
 
 00:00:44.929 --> 00:00:46.509
-r attributes in general, umm
+or attributes in general, umm
 
 00:00:46.510 --> 00:00:49.016
 they're a way to mark things like
@@ -70,10 +68,10 @@ functions or data members, but in
 this case it's applicable to functions. Umm,
 
 00:00:54.470 --> 00:00:56.054
-In ways that,
+in ways that,
 
 00:00:56.054 --> 00:00:58.166
-Don't necessarily carry required
+don't necessarily carry required
 
 00:00:58.166 --> 00:01:00.860
 semantic meaning for the compiler,
@@ -211,7 +209,7 @@ discard the results of function?
 So some I've seen when talking
 
 00:02:24.802 --> 00:02:26.010
-to peopl reactions,
+to people reactions,
 
 00:02:26.010 --> 00:02:28.050
 to nodiscard are sort of split.
@@ -241,7 +239,7 @@ especially if it increases verbosity.
 If you've got a function like say
 
 00:02:40.538 --> 00:02:43.990
-`[[nodiscard]] int square(int)`,
+[[nodiscard]] int square(int),
 
 00:02:43.990 --> 00:02:48.102
 and that returns a couple N's here,
@@ -280,7 +278,7 @@ but here the compiler will warn because
 we marked it as nodiscard warning
 
 00:03:13.340 --> 00:03:14.930
-C 4834 discarding return value
+C4834 discarding return value
 
 00:03:14.930 --> 00:03:16.520
 function with nodiscard attribute.
@@ -469,7 +467,7 @@ Let's have a couple containers.
 Let's have the be 10, 20, 30.
 
 00:05:16.800 --> 00:05:22.037
-`vector<int> two = {40, 50, 60}`.
+vector<int> two = {40, 50, 60}.
 
 00:05:22.037 --> 00:05:26.699
 Let's iterate over both of these
@@ -478,22 +476,22 @@ Let's iterate over both of these
 containers simultaneously. So for
 
 00:05:29.030 --> 00:05:36.720
-`auto i = v1.begin(), auto j = v2.begin();`
+auto i = v1.begin(), auto j = v2.begin();
 
 00:05:36.720 --> 00:05:37.728
 the condition,
 
 00:05:37.728 --> 00:05:42.372
-as long as `i != v1.end()`
+as long as i != v1.end()
 
 00:05:42.372 --> 00:05:45.816
-comma `j != v2.end();`
+comma j != v2.end();
 
 00:05:45.816 --> 00:05:49.618
-and then we want to increment I,
+and then we want to increment i,
 
 00:05:49.620 --> 00:05:52.040
-comma increment J and then
+comma increment j and then
 
 00:05:52.040 --> 00:05:54.960
 we're going to say cout.
@@ -511,7 +509,7 @@ deref i. And then a comma.
 I see Casey and Nicole are smiling because
 
 00:06:04.848 --> 00:06:07.352
-they know it's coming. deref J.
+they know it's coming. deref j.
 
 00:06:07.352 --> 00:06:10.054
 And then maybe print a new line.
@@ -664,7 +662,7 @@ End comma, and I put that
 comment in there intentionally.
 
 00:07:50.940 --> 00:07:52.700
-J not equal V2 End.
+j != v2.end().
 
 00:07:52.700 --> 00:07:54.124
 This comma is wrong.
@@ -682,7 +680,7 @@ is necessary;
 it's a comma operator.
 
 00:08:00.790 --> 00:08:02.833
-We're going to increment both I and J. Here
+We're going to increment both i and j. Here
 
 00:08:02.840 --> 00:08:04.758
 you do not want a comma because
@@ -703,7 +701,7 @@ We got a bool,
 then we drop it on the floor,
 
 00:08:12.160 --> 00:08:16.144
-and the result of this is only J.
+and the result of this is only j.
 
 00:08:16.150 --> 00:08:19.839
 So what we really wanted was operator
@@ -843,7 +841,7 @@ The compiler just sees a function
 call here -- operator not equal.
 
 00:09:50.450 --> 00:09:51.700
-For a vector int iterator,
+For a vector<int> iterator,
 
 00:09:51.700 --> 00:09:53.050
 which is a class type,
@@ -1263,10 +1261,10 @@ So,
 Casey has 1 argument that it's not
 
 00:14:48.124 --> 00:14:50.443
-a bug that not X equal equal Y
+a bug that not x == y
 
 00:14:50.443 --> 00:14:52.197
-doesn't discard the result of X equals Y,
+doesn't discard the result of x == y,
 
 00:14:52.200 --> 00:14:53.475
 But it's really the compiler
@@ -1362,13 +1360,13 @@ this example nodiscard.
 Uh, pure observer,
 
 00:16:00.320 --> 00:16:05.740
-n square and int return n * N.
+n square and int return(n * n).
 
 00:16:05.740 --> 00:16:11.260
 OK, so I cout.
 
 00:16:11.260 --> 00:16:15.370
-Square 5 and everything is good.
+Square(5) and everything is good.
 
 00:16:15.370 --> 00:16:18.628
 20 mode warnings enabled, it works,
@@ -1650,10 +1648,10 @@ it's reasonable to ask those users to
 silence the warning in a targeted manner.
 
 00:19:21.710 --> 00:19:25.284
-So applying like /WD4834 or.
+So applying like /WD4834 or
 
 00:19:25.284 --> 00:19:27.219
-WD4858 to silence these
+/WD4858 to silence these
 
 00:19:27.219 --> 00:19:28.380
 nodiscard warnings.
@@ -1779,7 +1777,7 @@ So off the top of my head there are
 functions that are easily confused.
 
 00:20:39.350 --> 00:20:42.704
-So vector empty is the classic
+So vector::empty is the classic
 
 00:20:42.704 --> 00:20:46.019
 one where if you want to,
@@ -1797,7 +1795,7 @@ If you want to get rid of
 all the elements in a vector,
 
 00:20:51.760 --> 00:20:53.818
-you might say `V.empty()`,
+you might say V.empty(),
 
 00:20:53.820 --> 00:20:55.638
 because empty sounds like a verb.
@@ -1821,7 +1819,7 @@ you've done nothing rather than
 wiping out all your elements.
 
 00:21:03.600 --> 00:21:06.534
-What you meant to say was `V.clear()`,
+What you meant to say was V.clear(),
 
 00:21:06.540 --> 00:21:08.964
 so this confusion is so notorious
@@ -1830,7 +1828,7 @@ so this confusion is so notorious
 that the standard itself has
 
 00:21:11.030 --> 00:21:13.298
-marked vector empty as nodiscard.
+marked vector::empty as nodiscard.
 
 00:21:13.300 --> 00:21:14.794
 I can actually bring that up
@@ -1848,7 +1846,7 @@ that doesn't actually make a difference,
 because, um,
 
 00:21:18.962 --> 00:21:20.742
-vector empty also falls under
+vector::empty also falls under
 
 00:21:20.742 --> 00:21:22.470
 the pure observer criterion,
@@ -1860,7 +1858,7 @@ so we would mark it for that reason alone.
 But even if you didn't have, you know,
 
 00:21:26.730 --> 00:21:28.590
-the willingness to go Mark 3000,
+the willingness to go mark 3000,
 
 00:21:28.590 --> 00:21:30.944
 5000 functions in your STL is nodiscard,
@@ -2289,7 +2287,7 @@ so transition this should go to vcruntime H.
 If the compiler does not
 
 00:26:01.620 --> 00:26:03.300
-support has CPP attribute,
+support __has_cpp_attribute,
 
 00:26:03.300 --> 00:26:05.502
 then nodiscard message of a
@@ -2298,7 +2296,7 @@ then nodiscard message of a
 message expands to nothing.
 
 00:26:06.970 --> 00:26:09.988
-Elif has CPP attribute nodiscard
+elif __has_cpp_attribute nodiscard
 
 00:26:09.988 --> 00:26:12.856
 
@@ -2972,7 +2970,7 @@ I don't need to know any other class,
 and I might, you know, if I'm not sufficiently
 
 00:34:36.997 --> 00:34:39.040
-caffeinated, say `stacktrace.empty()`.
+caffeinated, say stacktrace.empty().
 
 00:34:39.040 --> 00:34:41.134
 Having guidance that explains what to
@@ -3457,7 +3455,7 @@ and I think that function has an empty
 member variable or member function.
 
 00:41:09.320 --> 00:41:10.608
-&gt;&gt; Stephan: Ohh std function understood.
+&gt;&gt; Stephan: Ohh std::function understood.
 
 00:41:10.608 --> 00:41:11.574
 Function does not.
@@ -3520,10 +3518,10 @@ Um. It's a non member.
 Every case. Uh, OK, let's search
 
 00:42:07.238 --> 00:42:09.110
-for all occurrences of std call.
+for all occurrences of std::call.
 
 00:42:09.110 --> 00:42:12.099
-No, that's gonna be horrible fast call.
+No, that's gonna be horrible fastcall.
 
 00:42:12.100 --> 00:42:13.964
 There we go. That's the next to def.
@@ -3745,7 +3743,7 @@ would be reasonable. Umm.
 Also avoiding, um, possible confusion with
 
 00:46:20.290 --> 00:46:25.279
-std function, as Nicole mentioned,
+std::function, as Nicole mentioned,
 
 00:46:31.850 --> 00:46:32.350
 One
@@ -3790,10 +3788,10 @@ capital member would be reasonable.
 Also avoiding possible confusion
 
 00:47:07.694 --> 00:47:09.499
-with std function, as Nicole
+with std::function, as Nicole
 
 00:47:09.499 --> 00:47:11.514
-observed, and with std mem fun as I
+observed, and with stdmemfn as I
 
 00:47:11.514 --> 00:47:13.114
 briefly thought and consistent with
@@ -3880,7 +3878,7 @@ empty even though it doesn't quite follow
 the order of like declaration where you
 
 00:48:36.429 --> 00:48:37.947
-would say `array::empty`.
+would say array::empty.
 
 00:48:37.950 --> 00:48:40.750
 This keeps all the empty, they sort together.
@@ -4037,7 +4035,7 @@ OK, so then raw alloc.
 This one I assume applies to
 
 00:51:20.382 --> 00:51:22.450
-something like std allocator
+something like std::allocator
 
 00:51:22.539 --> 00:51:25.270
 and scoped allocator. Yes.
@@ -4052,10 +4050,10 @@ provide allocator, right? It's um.
 Or should we be expecting to see
 
 00:51:35.420 --> 00:51:37.148
-`polymorphic_allocator` pop up on this scan?
+polymorphic_allocator pop up on this scan?
 
 00:51:37.150 --> 00:51:38.896
-Why is `polymorphic_allocator` not here?
+Why is polymorphic_allocator not here?
 
 00:51:41.450 --> 00:51:43.310
 Trying to remember like all the
@@ -4079,16 +4077,16 @@ Um, interesting?
 Memory resource.
 
 00:51:57.852 --> 00:52:00.558
-Do you have a `polymorphic_allocator`?
+Do you have a polymorphic_allocator?
 
 00:52:00.560 --> 00:52:01.880
 No. There's a subheader now.
 
 00:52:01.880 --> 00:52:02.999
-&gt;&gt; Casey: `xpolymorphic_allocator`.
+&gt;&gt; Casey: xpolymorphic_allocator.
 
 00:52:02.999 --> 00:52:04.118
-&gt;&gt; Stephan: It's `polymorphic_allocator`?
+&gt;&gt; Stephan: It's polymorphic_allocator?
 
 00:52:04.120 --> 00:52:07.515
 &gt;&gt; Casey: Yeah, it should be it's own header.
@@ -4115,13 +4113,13 @@ Because it's absolutely falling under the,
 I'm allocating something wrong,
 
 00:52:26.188 --> 00:52:28.452
-and I don't think `xpolymorphic_allocator`
+and I don't think xpolymorphic_allocator
 
 00:52:28.452 --> 00:52:30.700
 is being marked here. Um, check.
 
 00:52:30.700 --> 00:52:33.700
-No occurrence of `xpolymorphic_allocator`.
+No occurrence of xpolymorphic_allocator.
 
 00:52:33.700 --> 00:52:35.156
 OK, so we've got a missing thing.
@@ -4139,7 +4137,7 @@ because it is a void.&ast;.
 OK, so let's quote that.
 
 00:52:47.010 --> 00:52:53.620
-Go back. `xpolymorphic_allocator`.
+Go back. xpolymorphic_allocator.
 
 00:52:53.620 --> 00:52:56.730
 Allocate paren, here we go.
@@ -4166,7 +4164,7 @@ Do I want to show that it's memory resource?
 Sure.
 
 00:53:16.060 --> 00:53:19.832
-OK. And Umm, `polymorphic_allocator`?
+OK. And Umm, polymorphic_allocator?
 
 00:53:19.832 --> 00:53:22.580
 Where does that allocate come from?
@@ -4181,7 +4179,7 @@ Let's see. Probably should quote the whole thing.
 This should be applied to
 
 00:53:35.380 --> 00:53:41.600
-`memory_resource::allocate`.
+memory_resource::allocate.
 
 00:53:44.600 --> 00:53:48.070
 Yes, because it's a raw pointer.
@@ -4233,7 +4231,7 @@ So I don't need to do 2 separate quotes,
 I'm just going to quote one
 
 00:54:31.580 --> 00:54:33.890
-`polymorphic_allocator::allocate`.
+polymorphic_allocator::allocate.
 
 00:54:39.070 --> 00:54:41.950
 And polymorphic.
@@ -4248,7 +4246,7 @@ OK, this should be applied to
 memory resource allocate and
 
 00:54:52.639 --> 00:54:54.619
-`polymorphic_allocator::allocate`.
+polymorphic_allocator::allocate.
 
 00:54:56.930 --> 00:55:00.246
 Really, um, one of the things I
@@ -4504,7 +4502,7 @@ Or are these the allocator
 traits up here? I want to see the
 
 00:57:46.055 --> 00:57:47.290
-context, this is std allocator.
+context, this is std::allocator.
 
 00:57:49.930 --> 00:57:51.590
 Interesting. Allocator traits on
@@ -4690,7 +4688,7 @@ Do you have propagate on container copy?
 And if we're allocator
 
 01:00:31.068 --> 01:00:32.274
-traits for std allocator,
+traits for std::allocator,
 
 01:00:32.280 --> 01:00:33.560
 we know the answers to all these questions.
@@ -4759,7 +4757,7 @@ OK, so this is the default allocator.
 Allocator traits mentioned and mentioned,
 
 01:01:26.280 --> 01:01:28.674
-and then finally the std allocator one.
+and then finally the std::allocator one.
 
 01:01:28.680 --> 01:01:30.378
 These are the ones being marked.
@@ -4777,7 +4775,7 @@ Default allocator traits. I wanted,
 I wanted Alex's PR here.
 
 01:01:49.350 --> 01:01:53.907
-Yeah, 1, 2, 3 for the std allocator itself.
+Yeah, 1, 2, 3 for the std::allocator itself.
 
 01:01:53.910 --> 01:01:58.208
 That's 1, 2. And then the third one,
@@ -4792,10 +4790,10 @@ Because the CRT guard overflow
 wrap to the next line. So yes,
 
 01:02:02.238 --> 01:02:03.990
-you got all the ones in std allocate.
+you got all the ones in std::allocate.
 
 01:02:03.990 --> 01:02:05.710
-That's good, or std allocator.
+That's good, or std::allocator.
 
 01:02:05.710 --> 01:02:07.726
 And then the last ones were
@@ -4861,7 +4859,7 @@ That was I think, on
 yvals that I commented. Yes.
 
 01:03:13.060 --> 01:03:14.262
-`polymorhpic_allocator::allocate`
+polymorhpic_allocator::allocate
 
 01:03:14.262 --> 01:03:16.666
 and copy paste.
@@ -4888,7 +4886,7 @@ I'm not getting confused that
 allocate object is still a member
 
 01:03:34.359 --> 01:03:36.935
-of `polymorhpic_allocator`. It is OK.
+of polymorhpic_allocator. It is OK.
 
 01:03:36.935 --> 01:03:39.970
 Good update comments so I don't lose it.
@@ -4915,7 +4913,7 @@ which is good.
 That answers the question where
 
 01:03:51.818 --> 01:03:53.299
-the `polymorhpic_allocator` go.
+the polymorhpic_allocator go.
 
 01:03:53.300 --> 01:03:55.884
 Go away, OK now.
@@ -5023,7 +5021,7 @@ What is it? Mutex? No, it's lock guard.
 So if you have a global scope like a
 
 01:05:10.842 --> 01:05:14.850
-mutex mute, and then you say lock guard.
+mutex mut, and then you say lock guard.
 
 01:05:14.850 --> 01:05:19.168
 Guard. my guard mute.
@@ -5192,7 +5190,7 @@ which I've very briefly depicted.
 So that's the difference between
 
 01:07:27.340 --> 01:07:30.497
-if you've got a mutex mute,
+if you've got a mutex mut,
 
 01:07:30.497 --> 01:07:34.000
 and then you have a lock guard.
@@ -5432,31 +5430,31 @@ you never joined or detached it.
 Well, that's bad.
 
 01:10:24.973 --> 01:10:28.546
-It's going to terminate with J thread.
+It's going to terminate with jthread.
 
 01:10:28.546 --> 01:10:29.670
 That's interesting.
 
 01:10:29.670 --> 01:10:32.764
-Do we mark J thread ctor as
+Do we mark jthread ctor as
 
 01:10:32.770 --> 01:10:34.660
 nodiscard?
 
 01:10:34.660 --> 01:10:36.585
-It is unusual to construct a J
+It is unusual to construct a 
 
 01:10:36.585 --> 01:10:38.609
-thread and then do nothing with it.
+jthread and then do nothing with it.
 
 01:10:38.610 --> 01:10:39.340
 Let's see.
 
 01:10:43.720 --> 01:10:46.933
-J thread. OK, we did in fact mark J
+jthread. OK, we did in fact mark
 
 01:10:46.933 --> 01:10:48.150
-thread ctor as nodiscard ctor.
+jthread ctor as nodiscard ctor.
 
 01:10:48.150 --> 01:10:50.246
 So Alex is simply providing a reason here,
@@ -5609,7 +5607,7 @@ except for like the empty case
 like we discussed,
 
 01:12:35.350 --> 01:12:38.286
-where if you call you know std fine,
+where if you call you know std::find,
 
 01:12:38.290 --> 01:12:39.088
 you drop it on the floor,
