@@ -5015,16 +5015,16 @@ code, which is technically cromulent,
 you could say something like instead of.
 
 01:05:05.250 --> 01:05:08.126
-What is it? Mutex? No, it's lock guard.
+What is it? Mutex? No, it's lock_guard.
 
 01:05:08.126 --> 01:05:10.842
 So if you have a global scope like a
 
 01:05:10.842 --> 01:05:14.850
-mutex mut, and then you say lock guard.
+mutex mut, and then you say lock_guard.
 
 01:05:14.850 --> 01:05:19.168
-Guard. my guard mute.
+Guard. my guard mut.
 
 01:05:19.168 --> 01:05:22.684
 Then you can do Cool lock stuff.
@@ -5039,13 +5039,13 @@ This is not that language.
 Uh. When it is destroyed,
 
 01:05:33.090 --> 01:05:34.206
-the lock guard is destroyed.
+the lock_guard is destroyed.
 
 01:05:34.206 --> 01:05:36.638
 So this you can do if you name it.
 
 01:05:36.640 --> 01:05:39.106
-We marked all of the lock guards in the
+We marked all of the lock_guards in the
 
 01:05:39.106 --> 01:05:41.686
 STL as either nodiscard on the type,
@@ -5126,7 +5126,7 @@ Nicole asked.
 Doesn't that create a default
 
 01:06:33.985 --> 01:06:35.840
-constructed lock guard named Mute?
+constructed lock_guard named mut?
 
 01:06:38.350 --> 01:06:40.038
 Let me think on.
@@ -5147,7 +5147,7 @@ one case will do that.
 I think with parens it doesn't.
 
 01:06:53.990 --> 01:06:58.310
-It does. Lock guard with parens.
+It does. lock_guard with parens.
 
 01:06:58.310 --> 01:07:00.386
 I want to say this one.
@@ -5156,7 +5156,7 @@ I want to say this one.
 Actually creates the default
 
 01:07:01.530 --> 01:07:02.670
-constructed one named mute.
+constructed one named mut.
 
 01:07:02.670 --> 01:07:04.990
 This one constructs the temporary,
@@ -5193,10 +5193,10 @@ So that's the difference between
 if you've got a mutex mut,
 
 01:07:30.497 --> 01:07:34.000
-and then you have a lock guard.
+and then you have a lock_guard.
 
 01:07:34.000 --> 01:07:39.284
-paren guard one versus lock guard.
+paren guard one versus lock_guard.
 
 01:07:39.284 --> 01:07:46.880
 brace guard 2. OK, what happens on 20, um?
@@ -5277,22 +5277,22 @@ Why am I getting undeclared
 identifier needs to be called.
 
 01:08:35.210 --> 01:08:36.360
-&gt;&gt; Nicole: It needs to be lock,
+&gt;&gt; Nicole: It needs to be
 
 01:08:36.360 --> 01:08:37.104
-guard, mutex,
+lock_guard mutex,
 
 01:08:37.104 --> 01:08:39.336
-mute as opposed to guard 2.
+mut as opposed to guard 2.
 
 01:08:41.550 --> 01:08:43.134
-&gt;&gt; Stephan: Lock guard mutex. Ohh.
+&gt;&gt; Stephan: lock_guard mutex. Ohh.
 
 01:08:43.134 --> 01:08:47.349
 That's right. Duh. Thank you.
 
 01:08:47.350 --> 01:08:48.930
-Try to construct from mute.
+Try to construct from mut.
 
 01:08:48.930 --> 01:08:50.482
 Um, here we go.
@@ -5316,7 +5316,7 @@ If you tried this,
 this would really be redeclaring a variable.
 
 01:09:01.070 --> 01:09:03.986
-If mute is already around in the same scope.
+If mut is already around in the same scope.
 
 01:09:03.990 --> 01:09:05.690
 Redefinition basically different basic types.
