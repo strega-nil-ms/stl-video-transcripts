@@ -467,7 +467,7 @@ Let's have a couple containers.
 Let's have the be 10, 20, 30.
 
 00:05:16.800 --> 00:05:22.037
-vector<int> two = {40, 50, 60}.
+vector&lt;int&gt; two = {40, 50, 60}.
 
 00:05:22.037 --> 00:05:26.699
 Let's iterate over both of these
@@ -841,7 +841,7 @@ The compiler just sees a function
 call here -- operator not equal.
 
 00:09:50.450 --> 00:09:51.700
-For a vector<int> iterator,
+For a vector&lt;int&gt; iterator,
 
 00:09:51.700 --> 00:09:53.050
 which is a class type,
