@@ -704,7 +704,7 @@ then we drop it on the floor,
 and the result of this is only j.
 
 00:08:16.150 --> 00:08:19.839
-So what we really wanted was operator&&.
+So what we really wanted was operator&amp;&amp;.
 
 00:08:19.839 --> 00:08:21.742
 This is a bug and the reason
@@ -773,7 +773,7 @@ end as v2 ends, so it would seem to work fine.
 But if v1 does not have enough elements,
 
 00:09:05.780 --> 00:09:07.772
-the && will work properly where
+the &amp;&amp; will work properly where
 
 00:09:07.772 --> 00:09:10.122
 we stop as soon as we consume
@@ -986,7 +986,7 @@ to ==, and with
 &lt;=&gt; any usage of
 
 00:11:38.690 --> 00:11:43.360
-&lt;, &gt;, &lt;=, &gt;= is rewritten to <=>.
+&lt;, &gt;, &lt;=, &gt;= is rewritten to &lt;=&gt;.
 
 00:11:45.820 --> 00:11:48.780
 Umm the there's articles, uh,
@@ -995,7 +995,7 @@ Umm the there's articles, uh,
 that will explain why == and
 
 00:11:52.248 --> 00:11:54.560
-<=> are treated differently.
+&lt;=&gt; are treated differently.
 
 00:11:54.560 --> 00:11:56.300
 But the quick answer is that
@@ -1352,7 +1352,7 @@ this example [[nodiscard("pure observer")]]
 int square(int n) and return n * n.
 
 00:16:05.740 --> 00:16:11.260
-OK, so I cout << square(5)
+OK, so I cout &lt;&lt; square(5)
 
 00:16:11.260 --> 00:16:15.370
 and everything is good.
@@ -5261,13 +5261,13 @@ identifier.
 &gt;&gt; Nicole: It needs to be called, it needs to be
 
 01:08:36.360 --> 01:08:37.104
-lock_guard<mutex>{mut}
+lock_guard&lt;mutex&gt;{mut}
 
 01:08:37.104 --> 01:08:39.336
 as opposed to guard2.
 
 01:08:41.550 --> 01:08:43.134
-&gt;&gt; Stephan: lock_guard<mutex>. Ohh.
+&gt;&gt; Stephan: lock_guard&lt;mutex&gt;. Ohh.
 
 01:08:43.134 --> 01:08:47.349
 That's right. Duh. Thank you.
