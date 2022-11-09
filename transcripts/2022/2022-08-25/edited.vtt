@@ -17,22 +17,22 @@ VC libraries open code review.
 Today we'll be looking at the STL's
 
 00:00:14.770 --> 00:00:16.479
-favoritest attribute in the whole world.
+favoritest attribute in the whole world,
 
 00:00:16.480 --> 00:00:19.840
-Nodiscard. We have a PR, umm, from our
+[[nodiscard]]. We have a PR, umm, from our
 
 00:00:19.840 --> 00:00:22.976
-contributor Alex Guteniev, number 2211.
+contributor Alex Guteniev, #2211.
 
 00:00:22.976 --> 00:00:25.160
-Nodiscard messages.
+[[nodiscard]] messages.
 
 00:00:25.160 --> 00:00:27.968
 So we've been looking at this, umm,
 
 00:00:27.970 --> 00:00:29.270
-Which addresses a couple of,
+which addresses a couple of,
 
 00:00:29.270 --> 00:00:30.886
 uh, enhancement issues that
@@ -53,7 +53,7 @@ what does the STL use it for,
 and what do we want to do in this PR?
 
 00:00:42.850 --> 00:00:44.929
-Umm, so if you haven't heard of nodiscard
+Umm, so if you haven't heard of [[nodiscard]]
 
 00:00:44.929 --> 00:00:46.509
 or attributes in general, umm
@@ -107,19 +107,19 @@ This rule isn't strictly
 followed by the standard,
 
 00:01:16.740 --> 00:01:18.756
-there's things like nouniqueaddress that
+there's things like [[no_unique_address]] that
 
 00:01:18.756 --> 00:01:21.565
 do have a bit more of an effect than others.
 
 00:01:21.570 --> 00:01:23.348
-Nodiscard is very much a classic
+[[nodiscard]] is very much a classic
 
 00:01:23.348 --> 00:01:24.993
 attribute where you could ignore every
 
 00:01:24.993 --> 00:01:26.655
-single nodiscard in the program.
+single [[nodiscard]] in the program.
 
 00:01:26.660 --> 00:01:29.190
 And aside from compiler warnings,
@@ -146,7 +146,7 @@ locally and if I do a search,
 a global search for every
 
 00:01:41.565 --> 00:01:42.665
-occurrence of nodiscard,
+occurrence of _NODISCARD,
 
 00:01:42.670 --> 00:01:44.469
 we use a macro in our product
@@ -170,7 +170,7 @@ There are
 5541 occurrences of this
 
 00:01:56.110 --> 00:01:57.670
-nodiscard annotation.
+_NODISCARD annotation.
 
 00:01:57.670 --> 00:02:00.750
 In the STL. We use this everywhere,
@@ -188,7 +188,7 @@ All of this is quality of implementation.
 Implementations of the STL are
 
 00:02:09.530 --> 00:02:11.110
-not required to use nodiscard,
+not required to use [[nodiscard]],
 
 00:02:11.110 --> 00:02:14.422
 but we love it so much we've put 3000, 4000,
@@ -212,7 +212,7 @@ So some I've seen when talking
 to people reactions,
 
 00:02:26.010 --> 00:02:28.050
-to nodiscard are sort of split.
+to [[nodiscard]] are sort of split.
 
 00:02:28.050 --> 00:02:29.040
 Some people are like, you know,
@@ -257,7 +257,7 @@ There we go once I get the syntax right.
 Yeah, so that works fine.
 
 00:02:58.360 --> 00:03:00.761
-So what nodiscard does is it
+So what [[nodiscard]] does is it
 
 00:03:00.761 --> 00:03:02.174
 diagnoses incorrect uses like
@@ -275,13 +275,13 @@ which is valid,
 but here the compiler will warn because
 
 00:03:10.802 --> 00:03:13.336
-we marked it as nodiscard warning
+we marked it as [[nodiscard]] warning
 
 00:03:13.340 --> 00:03:14.930
 C4834 discarding return value
 
 00:03:14.930 --> 00:03:16.520
-function with nodiscard attribute.
+function with [[nodiscard]] attribute.
 
 00:03:16.520 --> 00:03:18.386
 Which is a reminder to the
@@ -317,7 +317,7 @@ first place that had no side effects?
 So this is the most common reason we
 
 00:03:38.994 --> 00:03:41.277
-mark things as nodiscard in the STL.
+mark things as [[nodiscard]] in the STL.
 
 00:03:41.280 --> 00:03:43.926
 So one of the reasons why we can use
@@ -341,10 +341,10 @@ You get no warnings.
 Um,
 
 00:03:54.060 --> 00:03:56.193
-as long as we're very careful to apply no
+as long as we're very careful to apply
 
 00:03:56.200 --> 00:03:56.604
-discard
+[[nodiscard]]
 
 00:03:56.604 --> 00:03:59.028
 only when we're highly confident that
@@ -380,7 +380,7 @@ that would significantly degrade
 the utility of the feature.
 
 00:04:15.440 --> 00:04:16.336
-So with nodiscard,
+So with [[nodiscard]],
 
 00:04:16.336 --> 00:04:18.250
 we try to strictly apply it to cases
@@ -395,16 +395,16 @@ it's going to find actual problems,
 and only in a couple of places have
 
 00:04:22.778 --> 00:04:24.278
-we been a little bit too overeager.
+we been a little bit too overeager with
 
 00:04:24.280 --> 00:04:26.584
-nodiscard have had to pull it back.
+[[nodiscard]], and we've have had to pull it back.
 
 00:04:26.590 --> 00:04:29.257
 It does mean that there are some
 
 00:04:29.257 --> 00:04:31.944
-cases like unique pointer release
+cases like unique_ptr::release(),
 
 00:04:31.944 --> 00:04:35.215
 where 90% of discards are a bug but
@@ -416,7 +416,7 @@ where 90% of discards are a bug but
 10% that we don't want to emit noise,
 
 00:04:40.100 --> 00:04:41.644
-we don't mark the thing as nodiscard
+we don't mark the thing as [[nodiscard]]
 
 00:04:41.644 --> 00:04:42.819
 even though it would find bugs,
@@ -428,7 +428,7 @@ the cost of false positives is too great.
 So maybe this is compelling.
 
 00:04:48.320 --> 00:04:50.024
-You know seeing this nodiscard saying oh wow
+You know seeing this [[nodiscard]] saying oh wow
 
 00:04:50.024 --> 00:04:51.755
 you caught a bug but maybe you're thinking,
@@ -446,10 +446,10 @@ the floor and I wanted it anyways.
 You know, how bad could that be?
 
 00:04:58.400 --> 00:05:00.872
-So let me present the the most compelling
+So let me present the most compelling
 
 00:05:00.872 --> 00:05:03.018
-reason that I've seen for nodiscard.
+reason that I've seen for [[nodiscard]].
 
 00:05:03.020 --> 00:05:05.156
 It has found a few bugs
@@ -467,7 +467,7 @@ Let's have a couple containers.
 Let's have the be 10, 20, 30.
 
 00:05:16.800 --> 00:05:22.037
-vector&lt;int&gt; two = {40, 50, 60}.
+vector&lt;int&gt; v2 = {40, 50, 60}.
 
 00:05:22.037 --> 00:05:26.699
 Let's iterate over both of these
@@ -503,13 +503,13 @@ We'd like to dereference the iterator.
 Nope, can't do that.
 
 00:05:59.592 --> 00:06:02.264
-deref i. And then a comma.
+*i. And then a comma.
 
 00:06:02.264 --> 00:06:04.848
 I see Casey and Nicole are smiling because
 
 00:06:04.848 --> 00:06:07.352
-they know it's coming. deref j.
+they know it's coming. *j.
 
 00:06:07.352 --> 00:06:10.054
 And then maybe print a new line.
@@ -521,7 +521,7 @@ OK, and let me warning disable 4834.
 So we pretend what happens if the STL
 
 00:06:16.079 --> 00:06:18.677
-does not have nodiscard warnings.
+does not have [[nodiscard]] warnings.
 
 00:06:18.680 --> 00:06:19.550
 What happens here?
@@ -551,7 +551,7 @@ I got 10 and 40, 20 and 50, 30 and 60 printed.
 Well, there is a bug here.
 
 00:06:33.040 --> 00:06:35.790
-Let's see what the bug is by enabling the nodiscard
+Let's see what the bug is by enabling the [[nodiscard]]
 
 00:06:35.861 --> 00:06:38.613
 warning as it is enabled by default.
@@ -563,7 +563,7 @@ And I think,
 think, think.
 
 00:06:41.760 --> 00:06:45.216
-Why am I not getting the nodiscard warning?
+Why am I not getting the [[nodiscard]] warning?
 
 00:06:45.220 --> 00:06:46.273
 We're under latest,
@@ -590,7 +590,7 @@ OK, now I have a mystery because this really,
 really should have
 
 00:07:05.135 --> 00:07:08.060
-emitted the nodiscard warning.
+emitted the [[nodiscard]] warning.
 
 00:07:08.060 --> 00:07:10.598
 Uh, let's see, we've got iterators.
@@ -647,19 +647,19 @@ So we get a squiggle on line 11,
 warning, discarding return value
 
 00:07:42.468 --> 00:07:44.278
-function with nodiscard attribute.
+function with [[nodiscard]] attribute.
 
 00:07:44.280 --> 00:07:45.360
 Oh, that's interesting.
 
 00:07:45.360 --> 00:07:47.520
-I said I not equal V1 end.
+I said i != v1.end().
 
 00:07:47.520 --> 00:07:49.572
-End comma, and I put that
+comma, and I put that
 
 00:07:49.572 --> 00:07:50.940
-comment in there intentionally.
+comma in there intentionally.
 
 00:07:50.940 --> 00:07:52.700
 j != v2.end().
@@ -704,10 +704,10 @@ then we drop it on the floor,
 and the result of this is only j.
 
 00:08:16.150 --> 00:08:19.839
-So what we really wanted was operator
+So what we really wanted was operator&&.
 
 00:08:19.839 --> 00:08:21.742
-and. This is a bug and the reason
+This is a bug and the reason
 
 00:08:21.742 --> 00:08:23.370
 why I say this is my favorite
@@ -743,9 +743,10 @@ You want this to end as soon as
 one of the two vectors is exhausted
 
 00:08:44.123 --> 00:08:45.860
+and not only when the second
 
 00:08:45.860 --> 00:08:46.602
-vectors exhausted.
+vector is exhausted.
 
 00:08:46.602 --> 00:08:49.199
 Um, so having a comma there is
@@ -763,22 +764,22 @@ but if I had let's see if I
 have too many elements,
 
 00:08:59.350 --> 00:08:59.996
-we would.
+we would
 
 00:08:59.996 --> 00:09:03.710
-end as V2 ends so it would seem to work fine.
+end as v2 ends, so it would seem to work fine.
 
 00:09:03.710 --> 00:09:05.774
-But if V1 does not have enough elements,
+But if v1 does not have enough elements,
 
 00:09:05.780 --> 00:09:07.772
-the and will work properly where
+the && will work properly where
 
 00:09:07.772 --> 00:09:10.122
 we stop as soon as we consume
 
 00:09:10.122 --> 00:09:12.012
-the final element 20 of V1.
+the final element 20 of v1.
 
 00:09:12.020 --> 00:09:14.012
 But the comma will give us
@@ -793,7 +794,7 @@ be diagnosed in debug mode.
 Ohh yeah,
 
 00:09:18.122 --> 00:09:20.108
-we let's disable the nodiscard
+we let's disable the [[nodiscard]]
 
 00:09:20.108 --> 00:09:23.275
 warning 4834 and if we compile in debug
@@ -826,7 +827,7 @@ But in practice what we get here is garbage.
 So there's a real bug if you say
 
 00:09:40.990 --> 00:09:42.855
-comma and nodiscard catches it
+comma and [[nodiscard]] catches it
 
 00:09:42.855 --> 00:09:45.289
 because it gets the library to
@@ -838,7 +839,7 @@ communicate information to the compiler.
 The compiler just sees a function
 
 00:09:49.054 --> 00:09:50.450
-call here -- operator not equal.
+call here -- operator!=.
 
 00:09:50.450 --> 00:09:51.700
 For a vector&lt;int&gt; iterator,
@@ -874,7 +875,7 @@ But here we really want this pure
 observer not equal to not be discarded,
 
 00:10:07.260 --> 00:10:09.528
-so nodiscard will find bugs.
+so [[nodiscard]] will find bugs.
 
 00:10:09.530 --> 00:10:10.718
 You want this enabled.
@@ -889,7 +890,7 @@ and ideally point of this code review
 is to try to convince you to start
 
 00:10:16.473 --> 00:10:18.673
-marking your own functions as nodiscard
+marking your own functions as [[nodiscard]]
 
 00:10:18.673 --> 00:10:20.719
 when they meet the proper criteria.
@@ -937,73 +938,64 @@ Or perhaps one of the STL maintainers here
 can report the compiler bug as I talk.
 
 00:10:51.650 --> 00:10:55.943
-The issue here is that I am calling operator
+The issue here is that I am calling operator!=.
 
-00:10:55.950 --> 00:10:57.237
-not equal. In
-
-00:10:57.237 --> 00:11:00.240
-C++20 mode we got the spaceship operator
+00:10:55.950 --> 00:11:00.240
+In C++20 mode we got operator&lt;=&gt;
 
 00:11:00.325 --> 00:11:03.328
-and along with the spaceship operator we
+and along with operator&lt;=&gt; we
 
 00:11:03.328 --> 00:11:07.028
 got a bunch of cool rules that says that
 
 00:11:07.028 --> 00:11:09.916
-a class only needs to provide operator equal.
+a class only needs to provide operator==.
 
 00:11:09.916 --> 00:11:11.920
 Let me add some comments here.
 
 00:11:11.920 --> 00:11:15.118
-Op equal and then if you
+op==, and then if you
 
 00:11:15.118 --> 00:11:16.717
-provide operator spaceship.
+provide operator&lt;=&gt;.
 
 00:11:16.720 --> 00:11:19.896
-Then the equal will be used to generate,
+Then the == will be used to generate,
 
 00:11:19.900 --> 00:11:20.779
-um, not equal.
+um, !=.
 
 00:11:20.779 --> 00:11:22.537
-Or really if you say not
+Or really if you say !=
 
 00:11:22.537 --> 00:11:24.080
-equal it gets rewritten,
+it gets rewritten,
 
 00:11:24.080 --> 00:11:26.628
 I should say rewritten.
 
 00:11:26.630 --> 00:11:31.845
-So usage of not equal is rewritten
+So usage of != is rewritten
 
 00:11:31.850 --> 00:11:35.258
-to equal, equal and with
+to ==, and with
 
 00:11:35.258 --> 00:11:38.690
-spaceship any usage of less than,
+&lt;=&gt; any usage of
 
-00:11:38.690 --> 00:11:39.157
-greater,
-
-00:11:39.157 --> 00:11:40.091
-less equal,
-
-00:11:40.091 --> 00:11:43.360
-greater equal is rewritten to spaceship.
+00:11:38.690 --> 00:11:43.360
+&lt;, &gt;, &lt;=, &gt;= is rewritten to <=>.
 
 00:11:45.820 --> 00:11:48.780
 Umm the there's articles, uh,
 
 00:11:48.780 --> 00:11:52.248
-that will explain why equal and
+that will explain why == and
 
 00:11:52.248 --> 00:11:54.560
-spaceship are treated differently.
+<=> are treated differently.
 
 00:11:54.560 --> 00:11:56.300
 But the quick answer is that
@@ -1033,7 +1025,7 @@ equal by just comparing their lengths.
 Whereas if you want to know
 
 00:12:10.278 --> 00:12:12.020
-is 1 less than the other,
+is one less than the other,
 
 00:12:12.020 --> 00:12:14.068
 we actually have to look at every element
@@ -1054,19 +1046,19 @@ the elements until we exhaust one of them.
 So that's why they can't be fully fully
 
 00:12:25.642 --> 00:12:27.850
-unified all the time into just spaceship.
+unified all the time into just &lt;=&gt;.
 
 00:12:27.850 --> 00:12:29.810
 But we can always generate.
 
 00:12:29.810 --> 00:12:31.772
-Or we can always rewrite not equal and equal,
+Or we can always rewrite != and ==,
 
 00:12:31.780 --> 00:12:33.628
-and the STL Now takes advantage
+and the STL now takes advantage
 
 00:12:33.628 --> 00:12:35.629
-of this in C++ 20 mode.
+of this in C++20 mode.
 
 00:12:35.630 --> 00:12:37.846
 I can actually dig up the relevant code.
@@ -1081,43 +1073,43 @@ Here we go. Let's look at.
 Let's just search for occurrences
 
 00:12:45.000 --> 00:12:46.176
-of operator equal equal.
+of operator==.
 
 00:12:46.180 --> 00:12:48.346
 So in our internal implementation vector
 
 00:12:48.346 --> 00:12:50.553
-iterators we have something called underscore
+iterators we have something called
 
 00:12:50.553 --> 00:12:52.328
-capital vector constant iterator
+_Vector_const_iterator
 
 00:12:52.328 --> 00:12:54.779
 and another one for modifiable iterators.
 
 00:12:54.780 --> 00:12:57.505
-We always provide an operator
+We always provide an operator==.
 
 00:12:57.505 --> 00:13:00.436
-equal equal in C++20 mode.
+In C++20 mode,
 
 00:13:00.440 --> 00:13:03.688
-Here's our internal macro to indicate that we
+here's our internal macro to indicate that we
 
 00:13:03.688 --> 00:13:06.677
-also provide a spaceship. In non C++20 mode,
+also provide a &lt;=&gt;. In non-C++20 mode,
 
 00:13:06.680 --> 00:13:08.960
-ee then need to provide not equal, less
+we then need to provide !=, &lt;
 
 00:13:08.960 --> 00:13:11.010
-greater, less equal, greater equal.
+&gt;, &lt;=, &gt;=.
 
 00:13:11.010 --> 00:13:13.026
 But when we're in 20 mode,
 
 00:13:13.030 --> 00:13:14.806
-all we need is equality and spaceship,
+all we need is == and &lt;=&gt;,
 
 00:13:14.810 --> 00:13:17.084
 and the rest will be rewritten
@@ -1132,7 +1124,7 @@ going back to why I was momentarily confused.
 Um, we have very carefully marked
 
 00:13:24.420 --> 00:13:26.747
-all of these things as nodiscard
+all of these things as [[nodiscard]]
 
 00:13:26.747 --> 00:13:28.883
 because calling any of these iterator
@@ -1153,7 +1145,7 @@ However,
 this has shown that if the compiler, if the
 
 00:13:38.259 --> 00:13:41.715
-user has written, me being the user not equal,
+user has written, me being the user, !=,
 
 00:13:41.720 --> 00:13:43.260
 and then the compiler says,
@@ -1165,25 +1157,25 @@ oh, we're in C++20 mode,
 I'm going to rewrite that into
 
 00:13:46.346 --> 00:13:48.172
-equal equal because I see that
+== because I see that
 
 00:13:48.172 --> 00:13:49.468
 operator and this iterator
 
 00:13:49.470 --> 00:13:52.358
-class did not provide a not equal operator.
+class did not provide a != operator.
 
 00:13:52.360 --> 00:13:54.436
 When the compiler does that rewriting,
 
 00:13:54.440 --> 00:13:57.616
-it is not carrying along the nodiscard.
+it is not carrying along the [[nodiscard]].
 
 00:13:57.620 --> 00:13:59.215
 We marked the actual operator
 
 00:13:59.215 --> 00:14:01.340
-that's being called as nodiscard,
+that's being called as [[nodiscard]],
 
 00:14:01.340 --> 00:14:03.236
 but that bit is being lost
@@ -1198,13 +1190,13 @@ That should not be the case. For this rewrite,
 if the function that's
 
 00:14:08.524 --> 00:14:09.979
-ultimately called is nodiscard,
+ultimately called is [[nodiscard]],
 
 00:14:09.980 --> 00:14:11.420
 then the rewritten call should
 
 00:14:11.420 --> 00:14:13.300
-absolutely emit a nodiscard warning.
+absolutely emit a [[nodiscard]] warning.
 
 00:14:13.300 --> 00:14:14.820
 So we should get a warning for that.
@@ -1243,7 +1235,7 @@ So we have some compiler variation,
 but hopefully in the future all compilers
 
 00:14:36.538 --> 00:14:38.468
-will properly carry over nodiscards.
+will properly carry over [[nodiscard]]s.
 
 00:14:38.470 --> 00:14:40.255
 So this is actually good to know.
@@ -1258,10 +1250,10 @@ mode sensitive until I wrote this example.
 So,
 
 00:14:46.388 --> 00:14:48.124
-Casey has 1 argument that it's not
+Casey has one argument that it's not
 
 00:14:48.124 --> 00:14:50.443
-a bug that not x == y
+a bug, that !(x == y)
 
 00:14:50.443 --> 00:14:52.197
 doesn't discard the result of x == y,
@@ -1300,7 +1292,7 @@ OK, so a little bit more
 investigation needed there.
 
 00:15:14.560 --> 00:15:17.220
-So that's the idea behind nodiscard.
+So that's the idea behind [[nodiscard]].
 
 00:15:17.220 --> 00:15:19.500
 Now let me quickly explain what
@@ -1309,7 +1301,7 @@ Now let me quickly explain what
 this PR is going to look at.
 
 00:15:21.980 --> 00:15:24.817
-nodiscard was added in C++17
+[[nodiscard]] was added in C++17
 
 00:15:24.817 --> 00:15:28.279
 and we are now using that.
@@ -1333,13 +1325,13 @@ technology where uh features from
 future standards are supported.
 
 00:15:41.070 --> 00:15:44.200
-And C++20 added nodiscard with a reason.
+And C++20 added [[nodiscard]] with a reason.
 
 00:15:44.200 --> 00:15:45.362
 So you can now put a string
 
 00:15:45.362 --> 00:15:46.080
-literal in nodiscard.
+literal in [[nodiscard]].
 
 00:15:46.080 --> 00:15:46.980
 Let's see what that looks like,
@@ -1353,26 +1345,23 @@ Let me get rid of vector here.
 00:15:51.060 --> 00:15:53.811
 OK, so let me go back to
 
-00:15:53.811 --> 00:15:56.888
-this example nodiscard.
-
-00:15:56.888 --> 00:16:00.320
-Uh, pure observer,
+00:15:53.811 --> 00:16:00.320
+this example [[nodiscard("pure observer")]]
 
 00:16:00.320 --> 00:16:05.740
-n square and int return(n * n).
+int square(int n) and return n * n.
 
 00:16:05.740 --> 00:16:11.260
-OK, so I cout.
+OK, so I cout << square(5)
 
 00:16:11.260 --> 00:16:15.370
-Square(5) and everything is good.
+and everything is good.
 
 00:16:15.370 --> 00:16:18.628
-20 mode warnings enabled, it works,
+20 mode, warnings enabled, it works,
 
 00:16:18.630 --> 00:16:21.060
-but if I call square 5 all by itself
+but if I call square(5) all by itself
 
 00:16:21.060 --> 00:16:24.470
 with the semicolon, what happens?
@@ -1387,13 +1376,13 @@ The numbers changed 4858.
 I think that is different than before
 
 00:16:31.330 --> 00:16:33.550
-discarding return value, pure observer.
+discarding return value: pure observer.
 
 00:16:33.550 --> 00:16:35.632
 So whatever string literal you put
 
 00:16:35.632 --> 00:16:37.919
-in this nodiscard gets emitted.
+in this [[nodiscard]] gets emitted.
 
 00:16:37.920 --> 00:16:39.846
 I guess I can try both.
@@ -1405,7 +1394,7 @@ What if we don't have the reason?
 What if we were cubing something?
 
 00:16:45.650 --> 00:16:49.538
-And then we call Cube of 5.
+And then we call cube(5).
 
 00:16:49.540 --> 00:16:51.949
 There we go.
@@ -1426,7 +1415,7 @@ indeed they are different warning
 numbers and we can customize the message
 
 00:16:59.607 --> 00:17:01.970
-with nodiscard with the message.
+with [[nodiscard]] with the message.
 
 00:17:01.970 --> 00:17:04.931
 So we had filed an issue early
@@ -1468,7 +1457,7 @@ Committee a few times because the
 standard is now marking a few things
 
 00:17:29.797 --> 00:17:31.443
-as nodiscard which strongly
+as [[nodiscard]] which strongly
 
 00:17:31.443 --> 00:17:33.108
 suggests to implementers that they
@@ -1483,7 +1472,7 @@ although it's not a binding
 requirement why you would want
 
 00:17:37.587 --> 00:17:39.075
-to mark things as nodiscard.
+to mark things as [[nodiscard]].
 
 00:17:39.080 --> 00:17:41.474
 So by far the most common
@@ -1504,19 +1493,19 @@ and unusually pathological cases. So,
 comparisons,
 
 00:17:52.922 --> 00:17:55.334
-those are almost always nodiscard.
+those are almost always [[nodiscard]].
 
 00:17:55.340 --> 00:17:58.220
-Another example is like std::find.
+Another example is like std::find().
 
 00:17:58.220 --> 00:18:00.190
-std::find takes a range
+std::find() takes a range
 
 00:18:00.190 --> 00:18:02.160
 of elements and a value,
 
 00:18:02.160 --> 00:18:05.107
-or find if takes a predicate and
+or find_if() takes a predicate and
 
 00:18:05.107 --> 00:18:07.796
 looks for the first occurrence of an
@@ -1624,7 +1613,7 @@ valid and 90% of calls are bugs,
 but we care about the 10% we want to
 
 00:19:03.542 --> 00:19:05.726
-avoid marking things as nodiscard
+avoid marking things as [[nodiscard]]
 
 00:19:05.726 --> 00:19:08.588
 in the case of like find 99.99% of
@@ -1648,13 +1637,13 @@ it's reasonable to ask those users to
 silence the warning in a targeted manner.
 
 00:19:21.710 --> 00:19:25.284
-So applying like /WD4834 or
+So applying like /wd4834 or
 
 00:19:25.284 --> 00:19:27.219
-/WD4858 to silence these
+/wd4858 to silence these
 
 00:19:27.219 --> 00:19:28.380
-nodiscard warnings.
+[[nodiscard]] warnings.
 
 00:19:28.380 --> 00:19:29.810
 That's a very large hammer.
@@ -1663,10 +1652,10 @@ That's a very large hammer.
 You don't want to use that because it
 
 00:19:31.434 --> 00:19:33.339
-shuts up every single nodiscard warning.
+shuts up every single [[nodiscard]] warning.
 
 00:19:33.340 --> 00:19:34.985
-Instead, if you see a nodiscard
+Instead, if you see a [[nodiscard]]
 
 00:19:34.985 --> 00:19:36.647
 warning and you want to silence it,
@@ -1693,7 +1682,7 @@ in fact, almost all the time,
 this should not be necessary.
 
 00:19:47.020 --> 00:19:48.892
-But if you ever see a nodiscard
+But if you ever see a [[nodiscard]]
 
 00:19:48.892 --> 00:19:50.380
 warning that is validly marked
@@ -1705,13 +1694,13 @@ and yet your usage is valid,
 put a void cast there.
 
 00:19:53.276 --> 00:19:54.820
-And if you don't like paren void,
+And if you don't like (void),
 
 00:19:54.820 --> 00:19:55.824
-you can also do.
+you can also do
 
 00:19:55.824 --> 00:19:57.660
-Static cast if you really like this.
+static_cast if you really like this.
 
 00:20:00.060 --> 00:20:04.456
 Yes, most of the time this happens
@@ -1768,7 +1757,7 @@ Pure observer is the most common reason,
 but there are other reasons that you would
 
 00:20:33.104 --> 00:20:34.609
-want to mark something as nodiscard.
+want to mark something as [[nodiscard]].
 
 00:20:34.610 --> 00:20:37.450
 So off the top of my head there are
@@ -1777,7 +1766,7 @@ So off the top of my head there are
 functions that are easily confused.
 
 00:20:39.350 --> 00:20:42.704
-So vector::empty is the classic
+So vector::empty() is the classic
 
 00:20:42.704 --> 00:20:46.019
 one where if you want to,
@@ -1795,7 +1784,7 @@ If you want to get rid of
 all the elements in a vector,
 
 00:20:51.760 --> 00:20:53.818
-you might say V.empty(),
+you might say v.empty(),
 
 00:20:53.820 --> 00:20:55.638
 because empty sounds like a verb.
@@ -1819,7 +1808,7 @@ you've done nothing rather than
 wiping out all your elements.
 
 00:21:03.600 --> 00:21:06.534
-What you meant to say was V.clear(),
+What you meant to say was v.clear(),
 
 00:21:06.540 --> 00:21:08.964
 so this confusion is so notorious
@@ -1828,7 +1817,7 @@ so this confusion is so notorious
 that the standard itself has
 
 00:21:11.030 --> 00:21:13.298
-marked vector::empty as nodiscard.
+marked vector::empty() as [[nodiscard]].
 
 00:21:13.300 --> 00:21:14.794
 I can actually bring that up
@@ -1846,7 +1835,7 @@ that doesn't actually make a difference,
 because, um,
 
 00:21:18.962 --> 00:21:20.742
-vector::empty also falls under
+vector::empty() also falls under
 
 00:21:20.742 --> 00:21:22.470
 the pure observer criterion,
@@ -1861,7 +1850,7 @@ But even if you didn't have, you know,
 the willingness to go mark 3000,
 
 00:21:28.590 --> 00:21:30.944
-5000 functions in your STL is nodiscard,
+5000 functions in your STL as [[nodiscard]],
 
 00:21:30.950 --> 00:21:33.142
 the commonly confused case
@@ -1891,10 +1880,10 @@ And I've scrolled too far.
 Here we go.
 
 00:21:48.072 --> 00:21:49.792
-Empty in the standard is
+empty() in the standard is
 
 00:21:49.792 --> 00:21:51.340
-depicted as nodiscard,
+depicted as [[nodiscard]],
 
 00:21:51.340 --> 00:21:53.088
 a nonbinding suggestion to
@@ -1918,28 +1907,28 @@ floor is likely to be incorrect,
 or a memory leak, or a resource leak.
 
 00:22:07.640 --> 00:22:11.080
-So allocate, raw allocation functions.
+So allocate(), raw allocation functions.
 
 00:22:11.080 --> 00:22:12.874
 Those should totally be marked as
 
 00:22:12.874 --> 00:22:15.037
-nodiscard because you either need to
+[[nodiscard]] because you either need to
 
 00:22:15.037 --> 00:22:17.165
 store them in a resource management object,
 
 00:22:17.170 --> 00:22:18.898
-like a unique pointer or something,
+like a unique_ptr or something,
 
 00:22:18.900 --> 00:22:20.910
 or you need to manually ensure
 
 00:22:20.910 --> 00:22:22.220
-that you deallocate, free,
+that you deallocate(), free(),
 
 00:22:22.220 --> 00:22:23.420
-release, whatever the thing,
+release(), whatever the thing,
 
 00:22:23.420 --> 00:22:26.080
 and that you don't leak during exceptions.
@@ -1948,7 +1937,7 @@ and that you don't leak during exceptions.
 So at raw resource allocation functions,
 
 00:22:28.880 --> 00:22:30.338
-those should be marked nodiscard.
+those should be marked [[nodiscard]].
 
 00:22:30.340 --> 00:22:33.476
 And another more obscure case is where
@@ -1972,7 +1961,7 @@ make your program incorrect.
 So that example there is like
 
 00:22:45.292 --> 00:22:46.980
-std::remove and std::unique
+std::remove() and std::unique()
 
 00:22:47.062 --> 00:22:49.118
 Where those are
@@ -2020,7 +2009,7 @@ smaller and get rid of the garbage elements.
 So if you say,
 
 00:23:16.922 --> 00:23:18.787
-std::remove or std::unique,
+std::remove() or std::unique(),
 
 00:23:18.790 --> 00:23:20.456
 and then you drop the return value
@@ -2047,10 +2036,10 @@ it is skipping that second step
 that you need for correct program.
 
 00:23:31.780 --> 00:23:34.356
-So that's a case for nodiscard.
+So that's a case for [[nodiscard]].
 
 00:23:34.360 --> 00:23:36.888
-So nodiscard with a reason is a
+So [[nodiscard]] with a reason is a
 
 00:23:36.888 --> 00:23:39.524
 way for the STL to communicate to
@@ -2089,7 +2078,7 @@ So what Alex is doing here is taking
 that macro which we mentioned,
 
 00:24:01.990 --> 00:24:03.118
-underscore nodiscard,
+_NODISCARD,
 
 00:24:03.118 --> 00:24:05.070
 which is for the STL's internal use,
@@ -2110,13 +2099,13 @@ we want to give is repeated in a
 whole bunch of different places,
 
 00:24:15.390 --> 00:24:16.746
-like we got std::remove, std::remove_if
+like we got std::remove(), std::remove_if()
 
 00:24:16.750 --> 00:24:18.930
-ranges, remove ranges,
+ranges::remove(), ranges::remove_if(),
 
 00:24:18.930 --> 00:24:21.604
-remove if they all have the same
+they all have the same
 
 00:24:21.604 --> 00:24:23.262
 rationale so we can just use the
@@ -2143,7 +2132,7 @@ otherwise use an attribute.
 The reason why we're using an attribute
 
 00:24:34.167 --> 00:24:35.686
-for nodiscard is partially for
+for [[nodiscard]] is partially for
 
 00:24:35.686 --> 00:24:37.186
 historical reasons that we added it
@@ -2155,7 +2144,7 @@ when not all compilers supported it,
 that we may be able to change that now,
 
 00:24:40.920 --> 00:24:42.690
-especially since we like nodiscard
+especially since we like [[nodiscard]]
 
 00:24:42.690 --> 00:24:45.088
 so much and we have not had cases
@@ -2239,7 +2228,7 @@ This PR is not as large as it seems,
 and most of the lines are
 
 00:25:23.130 --> 00:25:24.170
-yvals_core.h
+&lt;yvals_core.h&gt;
 
 00:25:24.170 --> 00:25:25.465
 because it's adding a bunch of messages.
@@ -2251,7 +2240,7 @@ So let's see what messages are being added.
 OK, so um, here we go.
 
 00:25:32.510 --> 00:25:35.192
-yvals_core.h the STL central internal header,
+&lt;yvals_core.h&gt; the STL central internal header,
 
 00:25:35.192 --> 00:25:37.436
 a transition comment because currently
@@ -2260,7 +2249,7 @@ a transition comment because currently
 vcruntime is not open sourced.
 
 00:25:39.750 --> 00:25:44.150
-This should go to vcruntime.h agreed.
+This should go to &lt;vcruntime.h&gt; agreed.
 
 00:25:44.150 --> 00:25:48.006
 So right now Alex is following the pattern.
@@ -2269,7 +2258,7 @@ So right now Alex is following the pattern.
 Ohh I see this was, this is
 
 00:25:50.096 --> 00:25:51.440
-essentially following the nodiscard
+essentially following the [[nodiscard]]
 
 00:25:51.440 --> 00:25:53.390
 ctor for constructors because
@@ -2281,24 +2270,22 @@ that's a separate feature.
 So this looks right. OK,
 
 00:25:56.370 --> 00:25:59.514
-so transition this should go to vcruntime H.
+so transition this should go to &lt;vcruntime.h&gt;.
 
 00:25:59.520 --> 00:26:01.620
-If the compiler does not
+#if the compiler does not
 
 00:26:01.620 --> 00:26:03.300
 support __has_cpp_attribute,
 
 00:26:03.300 --> 00:26:05.502
-then nodiscard message of a
+then [[nodiscard]] message of a
 
 00:26:05.502 --> 00:26:06.970
 message expands to nothing.
 
-00:26:06.970 --> 00:26:09.988
-elif __has_cpp_attribute nodiscard
-
-00:26:09.988 --> 00:26:12.856
+00:26:06.970 --> 00:26:12.856
+#elif __has_cpp_attribute(nodiscard] &gt;= 201907L
 
 00:26:12.856 --> 00:26:14.486
 I believe this is the correct
@@ -2307,7 +2294,7 @@ I believe this is the correct
 value but let's check.
 
 00:26:15.790 --> 00:26:18.422
-So if we search for SD feature test
+So if we search for sd-feature test
 
 00:26:18.422 --> 00:26:21.079
 this will bring up the standing
@@ -2319,7 +2306,7 @@ document showing feature test macros.
 We're going to look for the
 
 00:26:25.442 --> 00:26:26.750
-CPP attribute nodiscard.
+__has_cpp_attribute(nodiscard).
 
 00:26:28.930 --> 00:26:31.022
 And let's find wee.
@@ -2337,10 +2324,10 @@ The same value of July 2019 is
 used for two different papers.
 
 00:26:42.170 --> 00:26:44.025
-Nodiscard should have a reason
+[[nodiscard]] should have a reason
 
 00:26:44.025 --> 00:26:45.880
-and nodiscard for constructors.
+and [[nodiscard]] for constructors.
 
 00:26:45.880 --> 00:26:47.362
 So even though these are different
@@ -2367,16 +2354,16 @@ test macros are quite possible.
 So exact same value, that's good.
 
 00:26:59.980 --> 00:27:01.648
-So if we don't have it
+So if we don't have it at
 
 00:27:01.648 --> 00:27:02.760
-all expands to nothing.
+all, expands to nothing.
 
 00:27:02.760 --> 00:27:05.154
-If or if we don't have the ability to
+If, or if we don't have the ability to
 
 00:27:05.154 --> 00:27:07.590
-check CPP attributes expands to nothing.
+check __has_cpp_attributes, expands to nothing.
 
 00:27:07.590 --> 00:27:07.980
 Otherwise,
@@ -2391,7 +2378,7 @@ than or equal to nodiscard message,
 then it should expand to
 
 00:27:14.920 --> 00:27:16.330
-nodiscard with a reason.
+[[nodiscard]] with a reason.
 
 00:27:16.330 --> 00:27:18.868
 Now there is a transition here
@@ -2403,7 +2390,7 @@ that's blocking it for the CUDA
 compiler because CUDA 10.1 did
 
 00:27:23.256 --> 00:27:25.226
-not support nodiscard message.
+not support [[nodiscard]] message.
 
 00:27:25.230 --> 00:27:27.710
 What has changed fairly recently,
@@ -2454,6 +2441,7 @@ that also updated its front
 end and it is now required.
 
 00:28:00.100 --> 00:28:03.052
+And that happened on June 15 of this year.
 
 00:28:03.060 --> 00:28:05.587
 So it did happen far after Alex
@@ -2465,7 +2453,7 @@ originally created this PR.
 So we should check if CUDA 11.6.0
 
 00:28:11.432 --> 00:28:13.560
-supports nodiscard message.
+supports [[nodiscard]] message.
 
 00:28:13.560 --> 00:28:15.120
 I would hope that it does,
@@ -2492,10 +2480,10 @@ the standard mode.
 This gracefully downgrades.
 
 00:28:25.475 --> 00:28:27.050
-If you have nodiscard,
+If you have [[nodiscard]],
 
 00:28:27.050 --> 00:28:28.744
-but you don't have nodiscard message.
+but you don't have [[nodiscard]] message.
 
 00:28:28.750 --> 00:28:30.510
 Then Alex's machine reads downgrade.
@@ -2504,13 +2492,13 @@ Then Alex's machine reads downgrade.
 So really this we should not
 
 00:28:32.244 --> 00:28:33.839
-need to block CUDA CC.
+need to block __CUDACC__.
 
 00:28:33.840 --> 00:28:38.754
 If this works OK, add a comment um.
 
 00:28:38.760 --> 00:28:40.688
-Uh, number blah um.
+Uh, #blah um.
 
 00:28:43.160 --> 00:28:43.550
 Ah.
@@ -2519,7 +2507,7 @@ Ah.
 As 2791 updated to CUDA 11.6.
 
 00:28:51.671 --> 00:28:56.626
-Is this um block still?
+Is this um block still,
 
 00:28:56.630 --> 00:28:58.107
 Or do we still need to block?
@@ -2546,34 +2534,34 @@ this earlier we've been slowly
 getting through the uh the PR backlog.
 
 00:29:21.480 --> 00:29:22.551
-OK reloading everything.
+OK reloading everything in my head,
 
 00:29:22.551 --> 00:29:25.272
-[unintelligible], transition this go to vcruntim H we
+TRANSITION, this should go to &lt;vcruntime.h&gt;, we
 
 00:29:25.272 --> 00:29:26.702
-don't have CPP attribute detection
+don't have __has_cpp_attribute detection
 
 00:29:26.702 --> 00:29:28.539
-at all, that expands nothing.
+at all, then expands to nothing.
 
 00:29:28.540 --> 00:29:31.032
-ELIF nodiscard is greater than or
+#elif [[nodiscard]] is greater than or
 
 00:29:31.032 --> 00:29:33.486
-equal to the nodiscard message
+equal to the [[nodiscard]] message
 
 00:29:33.486 --> 00:29:36.090
 version and ask about the CUDA
 
 00:29:36.090 --> 00:29:38.320
-block not to find CUDA CC OK,
+block, !defined(__CUDACC__), OK,
 
 00:29:38.320 --> 00:29:40.240
 then expand to actually use it.
 
 00:29:40.240 --> 00:29:42.232
-Otherwise if the nodiscard attribute
+Otherwise if the [[nodiscard]] attribute
 
 00:29:42.232 --> 00:29:44.460
 is at least the classic value, and
@@ -2588,7 +2576,7 @@ but let's double check.
 Yes, 201603 is the original value.
 
 00:29:51.590 --> 00:29:55.326
-Correct, greater equal then use it by itself,
+Correct, &gt;=, then use it by itself,
 
 00:29:55.330 --> 00:29:56.786
 otherwise expand to nothing.
@@ -2606,13 +2594,13 @@ we don't demand comments here, OK.
 So this is. Ah, OK,
 
 00:30:10.124 --> 00:30:12.798
-so that's nodiscard message and then,
+so that's [[nodiscard]] message and then,
 
 00:30:12.800 --> 00:30:15.590
 Alex is adding a variant attribute
 
 00:30:15.590 --> 00:30:18.014
-for nodiscard constructor message
+for [[nodiscard]] constructor message
 
 00:30:18.014 --> 00:30:20.912
 because sometimes we may want to
@@ -2633,13 +2621,13 @@ expand to nothing. If we have both
 the constructor and the reason,
 
 00:30:31.940 --> 00:30:34.131
-then nodiscard ctor expands to the
+then [[nodiscard]] ctor expands to the
 
 00:30:34.131 --> 00:30:36.853
-one without a reason nodiscard ctor
+one without a reason [[nodiscard]] ctor
 
 00:30:36.853 --> 00:30:39.120
-message expands to nodiscard message.
+message expands to [[nodiscard]] message.
 
 00:30:39.120 --> 00:30:39.556
 Otherwise,
@@ -2669,13 +2657,13 @@ And here we do not,
 we can't unify the macros because
 
 00:30:57.080 --> 00:30:58.970
-if we just use nodiscard message,
+if we just use [[nodiscard]] message,
 
 00:30:58.970 --> 00:31:00.320
 it would degrade to double
 
 00:31:00.320 --> 00:31:01.130
-bracket nodiscard.
+bracket [[nodiscard]].
 
 00:31:01.130 --> 00:31:03.524
 But that cannot appear in such old
@@ -2714,13 +2702,13 @@ So I'm going to expand everything,
 search for uses. Here's the definition.
 
 00:31:26.070 --> 00:31:26.966
-OK, so nodiscard,
+OK, so _NODISCARD_CTOR_LOCK
 
 00:31:26.966 --> 00:31:28.310
-ctor lock and nodiscard
+and _NODISCARD_CTOR_THREAD
 
 00:31:28.310 --> 00:31:29.990
-ctor thread are using it.
+are using it.
 
 00:31:29.990 --> 00:31:31.926
 Like ignoring a thread.
@@ -2735,10 +2723,10 @@ So this is not stale in any way.
 Excellent.
 
 00:31:37.820 --> 00:31:39.236
-OK, so that's nodiscard message
+OK, so that's [[nodiscard]] message
 
 00:31:39.236 --> 00:31:40.710
-and nodiscard ctor message.
+and [[nodiscard]] ctor message.
 
 00:31:40.710 --> 00:31:43.005
 So now I'm going to look at the macros
@@ -2759,7 +2747,7 @@ in this case, I think this
 PR is converting every everyone
 
 00:31:56.073 --> 00:31:58.677
-already had a nodiscard to reason,
+already had a [[nodiscard]] to reason,
 
 00:31:58.680 --> 00:32:00.507
 so we just need to make sure the reason
@@ -2777,7 +2765,7 @@ are not obvious that should also be marked?
 So as I mentioned,
 
 00:32:09.790 --> 00:32:10.795
-the remove algorithms,
+the remove() algorithms,
 
 00:32:10.800 --> 00:32:12.431
 those are a classic example where they
@@ -2801,7 +2789,7 @@ This is sufficiently different enough
 that I think having a separate macro we
 
 00:32:26.605 --> 00:32:29.680
-could super unify it into like remove unique.
+could super unify it into like remove-unique.
 
 00:32:32.480 --> 00:32:35.684
 I suppose one could do that. But here,
@@ -2816,16 +2804,16 @@ there's a good reason Alex has got
 a good reason for splitting these,
 
 00:32:40.760 --> 00:32:43.742
-because with remove he suggests using
+because with remove() he suggests using
 
 00:32:43.742 --> 00:32:47.315
-the erase and erase_if functions that I
+the erase() and erase_if() functions that I
 
 00:32:47.315 --> 00:32:50.794
 added to the standard originally in a TS.
 
 00:32:50.800 --> 00:32:52.216
-But that's not applicable to unique.
+But that's not applicable to unique().
 
 00:32:52.220 --> 00:32:54.212
 There's no unique-ifying thing that will
@@ -2865,16 +2853,16 @@ understand what happens when they drop,
 like, you know,
 
 00:33:19.992 --> 00:33:22.120
-operate not equal on the floor
+operator!= on the floor
 
 00:33:22.184 --> 00:33:24.169
-or something empty versus clear.
+or something empty() versus clear().
 
 00:33:24.170 --> 00:33:25.855
 Providing the guidance to call
 
 00:33:25.855 --> 00:33:26.866
-clear is reasonable,
+clear() is reasonable,
 
 00:33:26.870 --> 00:33:28.088
 and there's only a few occurrences,
@@ -2892,16 +2880,16 @@ thought it was important enough to mark.
 Um, OK, next?
 
 00:33:35.704 --> 00:33:38.776
-Empty on an array.
+empty() on an array.
 
 00:33:38.780 --> 00:33:40.370
 Um, that's a pure observer,
 
 00:33:40.370 --> 00:33:41.840
-but there's no such thing as clear,
+but there's no such thing as clear(),
 
 00:33:41.840 --> 00:33:43.925
-so providing guidance for clear
+so providing guidance for clear()
 
 00:33:43.925 --> 00:33:45.176
 would be wrong.
@@ -2931,7 +2919,7 @@ from like vector to array if they're
 not really familiar with the two and
 
 00:34:08.057 --> 00:34:10.269
-then thinking they could empty it out,
+then thinking they could empty() it out,
 
 00:34:10.270 --> 00:34:12.025
 and having the separate guidance
@@ -2943,7 +2931,7 @@ here seems reasonable. OK.
 OK, so it looks like Alex is adding
 
 00:34:17.976 --> 00:34:20.060
-messages for everything named empty.
+messages for everything named empty().
 
 00:34:20.060 --> 00:34:22.180
 There's one in stacktrace, which is
@@ -2952,7 +2940,7 @@ There's one in stacktrace, which is
 the feature Alex himself implemented.
 
 00:34:24.960 --> 00:34:27.416
-This explains how to clear the stack trace.
+This explains how to clear the stacktrace.
 
 00:34:27.420 --> 00:34:29.130
 I like this one because since
@@ -2982,19 +2970,19 @@ do and how to reassign it is reasonable.
 And then it looks like Alex just
 
 00:34:47.061 --> 00:34:50.078
-has a fall back empty function,
+has a fallback empty() function,
 
 00:34:50.080 --> 00:34:53.800
 but not, doesn't need specific guidance
 
 00:34:53.800 --> 00:34:55.868
-for clear. This seems reasonable.
+for clear(). This seems reasonable.
 
 00:34:55.868 --> 00:34:57.892
 Can any, this is sufficiently vague.
 
 00:34:57.892 --> 00:34:59.163
-Container, container like object?
+Container or container-like object?
 
 00:34:59.163 --> 00:35:00.066
 That seems right.
@@ -3012,10 +3000,10 @@ I was like _EMPTY_MEM_FN,
 but I thought that that function
 
 00:35:11.638 --> 00:35:13.179
-doesn't have any sort of empty.
+doesn't have any sort of empty().
 
 00:35:13.180 --> 00:35:17.300
-But no, it's a empty on, an empty
+But no, it's a empty() on, an empty()
 
 00:35:17.300 --> 00:35:19.949
 member function on an adapter.
@@ -3087,7 +3075,7 @@ new to barrier you might not
 realize I didn't remember this case,
 
 00:36:03.340 --> 00:36:05.020
-that we marked this as nodiscard
+that we marked this as [[nodiscard]]
 
 00:36:05.020 --> 00:36:06.600
 for an unusual reason.
@@ -3099,13 +3087,13 @@ This is a case kind of like removing
 unique that it's a multi step thing.
 
 00:36:11.720 --> 00:36:13.250
-Um try wait.
+Um try_wait().
 
 00:36:16.450 --> 00:36:19.123
 OK, so here I guess we had we had
 
 00:36:19.123 --> 00:36:22.120
-marked it as nodiscard. And if you,
+marked it as [[nodiscard]]. And if you,
 
 00:36:24.170 --> 00:36:25.690
 tried to wait for something,
@@ -3138,16 +3126,16 @@ question about there was some,
 I'm trying to remember what it was
 
 00:36:50.596 --> 00:36:52.349
-in condition variable or something.
+in condition_variable or something.
 
 00:36:52.350 --> 00:36:54.191
 There's like a member function where we
 
 00:36:54.191 --> 00:36:56.172
-really, it was like unique pointer remove
+really, it was like unique_ptr::remove()
 
 00:36:56.172 --> 00:36:58.210
-ehrtr we wanted to mark it as nodiscard,
+where we wanted to mark it as [[nodiscard]],
 
 00:36:58.210 --> 00:37:00.538
 but users came up with some cases that
@@ -3159,10 +3147,10 @@ were like 10% reasonable 10% of the
 time and we ultimately did not mark it.
 
 00:37:04.810 --> 00:37:06.581
-I can't remember it was that try
+I can't remember it, was that try_wait()
 
 00:37:06.581 --> 00:37:08.500
-wait or was that something else?
+or was that something else?
 
 00:37:10.510 --> 00:37:13.486
 Something like that I guess I can search.
@@ -3171,7 +3159,7 @@ Something like that I guess I can search.
 It's been a few years.
 
 00:37:15.560 --> 00:37:18.969
-&gt;&gt; Nicole: My understanding is that try wait like.
+&gt;&gt; Nicole: My understanding is that try_wait() like.
 
 00:37:18.970 --> 00:37:23.590
 Immediately returns you like,
@@ -3201,19 +3189,19 @@ I very well could be wrong.
 &gt;&gt; Stephan: Oh oh cause it's it's latch.
 
 00:37:38.620 --> 00:37:39.420
-Latch is try waited.
+Latch is try_wait()'d.
 
 00:37:39.420 --> 00:37:40.420
 It just returns a bool.
 
 00:37:40.420 --> 00:37:43.940
-OK, I was thinking of wait for and
+OK, I was thinking of wait_for() and
 
 00:37:43.940 --> 00:37:47.280
-wait for until. OK yeah you're right.
+wait_for_until(). OK yeah you're right.
 
 00:37:47.280 --> 00:37:50.598
-So in fact let's check wait for.
+So in fact let's check wait_for().
 
 00:37:50.600 --> 00:37:52.660
 Uh, let's see. That's future.
@@ -3228,16 +3216,16 @@ I don't want ugly.
 Ah, here we go.
 
 00:37:56.832 --> 00:37:58.172
-So, like in condition variable,
+So, like in condition_variable,
 
 00:37:58.172 --> 00:38:00.739
-are we in the normal condition variable here?
+are we in the normal condition_variable here?
 
 00:38:00.740 --> 00:38:03.836
-Condition variable any we've got wait for, it
+condition_variable_any we've got wait_for(), it
 
 00:38:03.840 --> 00:38:05.072
-returns a CV status.
+returns a cv_status.
 
 00:38:05.072 --> 00:38:07.300
 You probably should be checking this thing,
@@ -3249,16 +3237,16 @@ but there's a few cases where
 it's reasonable not to,
 
 00:38:09.960 --> 00:38:13.110
-so we did not mark this as nodiscard.
+so we did not mark this as [[nodiscard]].
 
 00:38:13.110 --> 00:38:15.575
 Um, but you're right that
 
 00:38:15.575 --> 00:38:17.547
-try wait is special,
+try_wait() is special,
 
 00:38:17.550 --> 00:38:19.326
-and we already marked it as nodiscard,
+and we already marked it as [[nodiscard]],
 
 00:38:19.330 --> 00:38:20.786
 so this is just providing a reason.
@@ -3297,7 +3285,7 @@ it is and then I'll resume.
 &gt;&gt; Stephan: Yeah ohh try_lock OK.
 
 00:38:56.670 --> 00:38:59.628
-Try like for try_lock until OK.
+try_lock_for, try_lock_until() OK.
 
 00:39:02.570 --> 00:39:04.670
 OK, that seems sufficiently generic.
@@ -3306,13 +3294,13 @@ OK, that seems sufficiently generic.
 OK, let me go back.
 
 00:39:07.930 --> 00:39:11.490
-If I change state, um.
+_TRY_CHANGE_STATE, um.
 
 00:39:11.490 --> 00:39:13.078
 _TRY_CHANGE_STATE_FN.
 
 00:39:15.120 --> 00:39:16.948
-Non member versus member.
+Non-member versus member.
 
 00:39:22.790 --> 00:39:24.176
 Here it's, these are really similar
@@ -3321,16 +3309,16 @@ Here it's, these are really similar
 as, is this the first pair that
 
 00:39:25.929 --> 00:39:27.229
-was member versus non member?
+was member versus non-member?
 
 00:39:27.230 --> 00:39:28.778
-I think it is every everything
+I think it is, every, everything
 
 00:39:28.778 --> 00:39:30.435
 else here was like member yeah
 
 00:39:30.435 --> 00:39:32.139
-remov and unique are nonmembers
+remove() and unique() are nonmembers
 
 00:39:32.139 --> 00:39:33.768
 for the ones we care about.
@@ -3339,10 +3327,10 @@ for the ones we care about.
 Empty is always a member function.
 
 00:39:36.470 --> 00:39:38.190
-Barrier is a member function.
+barrier() is a member function.
 
 00:39:38.190 --> 00:39:39.334
-Try wait is member function.
+try_wait() is member function.
 
 00:39:39.334 --> 00:39:41.509
 So these are the first ones that are
@@ -3351,13 +3339,13 @@ So these are the first ones that are
 free versus member function pair.
 
 00:39:43.910 --> 00:39:46.466
-&gt;&gt; Nicole: I believe that empty has two,
+&gt;&gt; Nicole: I believe that empty() has two,
 
 00:39:46.470 --> 00:39:50.070
 one for member function and one for the
 
 00:39:50.070 --> 00:39:53.227
-like std::empty of a container.
+like std::empty() of a container.
 
 00:39:55.450 --> 00:39:57.196
 &gt;&gt; Stephan: Oh, oh, yeah, because we have.
@@ -3366,19 +3354,19 @@ like std::empty of a container.
 Uh, yeah, you're right.
 
 00:39:58.072 --> 00:40:00.780
-Yeah, like, like size and um.
+Yeah, like, like size() and um.
 
 00:40:00.780 --> 00:40:01.869
 _EMPTY_MEM_FN.
 
 00:40:01.869 --> 00:40:03.816
-Ohh, empty function. Ah yes.
+Ohh, EMPTY_FUNCTION. Ah yes.
 
 00:40:03.816 --> 00:40:06.243
 Good catch. Yep, there it is.
 
 00:40:06.243 --> 00:40:08.443
-Yeah, non member. OK, so yeah,
+Yeah, non-member. OK, so yeah,
 
 00:40:08.443 --> 00:40:10.510
 it's reasonable to have one for _TRY_CHANGE_STATE 
@@ -3397,14 +3385,13 @@ things were standardized so that,
 like the member function
 
 00:40:19.406 --> 00:40:20.976
-one is always underscore,
+one is always _MEM_FN,
 
 00:40:20.980 --> 00:40:23.550
-memb under_score.
 &gt;&gt; Stephan: Yeah yeah,
 
 00:40:23.550 --> 00:40:27.030
-&gt;&gt; Nicole: the function one is always _fn.
+&gt;&gt; Nicole: the function one is always _FN.
 
 00:40:27.030 --> 00:40:28.824
 &gt;&gt; Stephan: Yeah, at least in the case
@@ -3416,7 +3403,7 @@ where we have both.
 And this this one actually spells
 
 00:40:34.848 --> 00:40:36.590
-out function. Empty function,
+out function. _EMPTY_FUNCTION,
 
 00:40:36.590 --> 00:40:39.740
 _EMPTY_MEM_FN. I suppose when we I,
@@ -3458,13 +3445,13 @@ member variable or member function.
 &gt;&gt; Stephan: Ohh std::function understood.
 
 00:41:10.608 --> 00:41:11.574
-Function does not.
+std::function does not.
 
 00:41:11.580 --> 00:41:13.715
-It has just an operator
+It has just an operator,
 
 00:41:13.715 --> 00:41:14.996
-explicit operator bool.
+explicit operator bool().
 
 00:41:15.000 --> 00:41:16.365
 You're right that it is a very
@@ -3479,10 +3466,10 @@ Standard doesn't quite say
 free function anywhere.
 
 00:41:21.790 --> 00:41:23.458
-It just says nonmember but
+It just says non-member but
 
 00:41:23.458 --> 00:41:25.230
-nonmember fn or something.
+_NON_MEMBER_FN or something.
 
 00:41:25.230 --> 00:41:27.798
 Seems very verbose.
@@ -3494,16 +3481,16 @@ Let's see. Any any ideas?
 There's, um, let's see the
 
 00:41:39.435 --> 00:41:41.823
-&gt;&gt; Nicole: mem fn without a thing,
+&gt;&gt; Nicole: could be, _MEMFN without a thing,
 
 00:41:41.830 --> 00:41:46.429
-and then just fn, so you could search for like
+and then just _FN, so you could search for like
 
 00:41:46.430 --> 00:41:50.784
-FN with a underscore before it.
+_FN with a underscore before it.
 
 00:41:50.790 --> 00:41:51.812
-Versus mem fn.
+Versus _MEMFN.
 
 00:41:51.812 --> 00:41:55.036
 &gt;&gt; Stephan: We we could do that, I'm thinking.
@@ -3512,13 +3499,13 @@ Versus mem fn.
 Where is the calling convention thing?
 
 00:41:57.040 --> 00:42:00.820
-Um. It's a non member.
+Um. It's a non-member.
 
 00:42:03.720 --> 00:42:07.238
-Every case. Uh, OK, let's search
+with case. Uh, OK, let's search
 
 00:42:07.238 --> 00:42:09.110
-for all occurrences of std::call.
+for all occurrences of stdcall.
 
 00:42:09.110 --> 00:42:12.099
 No, that's gonna be horrible fastcall.
@@ -3527,16 +3514,16 @@ No, that's gonna be horrible fastcall.
 There we go. That's the next to def.
 
 00:42:13.970 --> 00:42:15.770
-Why did I miss it? Ohh, it's emit.
+Why did I miss it? Ohh, it's _EMIT.
 
 00:42:18.120 --> 00:42:19.476
 Ah, OK, so we have it.
 
 00:42:19.480 --> 00:42:22.456
-Nonmember call for these horrible
+_NON_MEMBER_CALL for these horrible
 
 00:42:22.456 --> 00:42:24.970
-macros and then member call.
+macros, and then _MEMBER_CALL.
 
 00:42:24.970 --> 00:42:26.362
 So that's the precedent
@@ -3545,13 +3532,13 @@ So that's the precedent
 where we have to distinguish
 
 00:42:28.102 --> 00:42:29.609
-members versus nonmembers.
+members versus non-members.
 
 00:42:29.610 --> 00:42:31.060
 We spell out member and
 
 00:42:31.060 --> 00:42:32.510
-then we say non member.
+then we say non-member.
 
 00:42:35.210 --> 00:42:36.134
 So for these macros,
@@ -3572,16 +3559,16 @@ is a great convention because
 those macros are horrible,
 
 00:42:42.360 --> 00:42:45.559
-it would be something like empty non
+it would be something like empty non-member
 
 00:42:45.559 --> 00:42:48.450
-member versus empty member adapter.
+versus empty member adapter.
 
 00:42:50.610 --> 00:42:52.988
-Member is more common here, but non
+Member is more common here, but non-member
 
 00:42:52.988 --> 00:42:55.396
-member is more common elsewhere like well.
+is more common elsewhere like well.
 
 00:42:57.560 --> 00:42:59.232
 Now actually I would say all of the
@@ -3596,13 +3583,13 @@ ones more common because we have a
 lot of member functions then just
 
 00:43:03.731 --> 00:43:05.380
-one non Member function to mention.
+one non-member function to mention.
 
 00:43:07.410 --> 00:43:08.915
 So how do you feel about like
 
 00:43:08.915 --> 00:43:10.107
-non member versus member and
+_NON_MEMBER versus _MEMBER and
 
 00:43:10.107 --> 00:43:11.583
 just not saying function at all?
@@ -3611,13 +3598,13 @@ just not saying function at all?
 &gt;&gt; Nicole: Seems reasonable to me,
 
 00:43:17.284 --> 00:43:18.337
-especially because nodiscard
+especially because [[nodiscard]]
 
 00:43:18.340 --> 00:43:20.916
 is not getting applied to like.
 
 00:43:20.920 --> 00:43:24.067
-Member data or whatever.
+member data or whatever.
 &gt;&gt; Stephan: Right.
 
 00:43:24.067 --> 00:43:27.109
@@ -3630,9 +3617,10 @@ Let's see where to mention it.
 Yeah, seems reasonable.
 
 00:43:30.299 --> 00:43:31.964
+Maybe on the first occurence.
 
 00:43:31.970 --> 00:43:33.390
-So remove alg, unique alg,
+So _REMOVE_ALG, _UNIQUE_ALG,
 
 00:43:33.390 --> 00:43:34.260
 _EMPTY_MEM_FN.
@@ -3644,7 +3632,7 @@ Let's see. We should, uh,
 consistently mark these. Let's see?
 
 00:43:47.950 --> 00:43:54.646
-When there are both member and non member
+When there are both member and non-member
 
 00:43:54.650 --> 00:43:57.702
 versions of these macros,
@@ -3662,19 +3650,19 @@ there's, ah, some variation.
 Example variation is:
 
 00:44:15.370 --> 00:44:20.480
-Nodiscard empty function. Is the.
+_NODISCARD_EMPTY_FUNCTION is the
 
 00:44:23.050 --> 00:44:25.846
-Versus I'll just get that plain
+versus I'll just get that plain
 
 00:44:25.850 --> 00:44:29.210
-member versus non member.
+member versus non-member.
 
 00:44:29.210 --> 00:44:33.362
 But, and then the other one was
 
 00:44:33.362 --> 00:44:37.040
-_TRY_CHANGE_STATE versus fn. Yeah.
+_TRY_CHANGE_STATE versus _FN. Yeah.
 
 00:44:41.100 --> 00:44:42.114
 I want to think thoughts that
@@ -3689,16 +3677,16 @@ Compared to:
 _TRY_CHANGE_STATE_FN,
 
 00:44:52.270 --> 00:44:55.095
-this is the non member,
+this is the non-member,
 
 00:44:58.510 --> 00:45:02.930
-versus change state.
+versus _TRY_CHANGE_STATE.
 
 00:45:06.840 --> 00:45:11.110
 OK. Let's see if I can quote.
 
 00:45:11.110 --> 00:45:12.772
-Let's say I didn't open it
+Let's see I didn't open it
 
 00:45:12.772 --> 00:45:14.690
 locally or open it in the repo.
@@ -3710,7 +3698,7 @@ Let me close some of this stuff.
 OK, what's that? OK, let's open up,
 
 00:45:20.948 --> 00:45:22.550
-the dreaded header xstddef where
+the dreaded header &lt;xstddef&gt; where
 
 00:45:22.608 --> 00:45:24.408
 mortals fear to tread because
@@ -3719,7 +3707,7 @@ mortals fear to tread because
 calling conventions are horrible.
 
 00:45:29.090 --> 00:45:30.910
-Let's see fast call.
+Let's see fastcall.
 
 00:45:35.720 --> 00:45:38.205
 Smallest thing that I can quote here.
@@ -3728,13 +3716,13 @@ Smallest thing that I can quote here.
 I guess I could quote individual
 
 00:45:42.942 --> 00:45:46.749
-lines, I suppose. The non member call.
+lines, I suppose. The non-member call.
 
 00:45:50.750 --> 00:45:52.370
 Versus the member call.
 
 00:45:58.110 --> 00:46:04.050
-You're saying: Member versus non member,
+Using MEMBER versus NON_MEMBER
 
 00:46:06.160 --> 00:46:09.520
 would be reasonable. Umm.
@@ -3746,16 +3734,16 @@ Also avoiding, um, possible confusion with
 std::function, as Nicole mentioned,
 
 00:46:31.850 --> 00:46:32.350
-One
+mem_fn.
 
 00:46:41.820 --> 00:46:46.700
 precedent. OK, let's see how this looks.
 
 00:46:46.700 --> 00:46:48.548
-When there are both member and non
+When there are both member and non-member
 
 00:46:48.548 --> 00:46:50.040
-member versions of these macros,
+versions of these macros,
 
 00:46:50.040 --> 00:46:51.240
 we should have a consistent
@@ -3764,25 +3752,25 @@ we should have a consistent
 naming convention for them.
 
 00:46:52.200 --> 00:46:54.240
-Currently there's some variation no
+Currently there's some variation
 
 00:46:54.240 --> 00:46:56.280
-discard empty function versus no
+_NODISCARD_EMPTY_FUNCTION versus
 
 00:46:56.337 --> 00:46:58.437
-discard _EMPTY_MEM_FN compared to no
+_NODISCARD_EMPTY_MEM_FN, compared to
 
 00:46:58.437 --> 00:47:00.396
-discard _TRY_CHANGE_STATE_FN versus
+_NODISCARD_TRY_CHANGE_STATE_FN versus
 
 00:47:00.396 --> 00:47:02.394
-nodiscard _TRY_CHANGE_STATE member.
+_NODISCARD_TRY_CHANGE_STATE (member).
 
 00:47:02.400 --> 00:47:04.325
-Using capital member versus non
+Using capital MEMBER versus
 
 00:47:04.325 --> 00:47:06.250
-capital member would be reasonable.
+NON_MEMBER would be reasonable.
 
 00:47:06.250 --> 00:47:07.694
 Also avoiding possible confusion
@@ -3791,16 +3779,16 @@ Also avoiding possible confusion
 with std::function, as Nicole
 
 00:47:09.499 --> 00:47:11.514
-observed, and with stdmemfn as I
+observed, and with std::mem_fn as I
 
 00:47:11.514 --> 00:47:13.114
 briefly thought and consistent with
 
 00:47:13.170 --> 00:47:14.900
-precedent here quoting non member
+precedent here quoting _NON_MEMBER_CALL
 
 00:47:14.900 --> 00:47:17.480
-call and member call. OK.
+and _MEMBER_CALL. OK.
 
 00:47:19.860 --> 00:47:22.446
 Right. OK, so I was at
@@ -3815,10 +3803,10 @@ _TRY_CHANGE_STATE.
 Um. Personally I would appreciate if
 
 00:47:33.190 --> 00:47:37.694
-we had empty array member as opposed
+we had _EMPTY_ARRAY_MEMBER as opposed
 
 00:47:37.694 --> 00:47:42.120
-to empty member array. I think.
+to _EMPTY_MEMBER_ARRAY. I think.
 
 00:47:42.120 --> 00:47:44.680
 &gt;&gt; Stephan: I agree that is quite reasonable. Um.
@@ -3839,7 +3827,7 @@ rope versus pole versus ball.
 Which orders are most fun, in this case.
 
 00:48:01.240 --> 00:48:03.312
-Noiscard array member empty.
+_NOISCARD_ARRAY_MEMBER_EMPTY.
 
 00:48:03.312 --> 00:48:06.420
 Because you could say the class
@@ -3848,43 +3836,43 @@ Because you could say the class
 name kind of like, you know,
 
 00:48:08.476 --> 00:48:12.720
-array, double quote, empty. Um.
+array::empty(). Um.
 
 00:48:12.720 --> 00:48:16.199
-So you suggested what empty array member?
+So you suggested what _EMPTY_ARRAY_MEMBER?
 
 00:48:16.200 --> 00:48:18.384
-I agree that putting member, array member
+I agree that putting MEMBER, _ARRAY_MEMBER
 
 00:48:18.384 --> 00:48:20.260
-sounds better than member array.
+sounds better than _MEMBER_ARRAY.
 
 00:48:20.260 --> 00:48:22.200
 &gt;&gt; Nicole: Yeah, that's what I suggested.
 
 00:48:22.200 --> 00:48:24.870
-&gt;&gt; Stephan: So there's empty array member.
+&gt;&gt; Stephan: So there's _EMPTY_ARRAY_MEMBER.
 
 00:48:24.870 --> 00:48:26.338
-Or array member empty.
+Or _ARRAY_MEMBER_EMPTY.
 
 00:48:31.170 --> 00:48:32.706
-Beginning with the prefix nodiscard
+Beginning with the prefix _NODISCARD_EMPTY,
 
 00:48:32.706 --> 00:48:34.558
-empty even though it doesn't quite follow
+even though it doesn't quite follow
 
 00:48:34.558 --> 00:48:36.378
 the order of like declaration where you
 
 00:48:36.429 --> 00:48:37.947
-would say array::empty.
+would say array::empty().
 
 00:48:37.950 --> 00:48:40.750
 This keeps all the empty, they sort together.
 
 00:48:40.750 --> 00:48:45.960
-&gt;&gt; Nicole: Yeah
+&gt;&gt; Nicole: Yeah, I like that
 &gt;&gt; Stephan: I think that is good, yeah OK.
 
 00:48:45.960 --> 00:48:49.176
@@ -3900,22 +3888,22 @@ Can you again? Yeah, that.
 Additionally recommends, and I agree that.
 
 00:49:03.580 --> 00:49:09.772
-OK, so underscore nodiscard empty.
+OK, so _NODISCARD_EMPTY.
 
 00:49:09.772 --> 00:49:18.720
-And then array member would um.
+And then _ARRAY_MEMBER would um.
 
 00:49:18.720 --> 00:49:25.708
-The. Easier to read than no
+be easier to read than
 
 00:49:25.708 --> 00:49:29.900
-discard empty member array.
+_NODISCARD_EMPTY_MEMBER_ARRAY.
 
 00:49:34.670 --> 00:49:39.668
 While still having all of the
 
 00:49:39.670 --> 00:49:42.858
-empty macro sorts together
+EMPTY macros sort together
 
 00:49:42.858 --> 00:49:46.046
 because we love sorting.
@@ -3930,28 +3918,28 @@ like almost truncated
 here. Nicole additionally recommends
 
 00:49:52.051 --> 00:49:54.519
-and I agree that nodiscard empty
+and I agree that _NODISCARD_EMPTY_ARRAY_MEMBER
 
 00:49:54.519 --> 00:49:56.768
-array member would be easier to read
+would be easier to read
 
 00:49:56.768 --> 00:49:58.784
-than nodiscard empty member array.
+than _NODISCARD_EMPTY_MEMBER_ARRAY.
 
 00:49:58.790 --> 00:50:00.158
 While still having all of the
 
 00:50:00.158 --> 00:50:01.070
-empty macros sort together.
+EMPTY macros sort together.
 
 00:50:05.750 --> 00:50:08.000
-OK, _TRY_CHANGE_STATE. _TRY_CHANGE_STATE_FN.
+Ok, _TRY_CHANGE_STATE. _TRY_CHANGE_STATE_FN.
 
 00:50:10.070 --> 00:50:12.566
-Nodiscard pointer alloc fn.
+_NODISCARD_PTR_ALLOC_FN.
 
 00:50:12.570 --> 00:50:13.869
-This function construction
+This function constructs an
 
 00:50:13.869 --> 00:50:16.034
 object wrapped by a pointer.
@@ -3963,22 +3951,22 @@ Versus a raw pointer?
 What is the difference between these two?
 
 00:50:21.460 --> 00:50:25.636
-Pointer alloc? And pointer raw alloc.
+_PTR_ALLOC? And _PTR_RAW_ALLOC.
 
 00:50:25.640 --> 00:50:29.196
-Oh, raw alloc, raw alloc does not construct.
+Oh, _RAW_ALLOC, _RAW_ALLOC does not construct.
 
 00:50:29.200 --> 00:50:32.890
-And alloc constructs.
+And _ALLOC constructs.
 
 00:50:32.890 --> 00:50:35.270
-Or alloc returns like a smart pointer.
+Or _ALLOC returns like a smart pointer.
 
 00:50:35.270 --> 00:50:36.608
 I'm curious about the difference here.
 
 00:50:40.260 --> 00:50:42.470
-Use this make exception pointer.
+What uses this. make_exception_ptr().
 
 00:50:42.470 --> 00:50:43.820
 So this is resource managed.
@@ -3993,7 +3981,7 @@ but it makes no sense to call
 it and drop it on the floor.
 
 00:50:48.720 --> 00:50:51.129
-Um make shared?
+Um make_shared()?
 
 00:50:54.460 --> 00:50:55.760
 It seems reasonable to have
@@ -4020,16 +4008,16 @@ That's interesting.
 Cameron reports in the the chat that
 
 00:51:08.420 --> 00:51:10.201
-he's just fixed the computer bug
+he's just fixed the compiler bug
 
 00:51:10.201 --> 00:51:11.830
-preventing nodiscard in C++20.
+preventing [[nodiscard]] in C++20.
 
 00:51:11.830 --> 00:51:15.748
 Thank you Cameron, that is awesome.
 
 00:51:15.750 --> 00:51:17.280
-OK, so then raw alloc.
+OK, so then _RAW_ALLOC.
 
 00:51:17.280 --> 00:51:20.382
 This one I assume applies to
@@ -4038,10 +4026,10 @@ This one I assume applies to
 something like std::allocator
 
 00:51:22.539 --> 00:51:25.270
-and scoped allocator. Yes.
+and scoped_allocator. Yes.
 
 00:51:27.700 --> 00:51:30.000
-And memory resource doesn't directly
+And memory_resource doesn't directly
 
 00:51:30.000 --> 00:51:33.389
 provide allocator, right? It's um.
@@ -4062,19 +4050,19 @@ Trying to remember like all the
 stuff we've added to the standard.
 
 00:51:45.390 --> 00:51:49.630
-OK, who says allocate?
+OK, who says allocate(?
 
 00:51:49.630 --> 00:51:51.079
 It's gonna have a lot of stuff.
 
 00:51:51.080 --> 00:51:53.888
-Who says pointer allocate?
+Who says pointer allocate(?
 
 00:51:53.888 --> 00:51:56.950
 Um, interesting?
 
 00:51:56.950 --> 00:51:57.852
-Memory resource.
+&lt;memory_resource&gt;.
 
 00:51:57.852 --> 00:52:00.558
 Do you have a polymorphic_allocator?
@@ -4083,25 +4071,25 @@ Do you have a polymorphic_allocator?
 No. There's a subheader now.
 
 00:52:01.880 --> 00:52:02.999
-&gt;&gt; Casey: xpolymorphic_allocator.
+&lt;xpolymorphic_allocator&gt;?
 
 00:52:02.999 --> 00:52:04.118
-&gt;&gt; Stephan: It's polymorphic_allocator?
+&gt;&gt; Casey: &lt;xpolymorphic_allocator&gt;.
 
 00:52:04.120 --> 00:52:07.515
-&gt;&gt; Casey: Yeah, it should be it's own header.
+Yeah, it should be in its own header.
 
 00:52:07.520 --> 00:52:08.970
 &gt;&gt; Stephan: We have something called allocate.
 
 00:52:11.410 --> 00:52:14.092
-Uh PMR memory resource has an
+Uh pmr::memory_resource has an
 
 00:52:14.092 --> 00:52:16.810
-allocate that returns a void.&ast;.
+allocate() that returns a void*.
 
 00:52:16.810 --> 00:52:18.630
-It's marked as nodiscard,
+It's marked as [[nodiscard]],
 
 00:52:18.630 --> 00:52:20.499
 but this really should deserve a reason.
@@ -4113,13 +4101,13 @@ Because it's absolutely falling under the,
 I'm allocating something wrong,
 
 00:52:26.188 --> 00:52:28.452
-and I don't think xpolymorphic_allocator
+and I don't think &lt;xpolymorphic_allocator&gt;
 
 00:52:28.452 --> 00:52:30.700
 is being marked here. Um, check.
 
 00:52:30.700 --> 00:52:33.700
-No occurrence of xpolymorphic_allocator.
+No occurrence of &lt;xpolymorphic_allocator&gt;.
 
 00:52:33.700 --> 00:52:35.156
 OK, so we've got a missing thing.
@@ -4137,16 +4125,16 @@ because it is a void.&ast;.
 OK, so let's quote that.
 
 00:52:47.010 --> 00:52:53.620
-Go back. xpolymorphic_allocator.
+Go back. &lt;xpolymorphic_allocator&gt;.
 
 00:52:53.620 --> 00:52:56.730
-Allocate paren, here we go.
+allocate(, here we go.
 
 00:52:56.730 --> 00:52:59.982
-Is that the only occurrence here
+Is that the only occurrence here?
 
 00:52:59.982 --> 00:53:02.693
-says void.&ast;? Sorry for that.
+It says void*. Sorry for that.
 
 00:53:02.693 --> 00:53:06.453
 If that sound is being captured, here we go.
@@ -4158,16 +4146,16 @@ OK, that's the only occurence here.
 Hit y to get a permalink?
 
 00:53:11.250 --> 00:53:13.347
-Do I want to show that it's memory resource?
+Do I want to show that it's memory_resource?
 
 00:53:13.350 --> 00:53:14.000
 Sure.
 
 00:53:16.060 --> 00:53:19.832
-OK. And Umm, polymorphic_allocator?
+Ok. And umm, polymorphic_allocator?
 
 00:53:19.832 --> 00:53:22.580
-Where does that allocate come from?
+Where does that allocate() come from?
 
 00:53:22.580 --> 00:53:23.888
 I'll check that in a second.
@@ -4185,20 +4173,19 @@ memory_resource::allocate.
 Yes, because it's a raw pointer.
 
 00:53:48.070 --> 00:53:51.444
-OK, so where does the actual polymorphic
+OK, so where does the actual polymorphic_allocator class live?
 
 00:53:51.444 --> 00:53:54.910
-allocator class live?
 &gt;&gt; Casey: Same file.
 
 00:53:54.910 --> 00:53:56.807
-206 I think is what you want.
+line 206 I think is what you want.
 
 00:53:56.810 --> 00:53:58.700
-&gt;&gt; Stephan: Alright, press X, up, we're there.
+&gt;&gt; Stephan: Alright, line 206, up, we're there.
 
 00:54:01.000 --> 00:54:05.048
-Ohh yeah, um, this returns a _Ty&ast;.
+Ohh yeah, um, this returns a _Ty*.
 
 00:54:05.050 --> 00:54:06.637
 Equally wrong, yeah.
@@ -4210,10 +4197,10 @@ So this one should also be annotated.
 OK, let's get that.
 
 00:54:14.280 --> 00:54:18.879
-Back here. To 206 allocator,
+Back here. 206 polymorphic_allocator,
 
 00:54:18.879 --> 00:54:21.318
-allocate this one.
+allocate, this one.
 
 00:54:21.320 --> 00:54:23.656
 What I really want is the ability to
@@ -4231,19 +4218,19 @@ So I don't need to do 2 separate quotes,
 I'm just going to quote one
 
 00:54:31.580 --> 00:54:33.890
-polymorphic_allocator::allocate.
+polymorphic_allocator::allocate().
 
 00:54:39.070 --> 00:54:41.950
-And polymorphic.
+And polymorphic...
 
 00:54:44.740 --> 00:54:48.868
-Mighty Morphin allocators allocate.
+Mighty Morphin' allocators::allocate().
 
 00:54:48.870 --> 00:54:51.090
 OK, this should be applied to
 
 00:54:51.090 --> 00:54:52.570
-memory resource allocate and
+memory_resource::allocate and
 
 00:54:52.639 --> 00:54:54.619
 polymorphic_allocator::allocate.
@@ -4276,7 +4263,7 @@ and I still rely on it a lot.
 In this case,
 
 00:55:10.588 --> 00:55:12.784
-our internal macro CRT guard overflow
+our internal macro _CRT_GUARDOVERFLOW
 
 00:55:12.784 --> 00:55:15.373
 is something that we use to tell
@@ -4314,17 +4301,14 @@ then that should send, instead of
 00:55:37.690 --> 00:55:39.528
 the actual result of the allocation,
 
-00:55:39.528 --> 00:55:40.716
-it should send negative
-
-00:55:40.720 --> 00:55:40.933
-one.
+00:55:39.528 --> 00:55:40.933
+it should send negative one.
 
 00:55:40.933 --> 00:55:42.211
 You know the maximum value of
 
 00:55:42.211 --> 00:55:43.963
-size T to the function so that
+size_t to the function so that
 
 00:55:43.963 --> 00:55:45.473
 the function can see that, oh,
@@ -4363,7 +4347,7 @@ nonstandard and detecting that bogus
 code before they call allocate.
 
 00:56:05.060 --> 00:56:07.991
-And it has to be a special declspec
+And it has to be a special __declspec
 
 00:56:07.991 --> 00:56:10.139
 annotation on the parameter,
@@ -4381,7 +4365,7 @@ what happens before you call it.
 So let's search for all occurences for
 
 00:56:17.872 --> 00:56:18.898
-security guard overflow.
+_CRT_GUARDOVERFLOW.
 
 00:56:18.900 --> 00:56:20.923
 Casey is beating me to the punch
@@ -4423,19 +4407,19 @@ but anything that mentions allocate should.
 So let's just take a look.
 
 00:56:40.110 --> 00:56:42.486
-Regex search for anything that says
+regex search for anything that says
 
 00:56:42.490 --> 00:56:45.106
 hopefully it should be on the same line
 
 00:56:45.106 --> 00:56:47.649
-and not wrapped: allocate.&ast;.
+and not wrapped: allocate.*.
 
 00:56:47.650 --> 00:56:49.266
 OK, much fewer occurrences.
 
 00:56:49.266 --> 00:56:51.286
-So we've got CRT allocator.
+So we've got _Crt_allocator.
 
 00:56:51.290 --> 00:56:52.830
 That's an internal type Casey mentioned.
@@ -4444,7 +4428,7 @@ That's an internal type Casey mentioned.
 Users don't directly call this,
 
 00:56:54.110 --> 00:56:57.130
-so we mark it as nodiscard for our purposes,
+so we mark it as [[nodiscard]] for our purposes,
 
 00:56:57.130 --> 00:56:58.648
 but we don't need to provide
@@ -4456,7 +4440,7 @@ messages, because if this occurs
 we're going to know what happened.
 
 00:57:01.670 --> 00:57:03.190
-Scope allocator I believe was
+scoped_allocator I believe was
 
 00:57:03.190 --> 00:57:04.710
 already addressed by the PR.
@@ -4468,38 +4452,38 @@ Let me split these real quick.
 You go on the left, you go on the right.
 
 00:57:10.330 --> 00:57:16.147
-OK, let's journey over to scoped allocator.
+OK, let's journey over to &lt;scoped_allocator&gt;.
 
 00:57:16.150 --> 00:57:16.503
 Yes,
 
 00:57:16.503 --> 00:57:18.268
-pointer allocate and allocate with
+pointer allocate() and allocate() with
 
 00:57:18.268 --> 00:57:20.488
-hint are being marked as raw alloc,
+hint are being marked as _RAW_ALLOC,
 
 00:57:20.490 --> 00:57:23.966
 so that is done. This is,
 
 00:57:23.966 --> 00:57:27.806
-I wish I had more monitor with, um 
-&gt;&gt; Casey: Allocator traits.
+I wish I had more monitor width, um 
+&gt;&gt; Casey: allocator_traits.
 
 00:57:27.806 --> 00:57:29.900
 &gt;&gt; Stephan: This is, yeah,
 
 00:57:29.900 --> 00:57:34.898
-allocator traits the wrapper in X memory.
+allocator_traits, the wrapper in &lt;xmemory&gt;.
 
 00:57:34.900 --> 00:57:40.684
-Memory. So we've got. See who is this?
+&lt;xmemory&gt;. So we've got. See who is this?
 
 00:57:42.720 --> 00:57:44.220
-Or are these the allocator
+Or are these the allocator_traits
 
 00:57:44.220 --> 00:57:46.055
-traits up here? I want to see the
+up here? I want to see the
 
 00:57:46.055 --> 00:57:47.290
 context, this is std::allocator.
@@ -4517,16 +4501,16 @@ because it's wrapping the allocator.
 It happens to say pointer
 
 00:57:57.810 --> 00:57:59.039
-rather than _Ty.&ast;, but.
+rather than _Ty*, but.
 
 00:57:59.039 --> 00:58:00.922
-If al-allocate like you should not,
+If _Al.allocate(), like you should not
 
 00:58:00.922 --> 00:58:02.434
-call allocator traits and then drop
+call allocator_traits and then drop
 
 00:58:02.434 --> 00:58:04.401
-it on the floor. That's equally raw.
+it on the floor. That's equally wrong.
 
 00:58:04.401 --> 00:58:06.830
 OK, so this is the missing occurrence.
@@ -4535,10 +4519,10 @@ OK, so this is the missing occurrence.
 We should comment this right now. Um.
 
 00:58:10.680 --> 00:58:13.767
-Let's say it's allocate, allocate at least,
+Let's see, it's allocate(), allocate_at_least(),
 
 00:58:13.770 --> 00:58:16.485
-and then allocate with hint, right?
+and then allocate() with hint, right?
 
 00:58:16.485 --> 00:58:18.260
 Yeah, because the wrapper here,
@@ -4547,19 +4531,19 @@ Yeah, because the wrapper here,
 let me maximize this quick.
 
 00:58:20.110 --> 00:58:24.180
-It's allocate, allocate with hint.
+It's allocate(), allocate() with hint.
 
 00:58:24.180 --> 00:58:25.632
-We have a allocator traits for
+Do we have an allocator_traits for
 
 00:58:25.632 --> 00:58:28.310
-allocate at least? No, we don't.
+allocate_at_least()? No, we don't.
 
 00:58:28.310 --> 00:58:29.044
 That's interesting.
 
 00:58:29.044 --> 00:58:31.246
-So it's only allocated and allocate
+So it's only allocate() and allocate()
 
 00:58:31.246 --> 00:58:31.980
 with hint.
@@ -4568,37 +4552,37 @@ with hint.
 OK.
 
 00:58:32.528 --> 00:58:37.460
-Um, should I quote let's quote um X memory?
+Um, should I quote? Let's quote. um &lt;xmemory&gt;?
 
 00:58:42.730 --> 00:58:46.070
-First occurrence of allocate paren
+First occurrence of allocate(,
 
 00:58:46.070 --> 00:58:50.572
-the space before. OK, normal allocator
+with a space before? OK, normal
 
 00:58:50.572 --> 00:58:55.127
-traits allocate allocate with hint.
+allocator_traits::allocate(), allocate() with hint.
 
 00:58:55.130 --> 00:58:58.490
-Phase two I want permalink.
+Phase two, I want permalink.
 
 00:58:58.490 --> 00:59:02.150
 OK, I don't need this anymore.
 
 00:59:02.150 --> 00:59:10.076
-OK. Maximize um. Allocator traits
+OK. Maximize um. allocator_traits::allocate()
 
 00:59:10.076 --> 00:59:15.610
-allocate should also be marked.
+should also be marked.
 
 00:59:19.460 --> 00:59:20.525
-Yeah, nodiscard.
+Yeah, _NODISCARD.
 
 00:59:20.525 --> 00:59:22.655
 It's possible that these were missed
 
 00:59:22.655 --> 00:59:24.702
-because nodiscard was wrapped on
+because _NODISCARD was wrapped on
 
 00:59:24.702 --> 00:59:26.332
 a different line than allocate.
@@ -4622,10 +4606,10 @@ many times by things wrapping and I expected
 the regex to get them on the same line.
 
 00:59:37.880 --> 00:59:39.287
-In this case, nodiscard and allocate,
+In this case, _NODISCARD and allocate,
 
 00:59:39.290 --> 00:59:41.550
-we're on the same line.
+were on the same line.
 
 00:59:41.550 --> 00:59:44.120
 OK. So those those two.
@@ -4640,7 +4624,7 @@ all occurrences of allocate.
 So that is traits and traits.
 
 00:59:53.790 --> 00:59:57.255
-And these are the default allocator traits.
+And these are the _Default_allocator_traits.
 
 00:59:57.260 --> 01:00:00.617
 Oh, on 6, oh I should also quote this one.
@@ -4649,7 +4633,7 @@ Oh, on 6, oh I should also quote this one.
 Um 632 and 646.
 
 01:00:06.740 --> 01:00:09.776
-And it's not actually allocator traits.
+And it's not actually allocator_traits.
 
 01:00:09.780 --> 01:00:12.132
 This one is what we have these
@@ -4661,7 +4645,7 @@ two specializations for
 compiler throughput because
 
 01:00:14.520 --> 01:00:15.900
-allocator traits ask,
+allocator_traits asks,
 
 01:00:15.900 --> 01:00:21.115
 it asks a lot of expensive questions.
@@ -4676,19 +4660,19 @@ we can short circuit a
 lot of that SFINAE like here.
 
 01:00:24.744 --> 01:00:26.448
-This is asking, do you have a pointer type?
+This is asking, do you have a pointer_type?
 
 01:00:26.450 --> 01:00:27.640
-Do you have a constant pointer type?
+Do you have a const_pointer_type?
 
 01:00:27.640 --> 01:00:29.460
-Do you have propagate on container copy?
+Do you have propagate_on_container_copy?
 
 01:00:29.460 --> 01:00:31.068
-And if we're allocator
+And if we're allocator_traits
 
 01:00:31.068 --> 01:00:32.274
-traits for std::allocator,
+for std::allocator,
 
 01:00:32.280 --> 01:00:33.560
 we know the answers to all these questions.
@@ -4703,19 +4687,19 @@ compiler to do all that work.
 So let's search for following
 
 01:00:38.345 --> 01:00:39.620
-occurrences of allocate,
+occurrences of allocate(
 
 01:00:39.620 --> 01:00:41.500
-run with the space.
+with space.
 
 01:00:41.500 --> 01:00:43.380
 And here we go.
 
 01:00:43.380 --> 01:00:46.180
-Default allocator traits allocate
+_Default_allocator_traits::allocate()
 
 01:00:46.180 --> 01:00:47.580
-and deallocate.
+and deallocate().
 
 01:00:47.580 --> 01:00:48.858
 These are kind of widely separated,
@@ -4727,13 +4711,13 @@ but I know GitHub will at least
 abbreviate this when it's a bunch.
 
 01:00:55.520 --> 01:00:59.150
-Default allocator traits.
+_Default_allocator_traits.
 
 01:00:59.150 --> 01:01:02.986
 I'll mention both and back to blah.
 
 01:01:02.990 --> 01:01:07.337
-Double colon allocation must be marked. OK.
+::allocate() must be marked. OK.
 
 01:01:07.340 --> 01:01:09.770
 These are all occurring before line
@@ -4751,10 +4735,10 @@ Go back to the search.
 We're going to want that open again.
 
 01:01:20.200 --> 01:01:24.176
-OK, so this is the default allocator.
+OK, so this is the _Default_allocator,
 
 01:01:24.180 --> 01:01:26.280
-Allocator traits mentioned and mentioned,
+_Default_allocator_traits mentioned, I mentioned,
 
 01:01:26.280 --> 01:01:28.674
 and then finally the std::allocator one.
@@ -4769,7 +4753,7 @@ On the left here. OK, so these
 are definitely. Oops. Go away.
 
 01:01:41.390 --> 01:01:44.912
-Default allocator traits. I wanted,
+_Default_allocator_traits. I wanted,
 
 01:01:44.912 --> 01:01:46.817
 I wanted Alex's PR here.
@@ -4784,10 +4768,10 @@ That's 1, 2. And then the third one,
 why did this evade my search?
 
 01:01:59.270 --> 01:02:00.570
-Because the CRT guard overflow
+Because the _CRT_GUARD OVERFLOW
 
 01:02:00.570 --> 01:02:02.238
-wrap to the next line. So yes,
+wrapped to the next line. So yes,
 
 01:02:02.238 --> 01:02:03.990
 you got all the ones in std::allocate.
@@ -4799,16 +4783,16 @@ That's good, or std::allocator.
 And then the last ones were
 
 01:02:07.726 --> 01:02:09.760
-the ones we mentioned allocate.
+the ones we mentioned allocate().
 
 01:02:09.760 --> 01:02:13.020
-The memory resource allocated on
+The memory_resource::allocate() on
 
 01:02:13.020 --> 01:02:16.188
 the polymorphic and ooh hello
 
 01:02:16.188 --> 01:02:19.208
-you were hiding allocate object.
+you were hiding allocate_object().
 
 01:02:19.210 --> 01:02:20.071
 OK, the compiler,
@@ -4844,10 +4828,10 @@ and it's specific to C++20,
 so let's go update that quote.
 
 01:02:38.850 --> 01:02:41.100
-Um, back to X polymorphic.
+Um, back to &lt;xpolymorphic_allocator&gt;.
 
 01:02:44.370 --> 01:02:48.118
-Perfect allocator, allocator object.
+[singing] polymorphic_allocator::allocate_object().
 
 01:02:50.920 --> 01:02:51.160
 Yeah.
@@ -4856,25 +4840,22 @@ Yeah.
 That was I think, on 
 
 01:03:03.430 --> 01:03:06.370
-yvals that I commented. Yes.
+&gt;yvals_core.h&lt; that I commented? Yes.
 
 01:03:13.060 --> 01:03:14.262
-polymorhpic_allocator::allocate
+polymorphic_allocator::allocate()
 
 01:03:14.262 --> 01:03:16.666
-and copy paste.
+and copy-paste.
 
 01:03:16.670 --> 01:03:18.198
 Hopefully this is correct.
 
-01:03:22.440 --> 01:03:24.318
-I'm saying polymorphic
-
-01:03:24.318 --> 01:03:26.196
-allocator allocate object.
+01:03:22.440 --> 01:03:26.196
+I'm saying polymorphic_allocator::allocate_object.
 
 01:03:26.200 --> 01:03:27.840
-That is correct spelling there.
+That is the correct spelling there.
 
 01:03:27.840 --> 01:03:29.280
 And you are indeed.
@@ -4883,25 +4864,25 @@ And you are indeed.
 I'm not getting confused that
 
 01:03:31.521 --> 01:03:34.359
-allocate object is still a member
+allocate_object() is still a member
 
 01:03:34.359 --> 01:03:36.935
-of polymorhpic_allocator. It is OK.
+of polymorhpic_allocator. It is, OK.
 
 01:03:36.935 --> 01:03:39.970
-Good update comments so I don't lose it.
+Good, update the comment so I don't lose it.
 
 01:03:39.970 --> 01:03:42.214
 OK, so we are almost done
 
 01:03:42.214 --> 01:03:43.710
-scanning for all allocates.
+scanning for all allocate()s.
 
 01:03:43.710 --> 01:03:45.668
 We got all three there, and then the
 
 01:03:45.668 --> 01:03:47.670
-TZDB one is just the CRT allocator.
+TZDB one is just the _Crt_allocator.
 
 01:03:47.670 --> 01:03:49.049
 OK, so that gets all the allocates,
@@ -4913,13 +4894,13 @@ which is good.
 That answers the question where
 
 01:03:51.818 --> 01:03:53.299
-the polymorhpic_allocator go.
+did the polymorhpic_allocator go.
 
 01:03:53.300 --> 01:03:55.884
 Go away, OK now.
 
 01:03:55.884 --> 01:03:57.176
-Assume aligned.
+_ASSUME_ALIGNED.
 
 01:03:57.180 --> 01:03:58.700
 So these are the, UM,
@@ -4931,7 +4912,7 @@ the fun compiler wrapper functions.
 If you, say,
 
 01:04:01.864 --> 01:04:04.860
-assume a line on a pointer that by itself
+assume_aligned() on a pointer, that, by itself
 
 01:04:04.860 --> 01:04:06.940
 does not have interesting side effects,
@@ -4949,13 +4930,13 @@ So that is an unusual
 reason to mark something
 
 01:04:12.700 --> 01:04:13.486
-nodiscard.
+[[nodiscard]].
 
 01:04:13.486 --> 01:04:15.058
-So message is good.
+So a message is good.
 
 01:04:15.060 --> 01:04:16.810
-Launder the even more obscure
+launder() the even more obscure
 
 01:04:16.810 --> 01:04:17.860
 standard library function.
@@ -4973,10 +4954,10 @@ The original one is still dirty,
 so you don't want to use it.
 
 01:04:25.270 --> 01:04:27.310
-That's good.
+Yep, that's good.
 
 01:04:27.310 --> 01:04:30.820
-Now nodiscard lock suppress.
+Now _NODISCARD_LOCK_SUPPRESS.
 
 01:04:30.820 --> 01:04:32.320
 Just an escape hatch.
@@ -4988,10 +4969,10 @@ What is this?
 OK. So Alex is introducing an escape hatch.
 
 01:04:40.290 --> 01:04:43.020
-For nodiscard lock and nodiscard
+For _NODISCARD_LOCK and _NODISCARD_CTOR_LOCK.
 
 01:04:43.020 --> 01:04:45.310
-ctor lock. That's reasonable.
+That's reasonable.
 
 01:04:45.310 --> 01:04:49.230
 Previously, we didn't have an escape hatch,
@@ -5015,19 +4996,19 @@ code, which is technically cromulent,
 you could say something like instead of.
 
 01:05:05.250 --> 01:05:08.126
-What is it? Mutex? No, it's lock_guard.
+What is it? mutex? No, it's lock_guard.
 
 01:05:08.126 --> 01:05:10.842
-So if you have a global scope like a
+So if you have at global scope like a
 
 01:05:10.842 --> 01:05:14.850
 mutex mut, and then you say lock_guard.
 
 01:05:14.850 --> 01:05:19.168
-Guard. my guard mut.
+guard. my guard{mut}.
 
 01:05:19.168 --> 01:05:22.684
-Then you can do Cool lock stuff.
+Then you can do cool lock stuff.
 
 01:05:22.690 --> 01:05:28.130
 Do cool stuff and then when it's destroyed.
@@ -5048,13 +5029,13 @@ So this you can do if you name it.
 We marked all of the lock_guards in the
 
 01:05:39.106 --> 01:05:41.686
-STL as either nodiscard on the type,
+STL as either [[nodiscard]] on the type,
 
 01:05:41.690 --> 01:05:43.160
 or if they have multiple constructors,
 
 01:05:43.160 --> 01:05:44.427
-some of which should be nodiscard,
+some of which should be [[nodiscard]],
 
 01:05:44.430 --> 01:05:46.236
 we mark it on the constructors so
@@ -5093,10 +5074,10 @@ However, it can occasionally be used validly.
 That's if somebody writes something
 
 01:06:08.490 --> 01:06:13.710
-like this. Comma do cool stuff.
+like this. Comma do_cool_stuff(),
 
 01:06:13.710 --> 01:06:15.920
-Awesome stuff semicolon.
+awesome_stuff(), semicolon.
 
 01:06:15.920 --> 01:06:17.648
 This constructs a temporary,
@@ -5108,7 +5089,7 @@ suspends it in midair,
 does a bunch of other stuff through
 
 01:06:21.165 --> 01:06:21.675
-common expressions,
+comma expressions,
 
 01:06:21.680 --> 01:06:24.290
 and then at the end of the full expression
@@ -5169,7 +5150,7 @@ actually check on Compiler Explorer.
 
 01:07:10.250 --> 01:07:12.308
 Open up godbolt.org 
-&gt;&gt; Casey: On the common expression,
+&gt;&gt; Casey: On the comma expression,
 
 01:07:12.310 --> 01:07:13.750
 it can't be a declaration anyway,
@@ -5193,13 +5174,13 @@ So that's the difference between
 if you've got a mutex mut,
 
 01:07:30.497 --> 01:07:34.000
-and then you have a lock_guard.
+and then you have a lock_guard(guard1),
 
 01:07:34.000 --> 01:07:39.284
-paren guard one versus lock_guard.
+versus lock_guard{guard2}.
 
 01:07:39.284 --> 01:07:46.880
-brace guard 2. OK, what happens on 20, um?
+OK, what happens on 20, um?
 
 01:07:46.880 --> 01:07:47.915
 6 cannot deduce.
@@ -5211,7 +5192,7 @@ But let's just provide mutex here so we
 don't have to deal with thinking about CTAD.
 
 01:07:53.470 --> 01:07:55.228
-Custom template deduction. Mutex. 
+Constructor template argument deduction. mutex. 
 
 01:07:55.230 --> 01:07:56.470
 No, that's not a thing.
@@ -5247,7 +5228,7 @@ the variable in parentheses.
 So this is not constructing a temporary,
 
 01:08:15.210 --> 01:08:16.578
-it's trying to construct a name
+it's trying to construct a named
 
 01:08:16.578 --> 01:08:17.490
 variable with no arguments,
@@ -5274,19 +5255,19 @@ We get um here by my.
 Why am I getting undeclared
 
 01:08:34.060 --> 01:08:35.210
-identifier needs to be called.
+identifier.
 
 01:08:35.210 --> 01:08:36.360
-&gt;&gt; Nicole: It needs to be
+&gt;&gt; Nicole: It needs to be called, it needs to be
 
 01:08:36.360 --> 01:08:37.104
-lock_guard mutex,
+lock_guard<mutex>{mut}
 
 01:08:37.104 --> 01:08:39.336
-mut as opposed to guard 2.
+as opposed to guard2.
 
 01:08:41.550 --> 01:08:43.134
-&gt;&gt; Stephan: lock_guard mutex. Ohh.
+&gt;&gt; Stephan: lock_guard<mutex>. Ohh.
 
 01:08:43.134 --> 01:08:47.349
 That's right. Duh. Thank you.
@@ -5307,10 +5288,10 @@ So this one makes a temporary and
 then does nothing with it because we
 
 01:08:55.689 --> 01:08:57.196
-forgot to say guard with parentheses.
+forgot to say guard. With parentheses,
 
 01:08:57.196 --> 01:08:58.048
-If you tried this,
+if you tried this,
 
 01:08:58.050 --> 01:09:01.067
 this would really be redeclaring a variable.
@@ -5319,7 +5300,7 @@ this would really be redeclaring a variable.
 If mut is already around in the same scope.
 
 01:09:03.990 --> 01:09:05.690
-Redefinition basically different basic types.
+Redefinition, basically different basic types.
 
 01:09:05.690 --> 01:09:08.306
 But if this were global scope,
@@ -5370,7 +5351,7 @@ but without having to refactor
 code as long as it's enabled.
 
 01:09:41.020 --> 01:09:43.692
-As long as the nodiscard warning for
+As long as the [[nodiscard]] warning for
 
 01:09:43.692 --> 01:09:45.957
 the guards is enabled by default,
@@ -5388,7 +5369,7 @@ Essentially,
 if that lets people enable
 
 01:09:50.327 --> 01:09:52.274
-nodiscard for most of the time
+[[nodiscard]] for most of the time
 
 01:09:52.274 --> 01:09:53.630
 and write their unusual code,
@@ -5397,7 +5378,7 @@ and write their unusual code,
 then that's reasonable.
 
 01:09:56.770 --> 01:09:59.983
-OK, so if def nodiscard locks suppress,
+OK, so #ifdef _NODISCARD_LOCK_SUPPRESS,
 
 01:09:59.990 --> 01:10:01.348
 we might want to rephrase that message,
@@ -5409,7 +5390,7 @@ but just the existence of the macro is fine,
 expand to nothing. Otherwise,
 
 01:10:05.518 --> 01:10:10.680
-nodiscard lock and nodiscard ctor lock. OK.
+_NODISCARD_LOCK and _NODISCARD_CTOR_LOCK. OK.
 
 01:10:13.140 --> 01:10:15.120
 Uh, then we have ones about,
@@ -5430,16 +5411,16 @@ you never joined or detached it.
 Well, that's bad.
 
 01:10:24.973 --> 01:10:28.546
-It's going to terminate with jthread.
+It's going to terminate. With jthread,
 
 01:10:28.546 --> 01:10:29.670
-That's interesting.
+that's interesting.
 
 01:10:29.670 --> 01:10:32.764
-Do we mark jthread ctor as
+Do we mark jthread's ctor as
 
 01:10:32.770 --> 01:10:34.660
-nodiscard?
+[[nodiscard]]?
 
 01:10:34.660 --> 01:10:36.585
 It is unusual to construct a 
@@ -5454,7 +5435,7 @@ Let's see.
 jthread. OK, we did in fact mark
 
 01:10:46.933 --> 01:10:48.150
-jthread ctor as nodiscard ctor.
+jthread ctor as _NODISCARD_CTOR.
 
 01:10:48.150 --> 01:10:50.246
 So Alex is simply providing a reason here,
@@ -5472,7 +5453,7 @@ immediately join at the end.
 Why did you bother making a whole
 
 01:10:55.477 --> 01:10:56.939
-thread there when you were going to
+thread there when you weren't going to
 
 01:10:56.939 --> 01:10:57.823
 do anything else simultaneously?
@@ -5490,13 +5471,13 @@ end of a scope and then join.
 Yeah, so that's reasonable to have.
 
 01:11:08.370 --> 01:11:12.390
-Async famously also has the blocking.
+async famously also has the blocking.
 
 01:11:12.390 --> 01:11:17.113
 Yep. And getting a future, if
 
 01:11:17.113 --> 01:11:19.687
-you get and then discard, yes.
+you get() and then discard, yes.
 
 01:11:19.687 --> 01:11:22.460
 OK, so these are all reasonable to have.
@@ -5508,7 +5489,7 @@ OK, so I like the existence
 of all these messages.
 
 01:11:29.480 --> 01:11:32.232
-And. We found the I think the allocate
+And. We found the I think the allocate()
 
 01:11:32.232 --> 01:11:34.720
 one was the case where we really
@@ -5532,7 +5513,7 @@ sure we're not missing anything obvious,
 but from a brief glance we're getting like
 
 01:11:47.268 --> 01:11:49.815
-all the remove, all the unique, and so forth.
+all the remove(), all the unique(), and so forth.
 
 01:11:49.820 --> 01:11:51.492
 So overall the direction
@@ -5550,7 +5531,7 @@ I'm trying to trying to rack my brain.
 Are there other cases where we had
 
 01:11:59.091 --> 01:12:00.590
-definitely applied nodiscard,
+definitely applied [[nodiscard]],
 
 01:12:00.590 --> 01:12:03.222
 but we didn't provide a reason and
@@ -5571,7 +5552,7 @@ So it's great that Alex has done this,
 getting all the cases where the reason
 
 01:12:13.294 --> 01:12:16.350
-for nodiscard was far from obvious.
+for [[nodiscard]] was far from obvious.
 
 01:12:16.350 --> 01:12:17.610
 The other nice thing is that,
@@ -5592,7 +5573,7 @@ That ended up being very verbose.
 It changed a zillion lines most of the time.
 
 01:12:27.930 --> 01:12:29.300
-The reason for nodiscarding
+The reason for [[nodiscard]]'ing
 
 01:12:29.300 --> 01:12:31.336
 something is that it's a pure observer
@@ -5607,19 +5588,19 @@ except for like the empty case
 like we discussed,
 
 01:12:35.350 --> 01:12:38.286
-where if you call you know std::find,
+where if you call you know std::find(),
 
 01:12:38.290 --> 01:12:39.088
 you drop it on the floor,
 
 01:12:39.090 --> 01:12:40.650
-you get the nodiscard warning.
+you get the [[nodiscard]] warning.
 
 01:12:40.650 --> 01:12:43.590
 They're pretty self-explanatory we feel.
 
 01:12:43.590 --> 01:12:45.564
-So using the plain nodiscard
+So using the plain [[nodiscard]]
 
 01:12:45.564 --> 01:12:47.520
 for the vast majority of cases.
@@ -5634,10 +5615,10 @@ for the cases where it's unusual.
 It seems to be reasonable for warnings
 
 01:12:53.203 --> 01:12:55.117
-that do not get admitted that often
+that do not get emitted that often
 
 01:12:55.117 --> 01:12:57.090
-they only get admitted under you know,
+they only get emitted under you know,
 
 01:12:57.090 --> 01:12:58.280
 unusual circumstances and then we
@@ -5649,10 +5630,10 @@ just need to ask OK is the user
 going to be confused why they're
 
 01:13:01.630 --> 01:13:02.679
-getting nodiscard here?
+getting [[nodiscard]] here?
 
 01:13:02.680 --> 01:13:05.677
-And the non pure preserver cases are the ones
+And the non-pure observer cases are the ones
 
 01:13:05.677 --> 01:13:08.555
 where it seems reasonable to have the macro.
@@ -5685,7 +5666,7 @@ submitting this review,
 but hopefully we are able to explore
 
 01:13:22.505 --> 01:13:24.012
-the reasons for nodiscard and why
+the reasons for [[nodiscard]] and why
 
 01:13:24.012 --> 01:13:25.619
 you should use it in your own code.
@@ -5697,7 +5678,7 @@ Especially like even if you're
 just maintaining an application.
 
 01:13:28.870 --> 01:13:30.874
-nodiscard is useful because everything
+[[nodiscard]] is useful because everything
 
 01:13:30.874 --> 01:13:32.410
 defines functions and calls it.
@@ -5709,7 +5690,7 @@ But especially especially if you're
 maintaining a third party library,
 
 01:13:36.310 --> 01:13:37.798
-you should be using nodiscard
+you should be using [[nodiscard]]
 
 01:13:37.798 --> 01:13:39.070
 as much as the STL.
@@ -5754,7 +5735,7 @@ It sets a bit somewhere.
 Saying, hey, you know,
 
 01:14:00.086 --> 01:14:01.334
-if I ever see this, nodiscard,
+if I ever see this, [[nodiscard]],
 
 01:14:01.334 --> 01:14:02.606
 if I ever see this discarded,
@@ -5778,7 +5759,7 @@ doesn't have a message at all.
 That's just, you know,
 
 01:14:08.918 --> 01:14:09.726
-double bracket nodiscard.
+double bracket [[nodiscard]].
 
 01:14:09.730 --> 01:14:11.426
 Very easy for the compiler to parse that,
@@ -5796,16 +5777,16 @@ see if there's any remaining questions.
 Let's see, we talked about the, the
 
 01:14:21.952 --> 01:14:24.450
-bug the Cameron has already fixed.
+bug that Cameron has already fixed.
 
 01:14:24.450 --> 01:14:26.950
-Casey advises please use views
+Casey advises please use
 
 01:14:26.950 --> 01:14:30.056
-take while instead of hacking find
+views::take_while() instead of hacking find()
 
 01:14:30.056 --> 01:14:32.626
-with a side effecting predicate.
+with a side-effecting predicate.
 
 01:14:32.630 --> 01:14:34.442
 That is like take elements from
@@ -5829,13 +5810,13 @@ Is that correct or the function object?
 function objects,
 
 01:14:45.680 --> 01:14:47.192
-but if you're using find right you're
+but if you're using find() right you're
 
 01:14:47.192 --> 01:14:48.765
-going if you're using find and you're
+going, if you're using find() and you're
 
 01:14:48.765 --> 01:14:50.540
-hacking it with a side effecting predicate,
+hacking it with a side-effecting predicate,
 
 01:14:50.540 --> 01:14:52.298
 your goal is to change every
@@ -5856,7 +5837,7 @@ So you should pull out some
 condition into a predicate,
 
 01:15:00.160 --> 01:15:01.826
-use that with use take while and
+use that with views::take_while() and
 
 01:15:01.826 --> 01:15:03.655
 now you have a range of exactly
@@ -5868,7 +5849,7 @@ the elements that you, you know,
 wanted to modify and you can use that
 
 01:15:07.764 --> 01:15:10.298
-instead of this weird hacked find thing.
+instead of this weird hacked find() thing.
 
 01:15:10.300 --> 01:15:11.833
 &gt;&gt; Stephan: Yeah, and I think I've only seen
@@ -5886,7 +5867,7 @@ But yeah,
 that does seem like good advice.
 
 01:15:18.350 --> 01:15:20.062
-&gt;&gt; Casey: The much clearer expression
+&gt;&gt; Casey: It's a much clearer expression
 
 01:15:20.062 --> 01:15:21.346
 of programming intent.
@@ -5898,7 +5879,7 @@ of programming intent.
 just just write what you mean rather
 
 01:15:24.006 --> 01:15:26.428
-than sort of mingling the STL into
+than sort of mangling the STL into
 
 01:15:26.428 --> 01:15:28.510
 something that does what you want.
@@ -5913,13 +5894,13 @@ is that you can see the name and you
 have some idea of what to expect if
 
 01:15:34.337 --> 01:15:36.152
-you get a find that's doing fancy,
+you get a find() that's doing fancy,
 
 01:15:36.152 --> 01:15:38.262
 unusual, side effect-y things you
 
 01:15:38.262 --> 01:15:41.039
-probably shouldn't be in the find in the first place.
+probably shouldn't be using find() in the first place.
 
 01:15:41.040 --> 01:15:43.714
 I'm checking the chat for anything else.
@@ -5940,7 +5921,7 @@ let's see.
 Nicole does not like the name
 
 01:15:49.869 --> 01:15:51.335
-allocated object because it only
+allocate_object because it only
 
 01:15:51.335 --> 01:15:52.515
 allocates storage for objects,
@@ -5961,7 +5942,7 @@ Let's see. Oh, interesting that
 internal tools are available,
 
 01:16:02.840 --> 01:16:04.478
-but it's not available to the public.
+but if it's not available to the public.
 
 01:16:04.480 --> 01:16:07.568
 Then I won't mention that you're all here.
@@ -5970,10 +5951,10 @@ Then I won't mention that you're all here.
 And Casey mentions we're up to 5430
 
 01:16:10.310 --> 01:16:12.230
-uses of nodiscard in STL headers.
+uses of [[nodiscard]] in STL headers.
 
 01:16:12.230 --> 01:16:13.466
-Funny thing, nodiscard is still
+Funny thing, [[nodiscard]] is still
 
 01:16:13.466 --> 01:16:15.149
 going to be more popular than export.
@@ -5988,7 +5969,7 @@ export in standard library modules,
 and that's because we not only
 
 01:16:22.223 --> 01:16:23.467
-nodiscard internal functions,
+[[nodiscard]] internal functions,
 
 01:16:23.470 --> 01:16:24.148
 but member functions.
@@ -6006,7 +5987,7 @@ it only needs to be applied
 to top level classes.
 
 01:16:29.030 --> 01:16:31.767
-So now and forever nodiscard
+So now and forever [[nodiscard]]
 
 01:16:31.767 --> 01:16:34.678
 will be the most popular thing.
