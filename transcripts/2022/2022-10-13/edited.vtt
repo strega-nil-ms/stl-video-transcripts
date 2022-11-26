@@ -1,0 +1,6406 @@
+﻿WEBVTT
+
+NOTE duration:"01:32:30"
+
+NOTE language:en-us
+
+00:00:10.280 --> 00:00:12.146
+&gt;&gt; Stephan: Hi, and welcome back to another
+
+00:00:12.146 --> 00:00:13.860
+VC libraries open code review.
+
+00:00:13.860 --> 00:00:14.859
+I'm Stephan T. Lavavej,
+
+00:00:14.859 --> 00:00:16.857
+a Visual C++ libraries developer.
+
+00:00:16.860 --> 00:00:20.692
+And today we'll be looking at PR 3035,
+
+00:00:20.692 --> 00:00:23.728
+adding `std::view::zip` from a
+
+00:00:23.728 --> 00:00:25.820
+new contributor,  tylerbrawl.
+
+00:00:25.820 --> 00:00:31.291
+So this is 1000 line PR, 1311 lines,
+
+00:00:31.291 --> 00:00:33.193
+but it's entirely adding new code,
+
+00:00:33.200 --> 00:00:34.492
+not changing existing code.
+
+00:00:34.492 --> 00:00:36.820
+I'll be doing the final review of it,
+
+00:00:36.820 --> 00:00:40.426
+and Nicole has already reviewed this.
+
+00:00:40.430 --> 00:00:41.474
+For correctness. Uh.
+
+00:00:41.474 --> 00:00:44.170
+Now, I have not looked deeply into um,
+
+00:00:44.170 --> 00:00:45.259
+`std::zip`.
+
+00:00:45.259 --> 00:00:47.437
+The committee has been adding all
+
+00:00:47.437 --> 00:00:49.590
+this ranges stuff to C++23,
+
+00:00:49.590 --> 00:00:51.790
+so I'm vaguely aware of what it does,
+
+00:00:51.790 --> 00:00:53.596
+but I'll be looking at the
+
+00:00:53.596 --> 00:00:55.170
+standardease for the first time.
+
+00:00:55.170 --> 00:00:56.628
+So this describes.
+
+00:00:56.628 --> 00:00:58.572
+This nice detailed description
+
+00:00:58.572 --> 00:01:00.790
+that Tyler has provided
+
+00:01:00.790 --> 00:01:03.015
+explains that this is a
+
+00:01:03.015 --> 00:01:04.350
+partial feature implementation,
+
+00:01:04.350 --> 00:01:06.505
+so it's not completely implementing
+
+00:01:06.505 --> 00:01:08.750
+the paper, but only `std::views::zip`
+
+00:01:08.750 --> 00:01:10.325
+The paper also adds a `std::views::zip_transform`,
+
+00:01:10.330 --> 00:01:14.145
+which we won't be seeing today,
+
+00:01:14.150 --> 00:01:17.690
+but it may come in a future follow up PR.
+
+00:01:17.690 --> 00:01:19.834
+So let me open up the tracking issue.
+
+00:01:19.840 --> 00:01:21.226
+Because this is a partial PR.
+
+00:01:21.230 --> 00:01:23.134
+This means that we will not be
+
+00:01:23.134 --> 00:01:24.610
+getting the feature test macro.
+
+00:01:24.610 --> 00:01:27.137
+Because our policy is that we only
+
+00:01:27.137 --> 00:01:29.744
+define a feature test macro when a
+
+00:01:29.744 --> 00:01:31.910
+feature is complete and non buggy
+
+00:01:31.989 --> 00:01:34.257
+enough to actually be usable,
+
+00:01:34.260 --> 00:01:35.392
+if something is blocked
+
+00:01:35.392 --> 00:01:36.807
+by like severe compiler bugs.
+
+00:01:36.810 --> 00:01:37.482
+For example,
+
+00:01:37.482 --> 00:01:39.162
+we will refrain from defining
+
+00:01:39.162 --> 00:01:40.919
+the feature test macro until.
+
+00:01:40.920 --> 00:01:41.872
+it is usable.
+
+00:01:41.872 --> 00:01:43.580
+So we won't be having this bit.
+
+00:01:43.580 --> 00:01:44.061
+Um,
+
+00:01:44.061 --> 00:01:46.947
+there are a couple of LWG
+
+00:01:46.947 --> 00:01:49.000
+issues that affect this.
+
+00:01:49.000 --> 00:01:50.098
+One is implemented.
+
+00:01:50.098 --> 00:01:51.196
+One is not,
+
+00:01:51.200 --> 00:01:53.560
+because it affects zip_transform,
+
+00:01:53.560 --> 00:01:56.500
+and there's a couple overlapping patch
+
+00:01:56.500 --> 00:01:59.359
+papers that do modify `std::zip`
+
+00:01:59.360 --> 00:02:00.500
+So we're going to need to
+
+00:02:00.500 --> 00:02:01.580
+open up all this stuff.
+
+00:02:01.580 --> 00:02:04.760
+This is the primary paper.
+
+00:02:04.760 --> 00:02:07.301
+And then the library issues we need
+
+00:02:07.301 --> 00:02:10.527
+to look at are this one and this one.
+
+00:02:10.530 --> 00:02:10.902
+OK.
+
+00:02:10.902 --> 00:02:13.878
+And this has all been added to the
+
+00:02:13.878 --> 00:02:16.111
+latest working paper N4917,
+
+00:02:16.111 --> 00:02:17.966
+so I'll actually probably be
+
+00:02:17.966 --> 00:02:20.269
+referring to that because the code
+
+00:02:20.269 --> 00:02:22.531
+has been patched extensively or the
+
+00:02:22.531 --> 00:02:24.898
+specification has been patched extensively.
+
+00:02:24.900 --> 00:02:25.175
+OK,
+
+00:02:25.175 --> 00:02:26.825
+so this should be easier because
+
+00:02:26.825 --> 00:02:28.159
+it's mostly adding new wording
+
+00:02:28.159 --> 00:02:29.734
+so we don't need to jump around
+
+00:02:29.734 --> 00:02:31.320
+a bunch of different places.
+
+00:02:33.620 --> 00:02:35.498
+So, and I think with zip,
+
+00:02:35.500 --> 00:02:37.246
+the one that we've already gotten,
+
+00:02:37.250 --> 00:02:39.180
+um, this seems really familiar.
+
+00:02:39.180 --> 00:02:42.174
+Um, the tuple and pair and
+
+00:02:42.174 --> 00:02:44.170
+`vector&lt;bool&gt;::reference` changes from.
+
+00:02:44.170 --> 00:02:45.610
+Or was that another paper?
+
+00:02:45.610 --> 00:02:47.308
+I think we already got those.
+
+00:02:47.310 --> 00:02:49.158
+&gt;&gt; Casey: We do already have the tuple
+
+00:02:49.158 --> 00:02:50.250
+and pair changes from this.
+
+00:02:50.250 --> 00:02:54.006
+I think An Jiang submitted that change.
+
+00:02:54.010 --> 00:02:54.726
+&gt;&gt; Stephan: That's right.
+
+00:02:54.726 --> 00:02:57.232
+Yeah, so we we merged that a
+
+00:02:57.232 --> 00:02:58.522
+while ago trying to load all
+
+00:02:58.522 --> 00:02:59.470
+this state back in my head.
+
+00:02:59.470 --> 00:03:01.185
+The change log I'm explains all this.
+
+00:03:01.190 --> 00:03:03.269
+I think if we search for zip,
+
+00:03:03.270 --> 00:03:04.110
+yeah here we go.
+
+00:03:04.110 --> 00:03:04.530
+It's shipped,
+
+00:03:04.530 --> 00:03:06.295
+it's in the current production
+
+00:03:06.295 --> 00:03:07.246
+release VS 2022 17.3.
+
+00:03:07.246 --> 00:03:08.736
+So essentially the first part
+
+00:03:08.736 --> 00:03:10.805
+of the paper is implemented the
+
+00:03:10.805 --> 00:03:12.285
+tuple, pair, `vector&lt;bool&gt;::reference` reference
+
+00:03:12.285 --> 00:03:14.399
+that affects the existing library.
+
+00:03:14.400 --> 00:03:16.052
+So this will be the second
+
+00:03:16.052 --> 00:03:17.500
+of at least three parts.
+
+00:03:17.500 --> 00:03:19.780
+Um, so here's the zip paper.
+
+00:03:19.780 --> 00:03:23.996
+So tuple pair, all this stuff is done.
+
+00:03:24.000 --> 00:03:31.160
+I go down. OK, so I think we have this.
+
+00:03:31.160 --> 00:03:34.706
+Is, explanations to integer class type,
+
+00:03:34.710 --> 00:03:35.775
+common type stuff.
+
+00:03:35.775 --> 00:03:39.650
+OK, so the new zip stuff is in [range.zip].
+
+00:03:39.650 --> 00:03:41.150
+That's a stable name.
+
+00:03:41.150 --> 00:03:43.400
+We're not going to be looking
+
+00:03:43.478 --> 00:03:44.729
+at zip_transform.
+
+00:03:44.730 --> 00:03:46.560
+And then there's also an
+
+00:03:46.560 --> 00:03:48.024
+adjacent and adjacent_transform.
+
+00:03:48.030 --> 00:03:53.593
+Um, do we have this? I think no
+
+00:03:53.593 --> 00:03:55.317
+according to this description,
+
+00:03:55.320 --> 00:03:57.608
+does this mention "adjacent"?
+
+00:03:57.608 --> 00:03:59.976
+&gt;&gt; Stephan: No. No. "adjacent". 
+&gt;&gt; Casey: No. We don't
+
+00:03:59.976 --> 00:04:02.670
+&gt;&gt; Stephan: So this is purely just zip.
+
+00:04:02.670 --> 00:04:05.000
+&gt;&gt; Casey: Yeah, we don't have zip_transform
+
+00:04:05.000 --> 00:04:06.850
+or adjacent or adjacent_transform.
+
+00:04:06.850 --> 00:04:07.170
+&gt;&gt; Stephan: OK.
+
+00:04:07.170 --> 00:04:09.730
+So we may be seeing several follow-up PRs.
+
+00:04:09.730 --> 00:04:10.294
+This is good.
+
+00:04:10.294 --> 00:04:11.422
+It means there's more byte size.
+
+00:04:11.430 --> 00:04:14.294
+We only have to look at one section
+
+00:04:14.294 --> 00:04:15.010
+worth of wording.
+
+00:04:15.010 --> 00:04:15.303
+OK.
+
+00:04:15.303 --> 00:04:17.647
+I'm just checking here to see if there's
+
+00:04:17.647 --> 00:04:20.045
+other edits that [range.zip] did outside.
+
+00:04:20.050 --> 00:04:24.586
+I'm almost certain that it's not.
+
+00:04:24.590 --> 00:04:26.102
+Lots of "Effects: Equivalent to:" stuff,
+
+00:04:26.102 --> 00:04:27.614
+a sentinel.
+
+00:04:27.620 --> 00:04:27.893
+OK,
+
+00:04:27.893 --> 00:04:29.804
+so now I'm going to close this
+
+00:04:29.804 --> 00:04:31.632
+paper and I'm just going to
+
+00:04:31.632 --> 00:04:33.456
+look at what's in the standard.
+
+00:04:33.460 --> 00:04:35.548
+Let me look at LWG issue.
+
+00:04:35.550 --> 00:04:37.644
+This is also updating a spaceship
+
+00:04:37.644 --> 00:04:40.229
+standardease again in [range.zip.iterator].
+
+00:04:40.230 --> 00:04:40.450
+OK,
+
+00:04:40.450 --> 00:04:41.550
+so this has already been
+
+00:04:41.550 --> 00:04:42.740
+applied to the working paper. Yep.
+
+00:04:44.790 --> 00:04:49.578
+And this is the compatibility paper.
+
+00:04:49.580 --> 00:04:55.160
+Scroll down. Wording "did this affect?"
+
+00:04:55.160 --> 00:04:58.114
+OK, so tuple this has already been
+
+00:04:58.120 --> 00:05:00.730
+taken care of tuple like.
+
+00:05:03.110 --> 00:05:05.768
+Yep, Yep, Yep.
+
+00:05:05.770 --> 00:05:09.040
+Calling a function with a tuple of arguments, equality for tuple,
+
+00:05:09.040 --> 00:05:11.063
+common reference specialization.
+
+00:05:11.063 --> 00:05:14.500
+I can't remember if we got this.
+
+00:05:14.500 --> 00:05:17.566
+Pair stuff, let me scroll faster.
+
+00:05:17.570 --> 00:05:20.798
+This also edits zip_transform? No.
+
+00:05:20.800 --> 00:05:22.670
+At least not there.
+
+00:05:22.670 --> 00:05:26.160
+Associative containers.
+
+00:05:26.160 --> 00:05:30.417
+OK, did get rid of a pair-like concept.
+
+00:05:30.420 --> 00:05:31.924
+They've modified elements_view
+
+00:05:31.924 --> 00:05:34.020
+OK, so did change [range.zip.view]
+
+00:05:34.020 --> 00:05:36.060
+OK, so looking at the current
+
+00:05:36.060 --> 00:05:38.260
+working paper will give us all that.
+
+00:05:38.260 --> 00:05:39.354
+OK, great.
+
+00:05:39.354 --> 00:05:42.636
+So now let's look for [ranges.zip]
+
+00:05:46.830 --> 00:05:49.590
+Uh, did I search long stable name?
+
+00:05:49.590 --> 00:05:51.780
+Probably. Ranges library.
+
+00:05:55.720 --> 00:05:59.032
+OK here we go "Zip view". [range.zip].
+
+00:05:59.040 --> 00:06:04.630
+Silly me. OK. And OK,
+
+00:06:04.630 --> 00:06:07.510
+we got everything here.
+
+00:06:07.510 --> 00:06:10.798
+OK, so let's actually look at the code.
+
+00:06:10.800 --> 00:06:13.338
+And see if I can do side by side.
+
+00:06:13.340 --> 00:06:15.708
+Here we go.
+
+00:06:23.570 --> 00:06:25.122
+OK. So I want to minimize this real
+
+00:06:25.122 --> 00:06:26.710
+quick to see what we're looking at.
+
+00:06:26.710 --> 00:06:29.743
+OK, most of the changes are to ranges, about
+
+00:06:29.743 --> 00:06:32.737
+500 lines, changes to our central internal header
+
+00:06:32.737 --> 00:06:35.829
+yvals_core.h and then adding a new test.
+
+00:06:35.830 --> 00:06:41.170
+OK, I like to start easy. We're adding.
+
+00:06:41.170 --> 00:06:42.754
+One new test directory,
+
+00:06:42.754 --> 00:06:44.662
+correctly spelled, uh, the paper number.
+
+00:06:44.662 --> 00:06:46.719
+I'm just going to check the title
+
+00:06:46.719 --> 00:06:48.669
+here because I think that's right,
+
+00:06:48.670 --> 00:06:51.355
+2321R2, 2321R2.
+
+00:06:51.355 --> 00:06:53.785
+This is the same paper number,
+
+00:06:53.790 --> 00:06:56.670
+but this one is views_zip, correctly sorted.
+
+00:06:56.670 --> 00:06:57.942
+Yep, that looks good.
+
+00:06:57.942 --> 00:07:01.045
+So the test will be running in the internal
+
+00:07:01.045 --> 00:07:04.510
+harness. We got a configuration here.
+
+00:07:04.510 --> 00:07:05.945
+OK, so this one's a little custom.
+
+00:07:05.950 --> 00:07:06.350
+Interesting.
+
+00:07:06.350 --> 00:07:09.481
+Uh, we've got our banner, which is good.
+
+00:07:09.481 --> 00:07:12.120
+OK, so we've got a note here.
+
+00:07:12.120 --> 00:07:14.622
+Note zip_view::_Iterator
+
+00:07:14.622 --> 00:07:16.940
+defines ADL overloads for iter_swap
+
+00:07:16.940 --> 00:07:18.216
+and inter_move,
+
+00:07:18.216 --> 00:07:20.130
+so the test fails to compile
+
+00:07:20.199 --> 00:07:22.219
+unless /permissive- is set,
+
+00:07:22.220 --> 00:07:23.740
+so it needs strict mode.
+
+00:07:23.740 --> 00:07:25.798
+This issue isn't unique to zip_view,
+
+00:07:25.800 --> 00:07:27.110
+all view types whose iterators
+
+00:07:27.110 --> 00:07:28.158
+define overloads for these
+
+00:07:28.158 --> 00:07:29.338
+functions have this requirement.
+
+00:07:29.340 --> 00:07:31.290
+OK, so this is justifying why
+
+00:07:31.290 --> 00:07:33.162
+we've got the strict matrix
+
+00:07:33.162 --> 00:07:35.190
+strict meaning /permissive-
+
+00:07:35.190 --> 00:07:39.620
+This is, uh, uh, something that um, uh.
+
+00:07:39.620 --> 00:07:41.470
+Ideally we could just enforce
+
+00:07:41.470 --> 00:07:44.250
+strictness all the time, but um,
+
+00:07:44.250 --> 00:07:47.466
+because some legacy programs don't
+
+00:07:47.466 --> 00:07:49.930
+exactly follow the standard.
+
+00:07:49.930 --> 00:07:52.276
+We are supporting the permissive mode,
+
+00:07:52.280 --> 00:07:56.050
+including in C++20 and C++23 mode,
+
+00:07:56.050 --> 00:07:58.090
+even though it would be nice
+
+00:07:58.090 --> 00:07:59.750
+if we didn't have to.
+
+00:07:59.750 --> 00:08:03.485
+And that's why most of our tests try to
+
+00:08:03.485 --> 00:08:06.560
+compile with the usual latest matrix,
+
+00:08:06.560 --> 00:08:08.450
+which means compile in 23 mode and
+
+00:08:08.450 --> 00:08:10.820
+throw in a permissive configuration.
+
+00:08:10.820 --> 00:08:12.440
+But if something absolutely
+
+00:08:12.440 --> 00:08:13.655
+cannot tolerate permissive,
+
+00:08:13.660 --> 00:08:15.556
+then we set the strict option and we
+
+00:08:15.556 --> 00:08:17.579
+have a matrix of options for that.
+
+00:08:17.580 --> 00:08:18.760
+So that's what this is.
+
+00:08:18.760 --> 00:08:21.532
+So we're going to use the strict
+
+00:08:21.532 --> 00:08:23.490
+and ranges requires concepts.
+
+00:08:23.490 --> 00:08:25.709
+Latest means it's a 23 feature matrix,
+
+00:08:25.710 --> 00:08:27.918
+that's a correct, and then we're crossing it.
+
+00:08:27.920 --> 00:08:29.614
+So we're actually run this test four
+
+00:08:29.614 --> 00:08:32.212
+different times with TEST_INPUT,
+
+00:08:32.212 --> 00:08:34.339
+TEST_BIDERECTIONAL, TEST_FORWARD and TEST_FORWARD.
+
+00:08:34.339 --> 00:08:35.878
+It's very interesting.
+
+00:08:35.880 --> 00:08:38.960
+OK, I'm going to see why we need this.
+
+00:08:38.960 --> 00:08:39.980
+I'll remember that.
+
+00:08:39.980 --> 00:08:41.728
+But this is good.
+
+00:08:41.730 --> 00:08:46.464
+OK, I'm going to briefly look at the test.
+
+00:08:46.470 --> 00:08:48.348
+OK, good. We got our banner.
+
+00:08:48.350 --> 00:08:50.289
+OK, we'll see what this test does.
+
+00:08:50.290 --> 00:08:52.036
+I'll come back.
+
+00:08:52.036 --> 00:08:55.492
+This is definitely unnecessary here also
+
+00:08:55.492 --> 00:08:58.744
+because we're silencing that clang warning.
+
+00:08:58.750 --> 00:09:01.590
+OK, so let's work our way towards the
+
+00:09:01.590 --> 00:09:04.010
+product code center internal header.
+
+00:09:04.010 --> 00:09:10.390
+So here's a citation for the 2165R4.
+
+00:09:10.390 --> 00:09:11.239
+Now this one,
+
+00:09:11.239 --> 00:09:12.937
+this was just a patch paper.
+
+00:09:12.940 --> 00:09:14.206
+Did we have a top level?
+
+00:09:14.210 --> 00:09:16.778
+Did we have a tracking issue for this?
+
+00:09:16.780 --> 00:09:17.530
+See.
+
+00:09:20.650 --> 00:09:22.770
+Half the half the work here is just,
+
+00:09:22.770 --> 00:09:24.434
+um, information management, OK.
+
+00:09:24.434 --> 00:09:26.930
+So we actually do have a
+
+00:09:27.006 --> 00:09:28.790
+tracking issue for this.
+
+00:09:28.790 --> 00:09:30.113
+So we do consider a top level
+
+00:09:30.113 --> 00:09:31.581
+feature and I guess we're
+
+00:09:31.581 --> 00:09:32.437
+implementing incrementally.
+
+00:09:34.970 --> 00:09:36.884
+OK, so this is the correct
+
+00:09:36.884 --> 00:09:38.860
+cleaned up name and spelling.
+
+00:09:38.860 --> 00:09:41.080
+Yep. Is it correctly sorted to
+
+00:09:43.430 --> 00:09:44.518
+2 and 3, 2 and 6, 52 and 66.
+
+00:09:44.518 --> 00:09:45.878
+Yes it is compatibility between
+
+00:09:45.878 --> 00:09:47.230
+tuple, pair and tuple-like objects.
+
+00:09:47.230 --> 00:09:48.850
+And then we have a explanation
+
+00:09:48.850 --> 00:09:51.100
+changes to view zip only. OK, good.
+
+00:09:51.100 --> 00:09:53.512
+And then zip paper, previously we
+
+00:09:53.512 --> 00:09:55.864
+said it's pair tuple and vector bool.
+
+00:09:55.870 --> 00:09:57.312
+And now we're going to flip it
+
+00:09:57.312 --> 00:09:58.659
+and say what we're missing.
+
+00:09:58.660 --> 00:10:00.564
+Missing views::zip_transform,
+
+00:10:00.564 --> 00:10:03.420
+views::adjacent and views::adjacent_transform.
+
+00:10:03.420 --> 00:10:04.810
+Yep, 3 views. That's right.
+
+00:10:04.810 --> 00:10:06.178
+We've got that Oxford comment there.
+
+00:10:06.180 --> 00:10:06.537
+Perfect.
+
+00:10:06.537 --> 00:10:09.036
+We're not defining feature just macro yet.
+
+00:10:09.040 --> 00:10:10.335
+So no change to the feature test
+
+00:10:10.340 --> 00:10:12.450
+macro test.
+
+00:10:12.450 --> 00:10:13.064
+OK, perfect.
+
+00:10:13.064 --> 00:10:15.213
+So let's look at the product code.
+
+00:10:19.050 --> 00:10:24.170
+OK. Ranges is including algorithm.
+
+00:10:24.170 --> 00:10:28.050
+Does algorithm include ranges? Let's check.
+
+00:10:33.170 --> 00:10:39.410
+algorithm. algorithm includes xmemory OK.
+
+00:10:39.410 --> 00:10:42.924
+Don't think that means it includes ranges.
+
+00:10:42.930 --> 00:10:45.966
+But let's check real quick. think.
+
+00:10:48.270 --> 00:10:49.900
+OK, ranges is mostly a
+
+00:10:49.900 --> 00:10:51.530
+leaf header in the STL.
+
+00:10:51.530 --> 00:10:55.506
+Um, the stack adapter and the queue adapter,
+
+00:10:55.510 --> 00:10:57.365
+which are definitely leaves for
+
+00:10:57.365 --> 00:10:59.247
+the purposes of algorithm drag
+
+00:10:59.247 --> 00:11:01.629
+it in and our internal stuff.
+
+00:11:01.630 --> 00:11:04.190
+Nothing else includes ranges itself,
+
+00:11:04.190 --> 00:11:09.062
+so there's no circularity issue here. It is
+
+00:11:09.062 --> 00:11:11.438
+not great from a throughput perspective
+
+00:11:11.438 --> 00:11:14.136
+that we got to drag an algorithm.
+
+00:11:14.140 --> 00:11:17.093
+Now in some sense it kind of it
+
+00:11:17.093 --> 00:11:19.631
+matters less because ranges is already
+
+00:11:19.631 --> 00:11:22.856
+quite big and the C++23 modules
+
+00:11:22.856 --> 00:11:25.024
+which we just implemented make this
+
+00:11:25.024 --> 00:11:27.016
+issue moot because it's so fast.
+
+00:11:27.020 --> 00:11:28.958
+But in the classic header world,
+
+00:11:28.960 --> 00:11:30.388
+there is a throughput impact of dragging
+
+00:11:30.390 --> 00:11:32.230
+in all the algorithm. algorithm
+
+00:11:32.230 --> 00:11:34.835
+is 200 something kilobytes.
+
+00:11:34.835 --> 00:11:37.070
+It's quite large.
+
+00:11:37.070 --> 00:11:38.638
+I'm assuming OK. Actually,
+
+00:11:38.638 --> 00:11:41.470
+I'm not sure why we need this.
+
+00:11:41.470 --> 00:11:43.210
+Uh, what are we calling here?
+
+00:11:46.230 --> 00:11:47.394
+Be _STD something,
+
+00:11:47.394 --> 00:11:48.946
+something. _STD::invoke is from
+
+00:11:48.946 --> 00:11:50.890
+type traits that can't be it.
+
+00:11:50.890 --> 00:11:52.278
+Same with std::apply.
+
+00:11:55.240 --> 00:11:58.216
+What does it need? Yeah.
+
+00:11:58.216 --> 00:12:00.240
+declval. Yeah. Yeah.
+
+00:12:00.240 --> 00:12:03.420
+That's all we got yet.
+
+00:12:03.420 --> 00:12:05.485
+I don't see any use of algorithm
+
+00:12:05.485 --> 00:12:07.481
+assuming that it would be a call
+
+00:12:07.481 --> 00:12:10.036
+to a non ugly function. Just apply.
+
+00:12:10.036 --> 00:12:12.528
+That's all tuple stuff.
+
+00:12:12.530 --> 00:12:14.900
+I don't think this is necessary,
+
+00:12:14.900 --> 00:12:16.286
+or if it is, I'm missing something.
+
+00:12:20.550 --> 00:12:22.139
+We have it. We have test coverage.
+
+00:12:22.140 --> 00:12:23.948
+We have a test called include each other
+
+00:12:23.948 --> 00:12:25.553
+alone that we've had running for over
+
+00:12:25.553 --> 00:12:27.402
+a decade that make sure we can include
+
+00:12:27.402 --> 00:12:29.012
+each header from the STL in isolation
+
+00:12:29.020 --> 00:12:31.276
+so we can't accidentally use stuff,
+
+00:12:31.280 --> 00:12:33.674
+at least in a way that explodes
+
+00:12:33.674 --> 00:12:35.412
+if you never call anything.
+
+00:12:35.412 --> 00:12:38.260
+So I'm not too worried about snipping out
+
+00:12:38.333 --> 00:12:41.007
+and include that we're actually are using,
+
+00:12:41.010 --> 00:12:43.173
+but it sure doesn't look from this
+
+00:12:43.173 --> 00:12:45.100
+brief scan like we're using it.
+
+00:12:45.100 --> 00:12:46.794
+I'm going to recommend that we or
+
+00:12:46.794 --> 00:12:48.559
+I'm gonna ask why we're using it.
+
+00:12:48.560 --> 00:12:51.000
+Let's see, did Nicole ask?
+
+00:12:51.000 --> 00:12:54.096
+&gt;&gt; Casey: Maybe they thought they use it for iter_swap?
+&gt;&gt; Stephan: ohh yeah this did
+
+00:12:54.100 --> 00:12:55.374
+&gt;&gt; Stephan: This did come up. Yeah it was
+
+00:12:55.380 --> 00:12:56.388
+_RANGES max
+
+00:12:58.890 --> 00:13:02.390
+Ah, that's interesting. Um.
+
+00:13:02.390 --> 00:13:05.926
+Do we need the ranges version of max?
+
+00:13:05.930 --> 00:13:08.630
+Yeah, our contributor here mentioned that.
+
+00:13:08.630 --> 00:13:09.886
+Yeah, I think this is still an issue.
+
+00:13:09.890 --> 00:13:11.507
+I I don't like the included algorithm,
+
+00:13:11.510 --> 00:13:15.056
+um, just because it's so big.
+
+00:13:15.060 --> 00:13:19.120
+OK, so where's the use of max?
+
+00:13:19.120 --> 00:13:20.975
+Now it would be parenthesized
+
+00:13:20.975 --> 00:13:22.088
+because of horribleness.
+
+00:13:24.910 --> 00:13:27.886
+We're maxing on an initializer list.
+
+00:13:31.320 --> 00:13:33.119
+And I'm assuming min is the UM.
+
+00:13:38.770 --> 00:13:43.278
+OK, 2 uses of min. This one is forming
+
+00:13:43.278 --> 00:13:45.884
+an initializer list. Yeah, that's.
+
+00:13:45.884 --> 00:13:48.544
+Those are pretty small algorithms.
+
+00:13:48.550 --> 00:13:50.022
+I mean relatively speaking,
+
+00:13:50.022 --> 00:13:52.230
+do we only define them in
+
+00:13:52.305 --> 00:13:54.597
+algorithm and not like xutility?
+
+00:13:54.600 --> 00:13:55.680
+Uh, this is gonna be horible
+
+00:13:55.680 --> 00:13:58.008
+&gt;&gt; Casey: It's probably the case that _RANGES max is
+
+00:13:58.008 --> 00:14:00.236
+only defined in the algorithm because we
+
+00:14:00.236 --> 00:14:02.260
+haven't needed it anywhere else before.
+
+00:14:02.260 --> 00:14:04.472
+&gt;&gt; Stephan: Right, the range is one but I'm wondering
+
+00:14:04.472 --> 00:14:06.518
+if we could use classic uh,
+
+00:14:06.520 --> 00:14:08.160
+that element one is not.
+
+00:14:08.160 --> 00:14:09.016
+&gt;&gt; Casey: I certainly think so.
+
+00:14:09.016 --> 00:14:11.040
+It looks like these are just different types,
+
+00:14:11.040 --> 00:14:14.770
+so they're integer class types.
+
+00:14:14.770 --> 00:14:17.980
+Or sorry integer like types.
+
+00:14:17.980 --> 00:14:20.248
+They're integer like types so they
+
+00:14:20.248 --> 00:14:23.029
+should work OK with std min and max.
+
+00:14:23.030 --> 00:14:24.142
+&gt;&gt; Stephan: Let's see, we've got.
+
+00:14:24.142 --> 00:14:25.596
+OK, these are the two arg forms.
+
+00:14:25.600 --> 00:14:27.748
+&gt;&gt; Casey: We're not using a projection, right?
+
+00:14:27.748 --> 00:14:30.100
+&gt;&gt; Stephan: Uh, it's implemented an algorithm.
+
+00:14:30.100 --> 00:14:32.530
+So even if we call classic.
+
+00:14:32.530 --> 00:14:34.010
+We haven't needed them before,
+
+00:14:34.010 --> 00:14:37.178
+but could we promote them is the question?
+
+00:14:37.180 --> 00:14:38.744
+Ah. Yeah, you're right.
+
+00:14:38.744 --> 00:14:41.523
+There's no need for a projection or
+
+00:14:41.523 --> 00:14:43.677
+any of that fancy powerful stuff.
+
+00:14:43.680 --> 00:14:45.258
+Where is max?
+
+00:14:45.258 --> 00:14:49.405
+It's in parens because macros. OK,
+
+00:14:49.405 --> 00:14:55.680
+this calls _Max_element_unchecked. Ah.
+
+00:14:55.680 --> 00:14:56.620
+This is the classic one.
+
+00:14:56.620 --> 00:14:59.940
+It just happens to occur after the UM.
+
+00:14:59.940 --> 00:15:00.831
+ranges stuff.
+
+00:15:00.831 --> 00:15:02.910
+OK, so we call _Max_element_unchecked.
+
+00:15:02.910 --> 00:15:03.771
+Where's that live?
+
+00:15:03.771 --> 00:15:04.919
+That lives in algorithm.
+
+00:15:07.600 --> 00:15:08.860
+OK, it's it's nontrivial.
+
+00:15:08.860 --> 00:15:11.120
+Ohh, it's nontrivial size because
+
+00:15:11.120 --> 00:15:13.900
+it also uses our vectorized thing,
+
+00:15:13.900 --> 00:15:17.120
+Alex Guteniev's minmax optimization stuff.
+
+00:15:17.120 --> 00:15:18.956
+So this is larger than it used to be.
+
+00:15:18.960 --> 00:15:20.012
+I was mentally thinking,
+
+00:15:20.012 --> 00:15:21.584
+Oh yeah, that's a tiny algorithm,
+
+00:15:21.584 --> 00:15:23.150
+but it's actually gotten a lot
+
+00:15:23.206 --> 00:15:24.730
+fancier and a lot more powerful.
+
+00:15:27.830 --> 00:15:30.170
+But otherwise it doesn't really have
+
+00:15:30.170 --> 00:15:31.964
+a lot of dependencies. Interestingly,
+
+00:15:31.964 --> 00:15:33.836
+we would like to use the vectorized one here.
+
+00:15:33.840 --> 00:15:36.110
+is utility core header?
+
+00:15:36.110 --> 00:15:37.298
+It's not is it?
+
+00:15:37.298 --> 00:15:40.050
+Oh it is. ohh and we had that issue.
+
+00:15:40.050 --> 00:15:41.690
+All these complexities popping up.
+
+00:15:41.690 --> 00:15:43.610
+We've got this issue where
+
+00:15:43.610 --> 00:15:45.955
+um, core headers which we try not
+
+00:15:45.955 --> 00:15:48.158
+to have runtime dependencies. Uh.
+
+00:15:48.158 --> 00:15:49.824
+If we try to promote a vectorized
+
+00:15:49.824 --> 00:15:51.619
+algorithm to them, that doesn't work.
+
+00:15:51.619 --> 00:15:53.677
+We encountered this in another context.
+
+00:15:53.680 --> 00:15:54.667
+I don't think it was minmax.
+
+00:15:54.670 --> 00:15:56.194
+It was something else we were
+
+00:15:56.194 --> 00:15:57.986
+trying to drag up here and we
+
+00:15:57.986 --> 00:15:59.757
+ended up having to back that out.
+
+00:15:59.760 --> 00:16:01.638
+I think it was std::equal.
+
+00:16:01.640 --> 00:16:03.896
+Or something like that.
+
+00:16:03.896 --> 00:16:06.716
+So attempting to promote the
+
+00:16:06.720 --> 00:16:08.806
+minmax. Even if it's just the
+
+00:16:08.806 --> 00:16:10.399
+classic initializer list one up here,
+
+00:16:10.400 --> 00:16:14.366
+um, that would be a problem.
+
+00:16:14.370 --> 00:16:16.750
+OK, so this is not it's not a trivial thing.
+
+00:16:16.750 --> 00:16:18.740
+Um.
+
+00:16:18.740 --> 00:16:21.638
+Dragging an algorithm is not awesome
+
+00:16:21.638 --> 00:16:23.570
+for throughput.
+
+00:16:23.570 --> 00:16:25.180
+But maybe people should just
+
+00:16:25.180 --> 00:16:26.468
+be using import std?
+
+00:16:26.470 --> 00:16:26.714
+Um,
+
+00:16:26.714 --> 00:16:27.934
+this is something we could
+
+00:16:27.934 --> 00:16:29.240
+potentially investigate in the future.
+
+00:16:32.840 --> 00:16:37.424
+The uh. The alternative is a code duplication.
+
+00:16:37.424 --> 00:16:41.200
+Extract a just a very simple hello world,
+
+00:16:41.200 --> 00:16:44.112
+just the core, not the stuff using the
+
+00:16:44.112 --> 00:16:46.900
+std::max or the vectorized version.
+
+00:16:46.900 --> 00:16:48.314
+That way we wouldn't need to drag
+
+00:16:48.314 --> 00:16:50.715
+any algorithm, and we could do that
+
+00:16:50.715 --> 00:16:52.710
+if we really needed throughput.
+
+00:16:52.710 --> 00:16:54.950
+Ranges is I think Casey is,
+
+00:16:54.950 --> 00:16:56.550
+um, more familiar with the
+
+00:16:56.550 --> 00:16:57.510
+throughputer ranges.
+
+00:16:57.510 --> 00:17:00.170
+Ranges throughput is already pretty low,
+
+00:17:00.170 --> 00:17:03.210
+and I think it's possibly the header you
+
+00:17:03.210 --> 00:17:06.121
+would notice algorithm released in just
+
+00:17:06.121 --> 00:17:09.547
+because the denominator is already large.
+
+00:17:09.550 --> 00:17:14.500
+&gt;&gt; Stephan: If algorithm was
+&gt;&gt; Casey: initializer_list and minmax could be in <xutility>
+
+00:17:14.500 --> 00:17:16.340
+&gt;&gt; Casey: instead of <utility>
+
+00:17:16.340 --> 00:17:20.699
+&gt;&gt; Stephan: Uh, <xutility> is non-core, right? No, <xutility>
+
+00:17:20.700 --> 00:17:22.860
+Ohh yeah that's the one that's non core.
+
+00:17:22.860 --> 00:17:26.252
+&gt;&gt; Casey: <xutility> is not core. 
+&gt;&gt; Stephan: Yeah, yeah
+
+00:17:26.252 --> 00:17:28.268
+&gt;&gt; Stephan: this one can use vector arguments just fine.
+
+00:17:28.270 --> 00:17:29.416
+This is where we put count.
+
+00:17:29.420 --> 00:17:33.144
+Find, this one is reasonable to promote.
+
+00:17:33.150 --> 00:17:35.229
+&gt;&gt; Casey: this is the one step up
+
+00:17:35.229 --> 00:17:38.010
+for an algorithm spot, right?
+
+00:17:38.010 --> 00:17:40.110
+&gt;&gt; Stephan: Yeah, that's a good point. That's why.
+
+00:17:40.110 --> 00:17:42.720
+That's why. That's why this exists.
+
+00:17:42.720 --> 00:17:45.366
+It could do that and then does
+
+00:17:45.366 --> 00:17:47.290
+ranges already include xutility?
+
+00:17:47.290 --> 00:17:48.770
+&gt;&gt; Casey: Yes
+&gt;&gt; Stephan: very very likely.
+
+00:17:48.770 --> 00:17:49.788
+&gt;&gt; Stephan: Oh yeah, yeah.
+
+00:17:49.788 --> 00:17:51.456
+Because it includes like <string_view>
+
+00:17:51.456 --> 00:17:52.750
+&gt;&gt; Casey: indirectly from somewhere.
+
+00:17:52.750 --> 00:17:55.696
+But yeah, certainly includes <xutility>
+
+00:17:55.700 --> 00:17:57.206
+&gt;&gt; Stephan: Yeah, that's interesting.
+
+00:17:57.206 --> 00:17:57.708
+Um.
+
+00:18:03.640 --> 00:18:05.348
+Most I'm just thinking of the logistics
+
+00:18:05.348 --> 00:18:06.858
+because we've got that toolset up,
+
+00:18:06.860 --> 00:18:08.617
+toolset update I'm working on today
+
+00:18:08.617 --> 00:18:10.404
+that makes some large scale code
+
+00:18:10.404 --> 00:18:11.716
+movement very obnoxious because
+
+00:18:11.716 --> 00:18:13.429
+it's reformatting a bunch of code.
+
+00:18:13.430 --> 00:18:16.022
+Aside from that, I see no reason why
+
+00:18:16.022 --> 00:18:18.607
+we couldn't promote this to <xutility>
+
+00:18:18.607 --> 00:18:20.740
+and then ranges wouldn't need it.
+
+00:18:20.740 --> 00:18:22.476
+Let's see, should I comment that and
+
+00:18:22.476 --> 00:18:24.358
+then say hold off on actually doing
+
+00:18:24.358 --> 00:18:26.514
+anything there until at least the toolset
+
+00:18:26.514 --> 00:18:28.741
+updates in and then we can move around code?
+
+00:18:28.741 --> 00:18:31.990
+Because I would hate for a comment to cause
+
+00:18:32.067 --> 00:18:35.085
+horrible merge conflicts and wasted work.
+
+00:18:35.090 --> 00:18:38.023
+Um, the alternative is do this thing
+
+00:18:38.023 --> 00:18:41.347
+and then file a follow-up issue to
+
+00:18:41.347 --> 00:18:43.817
+go improve the throughput later.
+
+00:18:43.820 --> 00:18:45.836
+&gt;&gt; Casey: As much as clang-format has
+
+00:18:45.836 --> 00:18:47.180
+changed everything in ranges,
+
+00:18:47.180 --> 00:18:49.900
+I think this PR is going to have
+
+00:18:49.900 --> 00:18:51.890
+terrible merge conflicts anyway.
+
+00:18:51.890 --> 00:18:54.950
+&gt;&gt; Stephan: Yeah, but making it worse.
+
+00:18:54.950 --> 00:18:57.456
+&gt;&gt; Casey: Not be that big of a deal.
+
+00:18:57.460 --> 00:19:02.206
+&gt;&gt; Stephan: Yeah, um. I'll include a comment.
+
+00:19:02.210 --> 00:19:05.458
+Or should I just resurrect this comment?
+
+00:19:05.460 --> 00:19:06.670
+The.
+
+00:19:09.350 --> 00:19:11.058
+Yeah, the it is the same issue.
+
+00:19:11.060 --> 00:19:12.956
+So I think we can resurrect it.
+
+00:19:12.960 --> 00:19:19.317
+Um, OK, unresolve. OK, um. See,
+
+00:19:19.317 --> 00:19:26.130
+Casey and I talked about this in the video
+
+00:19:26.130 --> 00:19:28.785
+code review um.
+
+00:19:28.785 --> 00:19:33.210
+We believe that <xutility>
+
+00:19:33.210 --> 00:19:38.690
+would be on appropriate place to move the
+
+00:19:38.690 --> 00:19:43.280
+initializer. Say promote um,
+
+00:19:43.280 --> 00:19:49.379
+promote the classic initializer_list.
+
+00:19:49.380 --> 00:19:50.160
+Uh, actually,
+
+00:19:50.160 --> 00:19:52.500
+are they both using initializer_list?
+
+00:19:52.500 --> 00:19:56.376
+Uh, or was one using a non? init_list,
+
+00:19:56.376 --> 00:19:58.812
+but just arbitrary range sizes or sizes,
+
+00:19:58.820 --> 00:20:00.720
+is literally an initializer_list,
+
+00:20:00.720 --> 00:20:03.114
+and the other one we form reform braces,
+
+00:20:03.114 --> 00:20:05.473
+so init_list would be sufficient.
+
+00:20:05.480 --> 00:20:07.556
+There's no need for the ranges.
+
+00:20:07.560 --> 00:20:11.350
+Um, classic initializer_list overloads
+
+00:20:11.350 --> 00:20:12.080
+Yeah.
+
+00:20:12.080 --> 00:20:18.358
+No need for the ranges machinery as it is.
+
+00:20:20.590 --> 00:20:24.030
+Included or as it is, um.
+
+00:20:27.700 --> 00:20:30.316
+Uh, let's say I wanna say higher up.
+
+00:20:30.320 --> 00:20:32.032
+That could be confusing.
+
+00:20:32.032 --> 00:20:34.039
+It's uh. Included by algorithm.
+
+00:20:41.110 --> 00:20:42.643
+&gt;&gt; Casey: What? <xutility>? Yes
+
+00:20:42.643 --> 00:20:45.709
+this included by algorithm
+
+00:20:45.710 --> 00:20:48.710
+&gt;&gt; Stephan: and is non-core. we use it to
+
+00:20:50.860 --> 00:20:55.140
+decentralize. Yeah, I won't explain.
+
+00:20:58.030 --> 00:20:59.390
+Yeah, maybe I will explain.
+
+00:20:59.390 --> 00:21:05.310
+And already centralizes similar algorithms
+
+00:21:05.310 --> 00:21:11.190
+of wide applicability in the STL.
+
+00:21:14.150 --> 00:21:17.690
+Yes. That is non-core,
+
+00:21:17.690 --> 00:21:19.810
+I mean too much parenthetical.
+
+00:21:22.760 --> 00:21:26.519
+So the vectorization
+
+00:21:26.520 --> 00:21:29.433
+won't be problematic.
+
+00:21:29.433 --> 00:21:32.346
+Um. Let's see.
+
+00:21:32.350 --> 00:21:36.320
+Note due to the um.
+
+00:21:36.320 --> 00:21:38.080
+pending toolset update
+
+00:21:38.080 --> 00:21:40.783
+I wanna say it's 3155.
+
+00:21:40.783 --> 00:21:42.669
+Let's check.
+
+00:21:47.260 --> 00:21:50.992
+Yes, I remember correctly. three, one, five, five.
+
+00:21:50.992 --> 00:21:58.279
+Number 3155 Yep. Code movement
+
+00:22:00.580 --> 00:22:04.309
+may cause obnoxious
+
+00:22:04.309 --> 00:22:08.038
+formatting merge conflicts.
+
+00:22:08.040 --> 00:22:11.125
+I recommend waiting until the
+
+00:22:11.125 --> 00:22:17.240
+toolset update is merged before
+
+00:22:17.240 --> 00:22:22.100
+attempting to address this concern.
+
+00:22:25.250 --> 00:22:27.365
+OK. I should probably mention
+
+00:22:27.365 --> 00:22:29.480
+that the throughput impact is.
+
+00:22:31.730 --> 00:22:34.622
+We should say we agree about
+
+00:22:34.622 --> 00:22:36.068
+the throughput impact.
+
+00:22:36.070 --> 00:22:44.180
+we share hewilk's
+
+00:22:44.180 --> 00:22:47.668
+concern about the throughput
+
+00:22:47.668 --> 00:22:50.284
+impact of <algorithm>.
+
+00:22:54.240 --> 00:22:56.137
+OK. Casey and I talked about this
+
+00:22:56.137 --> 00:22:58.248
+in the video code review we share.
+
+00:22:58.250 --> 00:22:59.816
+hewilk's concern about the
+
+00:22:59.816 --> 00:23:01.141
+throughput impact of <algorithm> and
+
+00:23:01.141 --> 00:23:02.814
+we believe the <xutility> would be an
+
+00:23:02.814 --> 00:23:04.256
+appropriate place to promote the
+
+00:23:04.256 --> 00:23:05.476
+classic initializer_list overloads.
+
+00:23:05.480 --> 00:23:06.677
+No need for the ranges machinery
+
+00:23:06.677 --> 00:23:08.159
+as it is included by algorithm and
+
+00:23:08.159 --> 00:23:09.545
+is non-core so the vectorization
+
+00:23:09.588 --> 00:23:11.003
+won't be problematic and already
+
+00:23:11.003 --> 00:23:12.135
+centralizes similar algorithms of
+
+00:23:12.135 --> 00:23:13.436
+wide applicability in the STL.
+
+00:23:13.436 --> 00:23:15.316
+Note due to the pending toolset update
+
+00:23:15.316 --> 00:23:17.451
+3155 code movement may cause
+
+00:23:17.451 --> 00:23:18.850
+obnoxious formatting merge conflicts.
+
+00:23:18.850 --> 00:23:20.105
+I recommend waiting until the toolset
+
+00:23:20.105 --> 00:23:21.360
+update is merged before
+
+00:23:21.411 --> 00:23:22.876
+attempting to address this concern.
+
+00:23:22.880 --> 00:23:25.472
+OK, we've got one line of
+
+00:23:25.472 --> 00:23:28.880
+product code reviewed. Onward.
+
+00:23:28.880 --> 00:23:31.897
+OK, so we've got some concepts here.
+
+00:23:31.900 --> 00:23:34.378
+OK, this is actually kind of annoying.
+
+00:23:34.380 --> 00:23:40.460
+Let's split that, OK? Yeah.
+
+00:23:40.460 --> 00:23:45.788
+Minify this OK, that's readable.
+
+00:23:45.790 --> 00:23:48.506
+OK, so we are translating over here.
+
+00:23:48.510 --> 00:23:49.630
+I was going to actually read the
+
+00:23:49.630 --> 00:23:50.668
+standard and see what's going on.
+
+00:23:50.670 --> 00:23:52.101
+We take a bunch of views and we get
+
+00:23:52.101 --> 00:23:53.559
+a view of tuples to references.
+
+00:23:53.560 --> 00:23:55.592
+So like if you've got a vector of
+
+00:23:55.592 --> 00:23:57.993
+int and a vector of strings and the
+
+00:23:57.993 --> 00:24:00.018
+ints say 10,20,30 and the strings
+
+00:24:00.018 --> 00:24:01.506
+say "cute", "fluffy", "kittens",
+
+00:24:01.510 --> 00:24:04.520
+then you can get a zip view that will
+
+00:24:04.520 --> 00:24:07.210
+give you tuples of references to {10, "cute"},
+
+00:24:07.210 --> 00:24:08.110
+{20,"fluffy"}, {30, "kittens"}.
+
+00:24:08.110 --> 00:24:10.580
+And then you can go feed those to
+
+00:24:10.580 --> 00:24:12.080
+some algorithm or something and
+
+00:24:12.080 --> 00:24:14.209
+then use it as customization point
+
+00:24:14.209 --> 00:24:15.925
+object that does that.
+
+00:24:15.930 --> 00:24:16.190
+OK,
+
+00:24:16.190 --> 00:24:18.530
+one other thing that I want to be on
+
+00:24:18.595 --> 00:24:20.870
+the lookout for is usage of export.
+
+00:24:20.870 --> 00:24:22.220
+Because we have merged standard
+
+00:24:22.220 --> 00:24:22.760
+library modules,
+
+00:24:22.760 --> 00:24:25.084
+we need to make sure that every
+
+00:24:25.084 --> 00:24:27.611
+public name is marked with our
+
+00:24:27.611 --> 00:24:30.031
+internal _EXPORT_STD macro because
+
+00:24:30.031 --> 00:24:32.226
+forgetting that will not immediately
+
+00:24:32.226 --> 00:24:34.907
+cause any problems but is a bug.
+
+00:24:34.910 --> 00:24:36.947
+Eventually this becomes second nature to us,
+
+00:24:36.950 --> 00:24:40.082
+but for now we need to make sure
+
+00:24:40.082 --> 00:24:42.636
+that we check this. OK, so.
+
+00:24:42.636 --> 00:24:45.251
+Exposition only concept does not
+
+00:24:45.251 --> 00:24:46.297
+get exported.
+
+00:24:46.300 --> 00:24:49.960
+Let's switch to highlight here, OK?
+
+00:24:49.960 --> 00:24:52.733
+So we've got template&lt;class.. Rs&gt;.
+
+00:24:52.733 --> 00:24:55.274
+These are under score capital range types.
+
+00:24:55.280 --> 00:24:58.240
+We've got a concept called zip-is-common,
+
+00:24:58.240 --> 00:25:00.900
+which is exposition only.
+
+00:25:00.900 --> 00:25:03.156
+And it's going to be true when the
+
+00:25:03.156 --> 00:25:06.840
+size of dot, the range types is 1.
+
+00:25:06.840 --> 00:25:10.740
+And common range of the Rs and dot A dot,
+
+00:25:10.740 --> 00:25:12.930
+so they're all common ranges.
+
+00:25:12.930 --> 00:25:15.540
+And then using slash slash to
+
+00:25:15.540 --> 00:25:17.940
+hard wrap because clang-format.
+
+00:25:17.940 --> 00:25:19.000
+Which may not be necessary,
+
+00:25:19.000 --> 00:25:21.528
+but it's OK for now with clang-format 15,
+
+00:25:21.528 --> 00:25:23.395
+which is better about this or OK
+
+00:25:23.395 --> 00:25:25.082
+and it's good that the OR operator
+
+00:25:25.082 --> 00:25:27.192
+is coming at the beginning of line
+
+00:25:27.192 --> 00:25:28.448
+because that's our convention.
+
+00:25:32.130 --> 00:25:34.104
+OK, I'm checking to make sure that
+
+00:25:34.104 --> 00:25:36.161
+everything is parenthesized correctly, not.
+
+00:25:36.161 --> 00:25:40.427
+That they're not all bidirectional ranges,
+
+00:25:40.430 --> 00:25:42.926
+so the not is outside the fold expression.
+
+00:25:42.930 --> 00:25:50.670
+Good. And they're all common ranges. Or.
+
+00:25:50.670 --> 00:25:54.178
+They're all random access ranges, and.
+
+00:25:54.178 --> 00:25:58.320
+They're all sized ranges. OK.
+
+00:26:00.470 --> 00:26:03.279
+Thanks. Looks good. OK,
+
+00:26:03.279 --> 00:26:06.310
+then we have a tuple transform closure.
+
+00:26:06.310 --> 00:26:08.550
+This is not depicted in
+
+00:26:08.550 --> 00:26:11.450
+standardease up here at least.
+
+00:26:11.450 --> 00:26:14.986
+Is there anything else I can look for?
+
+00:26:14.990 --> 00:26:16.664
+tuple-transform OK,
+
+00:26:16.664 --> 00:26:18.338
+perhaps that's elsewhere.
+
+00:26:20.670 --> 00:26:27.210
+Search. What is this tuple-transform
+
+00:26:27.210 --> 00:26:29.278
+thing? I'm just being mentioned.
+
+00:26:36.440 --> 00:26:39.608
+Lots of equivalent twos.
+
+00:26:39.610 --> 00:26:41.878
+Did I already wrap? Come on.
+
+00:26:44.900 --> 00:26:46.460
+Here we go, range adapter helpers.
+
+00:26:49.590 --> 00:26:55.800
+OK, uh. Exposition only.
+
+00:26:55.800 --> 00:27:00.008
+Let's see, this is making a tuple.
+
+00:27:00.010 --> 00:27:03.521
+Ohh, I see tuple-transform is
+
+00:27:03.521 --> 00:27:07.376
+apply the tuple-transform closure
+
+00:27:07.380 --> 00:27:11.300
+is just the lambda. OK.
+
+00:27:11.300 --> 00:27:14.590
+OK, so that's what this is, um.
+
+00:27:14.590 --> 00:27:15.658
+OK, so we've got.
+
+00:27:17.870 --> 00:27:20.278
+What the callback type? I guess that's F.
+
+00:27:23.020 --> 00:27:24.840
+OK, this just calls it f here.
+
+00:27:24.840 --> 00:27:26.780
+I'm thinking should this be
+
+00:27:26.780 --> 00:27:28.720
+named callable type or anything?
+
+00:27:28.720 --> 00:27:30.470
+I'm OK with callback type.
+
+00:27:33.530 --> 00:27:34.760
+We do pass it to invoke,
+
+00:27:34.760 --> 00:27:37.454
+so really it is a callable type. Um, the.
+
+00:27:37.454 --> 00:27:40.350
+The issue here is that in the STL,
+
+00:27:40.350 --> 00:27:41.721
+especially when overhauling
+
+00:27:41.721 --> 00:27:43.549
+invoke and std::function,
+
+00:27:43.550 --> 00:27:46.210
+all that we try to be very
+
+00:27:46.210 --> 00:27:47.350
+careful about terminology.
+
+00:27:47.350 --> 00:27:48.970
+If something's passed to invoke and
+
+00:27:48.970 --> 00:27:50.889
+it goes through the invoke protocol,
+
+00:27:50.890 --> 00:27:52.225
+the standard formally refers to
+
+00:27:52.225 --> 00:27:53.850
+that thing as a callable type,
+
+00:27:53.850 --> 00:27:55.740
+meaning there could be a pointer to
+
+00:27:55.740 --> 00:27:57.414
+member function or pointer to member
+
+00:27:57.414 --> 00:27:59.304
+data in addition to something like a
+
+00:27:59.358 --> 00:28:01.108
+lambda function or function object,
+
+00:28:01.110 --> 00:28:04.169
+and it is callable through some generalized
+
+00:28:04.170 --> 00:28:04.413
+syntax.
+
+00:28:04.413 --> 00:28:06.357
+So we tried to be very careful about
+
+00:28:06.357 --> 00:28:08.329
+saying that. If this is like function type,
+
+00:28:08.330 --> 00:28:10.286
+I would definitely ask for change.
+
+00:28:10.290 --> 00:28:12.696
+I'm OK with callback type here,
+
+00:28:12.700 --> 00:28:14.668
+it's not user visible.
+
+00:28:14.668 --> 00:28:18.400
+OK, so template on class callback type.
+
+00:28:18.400 --> 00:28:20.780
+This has to be constexpr.
+
+00:28:20.780 --> 00:28:22.478
+This should really be [[nodiscard]],
+
+00:28:22.480 --> 00:28:26.860
+it's internal. Um.
+
+00:28:26.860 --> 00:28:29.100
+It's not absolutely necessary.
+
+00:28:33.240 --> 00:28:34.248
+I feel like it should be
+
+00:28:34.248 --> 00:28:35.289
+[[nodiscard]], at least this one.
+
+00:28:35.290 --> 00:28:37.258
+There's very low risk of us calling this
+
+00:28:37.258 --> 00:28:39.030
+thing and dropping it on the floor.
+
+00:28:39.030 --> 00:28:41.206
+I don't know if this merits a comment.
+
+00:28:41.210 --> 00:28:43.390
+First, I'm wondering if tuple-transform
+
+00:28:43.390 --> 00:28:45.570
+and the others here
+
+00:28:45.570 --> 00:28:46.502
+need to be marked.
+
+00:28:46.502 --> 00:28:47.434
+Usually with internal helpers
+
+00:28:47.434 --> 00:28:49.187
+we do want to mark them, um,
+
+00:28:49.187 --> 00:28:51.472
+because why would you call
+
+00:28:51.472 --> 00:28:54.349
+this if you don't return it?
+
+00:28:54.350 --> 00:28:56.090
+Yeah, we always return this stuff.
+
+00:29:03.810 --> 00:29:05.238
+I'd say it's fairly low risk.
+
+00:29:05.240 --> 00:29:07.944
+Um, I won't ask for [[nodiscard]] here.
+
+00:29:07.950 --> 00:29:10.035
+I will think about it
+
+00:29:10.035 --> 00:29:11.703
+for the public functions.
+
+00:29:11.710 --> 00:29:15.086
+OK, so going back here,
+
+00:29:15.086 --> 00:29:15.998
+tuple-transform closure
+
+00:29:15.998 --> 00:29:17.550
+is just making the lambda.
+
+00:29:17.550 --> 00:29:18.554
+Probably because defining this
+
+00:29:18.554 --> 00:29:19.558
+lambda is pretty obnoxious,
+
+00:29:19.560 --> 00:29:20.856
+so we want to centralize it.
+
+00:29:23.060 --> 00:29:24.828
+OK, so template constexpr
+
+00:29:24.828 --> 00:29:26.596
+auto _Tuple_transform_closure.
+
+00:29:26.600 --> 00:29:30.156
+We take a callback by lvalue reference.
+
+00:29:30.160 --> 00:29:35.426
+OK. We are noexcept because we only
+
+00:29:35.426 --> 00:29:38.358
+store a reference to the callback.
+
+00:29:38.360 --> 00:29:40.286
+So we're not actually copying anything,
+
+00:29:40.290 --> 00:29:42.474
+so we can guarantee that we
+
+00:29:42.474 --> 00:29:43.566
+aren't throwing exceptions.
+
+00:29:43.570 --> 00:29:45.748
+OK, so we're going to return.
+
+00:29:45.750 --> 00:29:48.350
+We instead of just using a capture default,
+
+00:29:48.350 --> 00:29:52.734
+we name ref callback and this is a
+
+00:29:52.734 --> 00:29:55.243
+generic lambda so we're templated
+
+00:29:55.243 --> 00:29:58.069
+on class... _ViewTupleTypes.
+
+00:29:58.070 --> 00:30:01.409
+In place of T's we take T's
+
+00:30:01.409 --> 00:30:04.189
+ref ref dot dot _View_tuples.
+
+00:30:04.190 --> 00:30:08.376
+OK so that's this so far here.
+
+00:30:08.380 --> 00:30:09.684
+And then we return.
+
+00:30:09.684 --> 00:30:12.970
+We make a tuple of the invoke_result_t.
+
+00:30:12.970 --> 00:30:14.475
+Here we've got to check that the
+
+00:30:14.475 --> 00:30:15.860
+types are exactly being mentioned,
+
+00:30:15.860 --> 00:30:19.022
+because the value category and cv
+
+00:30:19.022 --> 00:30:21.810
+qualifiers can influence the result.
+
+00:30:21.810 --> 00:30:23.530
+The _CallbackType&amp;
+
+00:30:23.530 --> 00:30:27.156
+and _ViewTupleTypes... Yep, that's good.
+
+00:30:27.156 --> 00:30:30.294
+And then we're calling it with.
+
+00:30:30.300 --> 00:30:33.090
+Or constructing this from the result
+
+00:30:33.090 --> 00:30:37.388
+of std::invoke(_Callback, _STD forward&lt;_ViewTupleTypes&gt;(_View_tuples))...
+
+00:30:38.531 --> 00:30:43.026
+OK, that's all good. So my.
+
+00:30:43.030 --> 00:30:45.490
+OK, so that's essentially this here,
+
+00:30:45.490 --> 00:30:48.370
+but not the apply that's elsewhere.
+
+00:30:48.370 --> 00:30:50.365
+And then this is the apply call
+
+00:30:50.365 --> 00:30:52.298
+template on class underscore capital
+
+00:30:52.298 --> 00:30:54.326
+callback type class and our tuple
+
+00:30:54.326 --> 00:30:56.527
+type constexpr auto tuple transform.
+
+00:30:56.530 --> 00:30:56.938
+OK,
+
+00:30:56.938 --> 00:30:58.978
+this takes by perfect forwarding
+
+00:30:58.978 --> 00:31:01.629
+a callback type ref ref callback.
+
+00:31:01.630 --> 00:31:04.390
+So that's matching this concept for
+
+00:31:04.390 --> 00:31:07.143
+auto tuple transform that's depicted as
+
+00:31:07.143 --> 00:31:10.471
+F&amp;&amp; and then tuple type &amp;&amp; under tuple.
+
+00:31:10.480 --> 00:31:13.330
+Here we're strengthening.
+
+00:31:13.330 --> 00:31:14.134
+This being commented,
+
+00:31:14.134 --> 00:31:15.474
+is strengthened even though it's
+
+00:31:15.474 --> 00:31:16.848
+not actually a standard function.
+
+00:31:16.850 --> 00:31:19.130
+But because it's depicted in the
+
+00:31:19.130 --> 00:31:20.650
+standard as exposition only,
+
+00:31:20.650 --> 00:31:22.270
+I think it's reasonable to have
+
+00:31:22.270 --> 00:31:23.350
+strength and comment here.
+
+00:31:23.350 --> 00:31:25.436
+We're noexcept if this is
+
+00:31:25.436 --> 00:31:26.330
+noexcept still apply.
+
+00:31:26.330 --> 00:31:28.589
+So it's just gonna be the bodies to apply.
+
+00:31:28.590 --> 00:31:30.046
+Yeah, then all matches.
+
+00:31:30.046 --> 00:31:32.896
+So we're going to return std::apply
+
+00:31:32.896 --> 00:31:36.487
+to avoid ADL of make that closure,
+
+00:31:36.490 --> 00:31:39.647
+and then _STD forward&lt;_TupleType&gt;(_Tuple)
+
+00:31:39.650 --> 00:31:40.546
+OK correct.
+
+00:31:40.546 --> 00:31:43.234
+OK, so that's this thing done,
+
+00:31:43.240 --> 00:31:45.340
+and then we've got a tuple-for-each
+
+00:31:45.340 --> 00:31:46.240
+same structure,
+
+00:31:46.240 --> 00:31:49.056
+where we've got one helper to make the
+
+00:31:49.056 --> 00:31:51.640
+lambda and then another to actually
+
+00:31:51.640 --> 00:31:54.160
+apply it. so template callback type
+
+00:31:54.160 --> 00:31:57.639
+constexpr auto _Tuple_for_each_closure.
+
+00:31:57.640 --> 00:32:01.168
+And take by lvalue ref _Callback.
+
+00:32:01.170 --> 00:32:03.066
+This one's always noexcept because
+
+00:32:03.066 --> 00:32:05.049
+we only capture a ref return.
+
+00:32:05.050 --> 00:32:05.420
+OK,
+
+00:32:05.420 --> 00:32:08.010
+so now this is the stuff capture
+
+00:32:08.010 --> 00:32:10.763
+roughed callback _ViewTupleTypes
+
+00:32:10.763 --> 00:32:14.789
+take that ref ref _View_tuples
+
+00:32:14.790 --> 00:32:17.320
+The lambda itself could throw.
+
+00:32:17.320 --> 00:32:19.108
+So it definitely should not be
+
+00:32:19.108 --> 00:32:20.300
+noexcept or anything.
+
+00:32:20.300 --> 00:32:20.689
+Um.
+
+00:32:20.689 --> 00:32:23.023
+Here we are casting the result
+
+00:32:23.023 --> 00:32:25.920
+to void because we don't want to
+
+00:32:25.920 --> 00:32:28.392
+invoke any sort of overloaded comma,
+
+00:32:28.400 --> 00:32:30.968
+which is good.
+
+00:32:30.970 --> 00:32:33.504
+So we call std::invoke of the
+
+00:32:33.504 --> 00:32:37.984
+callback and then _STD forward&lt;_ViewTupleTypes&gt;(_View_tuples)
+ 
+
+00:32:37.990 --> 00:32:43.520
+And then? What is going on here?
+
+00:32:43.520 --> 00:32:48.278
+This parenthesis is not actually necessary
+
+00:32:48.280 --> 00:32:50.576
+because what else could the void bind to?
+
+00:32:52.930 --> 00:32:55.140
+It's not wrong. It might
+
+00:32:55.140 --> 00:32:56.908
+help visually parsing it.
+
+00:33:02.410 --> 00:33:03.530
+I don't think I'll complain.
+
+00:33:03.530 --> 00:33:04.783
+I'm trying to be a little bit
+
+00:33:04.783 --> 00:33:06.290
+less nitpicky in my comments.
+
+00:33:06.290 --> 00:33:07.922
+And here are the extra
+
+00:33:07.922 --> 00:33:09.450
+parenthesis is not the worst.
+
+00:33:09.450 --> 00:33:11.000
+This is already pretty complicated
+
+00:33:11.000 --> 00:33:13.428
+expression, so I won't grind my teeth.
+
+00:33:13.430 --> 00:33:15.848
+If there's an extra paren here,
+
+00:33:15.850 --> 00:33:20.010
+it's unusual enough that I'm OK with it.
+
+00:33:20.010 --> 00:33:23.090
+Then comma dot dot OK, so that's good.
+
+00:33:23.090 --> 00:33:25.370
+Very, very like the attention to detail that,
+
+00:33:25.370 --> 00:33:27.020
+um, the standard doesn't bother
+
+00:33:27.020 --> 00:33:28.670
+to avoid overloaded comma here,
+
+00:33:28.670 --> 00:33:31.926
+but we need to according to our policies,
+
+00:33:31.930 --> 00:33:33.914
+and a strict reading of the standard does
+
+00:33:33.914 --> 00:33:36.146
+indicate that that's correct. _STD forward.
+
+00:33:36.146 --> 00:33:38.258
+OK, very semi good.
+
+00:33:38.260 --> 00:33:40.996
+And then _Tuple_for_each is the whole thing.
+
+00:33:41.000 --> 00:33:42.452
+Template callback type tuple
+
+00:33:42.452 --> 00:33:44.267
+type constexpr void _Tuple_for_each
+
+00:33:44.270 --> 00:33:45.262
+I'm checking
+
+00:33:45.262 --> 00:33:47.590
+all the names are ugly and they are, um,
+
+00:33:47.590 --> 00:33:49.240
+_CallbackType&amp;&amp; _Callback, _TupleType&amp;&amp; _Tuple
+
+
+00:33:50.158 --> 00:33:51.076
+We're noexcept
+
+00:33:51.080 --> 00:33:52.260
+If this is noexcept,
+
+00:33:52.260 --> 00:33:55.560
+ _STD apply(_Tuple_for_each_closure(_Callback), _STD forward&lt;_TupleType&gt;(_Tuple));
+
+00:33:55.560 --> 00:33:56.910
+Again, it's marked to strengthen.
+
+00:33:56.910 --> 00:33:59.885
+That's fine. And then we just dropped
+
+00:33:59.885 --> 00:34:01.070
+the return value on the floor.
+
+00:34:01.070 --> 00:34:05.550
+No need to cast because to apply is not um.
+
+00:34:05.550 --> 00:34:07.830
+[[nodiscard]]. OK, that's good.
+
+00:34:07.830 --> 00:34:09.209
+So we've got the _Tuple_for_each
+
+00:34:09.210 --> 00:34:14.880
+Uh, close enough. Now we've got helpers.
+
+00:34:14.880 --> 00:34:18.107
+OK, let's go back to zip view.
+
+00:34:18.110 --> 00:34:21.230
+[range.zip] as we discovered.
+
+00:34:21.230 --> 00:34:23.780
+I want the whole stable name.
+
+00:34:23.780 --> 00:34:26.558
+This will cooperate.
+
+00:34:26.560 --> 00:34:28.390
+Come on.
+
+00:34:28.390 --> 00:34:28.879
+Here we go.
+
+00:34:31.320 --> 00:34:32.975
+OK, this is not depicting
+
+00:34:32.975 --> 00:34:34.299
+an all random access,
+
+00:34:34.300 --> 00:34:37.414
+but I'm guessing it's going to come up here.
+
+00:34:37.420 --> 00:34:40.794
+Yeah, and would that _Maybe_const stuff.
+
+00:34:40.800 --> 00:34:45.888
+OK. So what are we doing here?
+
+00:34:45.890 --> 00:34:47.945
+Again, internal machinery
+
+00:34:47.945 --> 00:34:50.984
+template &lt;bool _IsConst, class... _Views&gt;
+concept _All_random_access = (random_access_range&lt;_Maybe_const&lt;_IsConst, _Views&gt;&gt; && ...);
+
+00:34:50.984 --> 00:34:53.866
+Fold expression.
+
+00:34:53.866 --> 00:34:55.637
+How do we ever live without them?
+
+00:34:55.640 --> 00:34:58.484
+Random access range may be constant, so we
+
+00:34:58.484 --> 00:35:00.236
+applied the maybe constant constant views.
+
+00:35:00.240 --> 00:35:04.170
+OK. All bidirectional is bidirectional range
+
+00:35:04.170 --> 00:35:07.890
+blah, all forward is forward range blah.
+
+00:35:07.890 --> 00:35:10.598
+OK, that seems reasonable.
+
+00:35:10.600 --> 00:35:13.644
+Next stop. OK,
+
+00:35:13.644 --> 00:35:16.128
+another helper _Zip_get_smallest_distance.
+
+00:35:16.130 --> 00:35:19.910
+Is this depicted in the standard?
+
+00:35:19.910 --> 00:35:23.390
+Ohh and looking here, this is from iterator.
+
+00:35:23.390 --> 00:35:25.000
+OK so we can highlight this because
+
+00:35:25.000 --> 00:35:26.400
+it's done all random access.
+
+00:35:26.400 --> 00:35:28.610
+Yep, that's that maybe-const
+
+00:35:28.610 --> 00:35:29.818
+maybe-const, maybe-const?
+
+00:35:29.818 --> 00:35:33.230
+Yep, exactly find the standard names.
+
+00:35:33.230 --> 00:35:33.938
+Let's see,
+
+00:35:33.938 --> 00:35:36.770
+does it have a _Zip_get_smallest_distance?
+
+00:35:44.190 --> 00:35:45.480
+Likely this here.
+
+00:35:48.770 --> 00:35:51.164
+And there are some maximum stuff here.
+
+00:35:51.170 --> 00:35:53.570
+OK, where exactly is this called?
+
+00:35:57.810 --> 00:35:59.889
+It's called in the minus of iterators,
+
+00:35:59.890 --> 00:36:02.707
+which is in fact what I'm looking at here.
+
+00:36:02.710 --> 00:36:05.920
+This is iter minus iter.
+
+00:36:05.920 --> 00:36:07.960
+Where is the general minus iter?
+
+00:36:07.960 --> 00:36:09.490
+No, I'm looking at sentinel here.
+
+00:36:11.620 --> 00:36:13.084
+iter minus iter.
+
+00:36:13.084 --> 00:36:16.990
+Here we go. This stuff. OK.
+
+00:36:19.150 --> 00:36:21.190
+So let's go back up to the definition.
+
+00:36:24.470 --> 00:36:26.290
+OK, so what's happening here?
+
+00:36:26.290 --> 00:36:35.860
+template &lt;class _ResultType, class... _LHSTupleTypes, class... _RHSTupleTypes&gt;
+
+00:36:35.900 --> 00:36:39.785
+OK. And this is constrained to
+
+00:36:39.785 --> 00:36:41.834
+exist only when the size of
+
+00:36:41.834 --> 00:36:43.202
+the tuple types are the same.
+
+00:36:46.090 --> 00:36:47.825
+I'm not sure that this
+
+00:36:47.825 --> 00:36:48.866
+constraint is necessary.
+
+00:36:48.870 --> 00:36:51.030
+This is only needed when general.
+
+00:36:51.030 --> 00:36:53.290
+You only need constraints to
+
+00:36:53.290 --> 00:36:54.646
+disambiguate overload resolution.
+
+00:36:54.650 --> 00:36:55.631
+If this simply.
+
+00:36:55.631 --> 00:36:57.266
+If we can structurally guarantee
+
+00:36:57.266 --> 00:36:59.438
+that this is only called with
+
+00:36:59.438 --> 00:37:00.527
+identically sized tuples,
+
+00:37:00.530 --> 00:37:02.000
+then really this could be a
+
+00:37:02.000 --> 00:37:03.480
+static_assert instead of requires.
+
+00:37:07.710 --> 00:37:10.860
+In the olden days with um.
+
+00:37:10.860 --> 00:37:12.460
+When our only machinery was
+
+00:37:12.460 --> 00:37:14.100
+like SFINAE with enable_if,
+
+00:37:14.100 --> 00:37:15.690
+I would absolutely ask, yeah,
+
+00:37:15.690 --> 00:37:16.440
+there should be a static_assert.
+
+00:37:16.440 --> 00:37:19.040
+Concepts are not as
+
+00:37:19.040 --> 00:37:21.640
+egregious as enable_if and.
+
+00:37:21.640 --> 00:37:23.902
+It's still not conventional to use
+
+00:37:23.902 --> 00:37:26.860
+this when a static_assert would suffice.
+
+00:37:26.860 --> 00:37:28.410
+But it's not completely wacky.
+
+00:37:31.770 --> 00:37:34.262
+I would be OK with this. I wouldn't.
+
+00:37:34.262 --> 00:37:35.558
+I wouldn't have written it like
+
+00:37:35.558 --> 00:37:37.274
+this myself, but I don't view
+
+00:37:37.274 --> 00:37:38.558
+this as inherently objectionable.
+
+00:37:40.720 --> 00:37:42.240
+And perhaps someday it may
+
+00:37:42.240 --> 00:37:43.456
+even become good style.
+
+00:37:43.460 --> 00:37:44.748
+Just say, hey, you know, list your
+
+00:37:44.748 --> 00:37:46.182
+requirements up front rather than just
+
+00:37:46.182 --> 00:37:47.459
+assuming stuff and static asserting.
+
+00:37:47.460 --> 00:37:48.144
+If it goes wrong,
+
+00:37:48.144 --> 00:37:49.400
+I could see an argument for that.
+
+00:37:49.400 --> 00:37:50.856
+I kind of think the static_assert
+
+00:37:50.856 --> 00:37:52.420
+is cheaper in terms of throughput,
+
+00:37:52.420 --> 00:37:54.760
+but if it's not overloaded,
+
+00:37:54.760 --> 00:37:55.915
+I think it's about the
+
+00:37:55.915 --> 00:37:56.608
+same throughput anyways.
+
+00:37:59.960 --> 00:38:01.836
+OK I I'll leave this for now.
+
+00:38:01.840 --> 00:38:03.925
+I'm not gonna not gonna
+
+00:38:03.925 --> 00:38:06.236
+comment on that. Of course,
+
+00:38:06.236 --> 00:38:08.876
+because doesn't really user impact.
+
+00:38:08.880 --> 00:38:13.416
+OK, so this helper is marked [[nodiscard]].
+
+00:38:13.420 --> 00:38:14.804
+That's interesting that the
+
+00:38:14.804 --> 00:38:16.188
+previous helpers were not.
+
+00:38:19.400 --> 00:38:20.082
+Slightly inconsistent,
+
+00:38:20.082 --> 00:38:22.128
+but at least this whole group
+
+00:38:22.128 --> 00:38:23.898
+wasn't marked and this is marked.
+
+00:38:23.900 --> 00:38:27.362
+OK, I'll get this so it's
+
+00:38:27.362 --> 00:38:29.093
+[[nodiscard]] constexpr.
+
+00:38:29.100 --> 00:38:32.228
+OK, so we explicitly specify the result type.
+
+00:38:32.230 --> 00:38:33.975
+Probably because we have to
+
+00:38:33.975 --> 00:38:35.720
+determine or use different type.
+
+00:38:35.720 --> 00:38:38.610
+Whatever. _Zip_get_smallest_distance,
+
+00:38:38.610 --> 00:38:41.618
+we take const tuple&lt;_LHSTupleTypes...&gt;&amp; _Lhs_tuple
+
+00:38:41.618 --> 00:38:46.370
+const tuple&lt;_RHSTupleTypes...&gt;&amp; _Rhs_tuple
+
+00:38:46.370 --> 00:38:50.794
+This is not strengthened in any way.
+
+00:38:50.800 --> 00:38:52.355
+But neither is the operator
+
+00:38:52.355 --> 00:38:53.599
+minus required to be.
+
+00:38:53.600 --> 00:38:55.690
+Does anybody calling this strengthened
+
+00:38:55.690 --> 00:38:59.129
+because we need to make sure at all levels.
+
+00:38:59.130 --> 00:39:02.430
+Ah. Look at this.
+
+00:39:02.430 --> 00:39:04.804
+So operator minus is strengthened to be.
+
+00:39:04.804 --> 00:39:06.697
+I'm noexcept if this is noexcept
+
+00:39:06.697 --> 00:39:08.384
+what happens if we call _Zip_get_smallest_distance
+
+00:39:08.384 --> 00:39:10.064
+but then _Zip_get_smallest_distance
+
+00:39:10.064 --> 00:39:11.319
+is never marked.
+
+00:39:11.320 --> 00:39:14.435
+So this is identical to noexcept(false).
+
+00:39:14.440 --> 00:39:15.820
+So this is an issue.
+
+00:39:15.820 --> 00:39:17.540
+If we're going to strengthen
+
+00:39:17.540 --> 00:39:19.260
+here we gotta strengthen this.
+
+00:39:19.260 --> 00:39:21.556
+OK so now it's time for comment.
+
+00:39:21.560 --> 00:39:24.800
+Ohh wait no sorry wow, I can't parse this.
+
+00:39:24.800 --> 00:39:27.080
+It's hiding down here in this.
+
+00:39:27.080 --> 00:39:28.739
+I missed it because this // clang-format off
+
+00:39:28.739 --> 00:39:30.420
+looked like it was a body,
+
+00:39:30.420 --> 00:39:33.480
+but it's actually strengthened here.
+
+00:39:33.480 --> 00:39:34.650
+OK, so it is strength.
+
+00:39:34.650 --> 00:39:38.096
+So we're fine. OK, false alarm.
+
+00:39:38.096 --> 00:39:40.160
+Uh OK, so we take two tuples.
+
+00:39:40.160 --> 00:39:41.464
+Uh, suppress clang-format
+
+00:39:41.464 --> 00:39:42.768
+Probably because it was
+
+00:39:42.768 --> 00:39:44.199
+dealing with this horribly.
+
+00:39:44.200 --> 00:39:45.656
+Um, interesting.
+
+00:39:45.656 --> 00:39:50.752
+We're we're noexcept if fold expression.
+
+00:39:50.760 --> 00:39:52.320
+Which is why we've got that
+
+00:39:52.320 --> 00:39:53.360
+extra layer parents here.
+
+00:39:53.360 --> 00:39:54.854
+OK, so all of these things
+
+00:39:54.854 --> 00:39:56.520
+have got to be noexcept,
+
+00:39:56.520 --> 00:39:57.025
+um.
+
+00:39:57.025 --> 00:40:06.033
+static_castt&lt;_ResultType&gt;(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() - _STD declval&lt;const _RHSTupleTypes&amp;&gt;())) && ...)
+
+00:40:06.040 --> 00:40:08.679
+So it's asking if we pairwise subtract
+
+00:40:08.679 --> 00:40:11.119
+each of these left minus right,
+
+00:40:11.120 --> 00:40:12.221
+left minus right,
+
+00:40:12.221 --> 00:40:14.423
+over and over are all those
+
+00:40:14.423 --> 00:40:15.569
+expressions are noexcept.
+
+00:40:15.570 --> 00:40:16.890
+OK, that is correct.
+
+00:40:16.890 --> 00:40:19.230
+Assuming that's what we're gonna do here.
+
+00:40:19.230 --> 00:40:21.614
+Um, OK, I see.
+
+00:40:21.614 --> 00:40:22.210
+Casey,
+
+00:40:22.210 --> 00:40:23.310
+would you like to contribute
+
+00:40:23.310 --> 00:40:24.190
+something to the class?
+
+00:40:24.190 --> 00:40:26.440
+&gt;&gt; Casey: I I would like to suggest that we use
+
+00:40:26.440 --> 00:40:28.870
+the names of the parameters instead of
+
+00:40:28.870 --> 00:40:31.880
+calling std::declval to get things
+
+00:40:31.880 --> 00:40:35.590
+of this type and and value category.
+
+00:40:35.590 --> 00:40:37.958
+&gt;&gt; Stephan: Uh but then we would need get and we
+
+00:40:37.958 --> 00:40:39.717
+would need index because these
+
+00:40:39.717 --> 00:40:41.901
+are the elements of the tuples
+
+00:40:41.901 --> 00:40:44.290
+and we've got to crack them open.
+
+00:40:44.290 --> 00:40:45.490
+How would you phrase it?
+
+00:40:45.490 --> 00:40:46.876
+With the parameters,
+
+00:40:46.876 --> 00:40:48.840
+&gt;&gt; Casey: ohh OK
+&gt;&gt; Stephan: we don't have any.
+
+00:40:48.840 --> 00:40:50.700
+&gt;&gt; Stephan: We don't have an integer sequence here.
+
+00:40:50.700 --> 00:40:53.106
+&gt;&gt; Casey: I was missing that. Never mind.
+
+00:40:53.110 --> 00:40:55.010
+&gt;&gt; Stephan: OK.
+
+00:40:55.010 --> 00:40:57.166
+In general, definitely a good good question.
+
+00:40:57.170 --> 00:40:58.592
+Um, because if we could just
+
+00:40:58.592 --> 00:40:59.540
+mention the parameter names,
+
+00:40:59.540 --> 00:41:00.512
+then that's simpler.
+
+00:41:00.512 --> 00:41:02.780
+But here we actually do need this
+
+00:41:02.847 --> 00:41:04.530
+complicated full expression.
+
+00:41:04.530 --> 00:41:04.825
+OK,
+
+00:41:04.825 --> 00:41:06.890
+I can already see that we've got
+
+00:41:06.890 --> 00:41:08.618
+some std qualified size_t,
+
+00:41:08.620 --> 00:41:11.218
+which we should just not qualify
+
+00:41:11.218 --> 00:41:14.099
+at all because we're within std.
+
+00:41:14.100 --> 00:41:20.379
+The two occurrences of std::size_t
+
+00:41:20.379 --> 00:41:25.228
+here should simply be unqualified
+
+00:41:25.228 --> 00:41:28.978
+as we're within std,
+
+00:41:28.978 --> 00:41:34.284
+so we'll always find the typedef
+
+00:41:34.290 --> 00:41:38.079
+with no ADL concerns.
+
+00:41:42.010 --> 00:41:43.956
+Uh, the two occurrences of std::size_t
+
+00:41:43.956 --> 00:41:45.422
+here should simply be unqualified
+
+00:41:45.422 --> 00:41:47.144
+as we as we're within std,
+
+00:41:47.150 --> 00:41:48.627
+so we'll always find the typedef.
+
+00:41:48.630 --> 00:41:51.168
+No ADL concerns.
+
+00:41:51.170 --> 00:41:54.446
+OK, Um, wow clang-format like.
+
+00:41:54.450 --> 00:41:56.186
+It's really not having a good day here.
+
+00:41:56.190 --> 00:41:59.190
+Hopefully 15 handles this better.
+
+00:41:59.190 --> 00:42:01.310
+OK, so we're going to have a
+
+00:42:01.310 --> 00:42:03.410
+const auto _Get_smallest_distance_closure
+
+00:42:03.410 --> 00:42:05.510
+That's a Lambda that captures
+
+00:42:05.510 --> 00:42:11.129
+the tuples by ref, and it is.
+
+00:42:11.130 --> 00:42:16.240
+Templated. Interesting.
+
+00:42:16.240 --> 00:42:18.720
+On a pack of stuff.
+
+00:42:18.720 --> 00:42:20.528
+size_t _FirstIdx
+
+00:42:23.220 --> 00:42:24.696
+I don't know why this is
+
+00:42:24.696 --> 00:42:25.840
+commented out as default 0.
+
+00:42:28.830 --> 00:42:30.450
+We don't pass anything here.
+
+00:42:34.210 --> 00:42:35.650
+I'm really confused as
+
+00:42:35.650 --> 00:42:37.450
+to what's going on here.
+
+00:42:37.450 --> 00:42:39.110
+There's only two occurrences.
+
+00:42:39.110 --> 00:42:41.600
+We always just give it
+
+00:42:41.671 --> 00:42:43.500
+index_sequence_for. we deduce.
+
+00:42:45.920 --> 00:42:46.988
+I I don't see why we
+
+00:42:46.988 --> 00:42:47.920
+need this comment at all.
+
+00:42:47.920 --> 00:42:50.568
+It it it's not like it's been declared
+
+00:42:50.568 --> 00:42:52.468
+elsewhere to be defaulted to 0.
+
+00:42:52.470 --> 00:42:56.328
+If index sequence is empty then.
+
+00:42:56.330 --> 00:42:57.914
+I'm assuming we can't call this at all.
+
+00:43:03.120 --> 00:43:04.655
+This assumes that there's at
+
+00:43:04.655 --> 00:43:05.883
+least one that's interesting.
+
+00:43:05.890 --> 00:43:07.238
+Does this have a?
+
+00:43:07.238 --> 00:43:09.260
+Does does this have trouble if
+
+00:43:09.338 --> 00:43:11.660
+we are attempting to zip nothing?
+
+00:43:11.660 --> 00:43:13.444
+I'm not even sure if that's well formed, um.
+
+00:43:13.444 --> 00:43:14.788
+But that's the first question I
+
+00:43:14.788 --> 00:43:16.259
+have when I see something cracking
+
+00:43:16.259 --> 00:43:17.995
+open a pack of types and then
+
+00:43:18.050 --> 00:43:19.912
+assuming that there's always one um.
+
+00:43:19.912 --> 00:43:22.900
+OK, so I think the comment should be there.
+
+00:43:22.900 --> 00:43:24.826
+Then there's a question of what
+
+00:43:24.826 --> 00:43:26.839
+&gt;&gt; Stephan: happens if this stuff is empty.
+&gt;&gt; Casey: zip nothing is forbidden by the requirements
+
+00:43:26.840 --> 00:43:30.440
+&gt;&gt; Stephan: OK, wonderful.
+
+00:43:30.440 --> 00:43:32.024
+OK, but I think this comment
+
+00:43:32.024 --> 00:43:33.080
+should not be here.
+
+00:43:33.080 --> 00:43:36.966
+Um. Let's see, I uh,
+
+00:43:36.966 --> 00:43:38.850
+let's ask cause I'm could be
+
+00:43:38.922 --> 00:43:41.222
+confused rather than saying there's
+
+00:43:41.222 --> 00:43:43.522
+definitely no reason for this.
+
+00:43:43.530 --> 00:43:44.472
+And then it turns out there's
+
+00:43:44.472 --> 00:43:45.529
+a reason and I look silly.
+
+00:43:47.930 --> 00:43:50.922
+Let's see what's, um,
+
+00:43:50.922 --> 00:43:56.662
+the purpose of the comment /* =0 /* ?
+
+00:43:56.740 --> 00:44:00.785
+There appears to be only one
+
+00:44:00.785 --> 00:44:03.760
+use of _Get_smallest_distance_closure
+
+00:44:08.030 --> 00:44:10.200
+Immediately below.
+
+00:44:10.200 --> 00:44:15.490
+And it deduces um. _FirstIdx
+
+00:44:15.490 --> 00:44:20.240
+so there's no
+
+00:44:20.240 --> 00:44:22.690
+default behavior.
+
+00:44:22.690 --> 00:44:25.350
+OK, what's the purpose of the comment /* =0 /* ?
+
+00:44:25.350 --> 00:44:26.320
+There appears to
+
+00:44:26.320 --> 00:44:27.976
+be only one use of _Get_smallest_distance_closure
+
+00:44:27.976 --> 00:44:29.268
+immediately below,
+
+00:44:29.270 --> 00:44:30.958
+and it deduces _FirstIdx
+
+00:44:30.958 --> 00:44:33.068
+so there's no default behavior.
+
+00:44:33.070 --> 00:44:34.082
+OK, interesting.
+
+00:44:34.082 --> 00:44:37.118
+We are using tag dispatch because
+
+00:44:37.118 --> 00:44:40.400
+that's the only way here to get access
+
+00:44:40.400 --> 00:44:42.965
+to this list of types. if constexpr
+
+00:44:42.965 --> 00:44:44.800
+has not quite superseded that.
+
+00:44:44.800 --> 00:44:46.798
+So we take an index sequence.
+
+00:44:46.800 --> 00:44:49.923
+Uh, first index and then a bunch of indexes.
+
+00:44:49.930 --> 00:44:51.140
+Ah, OK.
+
+00:44:53.840 --> 00:44:55.112
+I'm trying to look at what
+
+00:44:55.112 --> 00:44:56.439
+the _FirstIdx is used for.
+
+00:44:56.440 --> 00:44:59.268
+Where is it mentioned?
+
+00:44:59.270 --> 00:45:00.500
+It's not mentioned.
+
+00:45:08.370 --> 00:45:11.260
+Oh, it's just. I see.
+
+00:45:11.260 --> 00:45:14.910
+I see what that equals 0 means. Here.
+
+00:45:14.910 --> 00:45:17.060
+It's. It's acknowledging that the
+
+00:45:17.060 --> 00:45:19.619
+sequence will always start with zero
+
+00:45:19.619 --> 00:45:21.917
+because we're using index_sequence_for.
+
+00:45:21.920 --> 00:45:24.304
+So it's the comment is a reminder that
+
+00:45:24.304 --> 00:45:26.524
+_FirstIdx will absorb the zero and
+
+00:45:26.524 --> 00:45:29.095
+then the _Idxs are one and above
+
+00:45:29.095 --> 00:45:31.314
+here we just directly hard code zero
+
+00:45:31.320 --> 00:45:34.173
+to get the first stuff and then we look
+
+00:45:34.173 --> 00:45:37.139
+at the rest of them with the indexes.
+
+00:45:37.140 --> 00:45:38.440
+So it's not a default,
+
+00:45:38.440 --> 00:45:41.499
+it's a reminder of what it is.
+
+00:45:41.500 --> 00:45:42.234
+That's reasonable.
+
+00:45:42.234 --> 00:45:44.803
+Um, it's just because I'm reading it
+
+00:45:44.803 --> 00:45:46.889
+strictly top down that I was confused.
+
+00:45:48.910 --> 00:45:50.880
+OK, I'll retract my comment.
+
+00:45:50.880 --> 00:45:52.152
+I found the purpose.
+
+00:45:52.152 --> 00:45:54.060
+That's pretty thoughtful to have it,
+
+00:45:54.060 --> 00:45:56.140
+so thank you. Uh OK.
+
+00:45:56.140 --> 00:46:00.916
+So index_sequence&lt;_FirstIdx, _Idxs...&gt;
+
+00:46:00.920 --> 00:46:02.250
+I suppose it could have just been
+
+00:46:02.250 --> 00:46:04.188
+named like 0, but that's fine.
+
+00:46:06.340 --> 00:46:07.756
+OK, so what's going on here?
+
+00:46:07.760 --> 00:46:09.098
+We const _ResultType _First_size
+
+00:46:09.100 --> 00:46:16.315
+is static_cast&lt;_ResultType&gt;(_STD get&lt;0&gt;(_Lhs_tuple) - _STD get&lt;0&gt;(_Rhs_tuple));
+
+00:46:16.340 --> 00:46:18.818
+OK, we're always doing left minus right?
+
+00:46:18.820 --> 00:46:23.078
+OK, if that first size is 0,
+
+00:46:23.080 --> 00:46:25.168
+so if there are no differences
+
+00:46:25.168 --> 00:46:26.560
+between the first iterators,
+
+00:46:26.560 --> 00:46:27.856
+then the smallest is.
+
+00:46:27.856 --> 00:46:28.982
+Well, you win.
+
+00:46:28.982 --> 00:46:31.789
+It's zero, we can just short circuit.
+
+00:46:31.790 --> 00:46:35.414
+Otherwise, maybe some of the other stuff is.
+
+00:46:35.420 --> 00:46:37.760
+Uh, otherwise we're non 0,
+
+00:46:37.760 --> 00:46:39.881
+so maybe some of the other stuff
+
+00:46:39.881 --> 00:46:41.897
+is non zero and we need to substract.
+
+00:46:41.900 --> 00:46:44.800
+Now, I'm assuming.
+
+00:46:44.800 --> 00:46:46.438
+This seems like it's assuming that
+
+00:46:46.438 --> 00:46:48.210
+none of these will be negative.
+
+00:46:50.360 --> 00:46:52.676
+How does the operator minus work?
+
+00:46:52.680 --> 00:46:55.536
+Is it doing some sort of absolute value?
+
+00:46:55.540 --> 00:46:57.976
+The value with the smallest absolute value.
+
+00:46:57.980 --> 00:46:59.807
+OK, OK, so if we find 0,
+
+00:46:59.810 --> 00:47:00.866
+that's by definition the
+
+00:47:00.866 --> 00:47:01.658
+smallest absolute value,
+
+00:47:01.660 --> 00:47:02.792
+so that definitely wins.
+
+00:47:02.792 --> 00:47:04.207
+But if we get nonzero,
+
+00:47:04.210 --> 00:47:05.590
+whether a little bit bigger than
+
+00:47:05.590 --> 00:47:07.318
+zero or a little bit less than 0,
+
+00:47:07.320 --> 00:47:08.632
+maybe we'll find something
+
+00:47:08.632 --> 00:47:10.450
+at zero later on. OK.
+
+00:47:12.920 --> 00:47:15.230
+And there's no algorithm that
+
+00:47:15.230 --> 00:47:17.470
+really short circuits, um.
+
+00:47:22.200 --> 00:47:24.470
+Interesting that this is not.
+
+00:47:24.470 --> 00:47:25.675
+We're not taking the absolute
+
+00:47:25.675 --> 00:47:28.038
+value out of all of these. Um.
+
+00:47:28.038 --> 00:47:32.920
+It's like doing the subtractions. And then?
+
+00:47:35.210 --> 00:47:36.812
+That's odd. I'm trying to think
+
+00:47:36.812 --> 00:47:38.539
+like what happens because I haven't
+
+00:47:38.539 --> 00:47:39.755
+completely read through this.
+
+00:47:39.760 --> 00:47:41.392
+Um, what happens if you have a mix
+
+00:47:41.392 --> 00:47:43.258
+of like negative and positive values?
+
+00:47:43.260 --> 00:47:45.480
+Some are tiny, some are big.
+
+00:47:45.480 --> 00:47:46.660
+Is what this is doing,
+
+00:47:46.660 --> 00:47:49.229
+which is not taking the abs immediately
+
+00:47:49.229 --> 00:47:51.539
+equivalent to what the standard says,
+
+00:47:51.540 --> 00:47:53.298
+which says the smallest absolute value.
+
+00:47:53.300 --> 00:47:55.310
+Because I would expect to directly
+
+00:47:55.310 --> 00:47:57.260
+translate the standards to apply abs,
+
+00:47:57.260 --> 00:48:00.842
+either call abs or do it
+
+00:48:00.842 --> 00:48:03.120
+manually and then find the min.
+
+00:48:03.120 --> 00:48:06.450
+But this is doing something different.
+
+00:48:06.450 --> 00:48:09.246
+So this forms an initializer list,
+
+00:48:09.250 --> 00:48:12.463
+A named one, which is a little bit unusual.
+
+00:48:12.470 --> 00:48:15.149
+It's not wrong.
+
+00:48:15.150 --> 00:48:16.734
+It's kind of using it as a container,
+
+00:48:16.740 --> 00:48:19.125
+which is kind of weird, but not wrong.
+
+00:48:19.125 --> 00:48:19.630
+Um.
+
+00:48:23.590 --> 00:48:25.287
+Then what? What do we what? What?
+
+00:48:25.287 --> 00:48:26.589
+Where are we giving the sizes?
+
+00:48:26.590 --> 00:48:28.960
+Ohh that it's being given to the ranges? OK.
+
+00:48:31.350 --> 00:48:33.246
+That could have used an array,
+
+00:48:33.250 --> 00:48:35.518
+but initializer list is what the
+
+00:48:35.518 --> 00:48:37.030
+classic algorithm will take.
+
+00:48:37.030 --> 00:48:38.668
+So here we actually do want that.
+
+00:48:38.670 --> 00:48:40.202
+OK, const initializer_list&lt;_ResultType&gt; _Sizes
+
+00:48:40.202 --> 00:48:42.117
+is brace
+
+00:48:42.117 --> 00:48:43.688
+whatever that first size is,
+
+00:48:43.690 --> 00:48:45.754
+and at this point we know it's nonzero.
+
+00:48:45.760 --> 00:48:49.198
+And then? A
+
+00:48:51.670 --> 00:48:53.480
+fold expression, but a pack
+
+00:48:53.480 --> 00:48:54.928
+expansion of _STD get&lt;_Idxs&gt;(_Lhs_tuple)
+
+00:48:54.930 --> 00:48:56.730
+- _STD get&lt;_Idxs&gt;(_Rhs_tuple)
+
+00:48:56.730 --> 00:48:59.344
+over and over and over. OK.
+
+00:48:59.344 --> 00:49:01.892
+And then we do this odd sort
+
+00:49:01.892 --> 00:49:04.488
+of absolute value thing if the
+
+00:49:04.488 --> 00:49:07.130
+first size was negative. Then.
+
+00:49:09.320 --> 00:49:11.110
+Say we have like negative
+
+00:49:11.110 --> 00:49:14.766
+10 then we look for the maximum of
+
+00:49:14.766 --> 00:49:18.288
+the sizes because we want to find.
+
+00:49:18.290 --> 00:49:19.965
+The biggest, but this is
+
+00:49:19.965 --> 00:49:20.970
+assuming everybody's negative.
+
+00:49:23.510 --> 00:49:24.542
+I don't think that's right because
+
+00:49:24.542 --> 00:49:25.982
+what if we have a mix of negative
+
+00:49:25.982 --> 00:49:28.360
+and positive, if we have -10.
+
+00:49:28.360 --> 00:49:30.400
+And then some of the other
+
+00:49:30.400 --> 00:49:34.480
+differences are like -11, -5,
+
+00:49:34.480 --> 00:49:37.920
+a billion positive billion then.
+
+00:49:37.920 --> 00:49:39.495
+The ranges max will find the
+
+00:49:39.495 --> 00:49:41.010
+positive billion and we'll return that.
+
+00:49:41.010 --> 00:49:42.384
+But really we should have said
+
+00:49:42.384 --> 00:49:43.761
+the small staff site value in
+
+00:49:43.761 --> 00:49:45.003
+this case whatever I said -5,
+
+00:49:45.010 --> 00:49:47.714
+absolute it and so should be like 5.
+
+00:49:51.200 --> 00:49:53.160
+Ohh I see it returns the value
+
+00:49:53.160 --> 00:49:54.939
+with the smallest absolute value.
+
+00:49:54.940 --> 00:49:58.048
+So if the smallest absolute value.
+
+00:49:58.050 --> 00:49:59.478
+Or if the value with the
+
+00:49:59.478 --> 00:50:00.570
+smallest absolute value is -5
+
+00:50:00.570 --> 00:50:01.900
+we should return negative.
+
+00:50:01.900 --> 00:50:02.473
+We don't abs it,
+
+00:50:02.473 --> 00:50:03.810
+but we do want the smallest one.
+
+00:50:03.810 --> 00:50:05.946
+We should not return a billion.
+
+00:50:05.950 --> 00:50:07.758
+I think this is incorrect if we have
+
+00:50:07.758 --> 00:50:09.728
+a mix of negatives and positives.
+
+00:50:11.930 --> 00:50:14.296
+I think it was trying to avoid.
+
+00:50:14.300 --> 00:50:16.280
+Greedily taking the absolute value because
+
+00:50:16.280 --> 00:50:19.080
+we do need to return the original one,
+
+00:50:19.080 --> 00:50:21.486
+but I don't think this is
+
+00:50:21.486 --> 00:50:23.759
+the right way to do it.
+
+00:50:23.760 --> 00:50:26.364
+In some sense it's like the comparison
+
+00:50:26.364 --> 00:50:28.540
+should be done with absolute.
+
+00:50:28.540 --> 00:50:30.493
+We could give it a comparator that
+
+00:50:30.493 --> 00:50:32.573
+says here's how to compare two values
+
+00:50:32.573 --> 00:50:34.349
+you abs them and then you compare.
+
+00:50:34.350 --> 00:50:36.828
+But then we can find the minimum
+
+00:50:36.828 --> 00:50:38.775
+according to that metric and
+
+00:50:38.775 --> 00:50:40.800
+then return whatever that is.
+
+00:50:40.800 --> 00:50:41.907
+That would be the right way to do it.
+
+00:50:41.910 --> 00:50:46.368
+So we would only call min with a predicate.
+
+00:50:46.368 --> 00:50:47.770
+OK, I think this is a bug.
+
+00:50:47.770 --> 00:50:49.302
+Unless I'm seriously confused
+
+00:50:49.302 --> 00:50:50.834
+about how this works.
+
+00:50:50.840 --> 00:50:52.600
+It sure seems like the zip code, the
+
+00:50:52.600 --> 00:50:54.026
+minus should be able to handle iterators
+
+00:50:54.030 --> 00:50:58.040
+being at different positions, um.
+
+00:51:01.320 --> 00:51:03.948
+But I'm not really sure how.
+
+00:51:03.950 --> 00:51:06.914
+All these when zipping are they
+
+00:51:06.914 --> 00:51:08.484
+always marching in lockstep?
+
+00:51:08.484 --> 00:51:10.632
+But then I would have talked
+
+00:51:10.632 --> 00:51:12.659
+about the small absolute value.
+
+00:51:12.660 --> 00:51:13.748
+&gt;&gt; Casey: I I'm I'm confused.
+
+00:51:13.748 --> 00:51:16.062
+I don't think it's possible to get a
+
+00:51:16.062 --> 00:51:17.940
+mixture of negative and positive values,
+
+00:51:17.940 --> 00:51:19.942
+but that's because I don't think it's
+
+00:51:19.942 --> 00:51:21.669
+possible for the iterator repairs to
+
+00:51:21.669 --> 00:51:23.556
+&gt;&gt; Casey: ever get out of sync. 
+&gt;&gt; Stephan: Right. Right.
+
+00:51:23.556 --> 00:51:25.134
+&gt;&gt; Stephan: Like, I'm trying to figure out,
+
+00:51:25.140 --> 00:51:26.100
+yeah, why does the standardease,
+
+00:51:26.100 --> 00:51:27.006
+why is it trying to handle,
+
+00:51:27.010 --> 00:51:28.480
+like, you know, you know,
+
+00:51:28.480 --> 00:51:30.750
+what's the different absolute value?
+
+00:51:30.750 --> 00:51:32.307
+When I see that, my mind really goes to,
+
+00:51:32.310 --> 00:51:34.170
+OK, what if they're jumbled,
+
+00:51:34.170 --> 00:51:36.386
+but if it's like we're doing this thing,
+
+00:51:36.390 --> 00:51:38.400
+&gt;&gt; Casey: I think all the constituent distances
+
+00:51:38.400 --> 00:51:40.761
+should be identical and we should be able
+
+00:51:40.761 --> 00:51:43.039
+to return any of them from this function.
+
+00:51:43.040 --> 00:51:43.900
+&gt;&gt; Stephan: Yeah. I mean, that's how,
+
+00:51:43.900 --> 00:51:45.832
+that's how a zipper works, right?
+
+00:51:45.832 --> 00:51:48.118
+So. Yeah. Hmm.
+
+00:51:48.118 --> 00:51:50.404
+That's really weird.
+
+00:51:50.410 --> 00:51:52.560
+&gt;&gt; Stephan: Is that just a defect in this 
+&gt;&gt; Casey: because of int. No that distance doesn't make sense.
+
+00:51:57.450 --> 00:51:58.946
+&gt;&gt; Stephan: You know like if some of the different
+
+00:51:58.946 --> 00:52:00.328
+types are like smaller than, bigger,
+
+00:52:00.328 --> 00:52:02.650
+but then but then you would run out of
+
+00:52:02.706 --> 00:52:04.624
+space like when the smallest one runs
+
+00:52:04.624 --> 00:52:06.798
+out of room for the different type.
+
+00:52:06.800 --> 00:52:10.208
+&gt;&gt; Casey: Nicole, can you explain?
+
+00:52:10.210 --> 00:52:13.150
+To us stupid people is uh
+
+00:52:13.150 --> 00:52:14.200
+&gt;&gt; Stephan: is Nicole on the call?
+
+00:52:18.360 --> 00:52:21.699
+She is not. So we are asking for telepathy.
+
+00:52:21.700 --> 00:52:27.886
+Um, that's interesting. So. I think.
+
+00:52:27.890 --> 00:52:29.010
+This does mirror to comment.
+
+00:52:29.010 --> 00:52:31.503
+The question is, should it be an LWG issue?
+
+00:52:31.510 --> 00:52:34.290
+Uh, what's going on here? Um.
+
+00:52:36.410 --> 00:52:37.718
+&gt;&gt; Casey: Sorry, I'm good.
+
+00:52:37.718 --> 00:52:40.770
+Nicole has explained it in the chat.
+
+00:52:40.770 --> 00:52:41.868
+&gt;&gt; Stephan: Oh, oh, she's in the chat,
+
+00:52:41.870 --> 00:52:43.710
+just not on the call.
+
+00:52:43.710 --> 00:52:45.485
+&gt;&gt; Casey: Where we have when our
+
+00:52:45.485 --> 00:52:46.550
+underlying regular common.
+
+00:52:46.550 --> 00:52:49.664
+The end iterator of the zip view is the
+
+00:52:49.664 --> 00:52:53.145
+end iterators of all the underlying views.
+
+00:52:53.150 --> 00:52:55.047
+And if we don't know the size
+
+00:52:55.047 --> 00:52:56.250
+of those underlying views,
+
+00:52:56.250 --> 00:52:58.266
+or they're not random access so we can't
+
+00:52:58.266 --> 00:53:00.447
+grab an arbitrary iterator out of them,
+
+00:53:00.450 --> 00:53:03.698
+then we don't know that those end iterators
+
+00:53:03.698 --> 00:53:06.328
+are actually in sync with each other.
+
+00:53:06.330 --> 00:53:08.234
+&gt;&gt; Stephan: Ohh because you can exhaust some ranges.
+
+00:53:08.240 --> 00:53:11.376
+&gt;&gt; Casey: Don't know how long the ranges are.
+
+00:53:11.380 --> 00:53:13.440
+&gt;&gt; Stephan: But what happens if you
+
+00:53:13.440 --> 00:53:15.088
+exhaust ranges before others?
+
+00:53:15.090 --> 00:53:17.240
+&gt;&gt; Casey: you are you were at the end if you
+
+00:53:17.303 --> 00:53:19.799
+exhaust one of the ranges before the others
+
+00:53:19.800 --> 00:53:22.830
+Yeah, the the the end of the zip view is
+
+00:53:22.908 --> 00:53:26.316
+when the first underlying range it's its end.
+
+00:53:26.320 --> 00:53:28.498
+&gt;&gt; Stephan: OK, but. But in that case,
+
+00:53:28.500 --> 00:53:29.720
+aren't they still in sync?
+
+00:53:29.720 --> 00:53:31.736
+Don't they all still have the same value?
+
+00:53:31.740 --> 00:53:33.570
+Yes, the iterator values of
+
+00:53:33.570 --> 00:53:37.500
+that iterator are in sync, but.
+
+00:53:37.500 --> 00:53:40.839
+If you want to model common so your zip
+
+00:53:40.839 --> 00:53:44.338
+view has an end iterator that it returns.
+
+00:53:44.340 --> 00:53:46.092
+&gt;&gt; Stephan: OK
+&gt;&gt; Casey: your underlying ranges are all
+
+00:53:46.092 --> 00:53:47.260
+&gt;&gt; Casey: forward language forward ranges.
+
+00:53:47.260 --> 00:53:49.600
+They're all say they're forward
+
+00:53:49.600 --> 00:53:50.536
+common ranges.
+
+00:53:50.540 --> 00:53:52.270
+Then your zip using iterator
+
+00:53:52.270 --> 00:53:54.999
+is a tuple of the end iterators
+
+00:53:54.999 --> 00:53:57.309
+of all the underlying ranges.
+
+00:53:57.310 --> 00:53:59.080
+But they may have different
+
+00:53:59.080 --> 00:54:01.480
+lengths so that one that is the
+
+00:54:01.480 --> 00:54:03.440
+only value out of sync is int.
+
+00:54:03.440 --> 00:54:04.050
+&gt;&gt; Stephan: Ohh weird.
+
+00:54:04.050 --> 00:54:07.410
+&gt;&gt; Casey: The only way to get an out of sync value.
+
+00:54:07.410 --> 00:54:09.242
+Out of the design.
+
+00:54:09.242 --> 00:54:10.158
+&gt;&gt; Stephan: Because otherwise,
+
+00:54:10.160 --> 00:54:11.780
+&gt;&gt; Casey: and that's why the equality comparison
+
+00:54:11.780 --> 00:54:13.878
+says if any of them compare equal,
+
+00:54:13.880 --> 00:54:14.646
+they're equal.
+
+00:54:14.646 --> 00:54:16.944
+Because that way the end iterator
+
+00:54:16.944 --> 00:54:19.359
+and the end and the yeah sorry,
+
+00:54:19.360 --> 00:54:22.072
+the iterator you reach by iterating
+
+00:54:22.072 --> 00:54:24.734
+through the sequence will be equal
+
+00:54:24.734 --> 00:54:27.068
+to the iterator that end returns.
+
+00:54:27.070 --> 00:54:28.045
+Just by that,
+
+00:54:28.045 --> 00:54:29.670
+they have different constituent values,
+
+00:54:29.670 --> 00:54:30.086
+&gt;&gt; Stephan: OK,
+
+00:54:30.086 --> 00:54:31.750
+&gt;&gt; Stephan: because you're considering it
+&gt;&gt; Casey: Thank you Nicole
+
+00:54:31.750 --> 00:54:34.866
+&gt;&gt; Stephan: as soon as somebody hit and OK.
+
+00:54:34.866 --> 00:54:36.420
+That makes sense.
+
+00:54:36.420 --> 00:54:37.120
+Um.
+
+00:54:39.350 --> 00:54:44.620
+Yeah, so. OK, so going back here,
+
+00:54:44.620 --> 00:54:48.360
+this is doing subtraction.
+
+00:54:48.360 --> 00:54:50.536
+And it's trying to handle the case of.
+
+00:54:50.540 --> 00:54:52.238
+What if one of these iterators
+
+00:54:52.238 --> 00:54:53.990
+is like the end iterator?
+
+00:54:56.700 --> 00:54:59.588
+You have to. Essentially,
+
+00:54:59.588 --> 00:55:02.094
+the position of it is virtually the
+
+00:55:02.094 --> 00:55:04.388
+one that's closest to the beginning,
+
+00:55:04.390 --> 00:55:09.080
+so the smallest absolute value. Is that right?
+
+00:55:11.380 --> 00:55:12.913
+That does get the right answer if
+
+00:55:12.913 --> 00:55:14.300
+you like subtract 2 and iterators,
+
+00:55:14.300 --> 00:55:15.610
+or if you're end minus begin
+
+00:55:15.610 --> 00:55:16.898
+&gt;&gt; Casey: or absolute value,
+
+00:55:16.898 --> 00:55:19.153
+because the left hand argument could be
+
+00:55:19.153 --> 00:55:21.313
+the end iterator value or the right hand
+
+00:55:21.313 --> 00:55:23.299
+argument could be the end iterator value.
+
+00:55:23.300 --> 00:55:25.970
+&gt;&gt; Stephan: Yeah, yeah. And you can't have
+
+00:55:25.970 --> 00:55:27.750
+anything beyond that point,
+
+00:55:27.750 --> 00:55:29.570
+so you don't need to worry because,
+
+00:55:29.570 --> 00:55:31.257
+um, if you try to increment increment,
+
+00:55:31.260 --> 00:55:34.210
+you do stop as soon as one of them hits end.
+
+00:55:34.210 --> 00:55:37.074
+OK, so there's limited
+
+00:55:37.074 --> 00:55:38.875
+jumbleness permitted,
+
+00:55:38.875 --> 00:55:41.795
+but can't you still get into the position?
+
+00:55:41.800 --> 00:55:45.200
+The case I had where you've got like
+
+00:55:45.200 --> 00:55:48.857
+a small negative and a big positive?
+
+00:55:48.860 --> 00:55:50.780
+Can't you have that?
+
+00:55:50.780 --> 00:55:52.835
+&gt;&gt; Casey: No
+&gt;&gt; Stephan: ohh because they can't be
+
+00:55:52.835 --> 00:55:54.095
+&gt;&gt; Stephan: relatively jumbled like that.
+
+00:55:54.100 --> 00:55:56.686
+It's either they're all in sync,
+
+00:55:56.690 --> 00:55:59.042
+or you are the end iterator
+
+00:55:59.042 --> 00:56:02.360
+&gt;&gt; Stephan: and they're jagged.
+&gt;&gt; Casey: Right
+
+00:56:02.360 --> 00:56:05.664
+&gt;&gt; Stephan: If you ever have a jagged case that
+
+00:56:05.664 --> 00:56:08.430
+&gt;&gt; Casey: you'll never advance past the,
+
+00:56:08.430 --> 00:56:09.370
+&gt;&gt; Stephan: yeah so the.
+
+00:56:09.370 --> 00:56:12.660
+The uh regardless of whether one is
+
+00:56:12.762 --> 00:56:16.696
+before or afterwards in the jagged case,
+
+00:56:16.700 --> 00:56:18.890
+they all have the same sign.
+
+00:56:18.890 --> 00:56:21.434
+It's never possible to have a mix of
+
+00:56:21.434 --> 00:56:23.413
+negatives and positives in the jagged
+
+00:56:23.413 --> 00:56:25.710
+case and in the non jagged case.
+
+00:56:25.710 --> 00:56:27.120
+It's also never possible have a
+
+00:56:27.120 --> 00:56:28.570
+mix of negative and positives.
+
+00:56:28.570 --> 00:56:30.330
+OK, so that's that's interesting.
+
+00:56:30.330 --> 00:56:34.887
+OK, so that indicates this is correct.
+
+00:56:34.890 --> 00:56:37.788
+Highly non obvious.
+
+00:56:37.790 --> 00:56:39.925
+OK, so let's read this new eyes.
+
+00:56:39.930 --> 00:56:40.950
+Uh, const initializer_list&lt;_ResultType&gt; _Sizes
+
+00:56:40.950 --> 00:56:45.030
+is _STD get&lt;_Idxs&gt;(_Lhs_tuple) - _STD get&lt;_Idxs&gt;(_Rhs_tuple)
+
+00:56:45.131 --> 00:56:49.120
+over and over.
+
+00:56:49.120 --> 00:56:51.676
+There's no short circuiting if we find a 0,
+
+00:56:51.680 --> 00:56:53.684
+but we already tried to find
+
+00:56:53.684 --> 00:56:55.020
+like the case where.
+
+00:56:55.020 --> 00:56:56.934
+And the thing that the optimization
+
+00:56:56.934 --> 00:56:58.517
+is reasonable because most of
+
+00:56:58.517 --> 00:57:00.017
+the time if they're non jagged,
+
+00:57:00.020 --> 00:57:01.598
+then if the first one zero,
+
+00:57:01.600 --> 00:57:03.455
+then hey you're equal you return 0.
+
+00:57:03.460 --> 00:57:04.532
+Otherwise if they're not,
+
+00:57:04.532 --> 00:57:06.580
+the answer is very very likely nonzero.
+
+00:57:06.580 --> 00:57:10.279
+It's only for like we're in a jagged case.
+
+00:57:10.280 --> 00:57:11.150
+You might find a 0,
+
+00:57:11.150 --> 00:57:12.630
+but we don't really need to optimize that,
+
+00:57:12.630 --> 00:57:14.086
+so I don't need to worry about short
+
+00:57:14.086 --> 00:57:15.426
+circuiting. OK, so then return.
+
+00:57:15.426 --> 00:57:17.869
+If the first size is less than zero,
+
+00:57:17.870 --> 00:57:18.566
+it's negative.
+
+00:57:18.566 --> 00:57:21.350
+Then we assume they're all the same sign.
+
+00:57:21.350 --> 00:57:23.366
+Try to find the maximum of
+
+00:57:23.366 --> 00:57:24.374
+the remaining sizes,
+
+00:57:24.380 --> 00:57:25.925
+because that one's going to
+
+00:57:25.925 --> 00:57:27.470
+be closest to 0 otherwise,
+
+00:57:27.470 --> 00:57:29.770
+if the first size is.
+
+00:57:29.770 --> 00:57:30.446
+Not less than zero,
+
+00:57:30.446 --> 00:57:31.741
+but in this case we know it's
+
+00:57:31.741 --> 00:57:32.931
+strictly greater 0 because we
+
+00:57:32.931 --> 00:57:33.883
+already tested for quality.
+
+00:57:33.890 --> 00:57:36.706
+Then find the minimum of all the sizes.
+
+00:57:36.710 --> 00:57:39.254
+OK, that is correct.
+
+00:57:39.254 --> 00:57:39.890
+Agreed.
+
+00:57:39.890 --> 00:57:44.706
+And then at the end of _Get_smallest_distance
+
+00:57:44.706 --> 00:57:46.590
+return _Get_smallest_distance_closure
+
+00:57:46.590 --> 00:57:48.290
+because we need
+
+00:57:48.290 --> 00:57:50.392
+to expand the pack index sequence
+
+00:57:50.392 --> 00:57:52.087
+for LHS tuple types brace,
+
+00:57:52.090 --> 00:57:55.780
+brace and we've already required.
+
+00:57:55.780 --> 00:57:58.126
+That they be the same length.
+
+00:57:58.130 --> 00:58:00.581
+OK, that is.
+
+00:58:00.581 --> 00:58:01.398
+Reasonable.
+
+00:58:03.720 --> 00:58:07.266
+OK. And then an equal helper
+
+00:58:07.266 --> 00:58:09.818
+template on class tuple types.
+
+00:58:09.818 --> 00:58:14.605
+template &lt;class... _LHSTupleTypes, class... _RHSTupleTypes&gt;
+  requires (sizeof...(_LHSTupleTypes) == sizeof...(_RHSTupleTypes))
+
+00:58:14.610 --> 00:58:15.906
+Here I'm making sure that we
+
+00:58:15.906 --> 00:58:17.290
+don't mix up left and right.
+
+00:58:17.290 --> 00:58:20.290
+Very very easy. It's _NODISCARD.
+
+00:58:20.290 --> 00:58:23.000
+OK, so consistent with previous
+
+00:58:23.000 --> 00:58:25.710
+constexpr bool _Zip_iterator_sentinel_equal
+
+00:58:25.710 --> 00:58:28.156
+OK, so it's not iterator difference, this is.
+
+00:58:28.156 --> 00:58:30.207
+Are you just equal to a Sentinel?
+
+00:58:30.210 --> 00:58:36.150
+const tuple&lt;_LHSTupleTypes...&gt;&amp; _Lhs_tuple, const tuple&lt;_RHSTupleTypes...&gt;&amp; _Rhs_tuple
+
+00:58:36.150 --> 00:58:40.420
+This one is. Strengthened.
+
+00:58:40.420 --> 00:58:41.920
+Not come to this strengthened,
+
+00:58:41.920 --> 00:58:44.326
+but this one is not exactly
+
+00:58:44.326 --> 00:58:45.529
+mapping to anything.
+
+00:58:45.530 --> 00:58:47.010
+In the standards, that's fine.
+
+00:58:47.010 --> 00:58:50.052
+Um, we're noexcept if this
+
+00:58:50.052 --> 00:58:53.103
+fold expression is noexcept
+
+00:58:53.103 --> 00:58:58.768
+(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() == _STD declval&lt;const _RHSTupleTypes&amp;&gt;()) && ...)
+
+00:58:58.770 --> 00:59:01.950
+Okay, comparing 2 const lvalues,
+
+00:59:01.950 --> 00:59:05.110
+they all got to be noexcept OK.
+
+00:59:05.110 --> 00:59:09.632
+Um const auto _Evaluate_equality_closure
+
+00:59:09.632 --> 00:59:12.872
+is capture left
+
+00:59:12.872 --> 00:59:15.797
+and right tuples by ref.
+
+00:59:15.800 --> 00:59:17.736
+OK, and then we're gonna go invoke it.
+
+00:59:17.740 --> 00:59:20.158
+Uh, template on size_t... _Indices.
+
+00:59:20.160 --> 00:59:22.600
+Take index_sequence&lt;_Indices...&gt;
+
+00:59:22.600 --> 00:59:25.491
+And then just apply is this equal
+
+00:59:25.491 --> 00:59:31.214
+to that equal: ((_STD get&lt;_Indices&gt;(_Lhs_tuple) == _STD get&lt;_Indices&gt;(_Rhs_tuple)) || ...)
+
+00:59:31.220 --> 00:59:31.689
+Ah,
+
+00:59:31.689 --> 00:59:35.910
+and you're equal if any of them are equal.
+
+00:59:35.910 --> 00:59:40.275
+Because you only need one to hit the end.
+
+00:59:40.280 --> 00:59:42.026
+OK, so that's why it's more.
+
+00:59:44.800 --> 00:59:47.480
+OK, so when we actually compute the answer,
+
+00:59:47.480 --> 00:59:48.832
+we fold over or.
+
+00:59:48.832 --> 00:59:50.860
+But when we compute noexceptness,
+
+00:59:50.860 --> 00:59:52.220
+all of them need to be noexcept.
+
+00:59:52.220 --> 00:59:54.330
+So we use and there.
+
+00:59:54.330 --> 00:59:55.440
+Here we're adding the noexcept.
+
+00:59:55.440 --> 00:59:57.276
+Here we're using the answers OK,
+
+00:59:57.280 --> 01:00:01.535
+return _Evaluate_equality_closure(index_sequence_for&lt;_LHSTupleTypes...&gt;{});
+
+01:00:01.535 --> 01:00:03.437
+brace brace for temporary tag.
+
+01:00:03.440 --> 01:00:05.880
+Yep, that's good. OK.
+
+01:00:05.880 --> 01:00:08.520
+Now we can get to zip_view and
+
+01:00:08.520 --> 01:00:11.222
+here we have our first _EXPORT_STD
+
+01:00:11.222 --> 01:00:13.507
+because it is standard.
+
+01:00:13.510 --> 01:00:14.713
+It's got here.
+
+01:00:14.713 --> 01:00:16.718
+What's what's cool about _EXPORT_STD
+
+01:00:16.718 --> 01:00:18.600
+is that for the range of stuff we
+
+01:00:18.600 --> 01:00:19.660
+actually need very few of them,
+
+01:00:19.660 --> 01:00:21.460
+because so much of it is like helper.
+
+01:00:21.460 --> 01:00:24.268
+iterators, helper sentinels,
+
+01:00:24.268 --> 01:00:26.374
+operator paren parens,
+
+01:00:26.380 --> 01:00:28.316
+so we don't need a zillion of them.
+
+01:00:28.320 --> 01:00:29.980
+It's great.
+
+01:00:29.980 --> 01:00:35.228
+Turn off clang-format for clang-format 14.
+
+01:00:35.230 --> 01:00:36.200
+This is OK to keep.
+
+01:00:36.200 --> 01:00:37.736
+Uh, we'll clean that up later
+
+01:00:37.736 --> 01:00:39.509
+once we merge with clang-format 15.
+
+01:00:39.510 --> 01:00:40.172
+Um, OK,
+
+01:00:40.172 --> 01:00:42.158
+so this is exported because it's
+
+01:00:42.158 --> 01:00:44.550
+public template on input range.
+
+01:00:44.550 --> 01:00:51.609
+template &lt;input_range... _ViewTypes&gt;
+requires (view&lt;_ViewTypes&gt; &amp;&amp; ...) &amp;&amp; (sizeof...(_ViewTypes) > 0)
+
+01:00:53.430 --> 01:00:56.916
+OK, we have a class zip view.
+
+01:00:56.920 --> 01:00:59.356
+derive publicly because it's a class
+
+01:00:59.356 --> 01:01:02.700
+from view_interface&lt;zip_view&lt;_ViewTypes...&gt;&gt;
+
+01:01:02.734 --> 01:01:04.070
+turn on clang-format
+
+01:01:04.070 --> 01:01:06.030
+OK, private data members.
+
+01:01:06.030 --> 01:01:07.746
+Uh, [[no_unique_address]] commented out.
+
+01:01:07.750 --> 01:01:09.510
+Someday it's gonna be cool.
+
+01:01:09.510 --> 01:01:12.264
+We have a tuple&lt;_ViewTypes...&gt; _Views;
+
+01:01:12.270 --> 01:01:13.850
+OK, that's that. Exposition only.
+
+01:01:13.850 --> 01:01:15.420
+So we got this here.
+
+01:01:17.530 --> 01:01:24.199
+And then
+template &lt;bool _IsConst&gt;
+struct _Category_base {};
+
+01:01:24.200 --> 01:01:26.188
+And I believe that is the convention name.
+
+01:01:26.188 --> 01:01:27.719
+template &lt;bool _IsConst&gt;
+requires _All_forward&lt;_IsConst, _ViewTypes...&gt;
+struct _Category_base&lt;_IsConst&gt; {
+  using iterator_category = input_iterator_tag;
+};
+
+01:01:27.720 --> 01:01:29.403
+We specialize requires
+
+01:01:29.403 --> 01:01:32.208
+if they are _All_forward.
+
+01:01:32.210 --> 01:01:33.722
+Assuming that's specified for,
+
+01:01:33.722 --> 01:01:35.990
+what are we doing iterator here?
+
+01:01:38.730 --> 01:01:41.285
+Let's see, this is an iterator.
+
+01:01:41.285 --> 01:01:44.160
+Do you have a specialization?
+
+01:01:44.160 --> 01:01:47.358
+This one says forward iterator tag.
+
+01:01:47.360 --> 01:01:48.670
+Trying to see if there's
+
+01:01:48.670 --> 01:01:49.456
+two separate standardises.
+
+01:01:49.460 --> 01:01:51.800
+No, there's not. OK.
+
+01:01:54.020 --> 01:01:58.180
+Let's talk about Iterator. Category.
+
+01:01:58.180 --> 01:02:01.470
+I see. OK, yeah, this is this
+
+01:02:01.470 --> 01:02:05.580
+is implementing. This here. Uh.
+
+01:02:08.040 --> 01:02:09.580
+But wait, is this is this wrong?
+
+01:02:09.580 --> 01:02:13.549
+Um. Category base.
+
+01:02:13.550 --> 01:02:15.782
+Primary and then
+
+01:02:15.782 --> 01:02:22.860
+template &lt;bool _IsConst&gt;
+requires _All_forward&lt;_IsConst, _ViewTypes...&gt;
+struct _Category_base&lt;_IsConst&gt; {
+  using iterator_category = input_iterator_tag;
+};
+
+01:02:22.860 --> 01:02:25.800
+Um. Iterator category.
+
+01:02:25.800 --> 01:02:29.130
+Is present if and only if
+
+01:02:29.130 --> 01:02:31.430
+all forward is modeled.
+
+01:02:31.430 --> 01:02:32.620
+OK, what is the category?
+
+01:02:32.620 --> 01:02:35.828
+Is the category input?
+
+01:02:35.830 --> 01:02:39.334
+OK, category is input so this is correct
+
+01:02:39.334 --> 01:02:42.827
+even though it doesn't seem like it is OK.
+
+01:02:42.830 --> 01:02:46.120
+So the category is conditionally input OK.
+
+01:02:46.120 --> 01:02:48.136
+My brain is like if I see forward here,
+
+01:02:48.140 --> 01:02:48.992
+this should be forward.
+
+01:02:48.992 --> 01:02:50.424
+But no, the standardease is
+
+01:02:50.424 --> 01:02:51.428
+more complicated than that.
+
+01:02:53.500 --> 01:02:53.726
+OK
+
+01:02:53.726 --> 01:02:57.918
+template &lt;bool _IsConst&gt;
+class _Iterator : public _Category_base&lt;_IsConst&gt; {
+
+01:03:00.440 --> 01:03:02.140
+These are structs so that's publicly available.
+
+01:03:02.140 --> 01:03:03.780
+It's good. private data member,
+
+01:03:03.780 --> 01:03:17.307
+/* [[no_unique_address]] */ tuple&lt;iterator_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;...&gt; _Current;
+
+01:03:17.310 --> 01:03:20.826
+OK. Uh friends if you using
+
+01:03:20.826 --> 01:03:22.584
+extended friends syntax.
+
+01:03:22.590 --> 01:03:24.399
+Ah, let's see. Do we need that? Yes,
+
+01:03:24.399 --> 01:03:28.130
+we do because I'm a member as a child class,
+
+01:03:28.130 --> 01:03:30.734
+so I can access the parent classes.
+
+01:03:30.740 --> 01:03:32.230
+Contents because I have the
+
+01:03:32.230 --> 01:03:34.180
+same access as any other member.
+
+01:03:34.180 --> 01:03:36.539
+But if the parent wants to access
+
+01:03:36.540 --> 01:03:38.178
+the child classes contents we need
+
+01:03:38.178 --> 01:03:38.997
+to declare friendship.
+
+01:03:39.000 --> 01:03:43.074
+OK then we have
+
+01:03:43.074 --> 01:03:48.260
+constexpr explicit _Iterator(tuple&lt;iterator_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;...&gt; _Current_)
+
+01:03:48.260 --> 01:03:52.220
+And that is going to be.
+
+01:03:52.220 --> 01:03:54.950
+That even depicted.
+
+01:03:54.950 --> 01:03:55.955
+Not actually depicted.
+
+01:03:55.955 --> 01:03:57.295
+Uh, this is private.
+
+01:03:59.570 --> 01:04:01.600
+Um, do we have an exposition only?
+
+01:04:04.560 --> 01:04:08.080
+No. It's just.
+
+01:04:08.080 --> 01:04:10.858
+Standard just assumes that we can.
+
+01:04:10.860 --> 01:04:11.660
+Ohh I see this one.
+
+01:04:11.660 --> 01:04:12.800
+Where is this coming from?
+
+01:04:12.800 --> 01:04:13.608
+Where was that declared
+
+01:04:13.608 --> 01:04:14.820
+and I just scroll over it?
+
+01:04:17.120 --> 01:04:18.320
+Ohh, it's hiding up here.
+
+01:04:18.320 --> 01:04:21.232
+OK, so it is mentioned in the
+
+01:04:21.232 --> 01:04:22.989
+standards just exceptionally OK um.
+
+01:04:22.990 --> 01:04:29.997
+constexpr explicit _Iterator(tuple&lt;iterator_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;...&gt; _Current_)
+
+01:04:30.000 --> 01:04:32.555
+Ah, how many times does this occur?
+
+01:04:32.560 --> 01:04:35.560
+Can we extract this with the type def?
+
+01:04:35.560 --> 01:04:38.908
+Every time. 5.
+
+01:04:38.910 --> 01:04:41.030
+Ohh that's out there.
+
+01:04:42.620 --> 01:04:46.052
+Three is annoying enough that I
+
+01:04:46.052 --> 01:04:50.329
+do want to ask for extraction.
+
+01:04:50.330 --> 01:04:52.100
+Anymore would be and my usual
+
+01:04:52.100 --> 01:04:54.117
+rule is if it's mentioned three
+
+01:04:54.117 --> 01:04:56.427
+times and if it's lengthy then.
+
+01:04:56.430 --> 01:04:59.218
+It's reasonable to extract.
+
+01:04:59.220 --> 01:05:00.996
+And it wraps here, which is really annoying.
+
+01:05:01.000 --> 01:05:09.400
+I'll suggest it. Um. This here we go.
+
+01:05:09.400 --> 01:05:13.810
+This thing is the one that occurs, yes.
+
+01:05:13.810 --> 01:05:20.530
+Occurs 3 times and is verbose enough to
+
+01:05:20.530 --> 01:05:22.494
+cause wrapping.
+
+01:05:22.494 --> 01:05:24.458
+Say suggestion.
+
+01:05:28.510 --> 01:05:33.894
+Um, extracting a? What do we want
+
+01:05:33.894 --> 01:05:35.250
+to call this _Current_tuple? Maybe?
+
+01:05:44.630 --> 01:05:45.310
+&gt;&gt; Casey: _My_tuple
+
+01:05:47.360 --> 01:05:49.410
+&gt;&gt; Stephan: I took that that would
+
+01:05:49.410 --> 01:05:51.460
+be the more classic name,
+
+01:05:51.460 --> 01:05:53.916
+but _My_tuple _Current kind of sounds weird.
+
+01:05:53.920 --> 01:05:57.952
+At least current tuple would reinforce the.
+
+01:05:57.952 --> 01:06:01.576
+What we're talking about.
+
+01:06:01.580 --> 01:06:03.242
+It is my tuple because it
+
+01:06:03.242 --> 01:06:05.080
+is the only data restoring.
+
+01:06:05.080 --> 01:06:08.940
+I'll offer both suggestions.
+
+01:06:08.940 --> 01:06:13.310
+_My_tuple type def.
+
+01:06:15.570 --> 01:06:18.621
+Are. Any other name?
+
+01:06:18.621 --> 01:06:20.560
+I'll be too picky about the name.
+
+01:06:23.080 --> 01:06:28.020
+Would help. Credibility. OK, suggestion.
+
+01:06:28.020 --> 01:06:29.700
+Couple of horribleness occurs 3 times
+
+01:06:29.700 --> 01:06:31.860
+and is verbose enough to cause wrapping.
+
+01:06:31.860 --> 01:06:34.060
+Extracting a _Current_tuple or _My_tuple type
+
+01:06:34.060 --> 01:06:36.768
+def or any other name would help readability.
+
+01:06:36.770 --> 01:06:38.770
+OK, otherwise just fine.
+
+01:06:38.770 --> 01:06:40.940
+Um, we're noexcept if only
+
+01:06:40.940 --> 01:06:43.150
+one noexcept two is a bug.
+
+01:06:43.150 --> 01:06:48.559
+If is_nothrow_move_constructible_v of blah.
+
+01:06:48.560 --> 01:06:51.312
+OK, because we do move it in strengthend
+
+01:06:51.312 --> 01:06:55.208
+current, move current, OK. Public.
+
+01:06:55.210 --> 01:06:57.810
+So iterator concept see below.
+
+01:06:57.810 --> 01:07:00.310
+Um, but here we go.
+
+01:07:00.310 --> 01:07:02.240
+Iterator concept is if
+
+01:07:02.240 --> 01:07:04.170
+_All_random_access&lt;_IsConst, _ViewTypes...&gt;,
+
+01:07:04.170 --> 01:07:06.790
+then random_access_iterator_tag.
+
+01:07:06.790 --> 01:07:08.510
+If they're _All_bidirectional,
+
+01:07:08.510 --> 01:07:10.230
+then bidirectional_iterator_tag.
+
+01:07:10.230 --> 01:07:12.042
+If they're _All_forward then
+
+01:07:12.042 --> 01:07:14.210
+forward_iterator_tag, otherwise input_iterator_tag.
+
+01:07:14.210 --> 01:07:17.210
+OK, good. Using value_type oh,
+
+01:07:17.210 --> 01:07:19.650
+here's the value_type um.
+
+01:07:19.650 --> 01:07:21.250
+That is the type def.
+
+01:07:21.250 --> 01:07:23.510
+If only this were up a bit, um.
+
+01:07:27.230 --> 01:07:29.408
+No, it's different.
+
+01:07:29.410 --> 01:07:32.238
+Oh, it's range_value_t, not iterator_t OK,
+
+01:07:32.238 --> 01:07:34.904
+so we can't use that typedef using
+
+01:07:34.904 --> 01:07:38.696
+value_type is tuple of range_value_t.
+
+01:07:38.700 --> 01:07:41.955
+Let's say here we go this here.
+
+01:07:41.960 --> 01:07:47.502
+using value_type = tuple&lt;range_value_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;...&gt;;
+
+01:07:47.502 --> 01:07:53.166
+using difference_type = common_type_t&lt;range_difference_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;...&gt;;
+
+01:07:53.170 --> 01:07:56.530
+_Iterator() = default;
+
+01:07:56.530 --> 01:08:08.534
+constexpr _Iterator(_Iterator&lt;!_IsConst&gt; _Rhs)
+
+01:08:08.534 --> 01:08:11.378
+This is strengthened here.
+
+01:08:11.380 --> 01:08:14.252
+And it requires um.
+
+01:08:14.252 --> 01:08:16.406
+The strengthening is.
+
+01:08:16.410 --> 01:08:22.970
+(is_nothrow_convertible_v&lt;iterator_t&lt;_ViewTypes&gt;, iterator_t&lt;const _ViewTypes&gt;&gt; &amp;&amp; ...))
+
+01:08:22.970 --> 01:08:25.680
+That's. Us.
+
+01:08:27.790 --> 01:08:30.708
+Convertible takes what we are and
+
+01:08:30.708 --> 01:08:31.848
+then it's saying converting 2.
+
+01:08:31.850 --> 01:08:32.740
+Is that the right order?
+
+01:08:32.740 --> 01:08:36.510
+That doesn't look right. Um.
+
+01:08:36.510 --> 01:08:38.478
+Let me let me come back to that.
+
+01:08:38.480 --> 01:08:39.840
+What is the requirement here? So
+
+01:08:39.840 --> 01:08:41.728
+requires (_IsConst &amp;&amp; (convertible_to&lt;iterator_t&lt;_ViewTypes&gt;, iterator_t&lt;const _ViewTypes&gt;&gt; &amp;&amp; ...))
+
+01:08:41.728 --> 01:08:45.095
+I got to be constant because I
+
+01:08:45.095 --> 01:08:47.280
+can construct a constant array
+
+01:08:47.280 --> 01:08:49.653
+from non const and convertible_to
+
+01:08:49.653 --> 01:08:53.078
+iterator_t view types. Uh.
+
+01:08:53.078 --> 01:08:57.566
+iterator_t constant views and data.
+
+01:08:57.570 --> 01:09:02.099
+So saying for all of the component
+
+01:09:02.099 --> 01:09:04.370
+iterators the modifiable 1,
+
+01:09:04.370 --> 01:09:05.725
+the iterator for the modifiable
+
+01:09:05.725 --> 01:09:07.401
+view has to be convertible to
+
+01:09:07.401 --> 01:09:08.726
+the iterator for constant view.
+
+01:09:08.730 --> 01:09:10.570
+You can always add constants,
+
+01:09:10.570 --> 01:09:11.350
+so that's fine.
+
+01:09:15.480 --> 01:09:19.460
+Because we're. Constructing an iterator.
+
+01:09:19.460 --> 01:09:21.596
+We're constructing our iterator
+
+01:09:21.596 --> 01:09:24.266
+of constant because we're const
+
+01:09:24.266 --> 01:09:26.768
+from iterator of nonconstant.
+
+01:09:26.770 --> 01:09:32.926
+Yes. OK, so then this is asking.
+
+01:09:32.930 --> 01:09:34.687
+This is mirroring it. It's saying OK,
+
+01:09:34.690 --> 01:09:36.010
+OK, I think I think this is right.
+
+01:09:36.010 --> 01:09:40.512
+Um. is_nothrow_convertible_v
+
+01:09:40.512 --> 01:09:44.676
+iterator_t of U types?
+
+01:09:44.680 --> 01:09:46.395
+Not not doing the maybe const thing.
+
+01:09:46.400 --> 01:09:49.208
+So this is actually.
+
+01:09:49.210 --> 01:09:52.984
+The types within the RHS OK,
+
+01:09:52.984 --> 01:09:56.710
+and can we convert those to iterator_t of?
+
+01:09:59.150 --> 01:10:00.986
+This is maybe constant, not const.
+
+01:10:00.990 --> 01:10:03.560
+I think this is wrong.
+
+01:10:03.560 --> 01:10:05.378
+Because we're converting to us and
+
+01:10:05.378 --> 01:10:07.658
+we are is const, not not as_const.
+
+01:10:09.930 --> 01:10:13.045
+Like essentially the the strengthening
+
+01:10:13.045 --> 01:10:15.537
+here should substantially mirror
+
+01:10:15.537 --> 01:10:18.828
+the requirement for convertibility,
+
+01:10:18.830 --> 01:10:21.230
+except it's going to use this
+
+01:10:21.230 --> 01:10:23.390
+go through convertible_t is the
+
+01:10:23.390 --> 01:10:24.790
+requirement is the requirement busted?
+
+01:10:24.790 --> 01:10:27.160
+Did I miss that because it's
+
+01:10:27.160 --> 01:10:30.500
+using _Maybe_const constant?
+
+01:10:30.500 --> 01:10:32.726
+&gt;&gt; Casey: Standard doesn't use _Maybe_const here.
+
+01:10:32.730 --> 01:10:34.082
+&gt;&gt; Stephan: Yeah, good point. OK.
+
+01:10:34.082 --> 01:10:36.072
+So yeah, you're right.
+
+01:10:36.072 --> 01:10:38.040
+requires is busted.
+
+01:10:38.040 --> 01:10:40.340
+And then?
+
+01:10:40.340 --> 01:10:41.864
+I'm virtually certain the
+
+01:10:41.864 --> 01:10:43.388
+strengthening is not right.
+
+01:10:43.390 --> 01:10:44.570
+It they they should mirror,
+
+01:10:44.570 --> 01:10:47.013
+essentially it should be is_nothrow_convertible_v
+
+01:10:47.013 --> 01:10:49.070
+iterator_t views to
+
+01:10:49.070 --> 01:10:50.640
+iterator_t constant views because
+
+01:10:50.640 --> 01:10:53.050
+it's not just enough that it can
+
+01:10:53.050 --> 01:10:54.770
+be convertible like this describes
+
+01:10:54.770 --> 01:10:56.870
+the conversion we're going to do.
+
+01:10:56.870 --> 01:10:57.730
+Then we need to ask,
+
+01:10:57.730 --> 01:11:00.286
+can you do that without throwing?
+
+01:11:00.290 --> 01:11:01.599
+Um, so it needs to use the
+
+01:11:01.599 --> 01:11:02.700
+type_trait rather than the concept,
+
+01:11:02.700 --> 01:11:06.228
+but otherwise it should be identical.
+
+01:11:06.230 --> 01:11:07.598
+OK. Yeah, I think, I think this bug,
+
+01:11:07.600 --> 01:11:09.473
+I'll comment on that. OK, thanks.
+
+01:11:09.473 --> 01:11:12.014
+It's always nice to know that I'm
+
+01:11:12.014 --> 01:11:14.268
+not just jumping in phantoms.
+
+01:11:14.270 --> 01:11:15.569
+Um, OK uh,
+
+01:11:15.569 --> 01:11:18.167
+currents did move RHS current uh
+
+01:11:18.167 --> 01:11:20.723
+which will do a component wise
+
+01:11:20.723 --> 01:11:23.999
+move of all the stuff in the tuple.
+
+01:11:24.000 --> 01:11:25.610
+So at least that's easy.
+
+01:11:25.610 --> 01:11:26.306
+You know,
+
+01:11:26.306 --> 01:11:28.794
+I'd really love to have noexcept(auto).
+
+01:11:28.794 --> 01:11:30.530
+I'd love to have requires like if
+
+01:11:30.587 --> 01:11:32.594
+I'm just well for an I know why the
+
+01:11:32.594 --> 01:11:34.211
+standard at least doesn't have just
+
+01:11:34.211 --> 01:11:36.162
+the requires of the body's well formed,
+
+01:11:36.162 --> 01:11:37.366
+I'd really love that.
+
+01:11:37.370 --> 01:11:39.120
+noexcept(auto) though having to spend.
+
+01:11:39.120 --> 01:11:40.053
+I mean look,
+
+01:11:40.053 --> 01:11:41.297
+the specification for the
+
+01:11:41.297 --> 01:11:43.238
+constructor is like 10 times the
+
+01:11:43.238 --> 01:11:44.813
+size of the actual implementation.
+
+01:11:44.820 --> 01:11:45.058
+Uh,
+
+01:11:45.058 --> 01:11:46.010
+the compiler knows whether
+
+01:11:46.010 --> 01:11:47.520
+this stuff is going to throw.
+
+01:11:47.520 --> 01:11:47.930
+Um,
+
+01:11:47.930 --> 01:11:49.570
+we're definitely working around
+
+01:11:49.570 --> 01:11:51.620
+a limitation of language here.
+
+01:11:51.620 --> 01:11:55.498
+OK, let's comment here. Should I have?
+
+01:11:55.500 --> 01:11:57.330
+Two comments or one comment?
+
+01:11:59.530 --> 01:12:00.578
+Cameron's joking that that'll
+
+01:12:00.578 --> 01:12:01.888
+be his next hackathon project.
+
+01:12:01.890 --> 01:12:03.965
+I think probably 2 comments
+
+01:12:03.965 --> 01:12:05.625
+because they are different.
+
+01:12:05.630 --> 01:12:09.620
+Let's come in on the requires first.
+
+01:12:09.620 --> 01:12:11.530
+Here I will give credit.
+
+01:12:11.530 --> 01:12:18.350
+Uh Casey um noticed that?
+
+01:12:18.350 --> 01:12:20.900
+the standardized says
+
+01:12:20.900 --> 01:12:24.300
+let's not highlight here,
+
+01:12:24.300 --> 01:12:26.288
+let's get everything here.
+
+01:12:30.310 --> 01:12:33.898
+Um. But uh.
+
+01:12:36.240 --> 01:12:39.700
+Which doesn't use _Maybe_const?
+
+01:12:45.180 --> 01:12:47.167
+Actually, now let me say, um,
+
+01:12:47.167 --> 01:12:51.416
+so this you, or so the usage.
+
+01:12:51.420 --> 01:12:57.100
+Of _Maybe_const here appears to be incorrect.
+
+01:12:57.100 --> 01:12:59.970
+OK, Casey noticed that the standardease
+
+01:12:59.970 --> 01:13:02.480
+says convertible to iterator_t views,
+
+01:13:02.480 --> 01:13:04.778
+iterator_t const views and dot.
+
+01:13:04.780 --> 01:13:05.872
+So the usage of _Maybe_const
+
+01:13:05.872 --> 01:13:07.050
+here appears to be incorrect,
+
+01:13:07.050 --> 01:13:08.973
+because that's the one missing thing. OK?
+
+01:13:08.973 --> 01:13:12.690
+Got it. And then a comment about this here.
+
+01:13:12.690 --> 01:13:14.946
+Um, so we think the iterator_t
+
+01:13:14.946 --> 01:13:17.050
+view types is right,
+
+01:13:17.050 --> 01:13:20.718
+but this one should really be const.
+
+01:13:20.720 --> 01:13:24.378
+So and in fact. Even ignoring that
+
+01:13:24.378 --> 01:13:25.658
+like this is _Maybe_const.
+
+01:13:25.660 --> 01:13:27.548
+constance says _Maybe_const
+
+01:13:27.548 --> 01:13:31.760
+is considered just opposite.
+
+01:13:31.760 --> 01:13:36.300
+I noticed that. This, uh,
+
+01:13:36.300 --> 01:13:39.774
+who should I come in on the whole thing?
+
+01:13:39.780 --> 01:13:42.293
+You know it'd be distracting to get
+
+01:13:42.293 --> 01:13:44.548
+the signature in there that this.
+
+01:13:44.550 --> 01:13:47.439
+Exception specification says.
+
+01:13:47.439 --> 01:13:51.378
+Uh, let's see. Should I just extract?
+
+01:13:51.378 --> 01:13:52.950
+Now extract the whole iterator type.
+
+01:13:52.950 --> 01:13:54.360
+How many angles is that to?
+
+01:13:56.940 --> 01:14:00.830
+Uh. But uh.
+
+01:14:03.360 --> 01:14:05.340
+Let's see. We are.
+
+01:14:09.850 --> 01:14:10.410
+There's championed.
+
+01:14:10.410 --> 01:14:11.530
+There's two issues here,
+
+01:14:11.530 --> 01:14:15.760
+but one that flips the constness.
+
+01:14:18.100 --> 01:14:20.408
+I wanna say flips.
+
+01:14:20.408 --> 01:14:23.293
+That has the opposite constness
+
+01:14:23.293 --> 01:14:27.630
+of what we're actually.
+
+01:14:27.630 --> 01:14:28.560
+Converting here.
+
+01:14:32.250 --> 01:14:34.398
+Uh, let's see.
+
+01:14:34.400 --> 01:14:36.266
+I'll explain because this is confusing.
+
+01:14:36.270 --> 01:14:41.548
+This constructor is using a.
+
+01:14:41.548 --> 01:14:45.118
+This constructor takes a non
+
+01:14:45.118 --> 01:14:48.739
+const iterator as the source.
+
+01:14:48.740 --> 01:14:51.892
+To construct a constant
+
+01:14:51.892 --> 01:14:55.359
+iterator destination, so the.
+
+01:14:57.410 --> 01:15:04.240
+is_nothrow_convertible_v. Uh type
+
+01:15:04.240 --> 01:15:11.620
+trait. Is given the. Non. Alright.
+
+01:15:16.050 --> 01:15:18.698
+Should be given. I want to avoid any
+
+01:15:18.698 --> 01:15:20.750
+confusion about like what it should
+
+01:15:20.750 --> 01:15:23.106
+be given versus what we actually wrote
+
+01:15:23.106 --> 01:15:26.982
+in the source code. Should be given.
+
+01:15:26.982 --> 01:15:31.124
+The non constant source
+
+01:15:31.124 --> 01:15:34.439
+iterator first. Which it is.
+
+01:15:36.600 --> 01:15:38.040
+iterator_t View types.
+
+01:15:41.880 --> 01:15:48.187
+Then. Then. It should be given the
+
+01:15:48.187 --> 01:15:50.644
+constant iterator destination.
+
+01:15:50.644 --> 01:15:55.876
+Second, OK, I think I have explained that.
+
+01:15:55.880 --> 01:15:59.792
+Um. OK, and this is big enough
+
+01:15:59.792 --> 01:16:02.230
+that I really want bullet points.
+
+01:16:02.230 --> 01:16:08.810
+One. Then two. Let's see.
+
+01:16:08.810 --> 01:16:13.980
+This should match the requires.
+
+01:16:13.980 --> 01:16:18.962
+Clause. Which says. Select again.
+
+01:16:18.962 --> 01:16:21.667
+Let's grab the whole thing.
+
+01:16:27.970 --> 01:16:32.140
+Let me explain. Um accept changing.
+
+01:16:34.210 --> 01:16:35.200
+Except using.
+
+01:16:38.360 --> 01:16:41.272
+is_nothrow_convertible_v be?
+
+01:16:41.272 --> 01:16:49.300
+Be instead of. convertible_to. Says.
+
+01:16:52.820 --> 01:16:54.470
+iterator_t confuse.
+
+01:16:56.770 --> 01:17:02.030
+For the second. Argument. OK.
+
+01:17:04.980 --> 01:17:07.344
+I noticed that this exception specification
+
+01:17:07.344 --> 01:17:09.740
+says Iterator_t may be constant,
+
+01:17:09.740 --> 01:17:11.100
+not as constant View types.
+
+01:17:11.100 --> 01:17:13.123
+But that has the opposite constants of
+
+01:17:13.123 --> 01:17:14.840
+what we're actually converting here.
+
+01:17:14.840 --> 01:17:17.534
+This constructor takes a non consideration
+
+01:17:17.534 --> 01:17:20.661
+as the source to construct a fan.
+
+01:17:20.661 --> 01:17:21.894
+I'm getting confused.
+
+01:17:21.894 --> 01:17:23.127
+Let me restart.
+
+01:17:23.130 --> 01:17:25.032
+I noticed that this exception specification
+
+01:17:25.032 --> 01:17:27.557
+says iterator_t may be not as constant type,
+
+01:17:27.560 --> 01:17:28.826
+but that has the opposite constants.
+
+01:17:28.830 --> 01:17:29.950
+While we're actually converting here,
+
+01:17:29.950 --> 01:17:31.740
+this constructor takes a non
+
+01:17:31.740 --> 01:17:34.164
+const iterator or correct as the source
+
+01:17:34.164 --> 01:17:36.294
+to construct a consider destination.
+
+01:17:36.300 --> 01:17:38.120
+So the is_nothrow_convertible_v.
+
+01:17:38.120 --> 01:17:40.262
+V type_trait should be given the nonconst
+
+01:17:40.262 --> 01:17:41.961
+source iterator first because we go
+
+01:17:41.961 --> 01:17:43.986
+from two which it is iterator to view
+
+01:17:43.986 --> 01:17:45.869
+types and then it should be given
+
+01:17:45.869 --> 01:17:47.272
+the constant iterator destination.
+
+01:17:47.272 --> 01:17:47.703
+Second,
+
+01:17:47.703 --> 01:17:50.720
+bold that because that's the important bit.
+
+01:17:55.200 --> 01:17:57.250
+OK, two. This should match
+
+01:17:57.250 --> 01:17:58.480
+the requires clause,
+
+01:17:58.480 --> 01:18:00.240
+except using is_nothrow_convertible_v
+
+01:18:00.240 --> 01:18:02.000
+instead of convertible_to,
+
+01:18:02.000 --> 01:18:03.670
+which says iterator_t confused
+
+01:18:03.670 --> 01:18:05.006
+for the second argument.
+
+01:18:07.690 --> 01:18:09.342
+I'll credit you again,
+
+01:18:09.342 --> 01:18:11.407
+similar to what Casey noticed.
+
+01:18:14.150 --> 01:18:14.430
+There.
+
+01:18:17.710 --> 01:18:20.188
+OK. That one tiny little character.
+
+01:18:20.190 --> 01:18:22.068
+Not expanding to a big comment,
+
+01:18:22.070 --> 01:18:24.158
+but I think we got this sorted out.
+
+01:18:24.160 --> 01:18:26.190
+Um, this sort of thing is just.
+
+01:18:26.190 --> 01:18:27.638
+It's possible to test,
+
+01:18:27.638 --> 01:18:29.810
+but it's really obnoxious to test.
+
+01:18:29.810 --> 01:18:31.490
+You gotta write a lot of test support
+
+01:18:31.490 --> 01:18:33.129
+code to validate this tiny thing.
+
+01:18:33.130 --> 01:18:34.866
+So I wouldn't ask for test coverage here.
+
+01:18:34.870 --> 01:18:39.538
+It's totally understandable how is missed.
+
+01:18:39.540 --> 01:18:42.235
+I'm satisfied if the code expresses the
+
+01:18:42.235 --> 01:18:44.588
+conversion that we're actually gonna do.
+
+01:18:46.640 --> 01:18:48.458
+I don't think we need test coverage of this.
+
+01:18:50.630 --> 01:18:55.530
+&gt;&gt; Casey: OK. Up the comment middle screen right now.
+
+01:18:55.530 --> 01:18:56.952
+Yeah, you're correct.
+
+01:18:56.952 --> 01:18:58.848
+Appears to be incorrect.
+
+01:18:58.850 --> 01:19:00.582
+Isn't really quite true.
+
+01:19:00.582 --> 01:19:02.747
+It's correct because we we've
+
+01:19:02.747 --> 01:19:04.729
+constrained his consent to be true
+
+01:19:04.729 --> 01:19:06.870
+already by the time we get here.
+
+01:19:06.870 --> 01:19:09.918
+Yeah, it's just a little overcomplicated.
+
+01:19:09.920 --> 01:19:10.868
+&gt;&gt; Stephan: OK, good point.
+
+01:19:13.690 --> 01:19:15.978
+Yeah, because we are.
+
+01:19:15.978 --> 01:19:18.890
+Yeah. Requires is constant.
+
+01:19:18.890 --> 01:19:22.070
+OK, good point. Um.
+
+01:19:24.900 --> 01:19:29.850
+Um. We've constrained.
+
+01:19:32.470 --> 01:19:36.850
+Say. The constraint
+
+01:19:36.850 --> 01:19:39.475
+has already guaranteed
+
+01:19:39.475 --> 01:19:42.100
+that is_const.
+
+01:19:42.100 --> 01:19:47.970
+Is true um so using.
+
+01:19:47.970 --> 01:19:49.518
+Maybe consist consist?
+
+01:19:52.410 --> 01:19:57.438
+Is correct but. Overly, but unnecessary.
+
+01:19:57.440 --> 01:20:00.000
+Unnecessarily verbose.
+
+01:20:00.000 --> 01:20:02.308
+&gt;&gt; Casey: Yeah, that that'll work.
+
+01:20:02.310 --> 01:20:04.776
+And now I'm wondering if maybe some of this
+
+01:20:04.776 --> 01:20:09.220
+is overly complicated to avoid clang bugs.
+
+01:20:09.220 --> 01:20:12.788
+With, uh, premature substitution.
+
+01:20:12.790 --> 01:20:14.085
+&gt;&gt; Stephan: Then then it should be marked as,
+
+01:20:14.090 --> 01:20:17.790
+um, transition.
+
+01:20:17.790 --> 01:20:19.290
+&gt;&gt; Casey: Um yeah, true. Yeah, we'll find out. I'm not worried about it
+
+01:20:21.540 --> 01:20:22.585
+&gt;&gt; Stephan: OK, the constraint has already
+
+01:20:22.585 --> 01:20:23.860
+guaranteed that _IsConst is true.
+
+01:20:23.860 --> 01:20:25.220
+So using _Maybe_const&lt;_IsConst&gt; is
+
+01:20:25.220 --> 01:20:26.604
+correct, but unnecessarily verbose.
+
+01:20:26.604 --> 01:20:28.760
+OK, thank you for that correction.
+
+01:20:28.760 --> 01:20:29.459
+Ah, let's see.
+
+01:20:29.459 --> 01:20:30.857
+I think we can get through.
+
+01:20:30.860 --> 01:20:32.084
+Can we get through the rest of the iterator?
+
+01:20:32.090 --> 01:20:32.942
+This iterator's big.
+
+01:20:32.942 --> 01:20:34.930
+Uh, let's see how much we can
+
+01:20:34.995 --> 01:20:36.759
+get through the next 5 minutes.
+
+01:20:36.760 --> 01:20:38.781
+OK, so we got a deref. Wow.
+
+01:20:38.781 --> 01:20:42.436
+Iterators can dereference constexpr auto.
+
+01:20:42.440 --> 01:20:44.960
+OK, so now we're gonna pay attention
+
+01:20:44.960 --> 01:20:46.500
+to whether things should be [[nodiscard]]
+
+01:20:46.500 --> 01:20:47.740
+after the constructor,
+
+01:20:47.740 --> 01:20:49.290
+dereferencing should absolutely be [[nodiscard]].
+
+01:20:49.290 --> 01:20:52.699
+constexpr auto operator star const.
+
+01:20:52.700 --> 01:20:55.592
+This can be strengthened. Um, OK,
+
+01:20:55.592 --> 01:20:59.064
+so we've got a nontrivial strengthening here.
+
+01:20:59.070 --> 01:21:01.770
+We're noexcept if.
+
+01:21:01.770 --> 01:21:03.795
+This fold expression.
+
+01:21:03.800 --> 01:21:06.839
+Is all true.
+
+01:21:06.840 --> 01:21:09.619
+We need to be able to dereference
+
+01:21:09.619 --> 01:21:12.831
+a std::declval of iterator_t
+
+01:21:12.831 --> 01:21:15.236
+maybe Const is constantly type,
+
+01:21:15.240 --> 01:21:17.240
+so potentially apply constness to
+
+01:21:17.240 --> 01:21:19.240
+each of our component iterators.
+
+01:21:19.240 --> 01:21:21.200
+They all have to be.
+
+01:21:21.200 --> 01:21:21.537
+Noexcept
+
+01:21:21.537 --> 01:21:23.896
+because we return a tuple references,
+
+01:21:23.900 --> 01:21:25.238
+so at that point we're fine.
+
+01:21:25.240 --> 01:21:26.836
+This looks correct.
+
+01:21:26.836 --> 01:21:29.496
+The parenthesis here is not
+
+01:21:29.496 --> 01:21:31.872
+necessary because it's unary and
+
+01:21:31.872 --> 01:21:34.735
+there's no other way it could bind.
+
+01:21:34.740 --> 01:21:35.820
+I won't comment on it,
+
+01:21:35.820 --> 01:21:36.790
+it's not wrong, and again,
+
+01:21:36.790 --> 01:21:38.770
+this is a pretty complicated expression,
+
+01:21:38.770 --> 01:21:39.616
+pretty complicated code.
+
+01:21:39.616 --> 01:21:41.898
+If this were a smaller PR and this
+
+01:21:41.898 --> 01:21:43.634
+were like the only issue I found,
+
+01:21:43.640 --> 01:21:44.700
+I'd probably comment on it,
+
+01:21:44.700 --> 01:21:45.548
+but this is fine.
+
+01:21:48.070 --> 01:21:49.390
+Trying to be a little bit more easy,
+
+01:21:49.390 --> 01:21:50.680
+going like refused.
+
+01:21:50.680 --> 01:21:53.260
+OK, and then this is going
+
+01:21:53.260 --> 01:21:55.809
+to return tuple transform.
+
+01:21:55.810 --> 01:21:59.368
+Interesting, we have a stateless lambda.
+
+01:21:59.370 --> 01:22:02.527
+That takes. An auto ref iter because
+
+01:22:02.527 --> 01:22:05.277
+the tuple transform works on every
+
+01:22:05.277 --> 01:22:07.903
+component of the tuple. Is that right?
+
+01:22:07.903 --> 01:22:10.421
+Trying to remember, it was like,
+
+01:22:10.421 --> 01:22:13.703
+yeah, hour ago we reviewed this.
+
+01:22:13.710 --> 01:22:15.274
+Zip gets smallest distance,
+
+01:22:15.274 --> 01:22:18.115
+no tuple transform. Apply to every
+
+01:22:18.115 --> 01:22:20.890
+element that will invoke something.
+
+01:22:20.890 --> 01:22:23.710
+That's. I powered machinery for.
+
+01:22:23.710 --> 01:22:24.985
+It's just a Lambda invocation,
+
+01:22:24.990 --> 01:22:26.712
+but that's fine because it's the
+
+01:22:26.712 --> 01:22:28.939
+one that we use for users as well
+
+01:22:28.940 --> 01:22:30.650
+on every element of the tuple.
+
+01:22:30.650 --> 01:22:36.870
+OK, so. We use it down here.
+
+01:22:36.870 --> 01:22:39.138
+Here _Tuple_transform lambda
+
+01:22:39.138 --> 01:22:41.406
+take autograf under iter.
+
+01:22:41.410 --> 01:22:43.629
+And we're going to return Decltype auto.
+
+01:22:43.630 --> 01:22:44.587
+This is necessary.
+
+01:22:44.587 --> 01:22:46.501
+So don't get any sort of
+
+01:22:46.501 --> 01:22:48.189
+decay return deref iter
+
+01:22:48.190 --> 01:22:50.940
+on the current tuple. OK.
+
+01:22:50.940 --> 01:22:54.510
+And then that will return?
+
+01:22:54.510 --> 01:22:57.555
+_Tuple_transform should return a tuple of.
+
+01:22:57.560 --> 01:22:57.901
+References.
+
+01:22:57.901 --> 01:22:59.947
+Let's make sure that's right because
+
+01:22:59.947 --> 01:23:02.097
+we're not directly naming the type here.
+
+01:23:02.100 --> 01:23:03.804
+I think it is because the
+
+01:23:03.804 --> 01:23:05.622
+decltype auto and we used invoke_result_t
+
+01:23:05.622 --> 01:23:08.480
+tuple transform.
+
+01:23:08.480 --> 01:23:10.670
+Returns whatever std::apply does.
+
+01:23:13.210 --> 01:23:18.180
+Interesting. And then the tuple
+
+01:23:18.180 --> 01:23:19.913
+transform closure. Returns.
+
+01:23:19.913 --> 01:23:23.617
+Here we go a tuple of invoke_result_t
+
+01:23:23.620 --> 01:23:28.442
+So if. The Lambda that we give it
+
+01:23:28.442 --> 01:23:30.921
+returns a reference, which it does
+
+01:23:30.921 --> 01:23:33.603
+because it returns decltype auto of.
+
+01:23:33.610 --> 01:23:34.876
+Dereferencing and ideally,
+
+01:23:34.876 --> 01:23:37.005
+that's your return reference. Um.
+
+01:23:37.005 --> 01:23:40.050
+Then we're going to get a tuple
+
+01:23:40.050 --> 01:23:41.793
+of references. That seems right,
+
+01:23:41.793 --> 01:23:44.260
+and if it happens to return a PR value,
+
+01:23:44.260 --> 01:23:46.660
+which you could get for an input iterator,
+
+01:23:46.660 --> 01:23:49.124
+that'll participate in the tuple as well,
+
+01:23:49.130 --> 01:23:51.265
+and I'm assuming without looking
+
+01:23:51.265 --> 01:23:54.148
+that that is what this does. Yes,
+
+01:23:54.148 --> 01:23:55.816
+this is directly translating the standards,
+
+01:23:55.820 --> 01:23:59.080
+OK? I'm convinced that's right.
+
+01:23:59.080 --> 01:24:00.595
+So that is,
+
+01:24:00.595 --> 01:24:04.170
+this effects equivalent two wonderful.
+
+01:24:04.170 --> 01:24:05.961
+And. OK, incrementing.
+
+01:24:05.961 --> 01:24:10.140
+Not [[nodiscard]] because we can definitely
+
+01:24:10.241 --> 01:24:13.787
+discard this constexpr iterator ref.
+
+01:24:13.790 --> 01:24:15.570
+And then this is strengthened,
+
+01:24:15.570 --> 01:24:16.161
+we're noexcept.
+
+01:24:16.161 --> 01:24:17.146
+If this is noexcept,
+
+01:24:17.150 --> 01:24:19.859
+can we call tuple foreach with essentially
+
+01:24:19.859 --> 01:24:24.360
+what we're doing in the body here? OK.
+
+01:24:24.360 --> 01:24:27.320
+It's too bad we can't centralize that lambda.
+
+01:24:27.320 --> 01:24:30.380
+Um, effects equivalent to _Tuple_for_each.
+
+01:24:30.380 --> 01:24:33.116
+Ref auto ref iter increment
+
+01:24:33.120 --> 01:24:35.886
+on current return *this.
+
+01:24:35.890 --> 01:24:37.546
+OK, looks good.
+
+01:24:37.546 --> 01:24:41.410
+Um, constexpr for void operator plus plust int.
+
+01:24:41.410 --> 01:24:43.490
+This one also strengthens.
+
+01:24:43.490 --> 01:24:46.518
+noexcept if noexcept pre increment.
+
+01:24:46.520 --> 01:24:47.840
+Again, we're done in parenthesis,
+
+01:24:47.840 --> 01:24:50.978
+but it's consistent, which is good.
+
+01:24:50.980 --> 01:24:53.900
+Val iterator.
+
+01:24:53.900 --> 01:24:55.990
+It's us.
+
+01:24:55.990 --> 01:24:56.188
+Uh,
+
+01:24:56.188 --> 01:24:57.772
+why can't we just say deref this here?
+
+01:24:59.840 --> 01:25:02.000
+We have access to drop this and um,
+
+01:25:02.000 --> 01:25:03.028
+noexcept don't we?
+
+01:25:03.028 --> 01:25:04.313
+We we had problems like.
+
+01:25:04.320 --> 01:25:05.505
+I'm asking because we had
+
+01:25:05.505 --> 01:25:07.090
+problems like 12 years ago when
+
+01:25:07.090 --> 01:25:08.478
+noexcept originally occurred.
+
+01:25:08.480 --> 01:25:10.670
+I'm virtually certain it's OK now.
+
+01:25:13.660 --> 01:25:15.862
+Or that occur so like noexcept
+
+01:25:15.862 --> 01:25:18.262
+here for this. Or not.
+
+01:25:18.262 --> 01:25:20.329
+I'll do that. Let's do it.
+
+01:25:20.329 --> 01:25:24.010
+Regex search no except dot star, back star.
+
+01:25:24.010 --> 01:25:28.800
+Uh. This? OK, concepts can do that.
+
+01:25:28.800 --> 01:25:30.688
+Yeah, when we when we're comparing to arrays.
+
+01:25:30.690 --> 01:25:32.914
+Yeah, we can totally mention deref this.
+
+01:25:32.920 --> 01:25:34.614
+Um, I think we should do that.
+
+01:25:34.620 --> 01:25:36.966
+Uh. Because it is the body.
+
+01:25:40.570 --> 01:25:47.293
+Uh, I believe we should be able to say.
+
+01:25:47.300 --> 01:25:55.870
+noexcept(noexcept(++*this))
+
+01:25:59.190 --> 01:26:00.960
+OK, that's right.
+
+01:26:00.960 --> 01:26:03.910
+Just do that return void.
+
+01:26:03.910 --> 01:26:04.806
+And then post increment.
+
+01:26:04.806 --> 01:26:06.709
+This can be the last one we look at.
+
+01:26:06.710 --> 01:26:11.938
+Um. Sorry, not post increment.
+
+01:26:11.940 --> 01:26:13.398
+Alright, it's the other post increment,
+
+01:26:13.400 --> 01:26:16.076
+um, the one that is constrained
+
+01:26:16.076 --> 01:26:19.720
+for all forward OK.
+
+01:26:19.720 --> 01:26:21.916
+Where is that this one here?
+
+01:26:21.920 --> 01:26:23.740
+So constexpr iterator again,
+
+01:26:23.740 --> 01:26:25.021
+discardable. A plus int.
+
+01:26:25.021 --> 01:26:27.156
+It's going to have requires,
+
+01:26:27.160 --> 01:26:29.630
+but first we have a.
+
+01:26:29.630 --> 01:26:31.600
+Constraint.
+
+01:26:31.600 --> 01:26:33.224
+This actually occurs repeatedly.
+
+01:26:33.224 --> 01:26:34.036
+The um.
+
+01:26:36.670 --> 01:26:40.954
+Update this occurs below also for decrement.
+
+01:26:44.740 --> 01:26:47.246
+Um, so this one here that requires
+
+01:26:47.246 --> 01:26:49.999
+noexcept if we can pre increment?
+
+01:26:50.000 --> 01:26:53.542
+Sure. And because we return by value
+
+01:26:53.542 --> 01:27:00.090
+is_nothrow_copy_constuctibe_v<_Iterator<_IsConst>>
+
+01:27:02.450 --> 01:27:04.879
+Oh, that's our cost. Why does this
+
+01:27:04.879 --> 01:27:07.250
+say iterator is constant iterator?
+
+01:27:07.250 --> 01:27:10.470
+Um, using the injected class name? That's us.
+
+01:27:12.830 --> 01:27:14.055
+That should just be iterator
+
+01:27:14.055 --> 01:27:15.035
+according to our conventions.
+
+01:27:19.050 --> 01:27:20.950
+We've access to the, UM,
+
+01:27:20.950 --> 01:27:22.010
+the injected class name.
+
+01:27:22.010 --> 01:27:23.522
+Even in noexcept, there should.
+
+01:27:23.522 --> 01:27:25.600
+There should be no reason we can't use that.
+
+01:27:25.600 --> 01:27:29.128
+How, how, how, how often did this occur?
+
+01:27:29.130 --> 01:27:31.290
+Very rarely OK.
+
+01:27:31.290 --> 01:27:34.027
+Uh, that's the first occurrence again in,
+
+01:27:34.030 --> 01:27:38.330
+um, post stack. And.
+
+01:27:38.330 --> 01:27:39.482
+This is separate because
+
+01:27:39.482 --> 01:27:41.210
+this is in zip view itself,
+
+01:27:41.210 --> 01:27:44.762
+so we do need to mention _IsConst
+
+01:27:44.762 --> 01:27:46.470
+there though this is like Sentinel.
+
+01:27:46.470 --> 01:27:47.858
+Yeah Sentinel is constant
+
+01:27:47.858 --> 01:27:49.246
+needs to form iterators.
+
+01:27:49.250 --> 01:27:52.750
+So yeah this is these two are the ones that
+
+01:27:52.838 --> 01:27:56.100
+should just use the injected class name.
+
+01:27:56.100 --> 01:27:57.174
+Let's see.
+
+01:27:57.174 --> 01:28:00.933
+We should be able to use the.
+
+01:28:00.940 --> 01:28:08.220
+Let's be fancy italics injected class name.
+
+01:28:08.220 --> 01:28:12.000
+Under iterator here instead of.
+
+01:28:14.810 --> 01:28:18.630
+I'm saying there's constant.
+
+01:28:18.630 --> 01:28:22.959
+occurs below in
+
+01:28:27.520 --> 01:28:28.240
+decrement one.
+
+01:28:30.610 --> 01:28:32.354
+OK, we should be able to use the
+
+01:28:32.354 --> 01:28:33.674
+injected class name iterator here
+
+01:28:33.674 --> 01:28:35.064
+instead of saying iterator is
+
+01:28:35.070 --> 01:28:38.310
+below an operator minus minus int.
+
+01:28:38.310 --> 01:28:42.258
+Yeah. OK, that's a strengthening
+
+01:28:42.258 --> 01:28:44.826
+and then requires clause.
+
+01:28:44.830 --> 01:28:49.247
+All forward is constant view types dot.
+
+01:28:49.250 --> 01:28:50.168
+We make a.
+
+01:28:52.220 --> 01:28:54.957
+const auto temp that does not appear
+
+01:28:54.957 --> 01:28:57.338
+in the standard is dry for this.
+
+01:28:57.340 --> 01:29:00.370
+Increment DRF this return temp.
+
+01:29:00.370 --> 01:29:01.330
+Uh, let's see.
+
+01:29:01.330 --> 01:29:02.930
+Does that constant interfere with,
+
+01:29:02.930 --> 01:29:05.820
+um, the return value optimization
+
+01:29:05.820 --> 01:29:08.710
+and the move semantics stuff?
+
+01:29:08.710 --> 01:29:10.510
+I think I've actually lost track
+
+01:29:10.510 --> 01:29:11.938
+of whether it's, uh important.
+
+01:29:11.938 --> 01:29:13.786
+I think we should do what the
+
+01:29:13.786 --> 01:29:15.366
+standard says and not mark it const.
+
+01:29:15.370 --> 01:29:16.610
+That's one of our exceptions,
+
+01:29:16.610 --> 01:29:20.964
+to apply cons to everything by default.
+
+01:29:20.970 --> 01:29:24.060
+Is that right, Casey? That.
+
+01:29:24.060 --> 01:29:25.748
+Uh, this local variable
+
+01:29:25.748 --> 01:29:28.280
+should not be for this um,
+
+01:29:28.280 --> 01:29:30.386
+post increment where we should say
+
+01:29:30.386 --> 01:29:32.840
+where the standard says say auto temp
+
+01:29:32.840 --> 01:29:34.814
+is this increment this return temp,
+
+01:29:34.820 --> 01:29:36.844
+marking that as const
+
+01:29:36.844 --> 01:29:39.880
+That inhibits the automatic moving and
+
+01:29:39.964 --> 01:29:43.336
+maybe the named return value optimization.
+
+01:29:43.340 --> 01:29:47.306
+&gt;&gt; Casey: I think it doesn't inhibit NRVO.
+
+01:29:47.310 --> 01:29:49.030
+But yeah, definitely automatically
+
+01:29:49.030 --> 01:29:51.180
+is going to be inhibited.
+
+01:29:51.180 --> 01:29:54.148
+Yeah, it's not useful for some reason.
+
+01:29:54.150 --> 01:29:55.986
+&gt;&gt; Stephan: Yeah. So I think we should,
+
+01:29:55.990 --> 01:29:57.760
+uh, omit the const here,
+
+01:29:57.760 --> 01:29:59.506
+despite our love of const everywhere.
+
+01:29:59.510 --> 01:30:01.176
+&gt;&gt; Casey: Yeah, I would rather that we didn't
+
+01:30:01.176 --> 01:30:02.750
+constant things that we're gonna return.
+
+01:30:02.750 --> 01:30:05.650
+Yeah, OK. For that reason.
+
+01:30:05.650 --> 01:30:12.860
+&gt;&gt; Stephan: OK, um, although. Const is one of our.
+
+01:30:12.860 --> 01:30:17.576
+Favorite keywords and we mark local
+
+01:30:17.576 --> 01:30:22.660
+variables with it whenever possible.
+
+01:30:22.660 --> 01:30:29.608
+This is a rare exception when returning.
+
+01:30:29.608 --> 01:30:35.560
+A local variable. This can inhibit.
+
+01:30:35.560 --> 01:30:40.060
+Automatic moving if.
+
+01:30:40.060 --> 01:30:44.615
+The named return value optimization
+
+01:30:44.615 --> 01:30:49.170
+doesn't activate for whatever reason.
+
+01:30:49.170 --> 01:30:53.678
+These standardease. Depicts.
+
+01:30:53.680 --> 01:30:59.860
+Auto temp. And. We should use.
+
+01:30:59.860 --> 01:31:01.256
+Uh. None.
+
+01:31:01.256 --> 01:31:04.048
+Just skipping words we
+
+01:31:04.048 --> 01:31:06.840
+should use non constant.
+
+01:31:06.840 --> 01:31:11.040
+Auto here match it.
+
+01:31:11.040 --> 01:31:11.624
+Occurs below.
+
+01:31:11.624 --> 01:31:11.916
+OK,
+
+01:31:11.916 --> 01:31:13.668
+although const is one of our
+
+01:31:13.668 --> 01:31:15.684
+favorite keywords and we mark local
+
+01:31:15.684 --> 01:31:17.354
+variables with it whenever possible,
+
+01:31:17.360 --> 01:31:18.704
+this is a rare exception when
+
+01:31:18.704 --> 01:31:19.376
+returning local variable.
+
+01:31:19.380 --> 01:31:20.742
+This can inhibit automatic moving if
+
+01:31:20.742 --> 01:31:22.024
+the name return value optimization
+
+01:31:22.024 --> 01:31:23.659
+doesn't activate for whatever reason.
+
+01:31:23.660 --> 01:31:25.652
+The standardease depicts auto temp and we
+
+01:31:25.652 --> 01:31:27.576
+should use non-const auto here to match.
+
+01:31:27.580 --> 01:31:30.250
+It occurs below.
+
+01:31:30.250 --> 01:31:30.692
+OK.
+
+01:31:30.692 --> 01:31:33.786
+And we are now at time limits,
+
+01:31:33.790 --> 01:31:34.705
+so I will.
+
+01:31:34.705 --> 01:31:37.300
+I think submit a partial review looks like
+
+01:31:37.300 --> 01:31:40.030
+we actually got halfway through this header,
+
+01:31:40.030 --> 01:31:41.602
+even though it feels like we've
+
+01:31:41.602 --> 01:31:42.990
+haven't gotten that far a lot.
+
+01:31:42.990 --> 01:31:44.664
+There's a lot of the logic in the iterator.
+
+01:31:44.670 --> 01:31:46.296
+The actual view itself is pretty
+
+01:31:46.296 --> 01:31:48.120
+small in comparison to its iterators,
+
+01:31:48.120 --> 01:31:49.325
+because iterators are where all
+
+01:31:49.325 --> 01:31:50.289
+the fun stuff happens.
+
+01:31:50.290 --> 01:31:53.566
+We've already seen how it forms the
+
+01:31:53.566 --> 01:31:55.987
+dereference of everything and compares
+
+01:31:55.987 --> 01:31:59.270
+2 iterators by using equal or subtraction.
+
+01:31:59.270 --> 01:32:00.958
+So it's pretty cool.
+
+01:32:00.958 --> 01:32:01.380
+Um,
+
+01:32:01.380 --> 01:32:03.414
+I will submit a partial review
+
+01:32:03.414 --> 01:32:05.883
+and then come back to this later
+
+01:32:05.883 --> 01:32:07.959
+after the toolset update and
+
+01:32:07.959 --> 01:32:10.154
+finish reviewing so we can get
+
+01:32:10.154 --> 01:32:12.177
+this ideally into 17-5 Preview 2,
+
+01:32:12.177 --> 01:32:13.772
+although depending on logistics it
+
+01:32:13.772 --> 01:32:16.149
+may or may not get into that release.
+
+01:32:16.150 --> 01:32:18.632
+We're gonna try though. Umm, OK.
+
+01:32:18.632 --> 01:32:19.960
+I'll submit this offline.
+
+01:32:19.960 --> 01:32:21.020
+Um, as always, um,
+
+01:32:21.020 --> 01:32:22.898
+thanks for watching this and we'll see
+
+01:32:22.898 --> 01:32:24.802
+you next time on the open code reviews.
