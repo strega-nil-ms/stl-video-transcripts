@@ -20,7 +20,7 @@ a Visual C++ libraries developer.
 And today we'll be looking at PR 3035,
 
 00:00:20.692 --> 00:00:23.728
-adding `std::view::zip` from a
+adding std::view::zip from a
 
 00:00:23.728 --> 00:00:25.820
 new contributor,  tylerbrawl.
@@ -47,7 +47,7 @@ For correctness. Uh.
 Now, I have not looked deeply into um,
 
 00:00:44.170 --> 00:00:45.259
-`std::zip`.
+std::zip.
 
 00:00:45.259 --> 00:00:47.437
 The committee has been adding all
@@ -65,10 +65,10 @@ but I'll be looking at the
 standardease for the first time.
 
 00:00:55.170 --> 00:00:56.628
-So this describes.
+So this describes
 
 00:00:56.628 --> 00:00:58.572
-This nice detailed description
+this nice detailed description
 
 00:00:58.572 --> 00:01:00.790
 that Tyler has provided
@@ -83,10 +83,10 @@ partial feature implementation,
 so it's not completely implementing
 
 00:01:06.505 --> 00:01:08.750
-the paper, but only `std::views::zip`
+the paper, but only std::views::zip
 
 00:01:08.750 --> 00:01:10.325
-The paper also adds a `std::views::zip_transform`,
+The paper also adds a std::views::zip_transform,
 
 00:01:10.330 --> 00:01:14.145
 which we won't be seeing today,
@@ -98,10 +98,10 @@ but it may come in a future follow up PR.
 So let me open up the tracking issue.
 
 00:01:19.840 --> 00:01:21.226
-Because this is a partial PR.
+Because this is a partial PR
 
 00:01:21.230 --> 00:01:23.134
-This means that we will not be
+this means that we will not be
 
 00:01:23.134 --> 00:01:24.610
 getting the feature test macro.
@@ -161,7 +161,7 @@ because it affects zip_transform,
 and there's a couple overlapping patch
 
 00:01:56.500 --> 00:01:59.359
-papers that do modify `std::zip`
+papers that do modify std::zip
 
 00:01:59.360 --> 00:02:00.500
 So we're going to need to
@@ -227,7 +227,7 @@ um, this seems really familiar.
 Um, the tuple and pair and
 
 00:02:42.174 --> 00:02:44.170
-`vector&lt;bool&gt;::reference` changes from.
+vector&lt;bool&gt;::reference changes from.
 
 00:02:44.170 --> 00:02:45.610
 Or was that another paper?
@@ -281,7 +281,7 @@ So essentially the first part
 of the paper is implemented the
 
 00:03:10.805 --> 00:03:12.285
-tuple, pair, `vector&lt;bool&gt;::reference` reference
+tuple, pair, vector&lt;bool&gt;::reference reference
 
 00:03:12.285 --> 00:03:14.399
 that affects the existing library.
@@ -296,7 +296,7 @@ of at least three parts.
 Um, so here's the zip paper.
 
 00:03:19.780 --> 00:03:23.996
-So tuple pair, all this stuff is done.
+So tuple, pair, all this stuff is done.
 
 00:03:24.000 --> 00:03:31.160
 I go down. OK, so I think we have this.
@@ -561,7 +561,7 @@ Note zip_view::_Iterator
 defines ADL overloads for iter_swap
 
 00:07:16.940 --> 00:07:18.216
-and inter_move,
+and iter_move,
 
 00:07:18.216 --> 00:07:20.130
 so the test fails to compile
@@ -666,7 +666,7 @@ So we're actually run this test four
 different times with TEST_INPUT,
 
 00:08:32.212 --> 00:08:34.339
-TEST_BIDERECTIONAL, TEST_FORWARD and TEST_FORWARD.
+TEST_BIDERECTIONAL, TEST_FORWARD and TEST_RANDOM.
 
 00:08:34.339 --> 00:08:35.878
 It's very interesting.
@@ -900,10 +900,10 @@ Be _STD something,
 something. _STD::invoke is from
 
 00:11:48.946 --> 00:11:50.890
-type traits that can't be it.
+type_traits that can't be it.
 
 00:11:50.890 --> 00:11:52.278
-Same with std::apply.
+Same with _STD::apply.
 
 00:11:55.240 --> 00:11:58.216
 What does it need? Yeah.
@@ -936,7 +936,7 @@ or if it is, I'm missing something.
 We have it. We have test coverage.
 
 00:12:22.140 --> 00:12:23.948
-We have a test called include each other
+We have a test called include each header
 
 00:12:23.948 --> 00:12:25.553
 alone that we've had running for over
@@ -985,7 +985,7 @@ Let's see, did Nicole ask?
 &gt;&gt; Stephan: This did come up. Yeah it was
 
 00:12:55.380 --> 00:12:56.388
-_RANGES max
+_RANGES::max
 
 00:12:58.890 --> 00:13:02.390
 Ah, that's interesting. Um.
@@ -1042,7 +1042,7 @@ algorithm and not like xutility?
 Uh, this is gonna be horible
 
 00:13:55.680 --> 00:13:58.008
-&gt;&gt; Casey: It's probably the case that _RANGES max is
+&gt;&gt; Casey: It's probably the case that _RANGES::max is
 
 00:13:58.008 --> 00:14:00.236
 only defined in the algorithm because we
@@ -1075,7 +1075,7 @@ Or sorry integer like types.
 They're integer like types so they
 
 00:14:20.248 --> 00:14:23.029
-should work OK with std min and max.
+should work OK with std::min and max.
 
 00:14:23.030 --> 00:14:24.142
 &gt;&gt; Stephan: Let's see, we've got.
@@ -1301,29 +1301,29 @@ because the denominator is already large.
 
 00:17:09.550 --> 00:17:14.500
 &gt;&gt; Stephan: If algorithm was
-&gt;&gt; Casey: initializer_list and minmax could be in <xutility>
+&gt;&gt; Casey: initializer_list and minmax could be in xutility
 
 00:17:14.500 --> 00:17:16.340
-&gt;&gt; Casey: instead of <utility>
+&gt;&gt; Casey: instead of utility
 
 00:17:16.340 --> 00:17:20.699
-&gt;&gt; Stephan: Uh, <xutility> is non-core, right? No, <xutility>
+&gt;&gt; Stephan: Uh, xutility is non-core, right? No, xutility
 
 00:17:20.700 --> 00:17:22.860
 Ohh yeah that's the one that's non core.
 
 00:17:22.860 --> 00:17:26.252
-&gt;&gt; Casey: <xutility> is not core. 
+&gt;&gt; Casey: xutility is not core. 
 &gt;&gt; Stephan: Yeah, yeah
 
 00:17:26.252 --> 00:17:28.268
-&gt;&gt; Stephan: this one can use vector arguments just fine.
+&gt;&gt; Stephan: this one can use vectorized algorithms just fine.
 
 00:17:28.270 --> 00:17:29.416
-This is where we put count.
+This is where we put count,
 
 00:17:29.420 --> 00:17:33.144
-Find, this one is reasonable to promote.
+find, this one is reasonable to promote.
 
 00:17:33.150 --> 00:17:35.229
 &gt;&gt; Casey: this is the one step up
@@ -1351,13 +1351,13 @@ ranges already include xutility?
 &gt;&gt; Stephan: Oh yeah, yeah.
 
 00:17:49.788 --> 00:17:51.456
-Because it includes like <string_view>
+Because it includes like string_view
 
 00:17:51.456 --> 00:17:52.750
 &gt;&gt; Casey: indirectly from somewhere.
 
 00:17:52.750 --> 00:17:55.696
-But yeah, certainly includes <xutility>
+But yeah, certainly includes xutility
 
 00:17:55.700 --> 00:17:57.206
 &gt;&gt; Stephan: Yeah, that's interesting.
@@ -1387,7 +1387,7 @@ it's reformatting a bunch of code.
 Aside from that, I see no reason why
 
 00:18:16.022 --> 00:18:18.607
-we couldn't promote this to <xutility>
+we couldn't promote this to xutility
 
 00:18:18.607 --> 00:18:20.740
 and then ranges wouldn't need it.
@@ -1462,10 +1462,10 @@ Casey and I talked about this in the video
 code review um.
 
 00:19:28.785 --> 00:19:33.210
-We believe that <xutility>
+We believe that xutility
 
 00:19:33.210 --> 00:19:38.690
-would be on appropriate place to move the
+would be an appropriate place to move the
 
 00:19:38.690 --> 00:19:43.280
 initializer. Say promote um,
@@ -1489,7 +1489,7 @@ but just arbitrary range sizes or sizes,
 is literally an initializer_list,
 
 00:20:00.720 --> 00:20:03.114
-and the other one we form reform braces,
+and the other one we form braces,
 
 00:20:03.114 --> 00:20:05.473
 so init_list would be sufficient.
@@ -1519,7 +1519,7 @@ That could be confusing.
 It's uh. Included by algorithm.
 
 00:20:41.110 --> 00:20:42.643
-&gt;&gt; Casey: What? <xutility>? Yes
+&gt;&gt; Casey: What? xutility? Yes
 
 00:20:42.643 --> 00:20:45.709
 this included by algorithm
@@ -1528,7 +1528,7 @@ this included by algorithm
 &gt;&gt; Stephan: and is non-core. we use it to
 
 00:20:50.860 --> 00:20:55.140
-decentralize. Yeah, I won't explain.
+centralize. Yeah, I won't explain.
 
 00:20:58.030 --> 00:20:59.390
 Yeah, maybe I will explain.
@@ -1606,7 +1606,7 @@ we share hewilk's
 concern about the throughput
 
 00:22:47.668 --> 00:22:50.284
-impact of <algorithm>.
+impact of algorithm.
 
 00:22:54.240 --> 00:22:56.137
 OK. Casey and I talked about this
@@ -1618,10 +1618,10 @@ in the video code review we share.
 hewilk's concern about the
 
 00:22:59.816 --> 00:23:01.141
-throughput impact of <algorithm> and
+throughput impact of algorithm and
 
 00:23:01.141 --> 00:23:02.814
-we believe the <xutility> would be an
+we believe the xutility would be an
 
 00:23:02.814 --> 00:23:04.256
 appropriate place to promote the
@@ -1702,7 +1702,7 @@ a view of tuples to references.
 So like if you've got a vector of
 
 00:23:55.592 --> 00:23:57.993
-int and a vector of strings and the
+ints and a vector of strings and the
 
 00:23:57.993 --> 00:24:00.018
 ints say 10,20,30 and the strings
@@ -1852,7 +1852,7 @@ They're all sized ranges. OK.
 Thanks. Looks good. OK,
 
 00:26:03.279 --> 00:26:06.310
-then we have a tuple transform closure.
+then we have a _Tuple_transform_closure.
 
 00:26:06.310 --> 00:26:08.550
 This is not depicted in
@@ -1876,7 +1876,7 @@ Search. What is this tuple-transform
 thing? I'm just being mentioned.
 
 00:26:36.440 --> 00:26:39.608
-Lots of equivalent twos.
+Lots of "equivalent to".
 
 00:26:39.610 --> 00:26:41.878
 Did I already wrap? Come on.
@@ -1894,7 +1894,7 @@ Let's see, this is making a tuple.
 Ohh, I see tuple-transform is
 
 00:27:03.521 --> 00:27:07.376
-apply the tuple-transform closure
+apply the _Tuple_transform_closure
 
 00:27:07.380 --> 00:27:11.300
 is just the lambda. OK.
@@ -2017,7 +2017,7 @@ thing and dropping it on the floor.
 I don't know if this merits a comment.
 
 00:28:41.210 --> 00:28:43.390
-First, I'm wondering if tuple-transform
+First, I'm wondering if _Tuple_transform
 
 00:28:43.390 --> 00:28:45.570
 and the others here
@@ -2056,7 +2056,7 @@ for the public functions.
 OK, so going back here,
 
 00:29:15.086 --> 00:29:15.998
-tuple-transform closure
+_Tuple_transform_closure
 
 00:29:15.998 --> 00:29:17.550
 is just making the lambda.
@@ -2110,10 +2110,10 @@ generic lambda so we're templated
 on class... _ViewTupleTypes.
 
 00:29:58.070 --> 00:30:01.409
-In place of T's we take T's
+In place of T's we take 
 
 00:30:01.409 --> 00:30:04.189
-ref ref dot dot _View_tuples.
+_ViewTupleTypes&amp;&amp;... _View_tuples.
 
 00:30:04.190 --> 00:30:08.376
 OK so that's this so far here.
@@ -2182,10 +2182,10 @@ this takes by perfect forwarding
 a callback type ref ref callback.
 
 00:31:01.630 --> 00:31:04.390
-So that's matching this concept for
+So that's matching this 
 
 00:31:04.390 --> 00:31:07.143
-auto tuple transform that's depicted as
+constexpr auto tuple-transform that's depicted as
 
 00:31:07.143 --> 00:31:10.471
 F&amp;&amp; and then tuple type &amp;&amp; under tuple.
@@ -2218,7 +2218,7 @@ strength and comment here.
 We're noexcept if this is
 
 00:31:25.436 --> 00:31:26.330
-noexcept still apply.
+noexcept std::apply.
 
 00:31:26.330 --> 00:31:28.589
 So it's just gonna be the bodies to apply.
@@ -2275,7 +2275,7 @@ OK,
 so now this is the stuff capture
 
 00:32:08.010 --> 00:32:10.763
-roughed callback _ViewTupleTypes
+ref callback _ViewTupleTypes
 
 00:32:10.763 --> 00:32:14.789
 take that ref ref _View_tuples
@@ -4849,7 +4849,7 @@ Let me let me come back to that.
 What is the requirement here? So
 
 01:08:39.840 --> 01:08:41.728
-requires (_IsConst &amp;&amp; (convertible_to&lt;iterator_t&lt;_ViewTypes&gt;, iterator_t&lt;const _ViewTypes&gt;&gt; &amp;&amp; ...))
+requires (_IsConst &amp;&amp; (convertible_to&lt;iterator_t&lt;_ViewTypes&gt;, iterator_t&lt;_Maybe_const&lt;_IsConst, _ViewTypes&gt;&gt;&gt; &amp;&amp; ...))
 
 01:08:41.728 --> 01:08:45.095
 I got to be constant because I
