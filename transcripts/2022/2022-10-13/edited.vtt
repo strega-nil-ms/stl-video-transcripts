@@ -20,10 +20,10 @@ a Visual C++ libraries developer.
 And today we'll be looking at PR 3035,
 
 00:00:20.692 --> 00:00:23.728
-adding std::view::zip from a
+adding std::views::zip from a
 
 00:00:23.728 --> 00:00:25.820
-new contributor,  tylerbrawl.
+new contributor, tylerbrawl.
 
 00:00:25.820 --> 00:00:31.291
 So this is 1000 line PR, 1311 lines,
@@ -62,7 +62,7 @@ so I'm vaguely aware of what it does,
 but I'll be looking at the
 
 00:00:53.596 --> 00:00:55.170
-standardease for the first time.
+standardese for the first time.
 
 00:00:55.170 --> 00:00:56.628
 So this describes
@@ -122,16 +122,16 @@ enough to actually be usable,
 if something is blocked
 
 00:01:35.392 --> 00:01:36.807
-by like severe compiler bugs.
+by like severe compiler bugs,
 
 00:01:36.810 --> 00:01:37.482
-For example,
+for example,
 
 00:01:37.482 --> 00:01:39.162
 we will refrain from defining
 
 00:01:39.162 --> 00:01:40.919
-the feature test macro until.
+the feature test macro until
 
 00:01:40.920 --> 00:01:41.872
 it is usable.
@@ -242,7 +242,7 @@ I think we already got those.
 and pair changes from this.
 
 00:02:50.250 --> 00:02:54.006
-I think An Jiang submitted that change.
+I think A. Jiang submitted that change.
 
 00:02:54.010 --> 00:02:54.726
 &gt;&gt; Stephan: That's right.
@@ -281,7 +281,7 @@ So essentially the first part
 of the paper is implemented the
 
 00:03:10.805 --> 00:03:12.285
-tuple, pair, vector&lt;bool&gt;::reference reference
+tuple, pair, vector&lt;bool&gt;::reference
 
 00:03:12.285 --> 00:03:14.399
 that affects the existing library.
@@ -305,7 +305,7 @@ I go down. OK, so I think we have this.
 Is, explanations to integer class type,
 
 00:03:34.710 --> 00:03:35.775
-common type stuff.
+common_type stuff.
 
 00:03:35.775 --> 00:03:39.650
 OK, so the new zip stuff is in [range.zip].
@@ -357,7 +357,7 @@ So we may be seeing several follow-up PRs.
 This is good.
 
 00:04:10.294 --> 00:04:11.422
-It means there's more byte size.
+It means this is more bite size.
 
 00:04:11.430 --> 00:04:14.294
 We only have to look at one section
@@ -402,7 +402,7 @@ Let me look at LWG issue.
 This is also updating a spaceship
 
 00:04:37.644 --> 00:04:40.229
-standardease again in [range.zip.iterator].
+standardese again in [range.zip.iterator].
 
 00:04:40.230 --> 00:04:40.450
 OK,
@@ -417,13 +417,13 @@ applied to the working paper. Yep.
 And this is the compatibility paper.
 
 00:04:49.580 --> 00:04:55.160
-Scroll down. Wording "did this affect?"
+Scroll down. What wording did this affect?
 
 00:04:55.160 --> 00:04:58.114
 OK, so tuple this has already been
 
 00:04:58.120 --> 00:05:00.730
-taken care of tuple like.
+taken care of tuple-like.
 
 00:05:03.110 --> 00:05:05.768
 Yep, Yep, Yep.
@@ -432,13 +432,13 @@ Yep, Yep, Yep.
 Calling a function with a tuple of arguments, equality for tuple,
 
 00:05:09.040 --> 00:05:11.063
-common reference specialization.
+common_reference specialization.
 
 00:05:11.063 --> 00:05:14.500
 I can't remember if we got this.
 
 00:05:14.500 --> 00:05:17.566
-Pair stuff, let me scroll faster.
+pair stuff, let me scroll faster.
 
 00:05:17.570 --> 00:05:20.798
 This also edits zip_transform? No.
@@ -450,7 +450,7 @@ At least not there.
 Associative containers.
 
 00:05:26.160 --> 00:05:30.417
-OK, did get rid of a pair-like concept.
+OK, it did get rid of a pair-like concept.
 
 00:05:30.420 --> 00:05:31.924
 They've modified elements_view
@@ -471,7 +471,7 @@ OK, great.
 So now let's look for [ranges.zip]
 
 00:05:46.830 --> 00:05:49.590
-Uh, did I search long stable name?
+Uh, did I search the wrong stable name?
 
 00:05:49.590 --> 00:05:51.780
 Probably. Ranges library.
@@ -507,7 +507,7 @@ OK, most of the changes are to ranges, about
 500 lines, changes to our central internal header
 
 00:06:32.737 --> 00:06:35.829
-yvals_core.h and then adding a new test.
+&lt;yvals_core.h&gt; and then adding a new test.
 
 00:06:35.830 --> 00:06:41.170
 OK, I like to start easy. We're adding.
@@ -630,13 +630,13 @@ compile with the usual latest matrix,
 which means compile in 23 mode and
 
 00:08:08.450 --> 00:08:10.820
-throw in a permissive configuration.
+throw in a /permissive configuration.
 
 00:08:10.820 --> 00:08:12.440
 But if something absolutely
 
 00:08:12.440 --> 00:08:13.655
-cannot tolerate permissive,
+cannot tolerate /permissive,
 
 00:08:13.660 --> 00:08:15.556
 then we set the strict option and we
@@ -702,7 +702,7 @@ because we're silencing that clang warning.
 OK, so let's work our way towards the
 
 00:09:01.590 --> 00:09:04.010
-product code center internal header.
+product code central internal header.
 
 00:09:04.010 --> 00:09:10.390
 So here's a citation for the 2165R4.
@@ -720,10 +720,10 @@ Did we have a top level?
 Did we have a tracking issue for this?
 
 00:09:16.780 --> 00:09:17.530
-See.
+Let's see.
 
 00:09:20.650 --> 00:09:22.770
-Half the half the work here is just,
+Half the, half the work here is just,
 
 00:09:22.770 --> 00:09:24.434
 um, information management, OK.
@@ -750,13 +750,13 @@ OK, so this is the correct
 cleaned up name and spelling.
 
 00:09:38.860 --> 00:09:41.080
-Yep. Is it correctly sorted to
+Yep. Is it correctly sorted
 
 00:09:43.430 --> 00:09:44.518
-2 and 3, 2 and 6, 52 and 66.
+213, 216, 5, 2166.
 
 00:09:44.518 --> 00:09:45.878
-Yes it is compatibility between
+Yes it is, compatibility between
 
 00:09:45.878 --> 00:09:47.230
 tuple, pair and tuple-like objects.
@@ -765,13 +765,13 @@ tuple, pair and tuple-like objects.
 And then we have a explanation
 
 00:09:48.850 --> 00:09:51.100
-changes to view zip only. OK, good.
+changes to views::zip only. OK, good.
 
 00:09:51.100 --> 00:09:53.512
 And then zip paper, previously we
 
 00:09:53.512 --> 00:09:55.864
-said it's pair tuple and vector bool.
+said it's pair, tuple, and vector&lt;bool&gt;.
 
 00:09:55.870 --> 00:09:57.312
 And now we're going to flip it
@@ -789,13 +789,13 @@ views::adjacent and views::adjacent_transform.
 Yep, 3 views. That's right.
 
 00:10:04.810 --> 00:10:06.178
-We've got that Oxford comment there.
+We've got that oxford comma there.
 
 00:10:06.180 --> 00:10:06.537
 Perfect.
 
 00:10:06.537 --> 00:10:09.036
-We're not defining feature just macro yet.
+We're not defining a feature test macro yet.
 
 00:10:09.040 --> 00:10:10.335
 So no change to the feature test
@@ -810,22 +810,22 @@ OK, perfect.
 So let's look at the product code.
 
 00:10:19.050 --> 00:10:24.170
-OK. Ranges is including algorithm.
+OK. &lt;ranges&gt; is including &lt;algorithm&gt;.
 
 00:10:24.170 --> 00:10:28.050
-Does algorithm include ranges? Let's check.
+Does &lt;algorithm&gt; include &lt;ranges&gt;? Let's check.
 
 00:10:33.170 --> 00:10:39.410
-algorithm. algorithm includes xmemory OK.
+&lt;algorithm&gt;. &lt;algorithm&gt; includes &lt;xmemory&gt; OK.
 
 00:10:39.410 --> 00:10:42.924
-Don't think that means it includes ranges.
+I don't think that means it includes &lt;ranges&gt;.
 
 00:10:42.930 --> 00:10:45.966
-But let's check real quick. think.
+But let's check real quick. I think.
 
 00:10:48.270 --> 00:10:49.900
-OK, ranges is mostly a
+OK, &lt;ranges&gt; is mostly a
 
 00:10:49.900 --> 00:10:51.530
 leaf header in the STL.
@@ -837,13 +837,13 @@ Um, the stack adapter and the queue adapter,
 which are definitely leaves for
 
 00:10:57.365 --> 00:10:59.247
-the purposes of algorithm drag
+the purposes of &lt;algorithm&gt; drag
 
 00:10:59.247 --> 00:11:01.629
 it in and our internal stuff.
 
 00:11:01.630 --> 00:11:04.190
-Nothing else includes ranges itself,
+Nothing else includes &gt;ranges&lt; itself,
 
 00:11:04.190 --> 00:11:09.062
 so there's no circularity issue here. It is
@@ -852,13 +852,13 @@ so there's no circularity issue here. It is
 not great from a throughput perspective
 
 00:11:11.438 --> 00:11:14.136
-that we got to drag an algorithm.
+that we gotta drag in &lt;algorithm&gt;.
 
 00:11:14.140 --> 00:11:17.093
 Now in some sense it kind of it
 
 00:11:17.093 --> 00:11:19.631
-matters less because ranges is already
+matters less because &lt;ranges&gt; is already
 
 00:11:19.631 --> 00:11:22.856
 quite big and the C++23 modules
@@ -876,7 +876,7 @@ But in the classic header world,
 there is a throughput impact of dragging
 
 00:11:30.390 --> 00:11:32.230
-in all the algorithm. algorithm
+in all of &lt;algorithm&gt;. &lt;algorithm&gt;
 
 00:11:32.230 --> 00:11:34.835
 is 200 something kilobytes.
@@ -897,13 +897,13 @@ Uh, what are we calling here?
 Be _STD something,
 
 00:11:47.394 --> 00:11:48.946
-something. _STD::invoke is from
+something. _STD invoke is from
 
 00:11:48.946 --> 00:11:50.890
 type_traits that can't be it.
 
 00:11:50.890 --> 00:11:52.278
-Same with _STD::apply.
+Same with _STD apply.
 
 00:11:55.240 --> 00:11:58.216
 What does it need? Yeah.
@@ -985,7 +985,7 @@ Let's see, did Nicole ask?
 &gt;&gt; Stephan: This did come up. Yeah it was
 
 00:12:55.380 --> 00:12:56.388
-_RANGES::max
+_RANGES max
 
 00:12:58.890 --> 00:13:02.390
 Ah, that's interesting. Um.
@@ -1000,7 +1000,7 @@ Yeah, our contributor here mentioned that.
 Yeah, I think this is still an issue.
 
 00:13:09.890 --> 00:13:11.507
-I I don't like the included algorithm,
+I I don't like the included &lt;algorithm&gt;,
 
 00:13:11.510 --> 00:13:15.056
 um, just because it's so big.
@@ -1042,7 +1042,7 @@ algorithm and not like xutility?
 Uh, this is gonna be horible
 
 00:13:55.680 --> 00:13:58.008
-&gt;&gt; Casey: It's probably the case that _RANGES::max is
+&gt;&gt; Casey: It's probably the case that _RANGES max is
 
 00:13:58.008 --> 00:14:00.236
 only defined in the algorithm because we
@@ -1051,7 +1051,7 @@ only defined in the algorithm because we
 haven't needed it anywhere else before.
 
 00:14:02.260 --> 00:14:04.472
-&gt;&gt; Stephan: Right, the range is one but I'm wondering
+&gt;&gt; Stephan: Right, the ranges one but I'm wondering
 
 00:14:04.472 --> 00:14:06.518
 if we could use classic uh,
@@ -1171,7 +1171,7 @@ a lot of dependencies. Interestingly,
 we would like to use the vectorized one here.
 
 00:15:33.840 --> 00:15:36.110
-is utility core header?
+is &lt;utility&gt; a core header?
 
 00:15:36.110 --> 00:15:37.298
 It's not is it?
@@ -1222,7 +1222,7 @@ Or something like that.
 So attempting to promote the
 
 00:16:06.720 --> 00:16:08.806
-minmax. Even if it's just the
+minmax, even if it's just the
 
 00:16:08.806 --> 00:16:10.399
 classic initializer list one up here,
@@ -1273,47 +1273,47 @@ std::max or the vectorized version.
 That way we wouldn't need to drag
 
 00:16:48.314 --> 00:16:50.715
-any algorithm, and we could do that
+in &lt;algorithm&gt;, and we could do that
 
 00:16:50.715 --> 00:16:52.710
 if we really needed throughput.
 
 00:16:52.710 --> 00:16:54.950
-Ranges is I think Casey is,
+&lt;ranges&gt; is I think, Casey is,
 
 00:16:54.950 --> 00:16:56.550
 um, more familiar with the
 
 00:16:56.550 --> 00:16:57.510
-throughputer ranges.
+throughput of &lt;ranges&gt;.
 
 00:16:57.510 --> 00:17:00.170
-Ranges throughput is already pretty low,
+&lt;ranges&gt; throughput is already pretty low,
 
 00:17:00.170 --> 00:17:03.210
 and I think it's possibly the header you
 
 00:17:03.210 --> 00:17:06.121
-would notice algorithm released in just
+would notice &lt;algorithm&gt; the least in just
 
 00:17:06.121 --> 00:17:09.547
 because the denominator is already large.
 
 00:17:09.550 --> 00:17:14.500
-&gt;&gt; Stephan: If algorithm was
-&gt;&gt; Casey: initializer_list and minmax could be in xutility
+&gt;&gt; Stephan: If &lt;algorithm&gt; was
+&gt;&gt; Casey: initializer_list and minmax could be in &lt;xutility&gt;
 
 00:17:14.500 --> 00:17:16.340
-&gt;&gt; Casey: instead of utility
+&gt;&gt; Casey: instead of &lt;utility&gt;
 
 00:17:16.340 --> 00:17:20.699
-&gt;&gt; Stephan: Uh, xutility is non-core, right? No, xutility
+&gt;&gt; Stephan: Uh, &lt;xutility&lt; is non-core, right? No, &lt;xutility&gt;
 
 00:17:20.700 --> 00:17:22.860
-Ohh yeah that's the one that's non core.
+Ohh yeah that's the one that's non-core.
 
 00:17:22.860 --> 00:17:26.252
-&gt;&gt; Casey: xutility is not core. 
+&gt;&gt; Casey: &lt;xutility&gt; is not core. 
 &gt;&gt; Stephan: Yeah, yeah
 
 00:17:26.252 --> 00:17:28.268
@@ -1329,7 +1329,7 @@ find, this one is reasonable to promote.
 &gt;&gt; Casey: this is the one step up
 
 00:17:35.229 --> 00:17:38.010
-for an algorithm spot, right?
+from &lt;algorithm&gt; spot, right?
 
 00:17:38.010 --> 00:17:40.110
 &gt;&gt; Stephan: Yeah, that's a good point. That's why.
@@ -1341,7 +1341,7 @@ That's why. That's why this exists.
 It could do that and then does
 
 00:17:45.366 --> 00:17:47.290
-ranges already include xutility?
+&lt;ranges&gt; already include &lt;xutility&gt;?
 
 00:17:47.290 --> 00:17:48.770
 &gt;&gt; Casey: Yes
@@ -1351,13 +1351,13 @@ ranges already include xutility?
 &gt;&gt; Stephan: Oh yeah, yeah.
 
 00:17:49.788 --> 00:17:51.456
-Because it includes like string_view
+Because it includes like &lt;string_view&gt;
 
 00:17:51.456 --> 00:17:52.750
 &gt;&gt; Casey: indirectly from somewhere.
 
 00:17:52.750 --> 00:17:55.696
-But yeah, certainly includes xutility
+But yeah, certainly includes &lt;xutility&gt;
 
 00:17:55.700 --> 00:17:57.206
 &gt;&gt; Stephan: Yeah, that's interesting.
@@ -1366,7 +1366,7 @@ But yeah, certainly includes xutility
 Um.
 
 00:18:03.640 --> 00:18:05.348
-Most I'm just thinking of the logistics
+Mostly I'm just thinking of the logistics
 
 00:18:05.348 --> 00:18:06.858
 because we've got that toolset up,
@@ -1375,7 +1375,7 @@ because we've got that toolset up,
 toolset update I'm working on today
 
 00:18:08.617 --> 00:18:10.404
-that makes some large scale code
+that makes large scale code
 
 00:18:10.404 --> 00:18:11.716
 movement very obnoxious because
@@ -1387,10 +1387,10 @@ it's reformatting a bunch of code.
 Aside from that, I see no reason why
 
 00:18:16.022 --> 00:18:18.607
-we couldn't promote this to xutility
+we couldn't promote this to &lt;xutility&gt;
 
 00:18:18.607 --> 00:18:20.740
-and then ranges wouldn't need it.
+and then &lt;ranges&gt; wouldn't need it.
 
 00:18:20.740 --> 00:18:22.476
 Let's see, should I comment that and
@@ -1402,13 +1402,13 @@ then say hold off on actually doing
 anything there until at least the toolset
 
 00:18:26.514 --> 00:18:28.741
-updates in and then we can move around code?
+update's in and then we can move around code?
 
 00:18:28.741 --> 00:18:31.990
 Because I would hate for a comment to cause
 
 00:18:32.067 --> 00:18:35.085
-horrible merge conflicts and wasted work.
+horrible merge conflicts and waste work.
 
 00:18:35.090 --> 00:18:38.023
 Um, the alternative is do this thing
@@ -1423,7 +1423,7 @@ go improve the throughput later.
 &gt;&gt; Casey: As much as clang-format has
 
 00:18:45.836 --> 00:18:47.180
-changed everything in ranges,
+changed everything in &lt;ranges&gt;,
 
 00:18:47.180 --> 00:18:49.900
 I think this PR is going to have
@@ -1462,7 +1462,7 @@ Casey and I talked about this in the video
 code review um.
 
 00:19:28.785 --> 00:19:33.210
-We believe that xutility
+We believe that &lt;xutility&gt;
 
 00:19:33.210 --> 00:19:38.690
 would be an appropriate place to move the
@@ -1516,13 +1516,13 @@ Uh, let's say I wanna say higher up.
 That could be confusing.
 
 00:20:32.032 --> 00:20:34.039
-It's uh. Included by algorithm.
+It's uh. Included by &lt;algorithm&gt;.
 
 00:20:41.110 --> 00:20:42.643
-&gt;&gt; Casey: What? xutility? Yes
+&gt;&gt; Casey: What? &lt;xutility&gt;? Yes
 
 00:20:42.643 --> 00:20:45.709
-this included by algorithm
+it is included by &lt;algorithm&gt;
 
 00:20:45.710 --> 00:20:48.710
 &gt;&gt; Stephan: and is non-core. we use it to
@@ -1567,10 +1567,10 @@ I wanna say it's 3155.
 Let's check.
 
 00:21:47.260 --> 00:21:50.992
-Yes, I remember correctly. three, one, five, five.
+Yes, I remember correctly. 3155
 
 00:21:50.992 --> 00:21:58.279
-Number 3155 Yep. Code movement
+#3155. Yep. Code movement
 
 00:22:00.580 --> 00:22:04.309
 may cause obnoxious
@@ -1600,28 +1600,28 @@ We should say we agree about
 the throughput impact.
 
 00:22:36.070 --> 00:22:44.180
-we share hewilk's
+we share @hewilk's
 
 00:22:44.180 --> 00:22:47.668
 concern about the throughput
 
 00:22:47.668 --> 00:22:50.284
-impact of algorithm.
+impact of &lt;algorithm&gt;.
 
 00:22:54.240 --> 00:22:56.137
 OK. Casey and I talked about this
 
 00:22:56.137 --> 00:22:58.248
-in the video code review we share.
+in the video code review. We share
 
 00:22:58.250 --> 00:22:59.816
-hewilk's concern about the
+@hewilk's concern about the
 
 00:22:59.816 --> 00:23:01.141
-throughput impact of algorithm and
+throughput impact of &lt;algorithm&gt; and
 
 00:23:01.141 --> 00:23:02.814
-we believe the xutility would be an
+we believe the &lt;xutility&gt; would be an
 
 00:23:02.814 --> 00:23:04.256
 appropriate place to promote the
@@ -1711,7 +1711,7 @@ ints say 10,20,30 and the strings
 say "cute", "fluffy", "kittens",
 
 00:24:01.510 --> 00:24:04.520
-then you can get a zip view that will
+then you can get a zip_view that will
 
 00:24:04.520 --> 00:24:07.210
 give you tuples of references to {10, "cute"},
@@ -1771,7 +1771,7 @@ but for now we need to make sure
 that we check this. OK, so.
 
 00:24:42.636 --> 00:24:45.251
-Exposition only concept does not
+Exposition-only concept does not
 
 00:24:45.251 --> 00:24:46.297
 get exported.
@@ -1780,10 +1780,10 @@ get exported.
 Let's switch to highlight here, OK?
 
 00:24:49.960 --> 00:24:52.733
-So we've got template&lt;class.. Rs&gt;.
+So we've got template&lt;class... Rs&gt;.
 
 00:24:52.733 --> 00:24:55.274
-These are under score capital range types.
+These are _RangeTypes.
 
 00:24:55.280 --> 00:24:58.240
 We've got a concept called zip-is-common,
@@ -1795,16 +1795,16 @@ which is exposition only.
 And it's going to be true when the
 
 00:25:03.156 --> 00:25:06.840
-size of dot, the range types is 1.
+sizeof...(Rs) is 1.
 
 00:25:06.840 --> 00:25:10.740
-And common range of the Rs and dot A dot,
+And common_range<Rs> &amp;&amp; ...,
 
 00:25:10.740 --> 00:25:12.930
-so they're all common ranges.
+so they're all common_ranges.
 
 00:25:12.930 --> 00:25:15.540
-And then using slash slash to
+And then using // to
 
 00:25:15.540 --> 00:25:17.940
 hard wrap because clang-format.
@@ -1816,10 +1816,10 @@ Which may not be necessary,
 but it's OK for now with clang-format 15,
 
 00:25:21.528 --> 00:25:23.395
-which is better about this or OK
+which is better about this. Or, OK
 
 00:25:23.395 --> 00:25:25.082
-and it's good that the OR operator
+and it's good that the || operator
 
 00:25:25.082 --> 00:25:27.192
 is coming at the beginning of line
@@ -1831,25 +1831,25 @@ because that's our convention.
 OK, I'm checking to make sure that
 
 00:25:34.104 --> 00:25:36.161
-everything is parenthesized correctly, not.
+everything is parenthesized correctly.
 
 00:25:36.161 --> 00:25:40.427
-That they're not all bidirectional ranges,
+Not - that they're not all bidirectional ranges,
 
 00:25:40.430 --> 00:25:42.926
 so the not is outside the fold expression.
 
 00:25:42.930 --> 00:25:50.670
-Good. And they're all common ranges. Or.
+Good. And they're all common_ranges. Or.
 
 00:25:50.670 --> 00:25:54.178
-They're all random access ranges, and.
+They're all random_access_ranges, and.
 
 00:25:54.178 --> 00:25:58.320
-They're all sized ranges. OK.
+They're all sized_ranges. OK.
 
 00:26:00.470 --> 00:26:03.279
-Thanks. Looks good. OK,
+Nice. Looks good. OK,
 
 00:26:03.279 --> 00:26:06.310
 then we have a _Tuple_transform_closure.
@@ -1858,7 +1858,7 @@ then we have a _Tuple_transform_closure.
 This is not depicted in
 
 00:26:08.550 --> 00:26:11.450
-standardease up here at least.
+the standardese up here at least.
 
 00:26:11.450 --> 00:26:14.986
 Is there anything else I can look for?
@@ -1876,7 +1876,7 @@ Search. What is this tuple-transform
 thing? I'm just being mentioned.
 
 00:26:36.440 --> 00:26:39.608
-Lots of "equivalent to".
+Lots of "equivalent to"s.
 
 00:26:39.610 --> 00:26:41.878
 Did I already wrap? Come on.
@@ -1894,7 +1894,7 @@ Let's see, this is making a tuple.
 Ohh, I see tuple-transform is
 
 00:27:03.521 --> 00:27:07.376
-apply the _Tuple_transform_closure
+apply, the _Tuple_transform_closure
 
 00:27:07.380 --> 00:27:11.300
 is just the lambda. OK.
@@ -1915,10 +1915,10 @@ OK, this just calls it f here.
 I'm thinking should this be
 
 00:27:26.780 --> 00:27:28.720
-named callable type or anything?
+named _CallableType or anything?
 
 00:27:28.720 --> 00:27:30.470
-I'm OK with callback type.
+I'm OK with _CallbackType.
 
 00:27:33.530 --> 00:27:34.760
 We do pass it to invoke,
@@ -1975,19 +1975,19 @@ syntax.
 So we tried to be very careful about
 
 00:28:06.357 --> 00:28:08.329
-saying that. If this is like function type,
+saying that. If this was like _FunctionType,
 
 00:28:08.330 --> 00:28:10.286
-I would definitely ask for change.
+I would definitely ask for a change.
 
 00:28:10.290 --> 00:28:12.696
-I'm OK with callback type here,
+I'm OK with _CallbackType here,
 
 00:28:12.700 --> 00:28:14.668
 it's not user visible.
 
 00:28:14.668 --> 00:28:18.400
-OK, so template on class callback type.
+OK, so template &lt;class _CallbackType&gt;.
 
 00:28:18.400 --> 00:28:20.780
 This has to be constexpr.
@@ -2101,7 +2101,7 @@ OK, so we're going to return.
 We instead of just using a capture default,
 
 00:29:48.350 --> 00:29:52.734
-we name ref callback and this is a
+we name &amp;_Callback and this is a
 
 00:29:52.734 --> 00:29:55.243
 generic lambda so we're templated
@@ -2149,7 +2149,7 @@ And then we're calling it with.
 Or constructing this from the result
 
 00:30:33.090 --> 00:30:37.388
-of std::invoke(_Callback, _STD forward&lt;_ViewTupleTypes&gt;(_View_tuples))...
+of _STD invoke(_Callback, _STD forward&lt;_ViewTupleTypes&gt;(_View_tuples))...
 
 00:30:38.531 --> 00:30:43.026
 OK, that's all good. So my.
@@ -2163,14 +2163,11 @@ but not the apply that's elsewhere.
 00:30:48.370 --> 00:30:50.365
 And then this is the apply call
 
-00:30:50.365 --> 00:30:52.298
-template on class underscore capital
-
-00:30:52.298 --> 00:30:54.326
-callback type class and our tuple
+00:30:50.365 --> 00:30:54.326
+template &lt;class _CallbackType, class _TupleType&gt;
 
 00:30:54.326 --> 00:30:56.527
-type constexpr auto tuple transform.
+constexpr auto _Tuple_transform.
 
 00:30:56.530 --> 00:30:56.938
 OK,
@@ -2179,7 +2176,7 @@ OK,
 this takes by perfect forwarding
 
 00:30:58.978 --> 00:31:01.629
-a callback type ref ref callback.
+a _CallbackType&amp;&amp; _Callback.
 
 00:31:01.630 --> 00:31:04.390
 So that's matching this 
@@ -2188,7 +2185,7 @@ So that's matching this
 constexpr auto tuple-transform that's depicted as
 
 00:31:07.143 --> 00:31:10.471
-F&amp;&amp; and then tuple type &amp;&amp; under tuple.
+F&amp;&amp; and then _TupleType&amp;&amp; _Tuple.
 
 00:31:10.480 --> 00:31:13.330
 Here we're strengthening.
@@ -2206,28 +2203,28 @@ not actually a standard function.
 But because it's depicted in the
 
 00:31:19.130 --> 00:31:20.650
-standard as exposition only,
+standard as exposition-only,
 
 00:31:20.650 --> 00:31:22.270
 I think it's reasonable to have
 
 00:31:22.270 --> 00:31:23.350
-strength and comment here.
+a strengthened comment here.
 
 00:31:23.350 --> 00:31:25.436
 We're noexcept if this is
 
 00:31:25.436 --> 00:31:26.330
-noexcept std::apply.
+noexcept _STD apply.
 
 00:31:26.330 --> 00:31:28.589
-So it's just gonna be the bodies to apply.
+So it's just gonna be the body, _STD apply.
 
 00:31:28.590 --> 00:31:30.046
-Yeah, then all matches.
+Yeah, that all matches.
 
 00:31:30.046 --> 00:31:32.896
-So we're going to return std::apply
+So we're going to return _STD apply
 
 00:31:32.896 --> 00:31:36.487
 to avoid ADL of make that closure,
@@ -2254,7 +2251,7 @@ where we've got one helper to make the
 lambda and then another to actually
 
 00:31:51.640 --> 00:31:54.160
-apply it. so template callback type
+apply it. so template &lt;_CallbackType&gt;
 
 00:31:54.160 --> 00:31:57.639
 constexpr auto _Tuple_for_each_closure.
@@ -2275,10 +2272,10 @@ OK,
 so now this is the stuff capture
 
 00:32:08.010 --> 00:32:10.763
-ref callback _ViewTupleTypes
+&_Callback, class... _ViewTupleTypes,
 
 00:32:10.763 --> 00:32:14.789
-take that ref ref _View_tuples
+take _ViewTupleTypes&amp;&amp;... _View_tuples
 
 00:32:14.790 --> 00:32:17.320
 The lambda itself could throw.
@@ -2305,12 +2302,11 @@ invoke any sort of overloaded comma,
 which is good.
 
 00:32:30.970 --> 00:32:33.504
-So we call std::invoke of the
+So we call _STD invoke of the
 
 00:32:33.504 --> 00:32:37.984
 callback and then _STD forward&lt;_ViewTupleTypes&gt;(_View_tuples)
  
-
 00:32:37.990 --> 00:32:43.520
 And then? What is going on here?
 
@@ -2354,7 +2350,7 @@ If there's an extra paren here,
 it's unusual enough that I'm OK with it.
 
 00:33:20.010 --> 00:33:23.090
-Then comma dot dot OK, so that's good.
+Then , ... OK, so that's good.
 
 00:33:23.090 --> 00:33:25.370
 Very, very like the attention to detail that,
@@ -2381,10 +2377,10 @@ OK, very semi good.
 And then _Tuple_for_each is the whole thing.
 
 00:33:41.000 --> 00:33:42.452
-Template callback type tuple
+template &lt;class _CallbackType, class _TupleType&gt;
 
 00:33:42.452 --> 00:33:44.267
-type constexpr void _Tuple_for_each
+constexpr void _Tuple_for_each
 
 00:33:44.270 --> 00:33:45.262
 I'm checking
@@ -2395,7 +2391,6 @@ all the names are ugly and they are, um,
 00:33:47.590 --> 00:33:49.240
 _CallbackType&amp;&amp; _Callback, _TupleType&amp;&amp; _Tuple
 
-
 00:33:50.158 --> 00:33:51.076
 We're noexcept
 
@@ -2403,7 +2398,7 @@ We're noexcept
 If this is noexcept,
 
 00:33:52.260 --> 00:33:55.560
- _STD apply(_Tuple_for_each_closure(_Callback), _STD forward&lt;_TupleType&gt;(_Tuple));
+_STD apply(_Tuple_for_each_closure(_Callback), _STD forward&lt;_TupleType&gt;(_Tuple));
 
 00:33:55.560 --> 00:33:56.910
 Again, it's marked to strengthen.
@@ -2415,7 +2410,7 @@ That's fine. And then we just dropped
 the return value on the floor.
 
 00:34:01.070 --> 00:34:05.550
-No need to cast because to apply is not um.
+No need to cast because _STD apply is not um.
 
 00:34:05.550 --> 00:34:07.830
 [[nodiscard]]. OK, that's good.
@@ -2436,7 +2431,7 @@ OK, let's go back to zip view.
 I want the whole stable name.
 
 00:34:23.780 --> 00:34:26.558
-This will cooperate.
+If this will cooperate.
 
 00:34:26.560 --> 00:34:28.390
 Come on.
@@ -2448,13 +2443,13 @@ Here we go.
 OK, this is not depicting
 
 00:34:32.975 --> 00:34:34.299
-an all random access,
+an all-random-access,
 
 00:34:34.300 --> 00:34:37.414
 but I'm guessing it's going to come up here.
 
 00:34:37.420 --> 00:34:40.794
-Yeah, and would that _Maybe_const stuff.
+Yeah, with that _Maybe_const stuff.
 
 00:34:40.800 --> 00:34:45.888
 OK. So what are we doing here?
@@ -2464,16 +2459,18 @@ Again, internal machinery
 
 00:34:47.945 --> 00:34:50.984
 template &lt;bool _IsConst, class... _Views&gt;
-concept _All_random_access = (random_access_range&lt;_Maybe_const&lt;_IsConst, _Views&gt;&gt; && ...);
+concept _All_random_access = (random_access_range&lt;_Maybe_const&lt;_IsConst, _Views&gt;&gt; &amp;&amp; ...);
 
 00:34:50.984 --> 00:34:53.866
 Fold expression.
 
 00:34:53.866 --> 00:34:55.637
-How do we ever live without them?
+How did we ever live without them?
 
 00:34:55.640 --> 00:34:58.484
 Random access range may be constant, so we
+
+<!-- LEFT OFF HERE -->
 
 00:34:58.484 --> 00:35:00.236
 applied the maybe constant constant views.
@@ -2836,7 +2833,7 @@ have got to be noexcept,
 um.
 
 00:39:57.025 --> 00:40:06.033
-static_castt&lt;_ResultType&gt;(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() - _STD declval&lt;const _RHSTupleTypes&amp;&gt;())) && ...)
+static_castt&lt;_ResultType&gt;(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() - _STD declval&lt;const _RHSTupleTypes&amp;&gt;())) &amp;&amp; ...)
 
 00:40:06.040 --> 00:40:08.679
 So it's asking if we pairwise subtract
@@ -3673,7 +3670,7 @@ possible for the iterator repairs to
 &gt;&gt; Stephan: Like, I'm trying to figure out,
 
 00:51:25.140 --> 00:51:26.100
-yeah, why does the standardease,
+yeah, why does the standardese,
 
 00:51:26.100 --> 00:51:27.006
 why is it trying to handle,
@@ -4258,7 +4255,7 @@ Um, we're noexcept if this
 fold expression is noexcept
 
 00:58:53.103 --> 00:58:58.768
-(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() == _STD declval&lt;const _RHSTupleTypes&amp;&gt;()) && ...)
+(_STD declval&lt;const _LHSTupleTypes&amp;&gt;() == _STD declval&lt;const _RHSTupleTypes&amp;&gt;()) &amp;&amp; ...)
 
 00:58:58.770 --> 00:59:01.950
 Okay, comparing 2 const lvalues,
@@ -4524,7 +4521,7 @@ My brain is like if I see forward here,
 this should be forward.
 
 01:02:48.992 --> 01:02:50.424
-But no, the standardease is
+But no, the standardese is
 
 01:02:50.424 --> 01:02:51.428
 more complicated than that.
@@ -5152,7 +5149,7 @@ so this you, or so the usage.
 Of _Maybe_const here appears to be incorrect.
 
 01:12:57.100 --> 01:12:59.970
-OK, Casey noticed that the standardease
+OK, Casey noticed that the standardese
 
 01:12:59.970 --> 01:13:02.480
 says convertible to iterator_t views,
@@ -6262,7 +6259,7 @@ The named return value optimization
 doesn't activate for whatever reason.
 
 01:30:49.170 --> 01:30:53.678
-These standardease. Depicts.
+These standardese. Depicts.
 
 01:30:53.680 --> 01:30:59.860
 Auto temp. And. We should use.
@@ -6310,7 +6307,7 @@ the name return value optimization
 doesn't activate for whatever reason.
 
 01:31:23.660 --> 01:31:25.652
-The standardease depicts auto temp and we
+The standardese depicts auto temp and we
 
 01:31:25.652 --> 01:31:27.576
 should use non-const auto here to match.
