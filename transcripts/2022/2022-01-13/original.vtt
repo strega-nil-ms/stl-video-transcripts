@@ -1,0 +1,7227 @@
+﻿WEBVTT
+
+NOTE duration:"00:52:55"
+
+NOTE recognizability:0.787
+
+NOTE language:en-us
+
+NOTE Confidence: 0.78024545
+
+00:00:09.600 --> 00:00:11.580
+OK, welcome back to another VC
+
+NOTE Confidence: 0.78024545
+
+00:00:11.580 --> 00:00:12.900
+libraries Open code review.
+
+NOTE Confidence: 0.78024545
+
+00:00:12.900 --> 00:00:14.860
+I'm Stefan T Lawhead and still maintainer.
+
+NOTE Confidence: 0.78024545
+
+00:00:14.860 --> 00:00:17.776
+And today we'll be looking at a PR that
+
+NOTE Confidence: 0.78024545
+
+00:00:17.776 --> 00:00:20.417
+will convert template metaprogramming in
+
+NOTE Confidence: 0.78024545
+
+00:00:20.417 --> 00:00:23.777
+our ratio header to constexpr functions.
+
+NOTE Confidence: 0.78024545
+
+00:00:23.780 --> 00:00:27.244
+So as usual, starting off looking at our
+
+NOTE Confidence: 0.78024545
+
+00:00:27.244 --> 00:00:31.096
+repo and I'll show you how we track work.
+
+NOTE Confidence: 0.78024545
+
+00:00:31.100 --> 00:00:33.572
+I'll go to projects.
+
+NOTE Confidence: 0.78024545
+
+00:00:33.572 --> 00:00:37.280
+We use a code reviews project.
+
+NOTE Confidence: 0.78024545
+
+00:00:37.280 --> 00:00:39.113
+These are all of the PR's.
+
+NOTE Confidence: 0.78024545
+
+00:00:39.113 --> 00:00:40.845
+That are awesome contributors
+
+NOTE Confidence: 0.78024545
+
+00:00:40.845 --> 00:00:43.010
+have submitted for our review,
+
+NOTE Confidence: 0.78024545
+
+00:00:43.010 --> 00:00:45.026
+so I'll just make that full screen.
+
+NOTE Confidence: 0.78024545
+
+00:00:45.030 --> 00:00:46.850
+They go through multiple stages of review.
+
+NOTE Confidence: 0.78024545
+
+00:00:46.850 --> 00:00:48.524
+The one we're looking at today
+
+NOTE Confidence: 0.78024545
+
+00:00:48.524 --> 00:00:50.030
+is in initial review state,
+
+NOTE Confidence: 0.78024545
+
+00:00:50.030 --> 00:00:53.470
+meaning that maintainer needs to look at it.
+
+NOTE Confidence: 0.78024545
+
+00:00:53.470 --> 00:00:55.444
+Once approved they move to final review
+
+NOTE Confidence: 0.78024545
+
+00:00:55.444 --> 00:00:57.216
+and once 2 maintainers have reviewed
+
+NOTE Confidence: 0.78024545
+
+00:00:57.216 --> 00:00:59.630
+a PR it moves to ready to merge.
+
+NOTE Confidence: 0.78024545
+
+00:00:59.630 --> 00:01:01.838
+This is a good way to catch issues
+
+NOTE Confidence: 0.78024545
+
+00:01:01.838 --> 00:01:03.950
+before they get merged into the repo.
+
+NOTE Confidence: 0.78024545
+
+00:01:03.950 --> 00:01:06.050
+I'm going to help educate all the
+
+NOTE Confidence: 0.78024545
+
+00:01:06.050 --> 00:01:07.696
+maintainers as to what's changing
+
+NOTE Confidence: 0.78024545
+
+00:01:07.696 --> 00:01:09.416
+in the code base because.
+
+NOTE Confidence: 0.78024545
+
+00:01:09.420 --> 00:01:11.247
+One of the most important things we
+
+NOTE Confidence: 0.78024545
+
+00:01:11.247 --> 00:01:13.335
+do over the long term is spreading
+
+NOTE Confidence: 0.78024545
+
+00:01:13.335 --> 00:01:15.667
+knowledge about how the code base works
+
+NOTE Confidence: 0.78024545
+
+00:01:15.667 --> 00:01:18.097
+amongst uh both maintainers and contributors.
+
+NOTE Confidence: 0.78024545
+
+00:01:18.100 --> 00:01:19.452
+So here's a PR.
+
+NOTE Confidence: 0.78024545
+
+00:01:19.452 --> 00:01:21.273
+I'm opened by Sam 20908,
+
+NOTE Confidence: 0.78024545
+
+00:01:21.273 --> 00:01:24.514
+so I will look at this PR.
+
+NOTE Confidence: 0.78024545
+
+00:01:24.520 --> 00:01:28.328
+This is once it loads 2450 ratio.
+
+NOTE Confidence: 0.78024545
+
+00:01:28.328 --> 00:01:31.712
+Use constexpr functions instead of TMPS
+
+NOTE Confidence: 0.78024545
+
+00:01:31.712 --> 00:01:34.564
+template metaprograms and this fix is
+
+NOTE Confidence: 0.78024545
+
+00:01:34.564 --> 00:01:40.608
+an issue we had filed labeled as throughput.
+
+NOTE Confidence: 0.78024545
+
+00:01:40.610 --> 00:01:42.465
+We may want to relabel the PR.
+
+NOTE Confidence: 0.78024545
+
+00:01:42.470 --> 00:01:43.766
+We like to have the issues,
+
+NOTE Confidence: 0.78024545
+
+00:01:43.770 --> 00:01:44.914
+uh, match the PR's.
+
+NOTE Confidence: 0.78024545
+
+00:01:44.914 --> 00:01:45.486
+In fact,
+
+NOTE Confidence: 0.78024545
+
+00:01:45.490 --> 00:01:47.268
+I'll probably go ahead and do that.
+
+NOTE Confidence: 0.78024545
+
+00:01:47.270 --> 00:01:49.558
+This is a suggestion,
+
+NOTE Confidence: 0.78024545
+
+00:01:49.558 --> 00:01:50.130
+um,
+
+NOTE Confidence: 0.78024545
+
+00:01:50.130 --> 00:01:52.440
+possible enhancement that our contributor
+
+NOTE Confidence: 0.78024545
+
+00:01:52.440 --> 00:01:55.366
+Alex Soutenu V filed back in October
+
+NOTE Confidence: 0.78024545
+
+00:01:55.366 --> 00:01:58.197
+and he observed that we use particular
+
+NOTE Confidence: 0.78024545
+
+00:01:58.197 --> 00:02:01.284
+style of code in our ratio header.
+
+NOTE Confidence: 0.78024545
+
+00:02:01.290 --> 00:02:03.506
+So I'll be going over how this works.
+
+NOTE Confidence: 0.78024545
+
+00:02:03.510 --> 00:02:06.025
+It's written with struct template
+
+NOTE Confidence: 0.78024545
+
+00:02:06.025 --> 00:02:08.410
+metaprogramming and we now have
+
+NOTE Confidence: 0.78024545
+
+00:02:08.410 --> 00:02:11.230
+constexpr functions that are in general.
+
+NOTE Confidence: 0.78024545
+
+00:02:11.230 --> 00:02:12.535
+More readable, Umm.
+
+NOTE Confidence: 0.78024545
+
+00:02:12.535 --> 00:02:14.275
+And possibly higher throughput.
+
+NOTE Confidence: 0.78024545
+
+00:02:14.280 --> 00:02:16.096
+Uh, throughput meaning um,
+
+NOTE Confidence: 0.78024545
+
+00:02:16.096 --> 00:02:17.458
+speed of compilation,
+
+NOTE Confidence: 0.78024545
+
+00:02:17.460 --> 00:02:17.797
+um.
+
+NOTE Confidence: 0.78024545
+
+00:02:17.797 --> 00:02:20.493
+Although it remains to be seen whether um,
+
+NOTE Confidence: 0.78024545
+
+00:02:20.500 --> 00:02:22.432
+context or functions will actually have
+
+NOTE Confidence: 0.78024545
+
+00:02:22.432 --> 00:02:23.720
+the promised throughput improvements,
+
+NOTE Confidence: 0.78024545
+
+00:02:23.720 --> 00:02:26.162
+but in theory they should because
+
+NOTE Confidence: 0.78024545
+
+00:02:26.162 --> 00:02:27.790
+they're just functions compared
+
+NOTE Confidence: 0.78024545
+
+00:02:27.853 --> 00:02:29.918
+to instantiating lots of structs.
+
+NOTE Confidence: 0.78024545
+
+00:02:29.920 --> 00:02:32.215
+One of the fun things we get to do
+
+NOTE Confidence: 0.78024545
+
+00:02:32.215 --> 00:02:34.030
+as library implementers is after
+
+NOTE Confidence: 0.78024545
+
+00:02:34.030 --> 00:02:36.701
+we write all of the code that
+
+NOTE Confidence: 0.78024545
+
+00:02:36.701 --> 00:02:38.885
+the standard forces us to write.
+
+NOTE Confidence: 0.78024545
+
+00:02:38.890 --> 00:02:40.514
+We add it to the headers and
+
+NOTE Confidence: 0.78024545
+
+00:02:40.514 --> 00:02:41.210
+then users complain.
+
+NOTE Confidence: 0.78024545
+
+00:02:41.210 --> 00:02:42.686
+Um, they say, hey, you know,
+
+NOTE Confidence: 0.78024545
+
+00:02:42.690 --> 00:02:44.106
+we were just compiling our code,
+
+NOTE Confidence: 0.78024545
+
+00:02:44.110 --> 00:02:46.280
+and then we upgraded and we didn't
+
+NOTE Confidence: 0.78024545
+
+00:02:46.280 --> 00:02:47.950
+start doing anything differently.
+
+NOTE Confidence: 0.78024545
+
+00:02:47.950 --> 00:02:49.750
+But now our compilations are slower.
+
+NOTE Confidence: 0.78024545
+
+00:02:49.750 --> 00:02:51.290
+And it's because the standard told us
+
+NOTE Confidence: 0.78024545
+
+00:02:51.290 --> 00:02:53.399
+to add a bunch of code to the headers.
+
+NOTE Confidence: 0.78024545
+
+00:02:53.400 --> 00:02:55.272
+And if the user is compiling in a
+
+NOTE Confidence: 0.78024545
+
+00:02:55.272 --> 00:02:56.589
+sufficiently new standard version,
+
+NOTE Confidence: 0.78024545
+
+00:02:56.590 --> 00:02:56.848
+well,
+
+NOTE Confidence: 0.78024545
+
+00:02:56.848 --> 00:02:58.138
+then all their headers gain
+
+NOTE Confidence: 0.78024545
+
+00:02:58.138 --> 00:02:59.570
+extra code and it's slower,
+
+NOTE Confidence: 0.78024545
+
+00:02:59.570 --> 00:03:01.730
+and they're now paying a cost
+
+NOTE Confidence: 0.78024545
+
+00:03:01.730 --> 00:03:03.170
+for benefits that they're
+
+NOTE Confidence: 0.78024545
+
+00:03:03.237 --> 00:03:05.067
+not yet taking advantage of.
+
+NOTE Confidence: 0.78024545
+
+00:03:05.070 --> 00:03:06.798
+So that's kind of sad because we can't
+
+NOTE Confidence: 0.78024545
+
+00:03:06.798 --> 00:03:08.949
+do a lot about that when the standard.
+
+NOTE Confidence: 0.785819188
+
+00:03:08.950 --> 00:03:09.850
+Requires us to add code.
+
+NOTE Confidence: 0.785819188
+
+00:03:09.850 --> 00:03:11.901
+We do have mitigations like we only
+
+NOTE Confidence: 0.785819188
+
+00:03:11.901 --> 00:03:14.008
+enable code in new standards modes.
+
+NOTE Confidence: 0.785819188
+
+00:03:14.010 --> 00:03:15.714
+Um, so if you remain compiling in C
+
+NOTE Confidence: 0.785819188
+
+00:03:15.714 --> 00:03:17.305
++ 17 mode, you're not going to see
+
+NOTE Confidence: 0.785819188
+
+00:03:17.305 --> 00:03:18.960
+all the C + 20 stuff in general.
+
+NOTE Confidence: 0.785819188
+
+00:03:18.960 --> 00:03:20.688
+But if you are compiling with the newer
+
+NOTE Confidence: 0.785819188
+
+00:03:20.688 --> 00:03:22.216
+standard mode switches or C Plus latest,
+
+NOTE Confidence: 0.785819188
+
+00:03:22.220 --> 00:03:23.476
+as we add new code to the header,
+
+NOTE Confidence: 0.785819188
+
+00:03:23.480 --> 00:03:24.611
+stuff gets slower.
+
+NOTE Confidence: 0.785819188
+
+00:03:24.611 --> 00:03:26.873
+Partially this is compensated for by.
+
+NOTE Confidence: 0.785819188
+
+00:03:26.880 --> 00:03:29.680
+We find ways to make the libraries faster
+
+NOTE Confidence: 0.785819188
+
+00:03:29.680 --> 00:03:32.398
+to compile through issues like this one.
+
+NOTE Confidence: 0.785819188
+
+00:03:32.400 --> 00:03:34.072
+The compiler itself also
+
+NOTE Confidence: 0.785819188
+
+00:03:34.072 --> 00:03:35.744
+implements lots of optimizations,
+
+NOTE Confidence: 0.785819188
+
+00:03:35.750 --> 00:03:37.615
+and in general computers get
+
+NOTE Confidence: 0.785819188
+
+00:03:37.615 --> 00:03:39.107
+faster over time usually.
+
+NOTE Confidence: 0.785819188
+
+00:03:39.110 --> 00:03:41.290
+So it's sort of, uh, we win some,
+
+NOTE Confidence: 0.785819188
+
+00:03:41.290 --> 00:03:42.970
+we lose some when it comes to throughput.
+
+NOTE Confidence: 0.785819188
+
+00:03:42.970 --> 00:03:44.722
+So hopefully here we'll be getting
+
+NOTE Confidence: 0.785819188
+
+00:03:44.722 --> 00:03:45.598
+some throughput improvements.
+
+NOTE Confidence: 0.785819188
+
+00:03:45.600 --> 00:03:46.870
+Another reason to do this,
+
+NOTE Confidence: 0.785819188
+
+00:03:46.870 --> 00:03:48.350
+even aside from the throughput,
+
+NOTE Confidence: 0.785819188
+
+00:03:48.350 --> 00:03:49.278
+is readability.
+
+NOTE Confidence: 0.785819188
+
+00:03:49.278 --> 00:03:51.134
+This struct template metaprogramming
+
+NOTE Confidence: 0.785819188
+
+00:03:51.134 --> 00:03:53.949
+technique is not the most readable.
+
+NOTE Confidence: 0.785819188
+
+00:03:53.950 --> 00:03:55.550
+So before we get into the PR itself,
+
+NOTE Confidence: 0.785819188
+
+00:03:55.550 --> 00:03:57.090
+I'd like to cover exactly
+
+NOTE Confidence: 0.785819188
+
+00:03:57.090 --> 00:03:59.090
+what we were doing in ratio,
+
+NOTE Confidence: 0.785819188
+
+00:03:59.090 --> 00:04:00.506
+why we're doing it this way,
+
+NOTE Confidence: 0.785819188
+
+00:04:00.510 --> 00:04:02.590
+and then we'll take a look at the
+
+NOTE Confidence: 0.785819188
+
+00:04:02.590 --> 00:04:04.209
+actual code and see if this is
+
+NOTE Confidence: 0.785819188
+
+00:04:04.210 --> 00:04:05.590
+preserving correctness and hopefully
+
+NOTE Confidence: 0.785819188
+
+00:04:05.590 --> 00:04:07.660
+gonna have some of the readability
+
+NOTE Confidence: 0.785819188
+
+00:04:07.716 --> 00:04:09.416
+improvements that we're hoping for.
+
+NOTE Confidence: 0.785819188
+
+00:04:09.420 --> 00:04:11.898
+So let me open up our repo.
+
+NOTE Confidence: 0.785819188
+
+00:04:11.900 --> 00:04:12.938
+Here we go.
+
+NOTE Confidence: 0.785819188
+
+00:04:12.938 --> 00:04:16.448
+I've got everything, uh checked out here.
+
+NOTE Confidence: 0.785819188
+
+00:04:16.448 --> 00:04:21.470
+Let's uh look at the ratio header.
+
+NOTE Confidence: 0.785819188
+
+00:04:21.470 --> 00:04:25.230
+OK uh, I've just opened up um our OS repo.
+
+NOTE Confidence: 0.785819188
+
+00:04:25.230 --> 00:04:25.596
+Umm.
+
+NOTE Confidence: 0.785819188
+
+00:04:25.596 --> 00:04:27.426
+In VS code is workspace,
+
+NOTE Confidence: 0.785819188
+
+00:04:27.430 --> 00:04:29.292
+so I can hit control P and
+
+NOTE Confidence: 0.785819188
+
+00:04:29.292 --> 00:04:30.870
+type in any file name.
+
+NOTE Confidence: 0.785819188
+
+00:04:30.870 --> 00:04:32.158
+It'll take me there.
+
+NOTE Confidence: 0.785819188
+
+00:04:32.158 --> 00:04:34.090
+So here's the ratio header and
+
+NOTE Confidence: 0.785819188
+
+00:04:34.155 --> 00:04:36.542
+I can also open up the standards
+
+NOTE Confidence: 0.785819188
+
+00:04:36.542 --> 00:04:37.820
+that this corresponds to.
+
+NOTE Confidence: 0.785819188
+
+00:04:37.820 --> 00:04:40.436
+You could also look at CPP
+
+NOTE Confidence: 0.785819188
+
+00:04:40.436 --> 00:04:42.180
+reference if you wanted.
+
+NOTE Confidence: 0.785819188
+
+00:04:42.180 --> 00:04:44.451
+So if you weren't aware, uh,
+
+NOTE Confidence: 0.785819188
+
+00:04:44.451 --> 00:04:45.597
+we have covered it in um,
+
+NOTE Confidence: 0.785819188
+
+00:04:45.600 --> 00:04:47.120
+some previous code review videos.
+
+NOTE Confidence: 0.785819188
+
+00:04:47.120 --> 00:04:50.396
+Um C plus and C + 11 has had
+
+NOTE Confidence: 0.785819188
+
+00:04:50.396 --> 00:04:53.297
+headers called ratio and chrono.
+
+NOTE Confidence: 0.785819188
+
+00:04:53.300 --> 00:04:55.616
+Chrono actually contains a units library.
+
+NOTE Confidence: 0.785819188
+
+00:04:55.620 --> 00:04:57.125
+The the units are only for time,
+
+NOTE Confidence: 0.785819188
+
+00:04:57.130 --> 00:04:58.642
+though it would be nice in the
+
+NOTE Confidence: 0.785819188
+
+00:04:58.642 --> 00:05:00.508
+future to see it extended to other
+
+NOTE Confidence: 0.785819188
+
+00:05:00.508 --> 00:05:01.958
+units like meters and kilograms.
+
+NOTE Confidence: 0.785819188
+
+00:05:01.960 --> 00:05:05.560
+But just having units for time is still
+
+NOTE Confidence: 0.785819188
+
+00:05:05.560 --> 00:05:07.540
+plenty powerful because one of the
+
+NOTE Confidence: 0.785819188
+
+00:05:07.540 --> 00:05:10.420
+things it can do is have units like seconds,
+
+NOTE Confidence: 0.785819188
+
+00:05:10.420 --> 00:05:11.664
+milliseconds, nanoseconds.
+
+NOTE Confidence: 0.785819188
+
+00:05:11.664 --> 00:05:13.530
+That are convertible.
+
+NOTE Confidence: 0.785819188
+
+00:05:13.530 --> 00:05:16.248
+Um, and this is embedded in the type system,
+
+NOTE Confidence: 0.785819188
+
+00:05:16.250 --> 00:05:18.930
+so you don't need to just have like a raw
+
+NOTE Confidence: 0.785819188
+
+00:05:18.930 --> 00:05:21.820
+like 1500 representing 1500 milliseconds.
+
+NOTE Confidence: 0.785819188
+
+00:05:21.820 --> 00:05:23.812
+You can actually put that in a variable
+
+NOTE Confidence: 0.785819188
+
+00:05:23.812 --> 00:05:25.749
+of type stood chrono milliseconds.
+
+NOTE Confidence: 0.785819188
+
+00:05:25.750 --> 00:05:28.606
+And if I could find duration,
+
+NOTE Confidence: 0.785819188
+
+00:05:28.610 --> 00:05:28.893
+no,
+
+NOTE Confidence: 0.785819188
+
+00:05:28.893 --> 00:05:31.157
+I think it's in the header synopsis trying
+
+NOTE Confidence: 0.785819188
+
+00:05:31.157 --> 00:05:33.748
+to remember where everything is specified.
+
+NOTE Confidence: 0.785819188
+
+00:05:33.750 --> 00:05:34.575
+Here we go.
+
+NOTE Confidence: 0.785819188
+
+00:05:34.575 --> 00:05:35.950
+There's some convenience type depths,
+
+NOTE Confidence: 0.785819188
+
+00:05:35.950 --> 00:05:40.020
+so in the Chrono header a type like stood
+
+NOTE Confidence: 0.785819188
+
+00:05:40.020 --> 00:05:42.550
+Chrono nanoseconds is a stood chrono.
+
+NOTE Confidence: 0.785819188
+
+00:05:42.550 --> 00:05:44.740
+Operation templated on some signed integer.
+
+NOTE Confidence: 0.785819188
+
+00:05:44.740 --> 00:05:45.860
+It's actually long long
+
+NOTE Confidence: 0.785819188
+
+00:05:45.860 --> 00:05:46.700
+in our implementation,
+
+NOTE Confidence: 0.785819188
+
+00:05:46.700 --> 00:05:49.316
+and then something called stood nano.
+
+NOTE Confidence: 0.785819188
+
+00:05:49.320 --> 00:05:50.290
+So you might ask, OK,
+
+NOTE Confidence: 0.785819188
+
+00:05:50.290 --> 00:05:51.400
+well what's a stood nano?
+
+NOTE Confidence: 0.785819188
+
+00:05:51.400 --> 00:05:53.638
+That comes from the ratio header,
+
+NOTE Confidence: 0.785819188
+
+00:05:53.640 --> 00:05:56.466
+which is specified in clause 20
+
+NOTE Confidence: 0.785819188
+
+00:05:56.466 --> 00:05:58.350
+General utilities library compile
+
+NOTE Confidence: 0.790010287333333
+
+00:05:58.425 --> 00:06:01.180
+time rational arithmetic header ratio.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:01.180 --> 00:06:04.160
+So this is a header in the C plus standard
+
+NOTE Confidence: 0.790010287333333
+
+00:06:04.230 --> 00:06:07.206
+that you could use directly if you wanted,
+
+NOTE Confidence: 0.790010287333333
+
+00:06:07.210 --> 00:06:09.800
+but in practice it's generally used through
+
+NOTE Confidence: 0.790010287333333
+
+00:06:09.800 --> 00:06:12.607
+the kernel header and this encodes a compile.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:12.610 --> 00:06:16.460
+Time ratio as template non type arguments,
+
+NOTE Confidence: 0.790010287333333
+
+00:06:16.460 --> 00:06:19.922
+meaning here just integers to a
+
+NOTE Confidence: 0.790010287333333
+
+00:06:19.922 --> 00:06:22.940
+otherwise empty struct or class.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:22.940 --> 00:06:26.316
+So here if you have ratio of something
+
+NOTE Confidence: 0.790010287333333
+
+00:06:26.316 --> 00:06:29.814
+like 5 comma seven that encodes 5
+
+NOTE Confidence: 0.790010287333333
+
+00:06:29.814 --> 00:06:33.342
+sevenths 5 sevenths in the type system
+
+NOTE Confidence: 0.790010287333333
+
+00:06:33.342 --> 00:06:36.800
+and the ratio of like stood Millie.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:36.800 --> 00:06:39.015
+There's some type defs down
+
+NOTE Confidence: 0.790010287333333
+
+00:06:39.015 --> 00:06:41.860
+here is a ratio of 1 / 1000.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:41.860 --> 00:06:44.510
+So the formatting looks strange
+
+NOTE Confidence: 0.790010287333333
+
+00:06:44.510 --> 00:06:46.254
+because the standard has tried
+
+NOTE Confidence: 0.790010287333333
+
+00:06:46.254 --> 00:06:47.622
+to line these up pretty nicely.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:47.630 --> 00:06:50.430
+I'm not sure exactly how much that buys
+
+NOTE Confidence: 0.790010287333333
+
+00:06:50.430 --> 00:06:53.068
+and so a ratio of nano is 1 / a billion.
+
+NOTE Confidence: 0.790010287333333
+
+00:06:53.068 --> 00:06:56.180
+And this allows us to do things using
+
+NOTE Confidence: 0.790010287333333
+
+00:06:56.266 --> 00:06:58.656
+these helper variable templates and
+
+NOTE Confidence: 0.790010287333333
+
+00:06:58.656 --> 00:07:02.189
+structs like ask or two ratios equal.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:02.190 --> 00:07:04.050
+Can we multiply 2 ratios?
+
+NOTE Confidence: 0.790010287333333
+
+00:07:04.050 --> 00:07:07.164
+Can we divide them and add and subtract them?
+
+NOTE Confidence: 0.790010287333333
+
+00:07:07.170 --> 00:07:08.682
+And these are needed when we
+
+NOTE Confidence: 0.790010287333333
+
+00:07:08.682 --> 00:07:09.690
+do things like conversions,
+
+NOTE Confidence: 0.790010287333333
+
+00:07:09.690 --> 00:07:12.777
+so when we convert between Chrono durations.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:12.780 --> 00:07:13.672
+For example,
+
+NOTE Confidence: 0.790010287333333
+
+00:07:13.672 --> 00:07:17.240
+if you want to convert from uh let's
+
+NOTE Confidence: 0.790010287333333
+
+00:07:17.338 --> 00:07:20.618
+say microseconds um to milliseconds.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:20.620 --> 00:07:22.308
+Actually, let's do it the other way around.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:22.310 --> 00:07:25.859
+Suppose I want to convert um 5
+
+NOTE Confidence: 0.790010287333333
+
+00:07:25.859 --> 00:07:27.380
+milliseconds to microseconds.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:27.380 --> 00:07:30.440
+I should get 5000 microseconds um.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:30.440 --> 00:07:32.976
+So I gain a factor of 1000 and
+
+NOTE Confidence: 0.790010287333333
+
+00:07:32.976 --> 00:07:35.419
+we get that by using ratio.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:35.420 --> 00:07:38.696
+I believe it's divide we can divide.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:38.700 --> 00:07:41.031
+Let's trying to avoid trying to think
+
+NOTE Confidence: 0.790010287333333
+
+00:07:41.031 --> 00:07:43.600
+fast to avoid getting things flipped.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:43.600 --> 00:07:47.218
+If we divide Millie by micro,
+
+NOTE Confidence: 0.790010287333333
+
+00:07:47.220 --> 00:07:51.030
+then we'll get the value 1000.
+
+NOTE Confidence: 0.790010287333333
+
+00:07:51.030 --> 00:07:53.410
+Saying that there are 1000 micros in
+
+NOTE Confidence: 0.790010287333333
+
+00:07:53.410 --> 00:07:56.378
+a milli and then that's how much to
+
+NOTE Confidence: 0.790010287333333
+
+00:07:56.378 --> 00:07:58.785
+multiply our stored number of milliseconds
+
+NOTE Confidence: 0.790010287333333
+
+00:07:58.785 --> 00:08:01.515
+by in order to get microseconds.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:01.520 --> 00:08:03.536
+So we get the type system to perform
+
+NOTE Confidence: 0.790010287333333
+
+00:08:03.536 --> 00:08:05.449
+all of the conversions for us.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:05.450 --> 00:08:08.048
+I mean it all compiles away so we
+
+NOTE Confidence: 0.790010287333333
+
+00:08:08.048 --> 00:08:09.918
+don't pay any runtime overheads,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:09.920 --> 00:08:13.456
+but we get compile time type safety and
+
+NOTE Confidence: 0.790010287333333
+
+00:08:13.456 --> 00:08:15.853
+then we can do things like the kernel
+
+NOTE Confidence: 0.790010287333333
+
+00:08:15.853 --> 00:08:17.698
+library was designed by Howard Hinnant,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:17.700 --> 00:08:21.036
+the proposer of the original library.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:21.040 --> 00:08:23.469
+Um, such that we enable conversions and
+
+NOTE Confidence: 0.790010287333333
+
+00:08:23.469 --> 00:08:26.310
+Chrono only when they don't lose information.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:26.310 --> 00:08:29.094
+So you can losslessly convert something
+
+NOTE Confidence: 0.790010287333333
+
+00:08:29.094 --> 00:08:30.950
+like seconds to milliseconds.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:30.950 --> 00:08:32.390
+If you have 5 seconds,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:32.390 --> 00:08:33.515
+that's 5000 milliseconds.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:33.515 --> 00:08:35.765
+But we do not implicitly convert
+
+NOTE Confidence: 0.790010287333333
+
+00:08:35.765 --> 00:08:37.228
+the other way around.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:37.230 --> 00:08:40.570
+If you have 1500 milliseconds,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:40.570 --> 00:08:42.187
+if you try to convert that to
+
+NOTE Confidence: 0.790010287333333
+
+00:08:42.187 --> 00:08:43.469
+an integer number of seconds,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:43.470 --> 00:08:44.482
+that would be 1.5.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:44.482 --> 00:08:46.759
+But we would lose that .5 as an
+
+NOTE Confidence: 0.790010287333333
+
+00:08:46.759 --> 00:08:48.489
+integer that would lose information.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:48.490 --> 00:08:50.506
+So we don't allow that sort
+
+NOTE Confidence: 0.790010287333333
+
+00:08:50.506 --> 00:08:51.514
+of implicit conversion.
+
+NOTE Confidence: 0.790010287333333
+
+00:08:51.520 --> 00:08:53.025
+You have to either do so explicitly
+
+NOTE Confidence: 0.790010287333333
+
+00:08:53.025 --> 00:08:54.250
+saying I want to truncate,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:54.250 --> 00:08:55.903
+I want to round, floor, seal,
+
+NOTE Confidence: 0.790010287333333
+
+00:08:55.903 --> 00:08:59.890
+we have all those helpers now um or um
+
+NOTE Confidence: 0.790010287333333
+
+00:08:59.992 --> 00:09:04.180
+you have to use a different type like.
+
+NOTE Confidence: 0.790010287333333
+
+00:09:04.180 --> 00:09:05.980
+Duration using double if you
+
+NOTE Confidence: 0.790010287333333
+
+00:09:05.980 --> 00:09:07.420
+want floating point durations,
+
+NOTE Confidence: 0.790010287333333
+
+00:09:07.420 --> 00:09:08.370
+which have their own hazards,
+
+NOTE Confidence: 0.790010287333333
+
+00:09:08.370 --> 00:09:11.700
+but that's a topic for another.
+
+NOTE Confidence: 0.790010287333333
+
+00:09:11.700 --> 00:09:12.484
+Code review.
+
+NOTE Confidence: 0.790010287333333
+
+00:09:12.484 --> 00:09:13.660
+Uh, uh, we'll,
+
+NOTE Confidence: 0.790010287333333
+
+00:09:13.660 --> 00:09:15.880
+we'll talk about floating point plenty.
+
+NOTE Confidence: 0.63086304
+
+00:09:15.880 --> 00:09:19.460
+Um, so with ratio um,
+
+NOTE Confidence: 0.63086304
+
+00:09:19.460 --> 00:09:21.476
+how do we implement all that multiply,
+
+NOTE Confidence: 0.63086304
+
+00:09:21.480 --> 00:09:22.984
+divide, add, subtract stuff.
+
+NOTE Confidence: 0.63086304
+
+00:09:22.984 --> 00:09:25.860
+Let me switch over back to VS code.
+
+NOTE Confidence: 0.63086304
+
+00:09:25.860 --> 00:09:28.695
+So in our implementation what it looks
+
+NOTE Confidence: 0.63086304
+
+00:09:28.695 --> 00:09:31.818
+like is ratio is templated on NX&amp;amp;X.
+
+NOTE Confidence: 0.63086304
+
+00:09:31.818 --> 00:09:34.450
+As an aside, we.
+
+NOTE Confidence: 0.63086304
+
+00:09:34.450 --> 00:09:37.152
+Uglify as we call it our internal
+
+NOTE Confidence: 0.63086304
+
+00:09:37.152 --> 00:09:38.820
+identifiers to avoid being,
+
+NOTE Confidence: 0.63086304
+
+00:09:38.820 --> 00:09:40.956
+um, stomped on by macros or
+
+NOTE Confidence: 0.63086304
+
+00:09:40.956 --> 00:09:42.380
+conflicting with user code.
+
+NOTE Confidence: 0.63086304
+
+00:09:42.380 --> 00:09:44.652
+So names of the form under score capital
+
+NOTE Confidence: 0.63086304
+
+00:09:44.652 --> 00:09:46.837
+are reserved for the compiler and library.
+
+NOTE Confidence: 0.63086304
+
+00:09:46.840 --> 00:09:48.475
+We conventionally avoid names of
+
+NOTE Confidence: 0.63086304
+
+00:09:48.475 --> 00:09:50.679
+the form under score followed by a
+
+NOTE Confidence: 0.63086304
+
+00:09:50.679 --> 00:09:52.227
+single letters like under score N
+
+NOTE Confidence: 0.63086304
+
+00:09:52.227 --> 00:09:53.960
+This looks too much like a macro,
+
+NOTE Confidence: 0.63086304
+
+00:09:53.960 --> 00:09:56.255
+so even though we are permitted to use it,
+
+NOTE Confidence: 0.63086304
+
+00:09:56.260 --> 00:09:57.490
+we add an extra letter.
+
+NOTE Confidence: 0.63086304
+
+00:09:57.490 --> 00:09:59.402
+So that's why you see an X purely
+
+NOTE Confidence: 0.63086304
+
+00:09:59.402 --> 00:10:00.739
+an internal STL convention.
+
+NOTE Confidence: 0.63086304
+
+00:10:00.740 --> 00:10:02.372
+Other implementations might say
+
+NOTE Confidence: 0.63086304
+
+00:10:02.372 --> 00:10:04.412
+something like double under score.
+
+NOTE Confidence: 0.63086304
+
+00:10:04.420 --> 00:10:05.620
+Uh, because that's also reserved
+
+NOTE Confidence: 0.63086304
+
+00:10:05.620 --> 00:10:06.340
+for the library.
+
+NOTE Confidence: 0.63086304
+
+00:10:06.340 --> 00:10:06.970
+But uh,
+
+NOTE Confidence: 0.63086304
+
+00:10:06.970 --> 00:10:08.860
+we used under score capital generally,
+
+NOTE Confidence: 0.63086304
+
+00:10:08.860 --> 00:10:10.276
+so that's why you see this sort of
+
+NOTE Confidence: 0.63086304
+
+00:10:10.276 --> 00:10:12.064
+ugly code here when when you've been
+
+NOTE Confidence: 0.63086304
+
+00:10:12.064 --> 00:10:13.176
+either maintaining or contributing
+
+NOTE Confidence: 0.63086304
+
+00:10:13.176 --> 00:10:14.219
+library for a long enough,
+
+NOTE Confidence: 0.63086304
+
+00:10:14.220 --> 00:10:15.900
+you're brain just starts to ignore
+
+NOTE Confidence: 0.63086304
+
+00:10:15.900 --> 00:10:17.520
+all those under score capitals.
+
+NOTE Confidence: 0.63086304
+
+00:10:17.520 --> 00:10:20.054
+And it actually lets you see what
+
+NOTE Confidence: 0.63086304
+
+00:10:20.054 --> 00:10:22.605
+things are intended to be usable by
+
+NOTE Confidence: 0.63086304
+
+00:10:22.605 --> 00:10:24.693
+users versus for internal use only.
+
+NOTE Confidence: 0.63086304
+
+00:10:24.700 --> 00:10:27.122
+And then when we need to implement
+
+NOTE Confidence: 0.63086304
+
+00:10:27.122 --> 00:10:29.080
+things required by the standard,
+
+NOTE Confidence: 0.63086304
+
+00:10:29.080 --> 00:10:30.976
+for example, the standard says OK,
+
+NOTE Confidence: 0.63086304
+
+00:10:30.980 --> 00:10:33.578
+ratio can be templated on a
+
+NOTE Confidence: 0.63086304
+
+00:10:33.578 --> 00:10:35.310
+numerator and a denominator.
+
+NOTE Confidence: 0.63086304
+
+00:10:35.310 --> 00:10:37.974
+But there's nothing stopping the user
+
+NOTE Confidence: 0.63086304
+
+00:10:37.974 --> 00:10:41.586
+from asking something like um 10 / 20 um.
+
+NOTE Confidence: 0.63086304
+
+00:10:41.586 --> 00:10:44.776
+But the standard requires that
+
+NOTE Confidence: 0.63086304
+
+00:10:44.776 --> 00:10:47.133
+ratio is nested, um,
+
+NOTE Confidence: 0.63086304
+
+00:10:47.133 --> 00:10:49.348
+static constexpr Max T NUM,
+
+NOTE Confidence: 0.63086304
+
+00:10:49.350 --> 00:10:50.974
+meaning numerator be reduced.
+
+NOTE Confidence: 0.63086304
+
+00:10:50.974 --> 00:10:54.874
+So this needs to be a reduced sort of
+
+NOTE Confidence: 0.63086304
+
+00:10:54.874 --> 00:10:58.101
+normalized or canonical form of the ratio.
+
+NOTE Confidence: 0.63086304
+
+00:10:58.110 --> 00:11:00.078
+So we need to compute that and we
+
+NOTE Confidence: 0.63086304
+
+00:11:00.078 --> 00:11:02.798
+do so at compile time using some of
+
+NOTE Confidence: 0.63086304
+
+00:11:02.798 --> 00:11:04.620
+our compile time technology here.
+
+NOTE Confidence: 0.63086304
+
+00:11:04.620 --> 00:11:06.792
+Right now I'm looking at the
+
+NOTE Confidence: 0.63086304
+
+00:11:06.792 --> 00:11:09.108
+repos main branch and not the PR.
+
+NOTE Confidence: 0.63086304
+
+00:11:09.110 --> 00:11:11.468
+So we've got some logic that
+
+NOTE Confidence: 0.63086304
+
+00:11:11.470 --> 00:11:13.010
+deals with the signs because.
+
+NOTE Confidence: 0.63086304
+
+00:11:13.010 --> 00:11:15.938
+The standard requires us to Umm.
+
+NOTE Confidence: 0.63086304
+
+00:11:15.940 --> 00:11:17.476
+I believe if the denominator is
+
+NOTE Confidence: 0.63086304
+
+00:11:17.476 --> 00:11:19.188
+negative we need to move that
+
+NOTE Confidence: 0.63086304
+
+00:11:19.188 --> 00:11:20.460
+negative into the numerator.
+
+NOTE Confidence: 0.63086304
+
+00:11:20.460 --> 00:11:22.413
+I'm speaking from memory that I could
+
+NOTE Confidence: 0.63086304
+
+00:11:22.413 --> 00:11:24.064
+check the standard itself and we
+
+NOTE Confidence: 0.63086304
+
+00:11:24.064 --> 00:11:25.456
+also need to reduce the fraction.
+
+NOTE Confidence: 0.63086304
+
+00:11:25.460 --> 00:11:29.276
+So if you go remember your math lessons,
+
+NOTE Confidence: 0.63086304
+
+00:11:29.280 --> 00:11:32.241
+we can reduce fractions by taking the
+
+NOTE Confidence: 0.63086304
+
+00:11:32.241 --> 00:11:34.316
+greatest common divisor and if we
+
+NOTE Confidence: 0.63086304
+
+00:11:34.316 --> 00:11:37.116
+have 10 / 20 the GCD of those is 10,
+
+NOTE Confidence: 0.63086304
+
+00:11:37.120 --> 00:11:38.254
+so we can divide both of them
+
+NOTE Confidence: 0.63086304
+
+00:11:38.254 --> 00:11:40.840
+would get 1 / 2.
+
+NOTE Confidence: 0.63086304
+
+00:11:40.840 --> 00:11:42.750
+O.
+
+NOTE Confidence: 0.63086304
+
+00:11:42.750 --> 00:11:45.864
+We implemented in our current repo
+
+NOTE Confidence: 0.63086304
+
+00:11:45.864 --> 00:11:48.398
+the greatest common divisor with
+
+NOTE Confidence: 0.63086304
+
+00:11:48.398 --> 00:11:50.974
+a struct and the reason why we
+
+NOTE Confidence: 0.63086304
+
+00:11:50.974 --> 00:11:53.730
+did that is we implemented this.
+
+NOTE Confidence: 0.63086304
+
+00:11:53.730 --> 00:11:58.090
+Trying to think back this.
+
+NOTE Confidence: 0.63086304
+
+00:11:58.090 --> 00:12:00.960
+The Chrono appeared in C + 11,
+
+NOTE Confidence: 0.63086304
+
+00:12:00.960 --> 00:12:03.000
+which is also when Constexpr appeared.
+
+NOTE Confidence: 0.63086304
+
+00:12:03.000 --> 00:12:05.610
+But in C + 11 constexpr is highly limited.
+
+NOTE Confidence: 0.63086304
+
+00:12:05.610 --> 00:12:06.906
+It was possible to write things,
+
+NOTE Confidence: 0.63086304
+
+00:12:06.910 --> 00:12:09.246
+but you could only have a single statement,
+
+NOTE Confidence: 0.63086304
+
+00:12:09.250 --> 00:12:12.050
+so it made it very difficult to
+
+NOTE Confidence: 0.63086304
+
+00:12:12.050 --> 00:12:14.070
+write most complicated functions.
+
+NOTE Confidence: 0.63086304
+
+00:12:14.070 --> 00:12:16.530
+It wasn't until Cplus fourteens
+
+NOTE Confidence: 0.63086304
+
+00:12:16.530 --> 00:12:17.514
+extended constexpr,
+
+NOTE Confidence: 0.63086304
+
+00:12:17.520 --> 00:12:19.725
+which we now just think of as
+
+NOTE Confidence: 0.63086304
+
+00:12:19.725 --> 00:12:20.670
+playing constexpr functions,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:20.670 --> 00:12:22.462
+that it became possible to have things
+
+NOTE Confidence: 0.749410563529412
+
+00:12:22.462 --> 00:12:23.845
+like temporary variables and multiple
+
+NOTE Confidence: 0.749410563529412
+
+00:12:23.845 --> 00:12:25.270
+statements in context for functions,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:25.270 --> 00:12:26.998
+which actually makes it a lot
+
+NOTE Confidence: 0.749410563529412
+
+00:12:26.998 --> 00:12:28.150
+more usable context grown.
+
+NOTE Confidence: 0.749410563529412
+
+00:12:28.150 --> 00:12:29.956
+Dramatically in power over the years?
+
+NOTE Confidence: 0.749410563529412
+
+00:12:29.960 --> 00:12:32.918
+Um. So when Chrono first appeared,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:32.920 --> 00:12:35.768
+um, we weren't yet really able to use
+
+NOTE Confidence: 0.749410563529412
+
+00:12:35.768 --> 00:12:37.799
+constexpr functions for a lot of things,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:37.800 --> 00:12:39.710
+so we continued using the
+
+NOTE Confidence: 0.749410563529412
+
+00:12:39.710 --> 00:12:40.856
+original classic technique.
+
+NOTE Confidence: 0.749410563529412
+
+00:12:40.860 --> 00:12:43.904
+Usable all the way back to C + 98 of having
+
+NOTE Confidence: 0.749410563529412
+
+00:12:43.904 --> 00:12:46.200
+structs do template metaprogramming.
+
+NOTE Confidence: 0.749410563529412
+
+00:12:46.200 --> 00:12:47.778
+Not because we liked using structs,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:47.780 --> 00:12:49.196
+but because it was the only
+
+NOTE Confidence: 0.749410563529412
+
+00:12:49.196 --> 00:12:50.460
+way to get things done.
+
+NOTE Confidence: 0.749410563529412
+
+00:12:50.460 --> 00:12:52.084
+So here we have a helper struct,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:52.090 --> 00:12:53.805
+and this is all internal because it's
+
+NOTE Confidence: 0.749410563529412
+
+00:12:53.805 --> 00:12:55.597
+you can see it's all ugly names,
+
+NOTE Confidence: 0.749410563529412
+
+00:12:55.600 --> 00:12:57.205
+so this will compute the
+
+NOTE Confidence: 0.749410563529412
+
+00:12:57.205 --> 00:12:58.168
+greatest common divisor.
+
+NOTE Confidence: 0.749410563529412
+
+00:12:58.170 --> 00:13:01.110
+Using the classic Euclidean algorithm,
+
+NOTE Confidence: 0.749410563529412
+
+00:13:01.110 --> 00:13:03.980
+we've got some special cases or base
+
+NOTE Confidence: 0.749410563529412
+
+00:13:03.980 --> 00:13:07.390
+cases for what if one of the values is 0?
+
+NOTE Confidence: 0.749410563529412
+
+00:13:07.390 --> 00:13:09.777
+And we can use the modulo operator
+
+NOTE Confidence: 0.749410563529412
+
+00:13:09.777 --> 00:13:12.700
+on the non type template arguments.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:12.700 --> 00:13:16.366
+So this is how we had
+
+NOTE Confidence: 0.749410563529412
+
+00:13:16.366 --> 00:13:18.199
+implemented GCD originally.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:18.200 --> 00:13:19.220
+These names here maybe
+
+NOTE Confidence: 0.749410563529412
+
+00:13:19.220 --> 00:13:20.240
+not the clearest names,
+
+NOTE Confidence: 0.749410563529412
+
+00:13:20.240 --> 00:13:22.680
+but we have an internal helper GCD X
+
+NOTE Confidence: 0.749410563529412
+
+00:13:22.680 --> 00:13:25.943
+that is then used by the more public but
+
+NOTE Confidence: 0.749410563529412
+
+00:13:25.943 --> 00:13:28.298
+still internal under score GCD struct.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:28.300 --> 00:13:30.322
+Here we've got some additional extra
+
+NOTE Confidence: 0.749410563529412
+
+00:13:30.322 --> 00:13:32.511
+things happening here and this will be
+
+NOTE Confidence: 0.749410563529412
+
+00:13:32.511 --> 00:13:34.720
+relevant to the PR as we're looking at it.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:34.720 --> 00:13:36.645
+Sometimes we need to forbid
+
+NOTE Confidence: 0.749410563529412
+
+00:13:36.645 --> 00:13:38.570
+overflow so in some cases.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:38.570 --> 00:13:41.288
+We need to add together um,
+
+NOTE Confidence: 0.749410563529412
+
+00:13:41.290 --> 00:13:44.430
+uh values at compile time,
+
+NOTE Confidence: 0.749410563529412
+
+00:13:44.430 --> 00:13:46.404
+but we don't want them to overflow,
+
+NOTE Confidence: 0.749410563529412
+
+00:13:46.410 --> 00:13:48.682
+so we actually enforce
+
+NOTE Confidence: 0.749410563529412
+
+00:13:48.682 --> 00:13:51.522
+this using a static assert.
+
+NOTE Confidence: 0.749410563529412
+
+00:13:51.530 --> 00:13:54.226
+We have a struct that takes an A
+
+NOTE Confidence: 0.749410563529412
+
+00:13:54.226 --> 00:13:57.404
+and A/B to add and then we pass it
+
+NOTE Confidence: 0.749410563529412
+
+00:13:57.404 --> 00:14:00.048
+to an internal helper safe add X.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:00.050 --> 00:14:03.574
+And here what we say is if the
+
+NOTE Confidence: 0.749410563529412
+
+00:14:03.574 --> 00:14:04.510
+signs are different,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:04.510 --> 00:14:06.505
+that means we're adding negative
+
+NOTE Confidence: 0.749410563529412
+
+00:14:06.505 --> 00:14:08.500
+to positive or vice versa.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:08.500 --> 00:14:11.000
+So that can never overflow,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:11.000 --> 00:14:13.240
+because no matter how extreme the values are,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:13.240 --> 00:14:15.268
+adding a negative to a positive
+
+NOTE Confidence: 0.749410563529412
+
+00:14:15.268 --> 00:14:16.620
+or non zero um,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:16.620 --> 00:14:18.628
+can only bring them closer together to 0,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:18.630 --> 00:14:19.974
+so it's definitely not going to overflow.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:19.980 --> 00:14:21.140
+But if they're both negative
+
+NOTE Confidence: 0.749410563529412
+
+00:14:21.140 --> 00:14:21.836
+or both positive,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:21.840 --> 00:14:23.508
+we need to worry about overflow
+
+NOTE Confidence: 0.749410563529412
+
+00:14:23.508 --> 00:14:24.620
+or going to negative.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:24.620 --> 00:14:26.840
+Also consider that an overflow.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:26.840 --> 00:14:28.544
+So instead of actually performing such
+
+NOTE Confidence: 0.749410563529412
+
+00:14:28.544 --> 00:14:30.549
+an addition and then discovering oops,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:30.550 --> 00:14:31.324
+it overflowed,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:31.324 --> 00:14:33.259
+which would be undefined behavior,
+
+NOTE Confidence: 0.749410563529412
+
+00:14:33.260 --> 00:14:35.500
+we ask without overflowing
+
+NOTE Confidence: 0.749410563529412
+
+00:14:35.500 --> 00:14:37.740
+if they would overflow.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:37.740 --> 00:14:38.951
+So we have to phrase it in
+
+NOTE Confidence: 0.749410563529412
+
+00:14:38.951 --> 00:14:39.680
+a very specific way.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:39.680 --> 00:14:42.048
+The absolute value of 1 is less than
+
+NOTE Confidence: 0.749410563529412
+
+00:14:42.048 --> 00:14:44.288
+or equal int Max minus the absolute
+
+NOTE Confidence: 0.749410563529412
+
+00:14:44.288 --> 00:14:46.953
+value of the other um and then uh.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:46.953 --> 00:14:52.400
+Here in safe add X only if.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:52.400 --> 00:14:55.200
+We can determine that the
+
+NOTE Confidence: 0.749410563529412
+
+00:14:55.200 --> 00:14:57.440
+uh operation will overflow.
+
+NOTE Confidence: 0.749410563529412
+
+00:14:57.440 --> 00:15:00.037
+Um, will we actually perform that plus?
+
+NOTE Confidence: 0.749410563529412
+
+00:15:00.040 --> 00:15:02.322
+But if we see that the signs
+
+NOTE Confidence: 0.749410563529412
+
+00:15:02.322 --> 00:15:03.800
+are not different false,
+
+NOTE Confidence: 0.749410563529412
+
+00:15:03.800 --> 00:15:07.760
+and that the addition is not safe false,
+
+NOTE Confidence: 0.749410563529412
+
+00:15:07.760 --> 00:15:10.959
+then we can detect through a struct
+
+NOTE Confidence: 0.749410563529412
+
+00:15:10.959 --> 00:15:12.330
+template partial specialization
+
+NOTE Confidence: 0.749410563529412
+
+00:15:12.399 --> 00:15:14.649
+that the addition would overflow.
+
+NOTE Confidence: 0.749410563529412
+
+00:15:14.650 --> 00:15:16.218
+That's what this comment here is saying.
+
+NOTE Confidence: 0.749410563529412
+
+00:15:16.220 --> 00:15:18.439
+And then we can simply static assert.
+
+NOTE Confidence: 0.749410563529412
+
+00:15:18.440 --> 00:15:19.352
+As an aside,
+
+NOTE Confidence: 0.749410563529412
+
+00:15:19.352 --> 00:15:21.480
+instead of simply saying static assert false,
+
+NOTE Confidence: 0.920309598
+
+00:15:21.480 --> 00:15:23.786
+we can't do that. Because, uh,
+
+NOTE Confidence: 0.920309598
+
+00:15:23.786 --> 00:15:25.438
+for the arcane and kind of annoying
+
+NOTE Confidence: 0.920309598
+
+00:15:25.438 --> 00:15:27.295
+reason that if we said Static cert false,
+
+NOTE Confidence: 0.920309598
+
+00:15:27.300 --> 00:15:29.154
+the compiler would be perfectly justified
+
+NOTE Confidence: 0.920309598
+
+00:15:29.154 --> 00:15:31.185
+according to the standard in saying as
+
+NOTE Confidence: 0.920309598
+
+00:15:31.185 --> 00:15:32.928
+soon as it sees that template definition,
+
+NOTE Confidence: 0.920309598
+
+00:15:32.930 --> 00:15:34.379
+oh, you've got a static assert false
+
+NOTE Confidence: 0.920309598
+
+00:15:34.379 --> 00:15:35.710
+there that can't possibly compile.
+
+NOTE Confidence: 0.920309598
+
+00:15:35.710 --> 00:15:38.116
+I will reject that on site without
+
+NOTE Confidence: 0.920309598
+
+00:15:38.116 --> 00:15:40.258
+even caring what A&amp;amp;B could be here.
+
+NOTE Confidence: 0.920309598
+
+00:15:40.260 --> 00:15:43.550
+We only want the static assert to
+
+NOTE Confidence: 0.920309598
+
+00:15:43.550 --> 00:15:45.425
+terminate the compilation if this
+
+NOTE Confidence: 0.920309598
+
+00:15:45.425 --> 00:15:46.925
+thing is actually instantiated,
+
+NOTE Confidence: 0.920309598
+
+00:15:46.930 --> 00:15:48.533
+so we need to sort of delay
+
+NOTE Confidence: 0.920309598
+
+00:15:48.533 --> 00:15:49.780
+evaluation of the condition.
+
+NOTE Confidence: 0.920309598
+
+00:15:49.780 --> 00:15:51.400
+We've got this helper always false.
+
+NOTE Confidence: 0.920309598
+
+00:15:51.400 --> 00:15:52.880
+That is a variable template.
+
+NOTE Confidence: 0.920309598
+
+00:15:52.880 --> 00:15:54.168
+Unsurprisingly, is always false.
+
+NOTE Confidence: 0.920309598
+
+00:15:54.168 --> 00:15:56.100
+But the compiler doesn't know that.
+
+NOTE Confidence: 0.920309598
+
+00:15:56.100 --> 00:15:57.564
+Um, that we never bother bother
+
+NOTE Confidence: 0.920309598
+
+00:15:57.564 --> 00:15:59.279
+specializing this to have any other value.
+
+NOTE Confidence: 0.920309598
+
+00:15:59.280 --> 00:16:01.616
+So if we phrase it as static assert,
+
+NOTE Confidence: 0.920309598
+
+00:16:01.620 --> 00:16:02.508
+always false,
+
+NOTE Confidence: 0.920309598
+
+00:16:02.508 --> 00:16:05.312
+and then give it some template argument,
+
+NOTE Confidence: 0.920309598
+
+00:16:05.312 --> 00:16:07.058
+in this case the struct itself,
+
+NOTE Confidence: 0.920309598
+
+00:16:07.060 --> 00:16:10.145
+the compiler will only activate
+
+NOTE Confidence: 0.920309598
+
+00:16:10.145 --> 00:16:12.872
+the static assert when this
+
+NOTE Confidence: 0.920309598
+
+00:16:12.872 --> 00:16:14.616
+template is actually instantiated.
+
+NOTE Confidence: 0.920309598
+
+00:16:14.620 --> 00:16:17.357
+And then we say integer arithmetic overflow.
+
+NOTE Confidence: 0.920309598
+
+00:16:17.360 --> 00:16:18.668
+So this is how we basically
+
+NOTE Confidence: 0.920309598
+
+00:16:18.668 --> 00:16:20.420
+do an if and then terminate,
+
+NOTE Confidence: 0.920309598
+
+00:16:20.420 --> 00:16:23.230
+but in struct template metaprogramming.
+
+NOTE Confidence: 0.920309598
+
+00:16:23.230 --> 00:16:25.370
+Sometimes Umm instead of terminating
+
+NOTE Confidence: 0.920309598
+
+00:16:25.370 --> 00:16:28.809
+um we want to um trigger sphene,
+
+NOTE Confidence: 0.920309598
+
+00:16:28.810 --> 00:16:33.129
+meaning that um in Chrono we are
+
+NOTE Confidence: 0.920309598
+
+00:16:33.129 --> 00:16:37.290
+required and some points to make a
+
+NOTE Confidence: 0.920309598
+
+00:16:37.290 --> 00:16:40.170
+conversion disappear if it would overflow
+
+NOTE Confidence: 0.920309598
+
+00:16:40.170 --> 00:16:42.970
+rather than emitting a hard error.
+
+NOTE Confidence: 0.920309598
+
+00:16:42.970 --> 00:16:45.350
+So we do not want a static cert all the
+
+NOTE Confidence: 0.920309598
+
+00:16:45.418 --> 00:16:48.046
+time and that's why we have this bool here.
+
+NOTE Confidence: 0.920309598
+
+00:16:48.050 --> 00:16:51.767
+If we pass false then it will
+
+NOTE Confidence: 0.920309598
+
+00:16:51.770 --> 00:16:53.170
+trigger an error, but if we pass.
+
+NOTE Confidence: 0.920309598
+
+00:16:53.170 --> 00:16:53.780
+True it,
+
+NOTE Confidence: 0.920309598
+
+00:16:53.780 --> 00:16:55.610
+we're saying we need this for
+
+NOTE Confidence: 0.920309598
+
+00:16:55.610 --> 00:16:57.059
+the purposes of sphene um.
+
+NOTE Confidence: 0.920309598
+
+00:16:57.060 --> 00:16:57.415
+Instead,
+
+NOTE Confidence: 0.920309598
+
+00:16:57.415 --> 00:16:58.835
+we'll harmlessly absorb this
+
+NOTE Confidence: 0.920309598
+
+00:16:58.835 --> 00:17:01.030
+attempted overflow and we just won't
+
+NOTE Confidence: 0.920309598
+
+00:17:01.030 --> 00:17:02.855
+produce an integral constant answer.
+
+NOTE Confidence: 0.920309598
+
+00:17:02.860 --> 00:17:05.300
+And then that will go off in sphene.
+
+NOTE Confidence: 0.920309598
+
+00:17:05.300 --> 00:17:07.700
+So this is a very arcane
+
+NOTE Confidence: 0.920309598
+
+00:17:07.700 --> 00:17:08.500
+implementation detail,
+
+NOTE Confidence: 0.920309598
+
+00:17:08.500 --> 00:17:11.677
+but it is needed for the purposes of Chrono.
+
+NOTE Confidence: 0.920309598
+
+00:17:11.680 --> 00:17:14.104
+It's not exposed in the ratio library itself,
+
+NOTE Confidence: 0.920309598
+
+00:17:14.110 --> 00:17:16.196
+which is why this is purely internal.
+
+NOTE Confidence: 0.920309598
+
+00:17:16.200 --> 00:17:18.139
+There's no way using the ratio public
+
+NOTE Confidence: 0.920309598
+
+00:17:18.139 --> 00:17:20.135
+interface to do something like I want
+
+NOTE Confidence: 0.920309598
+
+00:17:20.135 --> 00:17:22.220
+to multiply or divide these two ratios,
+
+NOTE Confidence: 0.920309598
+
+00:17:22.220 --> 00:17:23.600
+but if it would.
+
+NOTE Confidence: 0.920309598
+
+00:17:23.600 --> 00:17:25.046
+Integer overflow? Don't do it.
+
+NOTE Confidence: 0.920309598
+
+00:17:25.046 --> 00:17:27.130
+Just not have a type def at all.
+
+NOTE Confidence: 0.920309598
+
+00:17:27.130 --> 00:17:28.124
+Um, arguably,
+
+NOTE Confidence: 0.920309598
+
+00:17:28.124 --> 00:17:31.106
+perhaps that should be publicly available,
+
+NOTE Confidence: 0.920309598
+
+00:17:31.110 --> 00:17:31.935
+but it's not.
+
+NOTE Confidence: 0.920309598
+
+00:17:31.935 --> 00:17:33.585
+So we need to implement that,
+
+NOTE Confidence: 0.920309598
+
+00:17:33.590 --> 00:17:35.129
+but only internally.
+
+NOTE Confidence: 0.920309598
+
+00:17:35.129 --> 00:17:38.207
+So this is what I'm template
+
+NOTE Confidence: 0.920309598
+
+00:17:38.207 --> 00:17:39.040
+metaprogramming in,
+
+NOTE Confidence: 0.920309598
+
+00:17:39.040 --> 00:17:40.566
+in the form of structure look like.
+
+NOTE Confidence: 0.920309598
+
+00:17:40.570 --> 00:17:43.832
+We're sort of encoding things like if
+
+NOTE Confidence: 0.920309598
+
+00:17:43.832 --> 00:17:46.419
+statements and terminates and conditions,
+
+NOTE Confidence: 0.920309598
+
+00:17:46.420 --> 00:17:48.380
+but they all have to be phrased as
+
+NOTE Confidence: 0.920309598
+
+00:17:48.380 --> 00:17:50.209
+things like partial specializations,
+
+NOTE Confidence: 0.920309598
+
+00:17:50.210 --> 00:17:51.614
+explicit specializations,
+
+NOTE Confidence: 0.920309598
+
+00:17:51.614 --> 00:17:53.720
+default template arguments.
+
+NOTE Confidence: 0.920309598
+
+00:17:53.720 --> 00:17:55.718
+And this is not very readable.
+
+NOTE Confidence: 0.920309598
+
+00:17:55.720 --> 00:17:56.290
+I mean,
+
+NOTE Confidence: 0.920309598
+
+00:17:56.290 --> 00:17:58.879
+I've been doing this for over 10 years and
+
+NOTE Confidence: 0.920309598
+
+00:17:58.879 --> 00:18:01.430
+I in fact I wrote some of this code here.
+
+NOTE Confidence: 0.920309598
+
+00:18:01.430 --> 00:18:03.032
+And even then I need to look at it
+
+NOTE Confidence: 0.920309598
+
+00:18:03.032 --> 00:18:04.620
+and then think really hard about,
+
+NOTE Confidence: 0.920309598
+
+00:18:04.620 --> 00:18:05.940
+OK, exactly what you know.
+
+NOTE Confidence: 0.920309598
+
+00:18:05.940 --> 00:18:07.500
+Are we doing here?
+
+NOTE Confidence: 0.920309598
+
+00:18:07.500 --> 00:18:07.890
+Um,
+
+NOTE Confidence: 0.920309598
+
+00:18:07.890 --> 00:18:09.619
+what are all the possible I'm conditions?
+
+NOTE Confidence: 0.920309598
+
+00:18:09.620 --> 00:18:11.980
+We're detecting exactly which
+
+NOTE Confidence: 0.920309598
+
+00:18:11.980 --> 00:18:13.750
+things get instantiated.
+
+NOTE Confidence: 0.920309598
+
+00:18:13.750 --> 00:18:15.290
+It's a lot of work
+
+NOTE Confidence: 0.69787112
+
+00:18:15.290 --> 00:18:16.900
+in comparison to constexpr functions,
+
+NOTE Confidence: 0.69787112
+
+00:18:16.900 --> 00:18:18.545
+because when you write a constexpr function,
+
+NOTE Confidence: 0.69787112
+
+00:18:18.550 --> 00:18:20.727
+you get to read and write ordinary
+
+NOTE Confidence: 0.69787112
+
+00:18:20.727 --> 00:18:23.296
+C code with if statements and local
+
+NOTE Confidence: 0.69787112
+
+00:18:23.296 --> 00:18:25.648
+variables and all that good stuff.
+
+NOTE Confidence: 0.69787112
+
+00:18:25.650 --> 00:18:27.946
+So now that we have the full power
+
+NOTE Confidence: 0.69787112
+
+00:18:27.946 --> 00:18:30.229
+of CPUs 14 constexpr and beyond,
+
+NOTE Confidence: 0.69787112
+
+00:18:30.230 --> 00:18:32.988
+C + 14 being the lowest supported
+
+NOTE Confidence: 0.69787112
+
+00:18:32.988 --> 00:18:34.859
+standard mode that we have.
+
+NOTE Confidence: 0.69787112
+
+00:18:34.860 --> 00:18:36.350
+Uh, this enhancement issue is
+
+NOTE Confidence: 0.69787112
+
+00:18:36.350 --> 00:18:37.840
+about converting this old codes
+
+NOTE Confidence: 0.69787112
+
+00:18:37.893 --> 00:18:39.358
+over to something more modern.
+
+NOTE Confidence: 0.69787112
+
+00:18:39.360 --> 00:18:41.472
+Um, but preserving all of the stuff we
+
+NOTE Confidence: 0.69787112
+
+00:18:41.472 --> 00:18:43.877
+have here about defending against overflow,
+
+NOTE Confidence: 0.69787112
+
+00:18:43.880 --> 00:18:47.558
+spinning when necessary, and so forth.
+
+NOTE Confidence: 0.69787112
+
+00:18:47.560 --> 00:18:49.220
+So that's the background there.
+
+NOTE Confidence: 0.69787112
+
+00:18:49.220 --> 00:18:51.776
+Now let's actually take a look at the PR.
+
+NOTE Confidence: 0.69787112
+
+00:18:51.780 --> 00:18:54.770
+So here is PR 2450,
+
+NOTE Confidence: 0.69787112
+
+00:18:54.770 --> 00:18:57.614
+a lot of background for only 30 added lines,
+
+NOTE Confidence: 0.69787112
+
+00:18:57.620 --> 00:18:58.684
+27 removed or edited.
+
+NOTE Confidence: 0.69787112
+
+00:18:58.684 --> 00:19:00.939
+So let's take a look at the files.
+
+NOTE Confidence: 0.69787112
+
+00:19:00.940 --> 00:19:02.935
+I'm going to Alt Click to minimize.
+
+NOTE Confidence: 0.69787112
+
+00:19:02.940 --> 00:19:04.090
+So these are changes only
+
+NOTE Confidence: 0.69787112
+
+00:19:04.090 --> 00:19:05.010
+to the product code,
+
+NOTE Confidence: 0.69787112
+
+00:19:05.010 --> 00:19:06.956
+Chrono and ratio not changing any of
+
+NOTE Confidence: 0.69787112
+
+00:19:06.956 --> 00:19:09.579
+the tests under the theory that the test
+
+NOTE Confidence: 0.69787112
+
+00:19:09.579 --> 00:19:11.314
+should already have sufficient coverage.
+
+NOTE Confidence: 0.69787112
+
+00:19:11.320 --> 00:19:12.504
+I believe they do.
+
+NOTE Confidence: 0.69787112
+
+00:19:12.504 --> 00:19:13.096
+We added,
+
+NOTE Confidence: 0.69787112
+
+00:19:13.100 --> 00:19:15.480
+I believe pretty good coverage of the
+
+NOTE Confidence: 0.69787112
+
+00:19:15.480 --> 00:19:17.678
+Kronos Phenax and I think we've got.
+
+NOTE Confidence: 0.69787112
+
+00:19:17.680 --> 00:19:19.786
+Um, some coverage of the ratios
+
+NOTE Confidence: 0.69787112
+
+00:19:19.786 --> 00:19:21.460
+we could actually look uh,
+
+NOTE Confidence: 0.69787112
+
+00:19:21.460 --> 00:19:23.440
+one nice things about having the
+
+NOTE Confidence: 0.69787112
+
+00:19:23.440 --> 00:19:26.014
+STL in Workspace is I can just do
+
+NOTE Confidence: 0.69787112
+
+00:19:26.014 --> 00:19:28.194
+things like search for ratio and ask.
+
+NOTE Confidence: 0.69787112
+
+00:19:28.194 --> 00:19:31.609
+I only want to look at our tests so I
+
+NOTE Confidence: 0.69787112
+
+00:19:31.609 --> 00:19:36.017
+can say, Umm, tests and then we have stood.
+
+NOTE Confidence: 0.69787112
+
+00:19:36.020 --> 00:19:37.596
+And that's getting corporation,
+
+NOTE Confidence: 0.69787112
+
+00:19:37.596 --> 00:19:38.778
+which is hilarious.
+
+NOTE Confidence: 0.69787112
+
+00:19:38.780 --> 00:19:40.026
+So I could ask for whole word,
+
+NOTE Confidence: 0.69787112
+
+00:19:40.030 --> 00:19:43.030
+or I could use a regex to look at boundaries.
+
+NOTE Confidence: 0.69787112
+
+00:19:43.030 --> 00:19:45.010
+OK, so we've got a test.
+
+NOTE Confidence: 0.69787112
+
+00:19:45.010 --> 00:19:47.558
+This was a test for a regression
+
+NOTE Confidence: 0.69787112
+
+00:19:47.558 --> 00:19:48.650
+test for bug.
+
+NOTE Confidence: 0.69787112
+
+00:19:48.650 --> 00:19:51.378
+It was in our old internal bug database.
+
+NOTE Confidence: 0.69787112
+
+00:19:51.380 --> 00:19:52.553
+That's the number.
+
+NOTE Confidence: 0.69787112
+
+00:19:52.553 --> 00:19:54.594
+But we've got tester, exercising,
+
+NOTE Confidence: 0.69787112
+
+00:19:54.594 --> 00:19:56.880
+ratio, add, subtract, multiply, divide.
+
+NOTE Confidence: 0.69787112
+
+00:19:56.880 --> 00:20:00.345
+Make sure they're equal or not equal.
+
+NOTE Confidence: 0.69787112
+
+00:20:00.350 --> 00:20:03.038
+Let's make sure that the ratios are reduced.
+
+NOTE Confidence: 0.69787112
+
+00:20:03.040 --> 00:20:03.956
+Um, uh.
+
+NOTE Confidence: 0.69787112
+
+00:20:03.956 --> 00:20:05.788
+In some specific cases,
+
+NOTE Confidence: 0.69787112
+
+00:20:05.790 --> 00:20:06.986
+like ratio add um,
+
+NOTE Confidence: 0.69787112
+
+00:20:06.986 --> 00:20:09.939
+we need to return a fully produced answer.
+
+NOTE Confidence: 0.69787112
+
+00:20:09.940 --> 00:20:10.254
+Um.
+
+NOTE Confidence: 0.69787112
+
+00:20:10.254 --> 00:20:13.080
+So we've got static certs for all of these,
+
+NOTE Confidence: 0.69787112
+
+00:20:13.080 --> 00:20:14.880
+so this is some good coverage.
+
+NOTE Confidence: 0.69787112
+
+00:20:14.880 --> 00:20:18.212
+All the uses of Chrono are also
+
+NOTE Confidence: 0.69787112
+
+00:20:18.212 --> 00:20:19.164
+covering this.
+
+NOTE Confidence: 0.69787112
+
+00:20:19.170 --> 00:20:21.630
+Including our calendars and time zones,
+
+NOTE Confidence: 0.69787112
+
+00:20:21.630 --> 00:20:23.328
+the new tests that we've got.
+
+NOTE Confidence: 0.69787112
+
+00:20:23.330 --> 00:20:25.052
+So I believe that the test coverage
+
+NOTE Confidence: 0.69787112
+
+00:20:25.052 --> 00:20:25.790
+here is good.
+
+NOTE Confidence: 0.69787112
+
+00:20:25.790 --> 00:20:27.715
+Certainly if we find deficient test coverage,
+
+NOTE Confidence: 0.69787112
+
+00:20:27.720 --> 00:20:29.608
+we can always add it in the future.
+
+NOTE Confidence: 0.69787112
+
+00:20:29.610 --> 00:20:32.490
+But for this PR, I'm OK with it
+
+NOTE Confidence: 0.69787112
+
+00:20:32.490 --> 00:20:34.730
+being product code changes only.
+
+NOTE Confidence: 0.69787112
+
+00:20:34.730 --> 00:20:36.440
+Unless I see something that
+
+NOTE Confidence: 0.69787112
+
+00:20:36.440 --> 00:20:37.466
+looks very concerning,
+
+NOTE Confidence: 0.69787112
+
+00:20:37.470 --> 00:20:38.910
+then I might want to go verify that,
+
+NOTE Confidence: 0.69787112
+
+00:20:38.910 --> 00:20:41.367
+OK, we have test coverage for this.
+
+NOTE Confidence: 0.69787112
+
+00:20:41.370 --> 00:20:41.591
+OK,
+
+NOTE Confidence: 0.69787112
+
+00:20:41.591 --> 00:20:42.917
+so now let's take a look
+
+NOTE Confidence: 0.69787112
+
+00:20:42.917 --> 00:20:44.039
+at what's going on here.
+
+NOTE Confidence: 0.69787112
+
+00:20:44.040 --> 00:20:46.610
+The changes to kronor small,
+
+NOTE Confidence: 0.69787112
+
+00:20:46.610 --> 00:20:49.298
+we had a least common multiple helper that's
+
+NOTE Confidence: 0.69787112
+
+00:20:49.298 --> 00:20:51.370
+being converted to a constexpr function.
+
+NOTE Confidence: 0.69787112
+
+00:20:51.370 --> 00:20:54.570
+And then being used in the common type.
+
+NOTE Confidence: 0.69787112
+
+00:20:54.570 --> 00:20:56.383
+OK, but that uses the GCD function
+
+NOTE Confidence: 0.69787112
+
+00:20:56.383 --> 00:20:57.650
+that's being added in ratio,
+
+NOTE Confidence: 0.69787112
+
+00:20:57.650 --> 00:20:59.888
+so I'll look at that later.
+
+NOTE Confidence: 0.69787112
+
+00:20:59.890 --> 00:21:02.080
+So let's look at ratio.
+
+NOTE Confidence: 0.69787112
+
+00:21:02.080 --> 00:21:02.854
+Uh, let's see.
+
+NOTE Confidence: 0.69787112
+
+00:21:02.854 --> 00:21:04.144
+We're converting ABS over here.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:04.150 --> 00:21:05.685
+I'm just scanning real quick
+
+NOTE Confidence: 0.833701531111111
+
+00:21:05.685 --> 00:21:06.913
+to see what's happening.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:06.920 --> 00:21:09.830
+Um, some discussion between uh
+
+NOTE Confidence: 0.833701531111111
+
+00:21:09.830 --> 00:21:12.500
+contributors Misco and Sam about
+
+NOTE Confidence: 0.833701531111111
+
+00:21:12.500 --> 00:21:14.880
+what safe ADX is trying to do.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:14.880 --> 00:21:16.784
+I'll look at that.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:16.784 --> 00:21:19.125
+OK, so this looks like a
+
+NOTE Confidence: 0.833701531111111
+
+00:21:19.125 --> 00:21:20.990
+fairly one to one conversion,
+
+NOTE Confidence: 0.833701531111111
+
+00:21:20.990 --> 00:21:24.225
+but the diff is looking
+
+NOTE Confidence: 0.833701531111111
+
+00:21:24.225 --> 00:21:26.470
+somewhat horrible because, um,
+
+NOTE Confidence: 0.833701531111111
+
+00:21:26.470 --> 00:21:28.570
+the diff algorithm is picking up the
+
+NOTE Confidence: 0.833701531111111
+
+00:21:28.570 --> 00:21:30.964
+empty lines that used to be between
+
+NOTE Confidence: 0.833701531111111
+
+00:21:30.964 --> 00:21:32.348
+the struct specializations and
+
+NOTE Confidence: 0.833701531111111
+
+00:21:32.348 --> 00:21:34.525
+isn't matching them up to the empty
+
+NOTE Confidence: 0.833701531111111
+
+00:21:34.525 --> 00:21:36.394
+lines that are within the function.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:36.394 --> 00:21:37.762
+That makes things actually
+
+NOTE Confidence: 0.833701531111111
+
+00:21:37.762 --> 00:21:39.130
+pretty hard to read.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:39.130 --> 00:21:41.066
+The rest of it is OK to read,
+
+NOTE Confidence: 0.833701531111111
+
+00:21:41.070 --> 00:21:42.200
+so I'm thinking even though
+
+NOTE Confidence: 0.833701531111111
+
+00:21:42.200 --> 00:21:43.330
+I don't usually like it,
+
+NOTE Confidence: 0.833701531111111
+
+00:21:43.330 --> 00:21:45.270
+I'll switch to split view.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:45.270 --> 00:21:48.718
+I don't think hiding white space will help.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:48.720 --> 00:21:51.840
+OK, this is hopefully a bit more readable.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:51.840 --> 00:21:53.880
+OK, let me minimize this.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:53.880 --> 00:21:54.388
+OK.
+
+NOTE Confidence: 0.833701531111111
+
+00:21:54.388 --> 00:21:56.420
+Let me Scroll down,
+
+NOTE Confidence: 0.833701531111111
+
+00:21:56.420 --> 00:21:57.590
+look at this real quick.
+
+NOTE Confidence: 0.82293418
+
+00:22:01.770 --> 00:22:05.061
+OK, yeah, this is, um, easier to follow.
+
+NOTE Confidence: 0.82293418
+
+00:22:05.061 --> 00:22:07.646
+Uh, because we don't need
+
+NOTE Confidence: 0.82293418
+
+00:22:07.646 --> 00:22:10.550
+to look at 2 interleaved,
+
+NOTE Confidence: 0.82293418
+
+00:22:10.550 --> 00:22:12.335
+vastly different implementations.
+
+NOTE Confidence: 0.82293418
+
+00:22:12.340 --> 00:22:15.125
+OK, so now I want to verify, uh,
+
+NOTE Confidence: 0.82293418
+
+00:22:15.125 --> 00:22:16.980
+looking at the old code in the
+
+NOTE Confidence: 0.82293418
+
+00:22:16.980 --> 00:22:19.171
+new code that all of the behavior
+
+NOTE Confidence: 0.82293418
+
+00:22:19.171 --> 00:22:21.180
+is being preserved and that we're
+
+NOTE Confidence: 0.82293418
+
+00:22:21.180 --> 00:22:23.238
+not losing any special cases like
+
+NOTE Confidence: 0.82293418
+
+00:22:23.240 --> 00:22:26.720
+what about overflow and so forth.
+
+NOTE Confidence: 0.82293418
+
+00:22:26.720 --> 00:22:27.440
+Let's say, oh,
+
+NOTE Confidence: 0.82293418
+
+00:22:27.440 --> 00:22:28.880
+I can answer questions from Cameron,
+
+NOTE Confidence: 0.82293418
+
+00:22:28.880 --> 00:22:29.528
+he's asking.
+
+NOTE Confidence: 0.82293418
+
+00:22:29.528 --> 00:22:31.472
+I assume that the still doesn't
+
+NOTE Confidence: 0.82293418
+
+00:22:31.472 --> 00:22:33.570
+care about cling CL supporting the
+
+NOTE Confidence: 0.82293418
+
+00:22:33.570 --> 00:22:35.652
+standard mode of stood supposed 11.
+
+NOTE Confidence: 0.82293418
+
+00:22:35.660 --> 00:22:37.340
+That is correct.
+
+NOTE Confidence: 0.82293418
+
+00:22:37.340 --> 00:22:41.260
+So the we support the claim compiler
+
+NOTE Confidence: 0.82293418
+
+00:22:41.371 --> 00:22:43.600
+which actually ships in Visual Studio.
+
+NOTE Confidence: 0.82293418
+
+00:22:43.600 --> 00:22:45.385
+An optional thing you can select in
+
+NOTE Confidence: 0.82293418
+
+00:22:45.385 --> 00:22:47.288
+the installer as a first class citizen,
+
+NOTE Confidence: 0.82293418
+
+00:22:47.290 --> 00:22:49.150
+meaning that we support it for
+
+NOTE Confidence: 0.82293418
+
+00:22:49.150 --> 00:22:51.170
+both the compile time and codegen,
+
+NOTE Confidence: 0.82293418
+
+00:22:51.170 --> 00:22:53.202
+and we tried to support as much as
+
+NOTE Confidence: 0.82293418
+
+00:22:53.202 --> 00:22:54.610
+possible subject only to you know,
+
+NOTE Confidence: 0.82293418
+
+00:22:54.610 --> 00:22:56.140
+the features that it supports
+
+NOTE Confidence: 0.82293418
+
+00:22:56.140 --> 00:22:57.364
+itself in the compiler.
+
+NOTE Confidence: 0.82293418
+
+00:22:57.370 --> 00:22:58.426
+Sometimes we even support
+
+NOTE Confidence: 0.82293418
+
+00:22:58.426 --> 00:22:59.746
+it better than MSVC itself,
+
+NOTE Confidence: 0.82293418
+
+00:22:59.750 --> 00:23:01.758
+it depends who implements
+
+NOTE Confidence: 0.82293418
+
+00:23:01.758 --> 00:23:03.766
+core language features first.
+
+NOTE Confidence: 0.82293418
+
+00:23:03.770 --> 00:23:05.130
+However,
+
+NOTE Confidence: 0.82293418
+
+00:23:05.130 --> 00:23:10.570
+our STL considers MSVC's standard
+
+NOTE Confidence: 0.82293418
+
+00:23:10.570 --> 00:23:13.813
+modes as a minimum, so.
+
+NOTE Confidence: 0.82293418
+
+00:23:13.813 --> 00:23:16.428
+With the MSVC compiler stood,
+
+NOTE Confidence: 0.82293418
+
+00:23:16.430 --> 00:23:18.350
+C-14 actually means C-14 plus all
+
+NOTE Confidence: 0.82293418
+
+00:23:18.350 --> 00:23:20.849
+the C-17 stuff we had implemented at
+
+NOTE Confidence: 0.82293418
+
+00:23:20.849 --> 00:23:23.147
+the time that we implemented standard
+
+NOTE Confidence: 0.82293418
+
+00:23:23.147 --> 00:23:25.168
+mode options in the 1st place,
+
+NOTE Confidence: 0.82293418
+
+00:23:25.170 --> 00:23:27.914
+which I believe was VS 2015 update 3,
+
+NOTE Confidence: 0.82293418
+
+00:23:27.920 --> 00:23:30.560
+if I've got that correctly.
+
+NOTE Confidence: 0.82293418
+
+00:23:30.560 --> 00:23:34.241
+We do not have support in MSVC or in
+
+NOTE Confidence: 0.82293418
+
+00:23:34.241 --> 00:23:37.818
+our STL for ACS Plus 11 only mode.
+
+NOTE Confidence: 0.82293418
+
+00:23:37.820 --> 00:23:40.428
+We will support down level disc plus 14,
+
+NOTE Confidence: 0.82293418
+
+00:23:40.430 --> 00:23:41.732
+but as far as we're concerned
+
+NOTE Confidence: 0.82293418
+
+00:23:41.732 --> 00:23:42.600
+that's where time began.
+
+NOTE Confidence: 0.82293418
+
+00:23:42.600 --> 00:23:45.438
+So although the client compiler itself
+
+NOTE Confidence: 0.82293418
+
+00:23:45.438 --> 00:23:48.560
+supports AC plus 11 only mode RTL,
+
+NOTE Confidence: 0.82293418
+
+00:23:48.560 --> 00:23:50.846
+the Microsoft STL does not make
+
+NOTE Confidence: 0.82293418
+
+00:23:50.846 --> 00:23:52.800
+any attempt to support that.
+
+NOTE Confidence: 0.82293418
+
+00:23:52.800 --> 00:23:53.432
+So yeah,
+
+NOTE Confidence: 0.82293418
+
+00:23:53.432 --> 00:23:55.328
+so you'll see some things here
+
+NOTE Confidence: 0.82293418
+
+00:23:55.328 --> 00:23:56.740
+as camera noticed um,
+
+NOTE Confidence: 0.82293418
+
+00:23:56.740 --> 00:23:59.400
+that are not allowed in CS plus 11 only code.
+
+NOTE Confidence: 0.82293418
+
+00:23:59.400 --> 00:23:59.643
+I,
+
+NOTE Confidence: 0.82293418
+
+00:23:59.643 --> 00:24:01.587
+I for 1:00 AM very glad that we
+
+NOTE Confidence: 0.82293418
+
+00:24:01.587 --> 00:24:03.719
+have C + 14 has a minimum because
+
+NOTE Confidence: 0.82293418
+
+00:24:03.719 --> 00:24:06.324
+going back to C + C + 11 would
+
+NOTE Confidence: 0.82293418
+
+00:24:06.324 --> 00:24:07.492
+make constexpr very difficult.
+
+NOTE Confidence: 0.82293418
+
+00:24:07.500 --> 00:24:08.500
+If I ruled the world,
+
+NOTE Confidence: 0.82293418
+
+00:24:08.500 --> 00:24:10.240
+I would make you know 6 + 17 or 20,
+
+NOTE Confidence: 0.82293418
+
+00:24:10.240 --> 00:24:10.846
+the minimum.
+
+NOTE Confidence: 0.82293418
+
+00:24:10.846 --> 00:24:12.967
+But there are good reasons why we
+
+NOTE Confidence: 0.82293418
+
+00:24:12.967 --> 00:24:15.417
+have support down to C + 14 so that
+
+NOTE Confidence: 0.82293418
+
+00:24:15.417 --> 00:24:17.205
+customers can continue compiler and
+
+NOTE Confidence: 0.82293418
+
+00:24:17.205 --> 00:24:19.210
+your code without major changes.
+
+NOTE Confidence: 0.82293418
+
+00:24:19.210 --> 00:24:21.109
+Uh, OK, so let's take a look at this.
+
+NOTE Confidence: 0.82293418
+
+00:24:21.110 --> 00:24:24.845
+Um, first we have the UM simple struct ABS,
+
+NOTE Confidence: 0.82293418
+
+00:24:24.850 --> 00:24:27.130
+which is an absolute value at compile time.
+
+NOTE Confidence: 0.82293418
+
+00:24:27.130 --> 00:24:29.195
+All this stuff works with the type
+
+NOTE Confidence: 0.82293418
+
+00:24:29.195 --> 00:24:31.624
+def from C student or student dot H
+
+NOTE Confidence: 0.82293418
+
+00:24:31.624 --> 00:24:33.942
+int Max T That's the maximum integer
+
+NOTE Confidence: 0.82293418
+
+00:24:33.942 --> 00:24:37.038
+width in our implementation is just 64 bit,
+
+NOTE Confidence: 0.82293418
+
+00:24:37.040 --> 00:24:38.488
+so it's actually the same as long long.
+
+NOTE Confidence: 0.82293418
+
+00:24:38.490 --> 00:24:41.146
+But ratio is specified in terms of impact,
+
+NOTE Confidence: 0.82293418
+
+00:24:41.150 --> 00:24:44.209
+so that's what we use everywhere here.
+
+NOTE Confidence: 0.82293418
+
+00:24:44.210 --> 00:24:46.106
+So the input is in maxval,
+
+NOTE Confidence: 0.82293418
+
+00:24:46.110 --> 00:24:49.428
+so in the constexpr function land.
+
+NOTE Confidence: 0.82293418
+
+00:24:49.430 --> 00:24:51.842
+Uh, let's see none of this is template yet.
+
+NOTE Confidence: 0.82293418
+
+00:24:51.850 --> 00:24:52.137
+Um.
+
+NOTE Confidence: 0.82293418
+
+00:24:52.137 --> 00:24:54.433
+Template I I go through a mental list
+
+NOTE Confidence: 0.82293418
+
+00:24:54.433 --> 00:24:57.135
+of all the decorators we now functions.
+
+NOTE Confidence: 0.82293418
+
+00:24:57.140 --> 00:24:58.112
+Template now template.
+
+NOTE Confidence: 0.82293418
+
+00:24:58.112 --> 00:25:00.056
+Static doesn't need to be static.
+
+NOTE Confidence: 0.620159084
+
+00:25:00.060 --> 00:25:02.960
+Inline constexpr strictly more powerful,
+
+NOTE Confidence: 0.620159084
+
+00:25:02.960 --> 00:25:04.880
+so we do want constexpr.
+
+NOTE Confidence: 0.620159084
+
+00:25:04.880 --> 00:25:07.415
+Explicit is only for constructors
+
+NOTE Confidence: 0.620159084
+
+00:25:07.415 --> 00:25:09.443
+and definitely not virtual.
+
+NOTE Confidence: 0.620159084
+
+00:25:09.450 --> 00:25:10.698
+That's for member functions.
+
+NOTE Confidence: 0.620159084
+
+00:25:10.698 --> 00:25:13.565
+That's all good, we use no discard and
+
+NOTE Confidence: 0.620159084
+
+00:25:13.565 --> 00:25:16.580
+all return types of pure computation.
+
+NOTE Confidence: 0.620159084
+
+00:25:16.580 --> 00:25:18.716
+Not super consistently in old code,
+
+NOTE Confidence: 0.620159084
+
+00:25:18.720 --> 00:25:19.756
+but in new code we try to
+
+NOTE Confidence: 0.620159084
+
+00:25:19.756 --> 00:25:20.400
+be disciplined about this,
+
+NOTE Confidence: 0.620159084
+
+00:25:20.400 --> 00:25:21.736
+so that's why we've got no discard there.
+
+NOTE Confidence: 0.620159084
+
+00:25:21.740 --> 00:25:23.420
+That's good. We return in Max T.
+
+NOTE Confidence: 0.620159084
+
+00:25:23.420 --> 00:25:24.832
+Because that's the output,
+
+NOTE Confidence: 0.620159084
+
+00:25:24.832 --> 00:25:26.244
+so that corresponds here.
+
+NOTE Confidence: 0.620159084
+
+00:25:26.250 --> 00:25:27.828
+Um, the function we're going to
+
+NOTE Confidence: 0.620159084
+
+00:25:27.828 --> 00:25:29.470
+use the name under score ABS,
+
+NOTE Confidence: 0.620159084
+
+00:25:29.470 --> 00:25:31.871
+I believe that's OK certainly we had
+
+NOTE Confidence: 0.620159084
+
+00:25:31.871 --> 00:25:33.920
+no concerns about under score ABS
+
+NOTE Confidence: 0.620159084
+
+00:25:33.920 --> 00:25:36.664
+shadowing other stuff as a struct name,
+
+NOTE Confidence: 0.620159084
+
+00:25:36.670 --> 00:25:37.944
+so as a function should be fine,
+
+NOTE Confidence: 0.620159084
+
+00:25:37.950 --> 00:25:39.666
+and we're just converting it over.
+
+NOTE Confidence: 0.620159084
+
+00:25:39.670 --> 00:25:41.020
+There's also no one definition
+
+NOTE Confidence: 0.620159084
+
+00:25:41.020 --> 00:25:42.100
+rule concerns about converting
+
+NOTE Confidence: 0.620159084
+
+00:25:42.100 --> 00:25:43.398
+a struct into a function,
+
+NOTE Confidence: 0.620159084
+
+00:25:43.400 --> 00:25:44.580
+so I'm OK with that.
+
+NOTE Confidence: 0.620159084
+
+00:25:44.580 --> 00:25:47.166
+The input is a constant maxval.
+
+NOTE Confidence: 0.620159084
+
+00:25:47.170 --> 00:25:48.298
+We're not going to modify the
+
+NOTE Confidence: 0.620159084
+
+00:25:48.298 --> 00:25:49.740
+parameter in place, so adding cost
+
+NOTE Confidence: 0.620159084
+
+00:25:49.740 --> 00:25:51.770
+is absolutely the right thing to do.
+
+NOTE Confidence: 0.620159084
+
+00:25:51.770 --> 00:25:52.439
+The functions no,
+
+NOTE Confidence: 0.620159084
+
+00:25:52.439 --> 00:25:53.554
+except it's definitely not going.
+
+NOTE Confidence: 0.620159084
+
+00:25:53.560 --> 00:25:55.360
+Any exceptions, that's all good.
+
+NOTE Confidence: 0.620159084
+
+00:25:55.360 --> 00:25:57.400
+And then the return values here
+
+NOTE Confidence: 0.620159084
+
+00:25:57.400 --> 00:25:59.702
+evals less than zero, then negate it.
+
+NOTE Confidence: 0.620159084
+
+00:25:59.702 --> 00:26:00.958
+Otherwise return Val unchanged.
+
+NOTE Confidence: 0.620159084
+
+00:26:00.960 --> 00:26:02.124
+So exactly the same as what
+
+NOTE Confidence: 0.620159084
+
+00:26:02.124 --> 00:26:03.318
+the struct was doing. Great.
+
+NOTE Confidence: 0.620159084
+
+00:26:03.318 --> 00:26:04.990
+We're losing comment here.
+
+NOTE Confidence: 0.620159084
+
+00:26:04.990 --> 00:26:06.318
+Computes absolute value Val.
+
+NOTE Confidence: 0.620159084
+
+00:26:06.318 --> 00:26:07.978
+I'm totally fine about that.
+
+NOTE Confidence: 0.620159084
+
+00:26:07.980 --> 00:26:10.100
+I mean it's called abs.
+
+NOTE Confidence: 0.620159084
+
+00:26:10.100 --> 00:26:10.920
+Sort of self documenting.
+
+NOTE Confidence: 0.620159084
+
+00:26:10.920 --> 00:26:12.510
+This was our old policy of comment.
+
+NOTE Confidence: 0.620159084
+
+00:26:12.510 --> 00:26:13.509
+Literally everything here.
+
+NOTE Confidence: 0.620159084
+
+00:26:13.509 --> 00:26:15.174
+I believe it's obvious enough
+
+NOTE Confidence: 0.620159084
+
+00:26:15.174 --> 00:26:17.100
+that we don't need the comment.
+
+NOTE Confidence: 0.620159084
+
+00:26:17.100 --> 00:26:18.978
+So sounds good.
+
+NOTE Confidence: 0.620159084
+
+00:26:18.978 --> 00:26:20.856
+OK, next um.
+
+NOTE Confidence: 0.620159084
+
+00:26:20.860 --> 00:26:22.980
+So here are the struct is being preserved.
+
+NOTE Confidence: 0.620159084
+
+00:26:22.980 --> 00:26:23.294
+Um,
+
+NOTE Confidence: 0.620159084
+
+00:26:23.294 --> 00:26:26.120
+this is because safe malt is used by Chrono.
+
+NOTE Confidence: 0.620159084
+
+00:26:26.120 --> 00:26:28.776
+I can go find that control shift F
+
+NOTE Confidence: 0.620159084
+
+00:26:28.776 --> 00:26:31.956
+search for safe malt, not just in tests.
+
+NOTE Confidence: 0.620159084
+
+00:26:31.956 --> 00:26:35.049
+So safe malt is defined by ratio
+
+NOTE Confidence: 0.620159084
+
+00:26:35.049 --> 00:26:40.010
+and then it's used in ratio add.
+
+NOTE Confidence: 0.620159084
+
+00:26:40.010 --> 00:26:42.230
+And ratio multiply.
+
+NOTE Confidence: 0.620159084
+
+00:26:42.230 --> 00:26:45.930
+Uh, ratio multiply says um.
+
+NOTE Confidence: 0.620159084
+
+00:26:45.930 --> 00:26:47.510
+I do want to phenate,
+
+NOTE Confidence: 0.620159084
+
+00:26:47.510 --> 00:26:50.108
+meaning that we won't have a
+
+NOTE Confidence: 0.620159084
+
+00:26:50.108 --> 00:26:51.840
+numerator and denominator um.
+
+NOTE Confidence: 0.620159084
+
+00:26:51.840 --> 00:26:57.220
+Uh, or sorry, sorry, safe molt's ***.
+
+NOTE Confidence: 0.620159084
+
+00:26:57.220 --> 00:26:57.780
+Sphene.
+
+NOTE Confidence: 0.59173277
+
+00:26:59.790 --> 00:27:01.434
+Static asserts fine.
+
+NOTE Confidence: 0.59173277
+
+00:27:01.434 --> 00:27:04.579
+OK, yeah, these are true.
+
+NOTE Confidence: 0.59173277
+
+00:27:04.580 --> 00:27:07.112
+And then this one can detect
+
+NOTE Confidence: 0.59173277
+
+00:27:07.112 --> 00:27:08.378
+overflow during multiplication.
+
+NOTE Confidence: 0.59173277
+
+00:27:08.380 --> 00:27:12.345
+Yeah. I can't remember why we
+
+NOTE Confidence: 0.59173277
+
+00:27:12.345 --> 00:27:13.797
+passed through here actually.
+
+NOTE Confidence: 0.59173277
+
+00:27:13.800 --> 00:27:15.068
+Because this is the.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:18.050 --> 00:27:19.742
+Yeah. I'd have to look up
+
+NOTE Confidence: 0.835901631818182
+
+00:27:19.742 --> 00:27:21.210
+exactly what we're doing here.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:21.210 --> 00:27:23.274
+I'm not concerned for the purposes of this
+
+NOTE Confidence: 0.835901631818182
+
+00:27:23.274 --> 00:27:25.307
+PR since it's not changing this layer,
+
+NOTE Confidence: 0.835901631818182
+
+00:27:25.310 --> 00:27:26.834
+and this layer is necessary for
+
+NOTE Confidence: 0.835901631818182
+
+00:27:26.834 --> 00:27:28.893
+all the spine, like converting all
+
+NOTE Confidence: 0.835901631818182
+
+00:27:28.893 --> 00:27:31.479
+this to be constexpr wouldn't have.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:31.480 --> 00:27:34.180
+A lot of value, yeah,
+
+NOTE Confidence: 0.835901631818182
+
+00:27:34.180 --> 00:27:37.276
+but that's why we're using a struct there.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:37.280 --> 00:27:39.035
+OK, but we do need to convert this call.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:39.040 --> 00:27:41.084
+So ABS ax value now just becomes
+
+NOTE Confidence: 0.835901631818182
+
+00:27:41.084 --> 00:27:42.480
+a plain call to ABX.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:42.480 --> 00:27:44.559
+And because of the magic of constexpr,
+
+NOTE Confidence: 0.835901631818182
+
+00:27:44.560 --> 00:27:46.464
+we can call a constexpr function in
+
+NOTE Confidence: 0.835901631818182
+
+00:27:46.464 --> 00:27:47.978
+something like a default argument
+
+NOTE Confidence: 0.835901631818182
+
+00:27:47.978 --> 00:27:49.892
+to a function template and the
+
+NOTE Confidence: 0.835901631818182
+
+00:27:49.892 --> 00:27:51.639
+compiler will go evaluated for us.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:51.640 --> 00:27:52.828
+So now looks good.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:52.828 --> 00:27:55.519
+I'm currently we are not using constant eval,
+
+NOTE Confidence: 0.835901631818182
+
+00:27:55.520 --> 00:27:57.392
+um except when absolutely necessary because
+
+NOTE Confidence: 0.835901631818182
+
+00:27:57.392 --> 00:27:59.229
+compiler support is still in progress.
+
+NOTE Confidence: 0.835901631818182
+
+00:27:59.230 --> 00:28:01.050
+So even though in theory ABS here
+
+NOTE Confidence: 0.835901631818182
+
+00:28:01.050 --> 00:28:02.718
+could be defined as constant Val,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:02.720 --> 00:28:04.248
+I'm much more comfortable
+
+NOTE Confidence: 0.835901631818182
+
+00:28:04.248 --> 00:28:05.394
+using just constexpr.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:05.400 --> 00:28:06.980
+The difference is that constant
+
+NOTE Confidence: 0.835901631818182
+
+00:28:06.980 --> 00:28:09.910
+Val enforces that any call actually
+
+NOTE Confidence: 0.835901631818182
+
+00:28:09.910 --> 00:28:12.520
+be performed at compile time.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:12.520 --> 00:28:16.136
+I mean is never emitted as a runtime call it.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:16.136 --> 00:28:18.024
+So like if you're in Int main and
+
+NOTE Confidence: 0.835901631818182
+
+00:28:18.024 --> 00:28:19.817
+you call a constexpr function,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:19.820 --> 00:28:21.598
+the compiler is totally allowed to just.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:21.600 --> 00:28:22.730
+An ordinary call to it.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:22.730 --> 00:28:24.866
+But if you call a constant eval function,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:24.870 --> 00:28:26.016
+it actually doesn't need to boil
+
+NOTE Confidence: 0.835901631818182
+
+00:28:26.016 --> 00:28:27.389
+that down to a constant here,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:27.390 --> 00:28:28.690
+because this is internal only,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:28.690 --> 00:28:30.678
+we just only ever call it from
+
+NOTE Confidence: 0.835901631818182
+
+00:28:30.678 --> 00:28:31.530
+context for context.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:31.530 --> 00:28:32.815
+So being constant Val wouldn't
+
+NOTE Confidence: 0.835901631818182
+
+00:28:32.815 --> 00:28:33.586
+really achieve anything.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:33.590 --> 00:28:34.510
+It wouldn't, you know,
+
+NOTE Confidence: 0.835901631818182
+
+00:28:34.510 --> 00:28:37.608
+we could do it, but it wouldn't.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:37.610 --> 00:28:39.478
+OK provide any optimization
+
+NOTE Confidence: 0.835901631818182
+
+00:28:39.478 --> 00:28:40.879
+benefits or anything.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:40.880 --> 00:28:42.640
+So totally happy to see concepts for there.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:42.640 --> 00:28:44.310
+And this just converting these
+
+NOTE Confidence: 0.835901631818182
+
+00:28:44.310 --> 00:28:45.980
+to function calls that's good
+
+NOTE Confidence: 0.835901631818182
+
+00:28:46.045 --> 00:28:47.440
+otherwise it's unchanged.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:47.440 --> 00:28:49.690
+OK next we have a change to sign of
+
+NOTE Confidence: 0.835901631818182
+
+00:28:49.690 --> 00:28:51.958
+which is doing the same sort of thing.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:51.960 --> 00:28:54.318
+Sign of Val was giving an int Max T
+
+NOTE Confidence: 0.835901631818182
+
+00:28:54.318 --> 00:28:56.949
+Now the interesting thing is here sign
+
+NOTE Confidence: 0.835901631818182
+
+00:28:56.949 --> 00:28:59.331
+of is returning either - 1 or one.
+
+NOTE Confidence: 0.835901631818182
+
+00:28:59.331 --> 00:29:00.990
+Not like a bull because we want
+
+NOTE Confidence: 0.835901631818182
+
+00:29:01.056 --> 00:29:02.100
+to do things like.
+
+NOTE Confidence: 0.835901631818182
+
+00:29:02.100 --> 00:29:03.980
+I think we here we compare and I
+
+NOTE Confidence: 0.835901631818182
+
+00:29:03.980 --> 00:29:05.797
+think we might actually multiply by
+
+NOTE Confidence: 0.835901631818182
+
+00:29:05.797 --> 00:29:07.960
+sine of elsewhere I'd need to go.
+
+NOTE Confidence: 0.835901631818182
+
+00:29:07.960 --> 00:29:10.080
+Find that good this morning I saw that.
+
+NOTE Confidence: 0.869593932
+
+00:29:12.870 --> 00:29:14.600
+I can check real quick.
+
+NOTE Confidence: 0.869593932
+
+00:29:14.600 --> 00:29:16.748
+But emitting uh, an IMAX TV?
+
+NOTE Confidence: 0.869593932
+
+00:29:16.750 --> 00:29:17.950
+That's not the right one.
+
+NOTE Confidence: 0.869593932
+
+00:29:17.950 --> 00:29:21.498
+under score sign of.
+
+NOTE Confidence: 0.869593932
+
+00:29:21.500 --> 00:29:23.489
+Yeah, we do multiply sine of times sine of,
+
+NOTE Confidence: 0.869593932
+
+00:29:23.490 --> 00:29:25.805
+so that's why it's in um, uh,
+
+NOTE Confidence: 0.869593932
+
+00:29:25.805 --> 00:29:29.000
+one or -, 1 rather than true or false.
+
+NOTE Confidence: 0.869593932
+
+00:29:29.000 --> 00:29:31.736
+OK, so again we have a notice card
+
+NOTE Confidence: 0.869593932
+
+00:29:31.736 --> 00:29:33.947
+function that's constexpr returns int Max
+
+NOTE Confidence: 0.869593932
+
+00:29:33.947 --> 00:29:36.879
+T under score sign of exact same name,
+
+NOTE Confidence: 0.869593932
+
+00:29:36.880 --> 00:29:39.855
+takes maxval also accept so same signature
+
+NOTE Confidence: 0.869593932
+
+00:29:39.855 --> 00:29:42.968
+and then this returns what we returning
+
+NOTE Confidence: 0.869593932
+
+00:29:42.968 --> 00:29:46.220
+before the values less than zero then -,
+
+NOTE Confidence: 0.869593932
+
+00:29:46.220 --> 00:29:47.276
+1 otherwise one.
+
+NOTE Confidence: 0.869593932
+
+00:29:47.276 --> 00:29:49.388
+Again, we're dropping the comment to
+
+NOTE Confidence: 0.869593932
+
+00:29:49.388 --> 00:29:51.829
+compute sine of Val that's in the function
+
+NOTE Confidence: 0.869593932
+
+00:29:51.829 --> 00:29:54.540
+name, so doesn't provide any value,
+
+NOTE Confidence: 0.869593932
+
+00:29:54.540 --> 00:29:56.626
+whereas the comments are being retained here.
+
+NOTE Confidence: 0.869593932
+
+00:29:56.630 --> 00:29:59.514
+Like computes ax times BX without overflow.
+
+NOTE Confidence: 0.869593932
+
+00:29:59.520 --> 00:30:00.900
+These are quite important because it
+
+NOTE Confidence: 0.869593932
+
+00:30:00.900 --> 00:30:02.707
+does say like what this thing is doing,
+
+NOTE Confidence: 0.869593932
+
+00:30:02.710 --> 00:30:05.006
+like what does safe mean and why is
+
+NOTE Confidence: 0.869593932
+
+00:30:05.006 --> 00:30:06.420
+this specialization being detected.
+
+NOTE Confidence: 0.869593932
+
+00:30:06.420 --> 00:30:08.388
+But for sign of the function name says
+
+NOTE Confidence: 0.869593932
+
+00:30:08.388 --> 00:30:11.318
+everything we need, so that's good.
+
+NOTE Confidence: 0.869593932
+
+00:30:11.320 --> 00:30:12.823
+Uh, OK, so now it's time to read this,
+
+NOTE Confidence: 0.869593932
+
+00:30:12.830 --> 00:30:14.206
+um, comment from Misco.
+
+NOTE Confidence: 0.869593932
+
+00:30:14.206 --> 00:30:16.270
+Misco says Safat X the stack,
+
+NOTE Confidence: 0.869593932
+
+00:30:16.270 --> 00:30:17.226
+asserting that it's valid.
+
+NOTE Confidence: 0.869593932
+
+00:30:17.226 --> 00:30:18.916
+So I think we should be able
+
+NOTE Confidence: 0.869593932
+
+00:30:18.916 --> 00:30:20.379
+to port it over to a function.
+
+NOTE Confidence: 0.869593932
+
+00:30:20.380 --> 00:30:20.691
+Um.
+
+NOTE Confidence: 0.869593932
+
+00:30:20.691 --> 00:30:21.313
+Sam asked,
+
+NOTE Confidence: 0.869593932
+
+00:30:21.313 --> 00:30:23.179
+wouldn't that make the expression nuts?
+
+NOTE Confidence: 0.869593932
+
+00:30:23.180 --> 00:30:23.910
+Fineable.
+
+NOTE Confidence: 0.786401254
+
+00:30:28.220 --> 00:30:30.340
+And then he asks, um,
+
+NOTE Confidence: 0.786401254
+
+00:30:30.340 --> 00:30:32.398
+if the signs of is different.
+
+NOTE Confidence: 0.840877314
+
+00:30:35.350 --> 00:30:38.092
+Yes, I agree because if you
+
+NOTE Confidence: 0.840877314
+
+00:30:38.092 --> 00:30:39.920
+wrote if constexpr here.
+
+NOTE Confidence: 0.840877314
+
+00:30:39.920 --> 00:30:41.875
+That would mandate all this
+
+NOTE Confidence: 0.840877314
+
+00:30:41.875 --> 00:30:43.439
+stuff via compile time,
+
+NOTE Confidence: 0.840877314
+
+00:30:43.440 --> 00:30:44.452
+and these are parameters,
+
+NOTE Confidence: 0.840877314
+
+00:30:44.452 --> 00:30:45.970
+so you can't actually do that.
+
+NOTE Confidence: 0.813038566666667
+
+00:30:49.470 --> 00:30:51.108
+Yeah, and then they then the parameters
+
+NOTE Confidence: 0.813038566666667
+
+00:30:51.108 --> 00:30:52.889
+would be non type template parameters
+
+NOTE Confidence: 0.813038566666667
+
+00:30:52.889 --> 00:30:54.604
+rather than just ordinary arguments.
+
+NOTE Confidence: 0.779057840333333
+
+00:30:57.390 --> 00:30:59.582
+We could phrase it like if bad condition
+
+NOTE Confidence: 0.779057840333333
+
+00:30:59.582 --> 00:31:01.709
+then do something like throw because a
+
+NOTE Confidence: 0.779057840333333
+
+00:31:01.709 --> 00:31:04.106
+a any attempt to throw an exception is
+
+NOTE Confidence: 0.779057840333333
+
+00:31:04.106 --> 00:31:06.487
+an error at compile time or call like.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:06.487 --> 00:31:10.143
+Another technique we use is call a function
+
+NOTE Confidence: 0.779057840333333
+
+00:31:10.143 --> 00:31:13.082
+that is declared but not defined and
+
+NOTE Confidence: 0.779057840333333
+
+00:31:13.082 --> 00:31:16.628
+that will be an error at compile time.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:16.630 --> 00:31:18.246
+But yeah, I'm not. I agree with Sam.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:18.250 --> 00:31:20.762
+I don't see a lot of benefit to
+
+NOTE Confidence: 0.779057840333333
+
+00:31:20.762 --> 00:31:23.310
+trying to convert safe ad over um.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:23.310 --> 00:31:24.668
+Also, this PR doesn't rule that out.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:24.670 --> 00:31:26.646
+We could always do that in the future.
+
+NOTE Confidence: 0.779057840333333
+
+00:31:26.650 --> 00:31:29.510
+Um, here we use Safad.
+
+NOTE Confidence: 0.81160499
+
+00:31:33.300 --> 00:31:37.410
+Of this value, this value.
+
+NOTE Confidence: 0.81160499
+
+00:31:37.410 --> 00:31:38.050
+And the third one,
+
+NOTE Confidence: 0.81160499
+
+00:31:38.050 --> 00:31:39.220
+why do we have three values here?
+
+NOTE Confidence: 0.81160499
+
+00:31:39.220 --> 00:31:40.290
+Does this one? Oh no,
+
+NOTE Confidence: 0.81160499
+
+00:31:40.290 --> 00:31:42.080
+it's the second one is. Uh.
+
+NOTE Confidence: 0.81160499
+
+00:31:42.080 --> 00:31:43.800
+The nominator to ratio,
+
+NOTE Confidence: 0.81160499
+
+00:31:43.800 --> 00:31:45.564
+so we only give two values to safe mode.
+
+NOTE Confidence: 0.81160499
+
+00:31:45.570 --> 00:31:45.948
+That's right,
+
+NOTE Confidence: 0.81160499
+
+00:31:45.948 --> 00:31:47.271
+it's hard to keep in track with
+
+NOTE Confidence: 0.81160499
+
+00:31:47.271 --> 00:31:48.627
+all this double coin value stuff.
+
+NOTE Confidence: 0.293590665
+
+00:31:51.440 --> 00:31:53.040
+O safad.
+
+NOTE Confidence: 0.805283795714286
+
+00:31:58.390 --> 00:32:02.730
+This one computes if we would overflow.
+
+NOTE Confidence: 0.805283795714286
+
+00:32:02.730 --> 00:32:03.970
+It could be done, yeah,
+
+NOTE Confidence: 0.805283795714286
+
+00:32:03.970 --> 00:32:05.830
+with the throw technique basically
+
+NOTE Confidence: 0.805283795714286
+
+00:32:05.830 --> 00:32:08.027
+saying because the only call to
+
+NOTE Confidence: 0.805283795714286
+
+00:32:08.027 --> 00:32:09.647
+it is in a constexpr context,
+
+NOTE Confidence: 0.805283795714286
+
+00:32:09.650 --> 00:32:10.982
+so we would never worry about
+
+NOTE Confidence: 0.805283795714286
+
+00:32:10.982 --> 00:32:11.870
+like actually throwing in,
+
+NOTE Confidence: 0.805283795714286
+
+00:32:11.870 --> 00:32:13.088
+throwing an exception.
+
+NOTE Confidence: 0.840268379166667
+
+00:32:18.030 --> 00:32:19.906
+Yeah, I I think that could be
+
+NOTE Confidence: 0.840268379166667
+
+00:32:19.906 --> 00:32:22.390
+done later as an enhancement, um.
+
+NOTE Confidence: 0.7731325
+
+00:32:27.260 --> 00:32:30.832
+I like uh. I don't think anything
+
+NOTE Confidence: 0.7731325
+
+00:32:30.832 --> 00:32:32.247
+in this PR prevents that.
+
+NOTE Confidence: 0.7731325
+
+00:32:32.250 --> 00:32:34.850
+Yeah, it it's strictly optional.
+
+NOTE Confidence: 0.719508316
+
+00:32:37.560 --> 00:32:40.920
+Yeah, I will comment. Um, OK, let's comment.
+
+NOTE Confidence: 0.935770068571429
+
+00:32:44.370 --> 00:32:48.130
+I believe that it would
+
+NOTE Confidence: 0.935770068571429
+
+00:32:48.130 --> 00:32:50.860
+be possible. To convert.
+
+NOTE Confidence: 0.72760885625
+
+00:32:53.380 --> 00:32:58.738
+Safe add to a constexpr function
+
+NOTE Confidence: 0.72760885625
+
+00:32:58.738 --> 00:33:04.580
+but the. Um, overflow. Enforcement.
+
+NOTE Confidence: 0.94253563
+
+00:33:10.100 --> 00:33:14.965
+But I believe that the overflow enforcement.
+
+NOTE Confidence: 0.94253563
+
+00:33:14.970 --> 00:33:19.860
+Would be best expressed with.
+
+NOTE Confidence: 0.94253563
+
+00:33:19.860 --> 00:33:25.346
+If would overflow. Throw. Actually.
+
+NOTE Confidence: 0.94253563
+
+00:33:25.346 --> 00:33:28.132
+Um, I think we just typically call
+
+NOTE Confidence: 0.94253563
+
+00:33:28.132 --> 00:33:30.707
+a non constructs for function.
+
+NOTE Confidence: 0.94253563
+
+00:33:30.710 --> 00:33:33.398
+If would overflow um throw or
+
+NOTE Confidence: 0.94253563
+
+00:33:33.398 --> 00:33:37.700
+call a non constexpr. Function.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:40.020 --> 00:33:43.060
+Which is a technique that
+
+NOTE Confidence: 0.889993267142857
+
+00:33:43.060 --> 00:33:45.722
+we've used elsewhere. Um.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:45.722 --> 00:33:51.490
+The only usage of safe ad is at.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:51.490 --> 00:33:55.520
+Compile. Time.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:55.520 --> 00:33:57.860
+I could quote that if necessary.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:57.860 --> 00:33:58.676
+Yeah, I want to do so.
+
+NOTE Confidence: 0.889993267142857
+
+00:33:58.680 --> 00:34:00.532
+That's ratio line 98.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:00.532 --> 00:34:04.320
+So I'm going to bring up our repo.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:04.320 --> 00:34:08.040
+Open up STL Inc go down to ratio.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:08.040 --> 00:34:09.664
+I'd love to just be able to do
+
+NOTE Confidence: 0.889993267142857
+
+00:34:09.664 --> 00:34:11.249
+control P that'd be pretty cool.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:11.250 --> 00:34:13.786
+Um, hit Y to get an absolute link,
+
+NOTE Confidence: 0.889993267142857
+
+00:34:13.790 --> 00:34:15.834
+go down to 98.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:15.834 --> 00:34:17.878
+Here's the safe ad.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:17.880 --> 00:34:21.480
+I'll get the context and I can copy this URL.
+
+NOTE Confidence: 0.889993267142857
+
+00:34:21.480 --> 00:34:22.530
+You can also right click
+
+NOTE Confidence: 0.889993267142857
+
+00:34:22.530 --> 00:34:23.160
+and copy permalink,
+
+NOTE Confidence: 0.889993267142857
+
+00:34:23.160 --> 00:34:24.510
+but I do it that way.
+
+NOTE Confidence: 0.86025772
+
+00:34:27.780 --> 00:34:33.560
+Uh, however. Um. I believe that
+
+NOTE Confidence: 0.86025772
+
+00:34:33.560 --> 00:34:38.494
+this could be done. As a separate
+
+NOTE Confidence: 0.86025772
+
+00:34:38.494 --> 00:34:41.584
+optional step after this PR.
+
+NOTE Confidence: 0.847242538888889
+
+00:34:44.800 --> 00:34:50.137
+I don't believe that it's critical to do now.
+
+NOTE Confidence: 0.847242538888889
+
+00:34:50.140 --> 00:34:51.224
+OK, how's that sound?
+
+NOTE Confidence: 0.847242538888889
+
+00:34:51.224 --> 00:34:53.165
+I believe there would be possible to
+
+NOTE Confidence: 0.847242538888889
+
+00:34:53.165 --> 00:34:55.020
+convert safe ad to a constexpr function,
+
+NOTE Confidence: 0.847242538888889
+
+00:34:55.020 --> 00:34:56.502
+but I believe that the overflow
+
+NOTE Confidence: 0.847242538888889
+
+00:34:56.502 --> 00:34:57.761
+enforcement would be best expressed
+
+NOTE Confidence: 0.847242538888889
+
+00:34:57.761 --> 00:34:59.111
+with if would overflow throw or
+
+NOTE Confidence: 0.847242538888889
+
+00:34:59.111 --> 00:35:00.660
+call a non constexpr function,
+
+NOTE Confidence: 0.847242538888889
+
+00:35:00.660 --> 00:35:02.292
+which is a technique that we
+
+NOTE Confidence: 0.847242538888889
+
+00:35:02.292 --> 00:35:03.380
+that we've used elsewhere.
+
+NOTE Confidence: 0.847242538888889
+
+00:35:03.380 --> 00:35:05.240
+The only usage of safe ad
+
+NOTE Confidence: 0.847242538888889
+
+00:35:05.240 --> 00:35:06.820
+is that compile time pal.
+
+NOTE Confidence: 0.847242538888889
+
+00:35:06.820 --> 00:35:08.404
+However, I believe that this could be done
+
+NOTE Confidence: 0.847242538888889
+
+00:35:08.404 --> 00:35:10.396
+as a separate optional step after this PR.
+
+NOTE Confidence: 0.847242538888889
+
+00:35:10.400 --> 00:35:11.620
+I don't believe that it's
+
+NOTE Confidence: 0.847242538888889
+
+00:35:11.620 --> 00:35:14.780
+critical to do now, OK.
+
+NOTE Confidence: 0.847242538888889
+
+00:35:14.780 --> 00:35:16.090
+OI think that looks good.
+
+NOTE Confidence: 0.647186576
+
+00:35:23.880 --> 00:35:25.890
+Yeah, trying to think, um.
+
+NOTE Confidence: 0.74540208
+
+00:35:27.920 --> 00:35:29.656
+I would prefer things to be incremental.
+
+NOTE Confidence: 0.74540208
+
+00:35:29.660 --> 00:35:31.500
+This is already changing.
+
+NOTE Confidence: 0.74540208
+
+00:35:31.500 --> 00:35:33.675
+Like, this is not a difficult change here.
+
+NOTE Confidence: 0.74540208
+
+00:35:33.680 --> 00:35:34.784
+It's not super scary.
+
+NOTE Confidence: 0.74540208
+
+00:35:34.784 --> 00:35:37.370
+Um, but it is changing code that
+
+NOTE Confidence: 0.74540208
+
+00:35:37.370 --> 00:35:39.940
+is used by ratio and Chrono.
+
+NOTE Confidence: 0.74540208
+
+00:35:39.940 --> 00:35:41.200
+I'm an existing code,
+
+NOTE Confidence: 0.74540208
+
+00:35:41.200 --> 00:35:42.775
+I'm in fact it's unconditional,
+
+NOTE Confidence: 0.74540208
+
+00:35:42.780 --> 00:35:44.957
+so it affects even C + 14.
+
+NOTE Confidence: 0.74540208
+
+00:35:44.960 --> 00:35:47.032
+So that makes me a little more
+
+NOTE Confidence: 0.74540208
+
+00:35:47.032 --> 00:35:48.871
+hesitant to just go wild and
+
+NOTE Confidence: 0.74540208
+
+00:35:48.871 --> 00:35:50.635
+change a whole bunch of stuff.
+
+NOTE Confidence: 0.74540208
+
+00:35:50.640 --> 00:35:52.576
+I'd rather be a little bit more incremental
+
+NOTE Confidence: 0.74540208
+
+00:35:52.576 --> 00:35:54.668
+here when we're writing completely new code.
+
+NOTE Confidence: 0.74540208
+
+00:35:54.670 --> 00:35:56.145
+That's leaf code that's not
+
+NOTE Confidence: 0.74540208
+
+00:35:56.145 --> 00:35:57.620
+used by an existing stuff.
+
+NOTE Confidence: 0.74540208
+
+00:35:57.620 --> 00:35:59.174
+Um, I think it's OK to be
+
+NOTE Confidence: 0.74540208
+
+00:35:59.174 --> 00:36:00.610
+a little bit more daring,
+
+NOTE Confidence: 0.74540208
+
+00:36:00.610 --> 00:36:03.180
+um and do things like,
+
+NOTE Confidence: 0.74540208
+
+00:36:03.180 --> 00:36:05.356
+you know, larger refactorings,
+
+NOTE Confidence: 0.74540208
+
+00:36:05.356 --> 00:36:07.413
+more aggressive changes here.
+
+NOTE Confidence: 0.74540208
+
+00:36:07.413 --> 00:36:10.374
+I think that doing sort of a
+
+NOTE Confidence: 0.74540208
+
+00:36:10.374 --> 00:36:12.514
+limited conversion of ABS sign of
+
+NOTE Confidence: 0.74540208
+
+00:36:12.514 --> 00:36:15.420
+and GCD is a good start and then
+
+NOTE Confidence: 0.74540208
+
+00:36:15.420 --> 00:36:17.930
+later we could continue converting.
+
+NOTE Confidence: 0.74540208
+
+00:36:17.930 --> 00:36:22.190
+It's sort of doing it from the leaf nodes up.
+
+NOTE Confidence: 0.74540208
+
+00:36:22.190 --> 00:36:24.810
+So I think that's fine.
+
+NOTE Confidence: 0.74540208
+
+00:36:24.810 --> 00:36:29.370
+OK, so here this is the usage of sign of.
+
+NOTE Confidence: 0.74540208
+
+00:36:29.370 --> 00:36:34.466
+So Safad is unchanged, still pass ANB,
+
+NOTE Confidence: 0.74540208
+
+00:36:34.470 --> 00:36:36.018
+but then instead of saying sign
+
+NOTE Confidence: 0.74540208
+
+00:36:36.018 --> 00:36:37.849
+a value not equal sign of value,
+
+NOTE Confidence: 0.74540208
+
+00:36:37.850 --> 00:36:40.830
+it's sign of a X not equal sine of BX.
+
+NOTE Confidence: 0.74540208
+
+00:36:40.830 --> 00:36:42.354
+That's good.
+
+NOTE Confidence: 0.74540208
+
+00:36:42.354 --> 00:36:46.926
+And then second Arg is parenthesized.
+
+NOTE Confidence: 0.74540208
+
+00:36:46.930 --> 00:36:47.959
+Yep, I can't.
+
+NOTE Confidence: 0.74540208
+
+00:36:47.959 --> 00:36:49.331
+Think we parenthesize because
+
+NOTE Confidence: 0.74540208
+
+00:36:49.331 --> 00:36:50.910
+of this angle bracket.
+
+NOTE Confidence: 0.74540208
+
+00:36:50.910 --> 00:36:53.486
+I think that's why we were concerned.
+
+NOTE Confidence: 0.74540208
+
+00:36:53.490 --> 00:36:55.818
+Interesting. We were very paranoid sometimes.
+
+NOTE Confidence: 0.74540208
+
+00:36:55.820 --> 00:36:56.975
+Um, if ABS.
+
+NOTE Confidence: 0.74540208
+
+00:36:56.975 --> 00:36:59.670
+Of X and you're making sure that
+
+NOTE Confidence: 0.74540208
+
+00:36:59.766 --> 00:37:02.656
+we're not flipping any variables.
+
+NOTE Confidence: 0.74540208
+
+00:37:02.660 --> 00:37:03.094
+That's good.
+
+NOTE Confidence: 0.74540208
+
+00:37:03.094 --> 00:37:04.179
+Less or equal it Max,
+
+NOTE Confidence: 0.74540208
+
+00:37:04.180 --> 00:37:08.140
+Max minus ABS of BX type.
+
+NOTE Confidence: 0.74540208
+
+00:37:08.140 --> 00:37:10.948
+OK, that looks to have been
+
+NOTE Confidence: 0.74540208
+
+00:37:10.948 --> 00:37:12.352
+completely converted over.
+
+NOTE Confidence: 0.74540208
+
+00:37:12.360 --> 00:37:15.384
+Do I believe that we still need
+
+NOTE Confidence: 0.74540208
+
+00:37:15.384 --> 00:37:16.680
+these parentheses here?
+
+NOTE Confidence: 0.74540208
+
+00:37:16.680 --> 00:37:17.040
+Plus,
+
+NOTE Confidence: 0.74540208
+
+00:37:17.040 --> 00:37:18.840
+SQL is a single token.
+
+NOTE Confidence: 0.74540208
+
+00:37:18.840 --> 00:37:21.876
+These parentheses are really not necessary,
+
+NOTE Confidence: 0.74540208
+
+00:37:21.880 --> 00:37:24.100
+but they were preexisting.
+
+NOTE Confidence: 0.74540208
+
+00:37:24.100 --> 00:37:26.875
+They were equally unnecessary here.
+
+NOTE Confidence: 0.74540208
+
+00:37:26.880 --> 00:37:28.340
+I'm not going to ask for them to be removed.
+
+NOTE Confidence: 0.74540208
+
+00:37:28.340 --> 00:37:28.730
+It's OK.
+
+NOTE Confidence: 0.9399262
+
+00:37:32.260 --> 00:37:36.228
+OK, next. OK, so now this
+
+NOTE Confidence: 0.9399262
+
+00:37:36.228 --> 00:37:38.430
+is the big change to GCD.
+
+NOTE Confidence: 0.9399262
+
+00:37:38.430 --> 00:37:40.410
+Here we had and this is one of the
+
+NOTE Confidence: 0.9399262
+
+00:37:40.410 --> 00:37:41.995
+reasons why it's a nice clean up.
+
+NOTE Confidence: 0.9399262
+
+00:37:42.000 --> 00:37:45.786
+Um. We had a public struct,
+
+NOTE Confidence: 0.9399262
+
+00:37:45.790 --> 00:37:48.600
+um that predigest predigested things
+
+NOTE Confidence: 0.9399262
+
+00:37:48.600 --> 00:37:52.039
+by taking their absolute value and
+
+NOTE Confidence: 0.9399262
+
+00:37:52.039 --> 00:37:55.261
+then passed it to this recursively
+
+NOTE Confidence: 0.9399262
+
+00:37:55.261 --> 00:37:57.970
+instantiating struct with a base case.
+
+NOTE Confidence: 0.9399262
+
+00:37:57.970 --> 00:38:00.778
+And then we had the we had an
+
+NOTE Confidence: 0.9399262
+
+00:38:00.778 --> 00:38:02.209
+explicit specialization down here,
+
+NOTE Confidence: 0.9399262
+
+00:38:02.210 --> 00:38:05.430
+um that absorbed 20 arguments,
+
+NOTE Confidence: 0.9399262
+
+00:38:05.430 --> 00:38:07.905
+which I found as I implemented the stuff I
+
+NOTE Confidence: 0.9399262
+
+00:38:07.905 --> 00:38:10.225
+believe that it was very convenient to have.
+
+NOTE Confidence: 0.9399262
+
+00:38:10.230 --> 00:38:11.975
+Even though technically math textbooks
+
+NOTE Confidence: 0.9399262
+
+00:38:11.975 --> 00:38:15.509
+say GC is 00 is not a thing, it's not one.
+
+NOTE Confidence: 0.9399262
+
+00:38:15.509 --> 00:38:19.177
+OK, so this is also going to be a notice
+
+NOTE Confidence: 0.9399262
+
+00:38:19.177 --> 00:38:21.507
+guard constexpr function returning it.
+
+NOTE Confidence: 0.9399262
+
+00:38:21.510 --> 00:38:24.166
+Next we're going to call under score GCD.
+
+NOTE Confidence: 0.9399262
+
+00:38:24.170 --> 00:38:25.358
+So saying name.
+
+NOTE Confidence: 0.9399262
+
+00:38:25.358 --> 00:38:27.774
+That's good, we're going to take ax and BX.
+
+NOTE Confidence: 0.9399262
+
+00:38:27.780 --> 00:38:28.396
+During Max's,
+
+NOTE Confidence: 0.9399262
+
+00:38:28.396 --> 00:38:30.552
+but they're not going to be confused
+
+NOTE Confidence: 0.9399262
+
+00:38:30.552 --> 00:38:32.889
+because we are going to modify them in place.
+
+NOTE Confidence: 0.9399262
+
+00:38:32.890 --> 00:38:34.096
+So that's good.
+
+NOTE Confidence: 0.9399262
+
+00:38:34.096 --> 00:38:35.704
+That is what allows.
+
+NOTE Confidence: 0.9399262
+
+00:38:35.710 --> 00:38:38.086
+It allows us to write this as a loop
+
+NOTE Confidence: 0.9399262
+
+00:38:38.086 --> 00:38:39.950
+rather than recursively calling.
+
+NOTE Confidence: 0.9399262
+
+00:38:39.950 --> 00:38:42.710
+So I like that it's going to be no except.
+
+NOTE Confidence: 0.9399262
+
+00:38:42.710 --> 00:38:45.386
+OK, so we're going to start
+
+NOTE Confidence: 0.9399262
+
+00:38:45.390 --> 00:38:46.874
+by absorbing this case,
+
+NOTE Confidence: 0.9399262
+
+00:38:46.874 --> 00:38:49.780
+which used to be a an explicit
+
+NOTE Confidence: 0.9399262
+
+00:38:49.780 --> 00:38:53.320
+specialization on the public function if.
+
+NOTE Confidence: 0.9399262
+
+00:38:53.320 --> 00:38:57.000
+X is equal to 0 and BX is equal to 0.
+
+NOTE Confidence: 0.9399262
+
+00:38:57.000 --> 00:38:58.336
+That's exactly this case.
+
+NOTE Confidence: 0.9399262
+
+00:38:58.336 --> 00:39:00.340
+Then we want to return one,
+
+NOTE Confidence: 0.9399262
+
+00:39:00.340 --> 00:39:01.978
+and we're going to preserve the comment,
+
+NOTE Confidence: 0.9399262
+
+00:39:01.980 --> 00:39:03.844
+contrary to mathematical convention,
+
+NOTE Confidence: 0.9399262
+
+00:39:03.844 --> 00:39:07.379
+avoids division by zero and ratio less good.
+
+NOTE Confidence: 0.9399262
+
+00:39:07.380 --> 00:39:08.676
+So if they're not both zero,
+
+NOTE Confidence: 0.9399262
+
+00:39:08.680 --> 00:39:10.920
+then we can take their absolute value.
+
+NOTE Confidence: 0.9399262
+
+00:39:10.920 --> 00:39:12.696
+That is what was happening here.
+
+NOTE Confidence: 0.9399262
+
+00:39:12.700 --> 00:39:14.210
+X is absolute of ax.
+
+NOTE Confidence: 0.9399262
+
+00:39:14.210 --> 00:39:15.780
+BX is absolute of X.
+
+NOTE Confidence: 0.9399262
+
+00:39:15.780 --> 00:39:17.796
+OK, so now we've done this,
+
+NOTE Confidence: 0.9399262
+
+00:39:17.800 --> 00:39:20.866
+and now we're going to use the.
+
+NOTE Confidence: 0.9399262
+
+00:39:20.870 --> 00:39:23.678
+GCD X helpers here, so this loop down
+
+NOTE Confidence: 0.9399262
+
+00:39:23.678 --> 00:39:26.040
+here should be equivalent to this.
+
+NOTE Confidence: 0.9399262
+
+00:39:26.040 --> 00:39:28.270
+So we're going to loop. Um.
+
+NOTE Confidence: 0.9399262
+
+00:39:28.270 --> 00:39:29.740
+This partial specialization
+
+NOTE Confidence: 0.9399262
+
+00:39:29.740 --> 00:39:32.680
+absorbed cases when BX was zero.
+
+NOTE Confidence: 0.9399262
+
+00:39:32.680 --> 00:39:35.136
+So while BX is not equal to zero,
+
+NOTE Confidence: 0.9399262
+
+00:39:35.140 --> 00:39:38.140
+we need to do work when it is equal to 0.
+
+NOTE Confidence: 0.9399262
+
+00:39:38.140 --> 00:39:39.424
+This would absorb it,
+
+NOTE Confidence: 0.9399262
+
+00:39:39.424 --> 00:39:42.220
+and we're just going to return a X return X.
+
+NOTE Confidence: 0.9399262
+
+00:39:42.220 --> 00:39:43.636
+So that is done.
+
+NOTE Confidence: 0.9399262
+
+00:39:43.636 --> 00:39:45.760
+We don't have the comment here.
+
+NOTE Confidence: 0.9399262
+
+00:39:45.760 --> 00:39:50.377
+Computes GCD of X and zero because that is,
+
+NOTE Confidence: 0.9399262
+
+00:39:50.380 --> 00:39:52.640
+you know, really obvious here.
+
+NOTE Confidence: 0.9399262
+
+00:39:52.640 --> 00:39:53.879
+I'm fine with not having that comment.
+
+NOTE Confidence: 0.9399262
+
+00:39:53.880 --> 00:39:55.590
+It was the contrary to mathematical
+
+NOTE Confidence: 0.9399262
+
+00:39:55.590 --> 00:39:57.290
+convention, one that was.
+
+NOTE Confidence: 0.9399262
+
+00:39:57.290 --> 00:39:58.230
+Very important.
+
+NOTE Confidence: 0.9399262
+
+00:39:58.230 --> 00:40:00.760
+Um.
+
+NOTE Confidence: 0.9399262
+
+00:40:00.760 --> 00:40:02.979
+Yeah, it also occurs to me that,
+
+NOTE Confidence: 0.9399262
+
+00:40:02.980 --> 00:40:03.371
+OK,
+
+NOTE Confidence: 0.9399262
+
+00:40:03.371 --> 00:40:05.717
+so we we are keeping this.
+
+NOTE Confidence: 0.9399262
+
+00:40:05.720 --> 00:40:07.000
+We don't need computers because
+
+NOTE Confidence: 0.9399262
+
+00:40:07.000 --> 00:40:08.280
+these are the internal ones.
+
+NOTE Confidence: 0.9399262
+
+00:40:08.280 --> 00:40:10.856
+Computes X and zero or ax and BX.
+
+NOTE Confidence: 0.9399262
+
+00:40:10.860 --> 00:40:12.620
+But we're losing this comment.
+
+NOTE Confidence: 0.9399262
+
+00:40:12.620 --> 00:40:16.500
+Computes GCD of absolute ax and absolute BX.
+
+NOTE Confidence: 0.9399262
+
+00:40:16.500 --> 00:40:19.038
+I think I would like to retain that because
+
+NOTE Confidence: 0.9399262
+
+00:40:19.038 --> 00:40:20.983
+that's an important thing that affects
+
+NOTE Confidence: 0.9399262
+
+00:40:20.983 --> 00:40:23.160
+the interface of this GCD function,
+
+NOTE Confidence: 0.9399262
+
+00:40:23.160 --> 00:40:25.588
+even though it's internal.
+
+NOTE Confidence: 0.9399262
+
+00:40:25.590 --> 00:40:28.572
+The fact that it takes the absolute
+
+NOTE Confidence: 0.9399262
+
+00:40:28.572 --> 00:40:31.014
+values um. I think we should,
+
+NOTE Confidence: 0.9399262
+
+00:40:31.014 --> 00:40:32.994
+we should retain that comment.
+
+NOTE Confidence: 0.9399262
+
+00:40:33.000 --> 00:40:33.408
+Uh, whoops.
+
+NOTE Confidence: 0.9399262
+
+00:40:33.408 --> 00:40:34.836
+I don't want to add that favor.
+
+NOTE Confidence: 0.9399262
+
+00:40:34.840 --> 00:40:37.840
+Um, here we go.
+
+NOTE Confidence: 0.9399262
+
+00:40:37.840 --> 00:40:38.590
+Copy.
+
+NOTE Confidence: 0.858961002222222
+
+00:40:38.590 --> 00:40:42.960
+Let's see. I think we
+
+NOTE Confidence: 0.858961002222222
+
+00:40:42.960 --> 00:40:46.456
+should preserve the comment.
+
+NOTE Confidence: 0.858961002222222
+
+00:40:46.460 --> 00:40:50.215
+Um, as it explains something
+
+NOTE Confidence: 0.858961002222222
+
+00:40:50.215 --> 00:40:53.219
+important about the behavior
+
+NOTE Confidence: 0.858961002222222
+
+00:40:53.219 --> 00:40:57.318
+slash interface of this function.
+
+NOTE Confidence: 0.622417143333333
+
+00:40:59.590 --> 00:41:01.683
+OK, I think we should preserve the
+
+NOTE Confidence: 0.622417143333333
+
+00:41:01.683 --> 00:41:03.300
+comment computer GCD of ABX, MBX.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:03.300 --> 00:41:05.540
+Yep, there's still the names as it explains
+
+NOTE Confidence: 0.622417143333333
+
+00:41:05.540 --> 00:41:07.250
+something important about the behavior
+
+NOTE Confidence: 0.622417143333333
+
+00:41:07.250 --> 00:41:09.238
+slash interface with this function. OK.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:09.238 --> 00:41:14.002
+But other than that, um, we have handled.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:14.002 --> 00:41:18.720
+The 00 taking the absolute value. Umm.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:18.720 --> 00:41:22.230
+When X is zero, we just return a X.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:22.230 --> 00:41:24.982
+Otherwise we need to loop. OK, so here,
+
+NOTE Confidence: 0.622417143333333
+
+00:41:24.982 --> 00:41:27.960
+what was the loop doing when X is nonzero?
+
+NOTE Confidence: 0.622417143333333
+
+00:41:27.960 --> 00:41:30.750
+We sort of exchange things.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:30.750 --> 00:41:34.316
+First we compute. OK, here, let's see.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:34.316 --> 00:41:35.488
+Let's say I'm doing.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:35.490 --> 00:41:38.410
+Store is constant Max T X2 is ax,
+
+NOTE Confidence: 0.622417143333333
+
+00:41:38.410 --> 00:41:40.450
+so store ax is a temporary.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:40.450 --> 00:41:43.450
+Now assign ax equals BX,
+
+NOTE Confidence: 0.622417143333333
+
+00:41:43.450 --> 00:41:45.605
+so that puts BX here. Good.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:45.605 --> 00:41:48.925
+And then BX is going to be the
+
+NOTE Confidence: 0.622417143333333
+
+00:41:48.925 --> 00:41:51.786
+original value of X, so X2.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:51.786 --> 00:41:54.933
+Mod BX yes, this is good.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:54.933 --> 00:41:56.838
+And there's no real convenient
+
+NOTE Confidence: 0.622417143333333
+
+00:41:56.838 --> 00:41:58.800
+way to do that better.
+
+NOTE Confidence: 0.622417143333333
+
+00:41:58.800 --> 00:42:00.860
+Uh, there's like food exchange,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:00.860 --> 00:42:03.173
+but that would just make it harder to read.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:03.180 --> 00:42:07.870
+Um, this is simple. I like it.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:07.870 --> 00:42:09.378
+OK, that looks good.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:09.378 --> 00:42:10.509
+And that's GCD.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:10.510 --> 00:42:12.170
+Much easier to follow. Um,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:12.170 --> 00:42:16.194
+rather than having a grand total of like 1/2,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:16.194 --> 00:42:19.994
+is it four or 344 struct template,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:19.994 --> 00:42:21.946
+either templates or specializations.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:21.950 --> 00:42:23.258
+Now we just have a single
+
+NOTE Confidence: 0.622417143333333
+
+00:42:23.258 --> 00:42:24.130
+function with if statements.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:24.130 --> 00:42:25.500
+Awesome.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:25.500 --> 00:42:27.180
+Okay, ratio is now going to be uh,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:27.180 --> 00:42:28.776
+changed to use it and we're even.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:28.780 --> 00:42:30.537
+I'm not wrapping because we don't have
+
+NOTE Confidence: 0.622417143333333
+
+00:42:30.537 --> 00:42:32.259
+all these spammy double colon values.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:32.260 --> 00:42:33.115
+As an aside,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:33.115 --> 00:42:34.540
+we probably would have introduced
+
+NOTE Confidence: 0.622417143333333
+
+00:42:34.540 --> 00:42:36.038
+variable templates if we had them
+
+NOTE Confidence: 0.622417143333333
+
+00:42:36.038 --> 00:42:37.352
+when we originally wrote this code,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:37.360 --> 00:42:38.536
+but we didn't,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:38.536 --> 00:42:41.280
+so we had to use nested value
+
+NOTE Confidence: 0.622417143333333
+
+00:42:41.280 --> 00:42:44.530
+static context for data members.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:44.530 --> 00:42:45.979
+But now we can just function call.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:45.980 --> 00:42:49.262
+So static constexpr Max NUM is
+
+NOTE Confidence: 0.622417143333333
+
+00:42:49.262 --> 00:42:52.966
+NX times sine of DX times ABS
+
+NOTE Confidence: 0.622417143333333
+
+00:42:52.966 --> 00:42:56.221
+of X divided by GCD of NXX.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:56.230 --> 00:42:56.492
+Yep,
+
+NOTE Confidence: 0.622417143333333
+
+00:42:56.492 --> 00:42:57.540
+that's all the same.
+
+NOTE Confidence: 0.622417143333333
+
+00:42:57.540 --> 00:43:01.068
+Instead of counts expert next den denominator
+
+NOTE Confidence: 0.622417143333333
+
+00:43:01.068 --> 00:43:05.608
+is ABS DX divided by GCD of NX DX perfect.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:05.610 --> 00:43:09.497
+Here we have a GX that's the GCD a DX1DX2.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:09.497 --> 00:43:09.904
+Yep.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:09.904 --> 00:43:12.346
+And GX GY converted over two.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:12.350 --> 00:43:14.770
+OK, so that's perfect.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:14.770 --> 00:43:16.270
+And then let's take a look
+
+NOTE Confidence: 0.622417143333333
+
+00:43:16.270 --> 00:43:17.270
+at Chrono O Chrono.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:17.270 --> 00:43:20.510
+Hadn't LCM least common multiple um.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:20.510 --> 00:43:22.208
+Here we are losing the comment.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:22.210 --> 00:43:23.950
+Compute LCM of AX and BX.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:23.950 --> 00:43:25.210
+That's just the name of the thing,
+
+NOTE Confidence: 0.622417143333333
+
+00:43:25.210 --> 00:43:28.508
+so we don't need that comment here we
+
+NOTE Confidence: 0.622417143333333
+
+00:43:28.508 --> 00:43:30.842
+have a notice guard constexpr function
+
+NOTE Confidence: 0.622417143333333
+
+00:43:30.842 --> 00:43:33.090
+returning maxt named under score LCM.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:33.090 --> 00:43:35.130
+Um, under score, capital LCM.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:35.130 --> 00:43:37.307
+Uh, these can be constant Max DX,
+
+NOTE Confidence: 0.622417143333333
+
+00:43:37.310 --> 00:43:38.030
+constant Xbox.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:38.030 --> 00:43:39.830
+No, except that's all good.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:39.830 --> 00:43:42.280
+Then we're going to return.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:42.280 --> 00:43:45.616
+OK, so we're going to return this here.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:45.620 --> 00:43:47.454
+I'm just going to copy and search.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:47.460 --> 00:43:48.428
+Uh, Nope, they're all.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:48.428 --> 00:43:49.880
+It's because the double column value.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:49.880 --> 00:43:53.168
+So if we converted.
+
+NOTE Confidence: 0.622417143333333
+
+00:43:53.170 --> 00:43:54.460
+Parans.
+
+NOTE Confidence: 0.710696425555555
+
+00:43:56.820 --> 00:43:58.455
+Yeah, OK, so converting double
+
+NOTE Confidence: 0.710696425555555
+
+00:43:58.455 --> 00:43:59.763
+cone value to parentheses,
+
+NOTE Confidence: 0.710696425555555
+
+00:43:59.770 --> 00:44:01.530
+it's the exact same expression.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:01.530 --> 00:44:02.850
+Um, so no type is there.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:02.850 --> 00:44:04.950
+I could have verified that visually,
+
+NOTE Confidence: 0.710696425555555
+
+00:44:04.950 --> 00:44:08.568
+but control F is sometimes easier.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:08.570 --> 00:44:09.236
+OK, that's good.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:09.236 --> 00:44:10.346
+This weird space is just
+
+NOTE Confidence: 0.710696425555555
+
+00:44:10.346 --> 00:44:11.610
+because of the wrapping here.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:11.610 --> 00:44:13.230
+Is not actually in the code.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:13.230 --> 00:44:17.238
+And then this GCD calls now function call.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:17.240 --> 00:44:18.374
+Same with LCM.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:18.374 --> 00:44:20.642
+LCM is still doing nontrivial work,
+
+NOTE Confidence: 0.710696425555555
+
+00:44:20.650 --> 00:44:23.490
+so there's no reason to try to lift that out.
+
+NOTE Confidence: 0.710696425555555
+
+00:44:23.490 --> 00:44:24.330
+OK, that looks great.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:27.230 --> 00:44:31.196
+OK. So aside from the um.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:31.200 --> 00:44:32.872
+The comment being lost.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:32.872 --> 00:44:36.301
+The main question is do we need to
+
+NOTE Confidence: 0.747214938333333
+
+00:44:36.301 --> 00:44:38.682
+convert safe add over and I believe
+
+NOTE Confidence: 0.747214938333333
+
+00:44:38.682 --> 00:44:40.720
+that is definitely not necessary.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:40.720 --> 00:44:44.120
+It's only correct as is.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:44.120 --> 00:44:46.020
+It's not even really inconsistent
+
+NOTE Confidence: 0.747214938333333
+
+00:44:46.020 --> 00:44:47.920
+because currently safe multi still
+
+NOTE Confidence: 0.747214938333333
+
+00:44:47.981 --> 00:44:50.219
+expresses a structure that hooks deeply,
+
+NOTE Confidence: 0.747214938333333
+
+00:44:50.220 --> 00:44:53.160
+as we saw into the Chrono functionality.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:53.160 --> 00:44:55.918
+UM, safe a DX or safe ad
+
+NOTE Confidence: 0.747214938333333
+
+00:44:55.918 --> 00:44:58.390
+only has the one caller.
+
+NOTE Confidence: 0.747214938333333
+
+00:44:58.390 --> 00:45:00.560
+Got this good also good
+
+NOTE Confidence: 0.747214938333333
+
+00:45:00.560 --> 00:45:02.296
+thing this is different.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:02.300 --> 00:45:03.608
+Morally than the conversion
+
+NOTE Confidence: 0.747214938333333
+
+00:45:03.608 --> 00:45:04.589
+that's happening here.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:04.590 --> 00:45:07.400
+We're converting the struct stuff
+
+NOTE Confidence: 0.747214938333333
+
+00:45:07.400 --> 00:45:08.756
+into context for functions,
+
+NOTE Confidence: 0.747214938333333
+
+00:45:08.756 --> 00:45:11.599
+but we don't need to handle error cases.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:11.600 --> 00:45:12.575
+There's no errors that we're
+
+NOTE Confidence: 0.747214938333333
+
+00:45:12.575 --> 00:45:13.160
+trying to absorb.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:13.160 --> 00:45:14.820
+This is error handling.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:14.820 --> 00:45:18.267
+I think that doing that as a follow up
+
+NOTE Confidence: 0.747214938333333
+
+00:45:18.267 --> 00:45:20.678
+PR or filing an issue for something
+
+NOTE Confidence: 0.747214938333333
+
+00:45:20.678 --> 00:45:22.880
+like that is entirely reasonable.
+
+NOTE Confidence: 0.747214938333333
+
+00:45:22.880 --> 00:45:24.430
+I don't think it's necessary.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:28.320 --> 00:45:29.358
+And if we did do it,
+
+NOTE Confidence: 0.917791868333333
+
+00:45:29.360 --> 00:45:31.856
+I think that we would simply need to
+
+NOTE Confidence: 0.917791868333333
+
+00:45:31.856 --> 00:45:34.107
+decide should it be calling a function.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:34.110 --> 00:45:36.254
+Um, there is. I can also look at
+
+NOTE Confidence: 0.917791868333333
+
+00:45:36.254 --> 00:45:38.017
+precedents to add to this comment,
+
+NOTE Confidence: 0.917791868333333
+
+00:45:38.020 --> 00:45:40.246
+I think format had one example
+
+NOTE Confidence: 0.917791868333333
+
+00:45:40.246 --> 00:45:41.730
+where during contextual evaluation
+
+NOTE Confidence: 0.917791868333333
+
+00:45:41.797 --> 00:45:43.167
+we have a function like.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:43.170 --> 00:45:44.814
+You see this because you violated
+
+NOTE Confidence: 0.917791868333333
+
+00:45:44.814 --> 00:45:47.044
+so and so yeah, here we go.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:47.044 --> 00:45:48.512
+Inline void, you see this error
+
+NOTE Confidence: 0.917791868333333
+
+00:45:48.512 --> 00:45:49.860
+because our idea is out of range.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:49.860 --> 00:45:52.436
+It's not constexpr or we do define it,
+
+NOTE Confidence: 0.917791868333333
+
+00:45:52.440 --> 00:45:54.494
+but it's not constant expert, so.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:54.494 --> 00:45:57.430
+We call this function.
+
+NOTE Confidence: 0.917791868333333
+
+00:45:57.430 --> 00:45:58.430
+In context for evaluation,
+
+NOTE Confidence: 0.917791868333333
+
+00:45:58.430 --> 00:45:59.710
+when we want to, uh,
+
+NOTE Confidence: 0.917791868333333
+
+00:45:59.710 --> 00:46:01.950
+emit an error and the compiler will complain,
+
+NOTE Confidence: 0.917791868333333
+
+00:46:01.950 --> 00:46:03.782
+hey, this thing is in constexpr and the
+
+NOTE Confidence: 0.917791868333333
+
+00:46:03.782 --> 00:46:05.748
+name of the function is an indication.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:05.750 --> 00:46:06.598
+This actually indicates that
+
+NOTE Confidence: 0.917791868333333
+
+00:46:06.598 --> 00:46:07.870
+we're sort of working around a
+
+NOTE Confidence: 0.917791868333333
+
+00:46:07.909 --> 00:46:09.059
+limitation in the core language.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:09.060 --> 00:46:10.956
+It sure would be nice if we could
+
+NOTE Confidence: 0.917791868333333
+
+00:46:10.956 --> 00:46:12.699
+emit a custom error during context
+
+NOTE Confidence: 0.917791868333333
+
+00:46:12.699 --> 00:46:14.990
+for only as like a nice string.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:14.990 --> 00:46:16.242
+We don't have that,
+
+NOTE Confidence: 0.917791868333333
+
+00:46:16.242 --> 00:46:19.049
+so this is a not awesome work around,
+
+NOTE Confidence: 0.917791868333333
+
+00:46:19.050 --> 00:46:20.418
+but it does work.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:20.418 --> 00:46:23.778
+So I think I'll go ahead and quote this.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:23.780 --> 00:46:25.924
+Because this is only used at compile time,
+
+NOTE Confidence: 0.917791868333333
+
+00:46:25.930 --> 00:46:26.746
+that's a format.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:26.746 --> 00:46:29.230
+I'll just copy the name of the function.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:29.230 --> 00:46:32.203
+OK, let's go load up the. Header.
+
+NOTE Confidence: 0.917791868333333
+
+00:46:32.203 --> 00:46:34.744
+I'm going to go back to format.
+
+NOTE Confidence: 0.841353015
+
+00:46:36.940 --> 00:46:39.888
+Go up a bit too far. Here we go.
+
+NOTE Confidence: 0.841353015
+
+00:46:39.888 --> 00:46:41.868
+Format. Hit Y for permalink,
+
+NOTE Confidence: 0.841353015
+
+00:46:41.870 --> 00:46:46.298
+search for function um copy definition.
+
+NOTE Confidence: 0.84595303
+
+00:46:49.570 --> 00:46:52.878
+And I can. Ohh it's pending good so I
+
+NOTE Confidence: 0.84595303
+
+00:46:52.878 --> 00:46:56.429
+can update it in place. Uh, let's see.
+
+NOTE Confidence: 0.714607131666667
+
+00:46:58.560 --> 00:46:59.433
+It would overflow.
+
+NOTE Confidence: 0.714607131666667
+
+00:46:59.433 --> 00:47:02.350
+I get the rid of the bit about throw.
+
+NOTE Confidence: 0.714607131666667
+
+00:47:02.350 --> 00:47:03.360
+We don't want that. Um,
+
+NOTE Confidence: 0.714607131666667
+
+00:47:03.360 --> 00:47:05.958
+calling on constexpr function and then,
+
+NOTE Confidence: 0.714607131666667
+
+00:47:05.960 --> 00:47:07.795
+which is a technique that
+
+NOTE Confidence: 0.714607131666667
+
+00:47:07.795 --> 00:47:08.896
+we've used elsewhere.
+
+NOTE Confidence: 0.714607131666667
+
+00:47:08.900 --> 00:47:13.160
+Here's the inline 1. Umm.
+
+NOTE Confidence: 0.714607131666667
+
+00:47:13.160 --> 00:47:17.717
+And then the calls OK this one.
+
+NOTE Confidence: 0.714607131666667
+
+00:47:17.720 --> 00:47:19.080
+This one's even better to
+
+NOTE Confidence: 0.714607131666667
+
+00:47:19.080 --> 00:47:20.898
+quote because I can show the
+
+NOTE Confidence: 0.714607131666667
+
+00:47:20.898 --> 00:47:22.506
+constexpr function pretty easily.
+
+NOTE Confidence: 0.714607131666667
+
+00:47:22.510 --> 00:47:23.340
+Like this?
+
+NOTE Confidence: 0.84991462125
+
+00:47:28.040 --> 00:47:29.200
+How do I have two of these open?
+
+NOTE Confidence: 0.84991462125
+
+00:47:29.200 --> 00:47:31.520
+Ohh this is the issue. OK.
+
+NOTE Confidence: 0.78145368
+
+00:47:34.420 --> 00:47:35.430
+OK, great.
+
+NOTE Confidence: 0.66292364
+
+00:47:39.990 --> 00:47:41.806
+OK, I believe there be possible to convert
+
+NOTE Confidence: 0.66292364
+
+00:47:41.806 --> 00:47:43.429
+safe add to contacts per function,
+
+NOTE Confidence: 0.66292364
+
+00:47:43.430 --> 00:47:44.786
+but I believe the overflow enforcement
+
+NOTE Confidence: 0.66292364
+
+00:47:44.786 --> 00:47:46.391
+would be best expressed with if would
+
+NOTE Confidence: 0.66292364
+
+00:47:46.391 --> 00:47:47.486
+overflow call an context function,
+
+NOTE Confidence: 0.66292364
+
+00:47:47.490 --> 00:47:49.107
+which is a technique we've used elsewhere.
+
+NOTE Confidence: 0.66292364
+
+00:47:49.110 --> 00:47:51.494
+In line void you see this error prone
+
+NOTE Confidence: 0.66292364
+
+00:47:51.494 --> 00:47:53.467
+Pran constexpr function that calls it.
+
+NOTE Confidence: 0.66292364
+
+00:47:53.470 --> 00:47:55.556
+The only usage is a compile time.
+
+NOTE Confidence: 0.66292364
+
+00:47:55.560 --> 00:47:56.514
+I believe it could be done
+
+NOTE Confidence: 0.66292364
+
+00:47:56.514 --> 00:47:57.350
+as a separate optional step.
+
+NOTE Confidence: 0.66292364
+
+00:47:57.350 --> 00:48:00.486
+I don't believe it's critical to do now.
+
+NOTE Confidence: 0.66292364
+
+00:48:00.490 --> 00:48:03.926
+OK. Yeah, the original function.
+
+NOTE Confidence: 0.66292364
+
+00:48:03.926 --> 00:48:05.996
+The original issue talked about
+
+NOTE Confidence: 0.66292364
+
+00:48:05.996 --> 00:48:08.110
+converting things over to um Constexpr,
+
+NOTE Confidence: 0.66292364
+
+00:48:08.110 --> 00:48:10.207
+but I see no reason to delay this PR.
+
+NOTE Confidence: 0.66292364
+
+00:48:10.210 --> 00:48:12.070
+For something that does not
+
+NOTE Confidence: 0.66292364
+
+00:48:12.070 --> 00:48:13.930
+deeply affect this existing code,
+
+NOTE Confidence: 0.66292364
+
+00:48:13.930 --> 00:48:16.358
+it can be done as a. Wow, this uh,
+
+NOTE Confidence: 0.66292364
+
+00:48:16.358 --> 00:48:18.290
+it's probably just in my remote desktop.
+
+NOTE Confidence: 0.66292364
+
+00:48:18.290 --> 00:48:20.950
+Um, surrendering looks a little messed up.
+
+NOTE Confidence: 0.66292364
+
+00:48:20.950 --> 00:48:24.086
+Um. I don't think you should delay this PR.
+
+NOTE Confidence: 0.66292364
+
+00:48:24.090 --> 00:48:26.421
+It can be done as a strictly
+
+NOTE Confidence: 0.66292364
+
+00:48:26.421 --> 00:48:27.420
+orthogonal separate step.
+
+NOTE Confidence: 0.66292364
+
+00:48:27.420 --> 00:48:29.276
+That won't change any of the existing code,
+
+NOTE Confidence: 0.66292364
+
+00:48:29.280 --> 00:48:30.744
+but then would further convert Safad
+
+NOTE Confidence: 0.66292364
+
+00:48:30.744 --> 00:48:32.383
+when we could look for additional
+
+NOTE Confidence: 0.66292364
+
+00:48:32.383 --> 00:48:34.219
+opportunities like is it possible to
+
+NOTE Confidence: 0.66292364
+
+00:48:34.219 --> 00:48:35.640
+convert somewhere all of safe molt?
+
+NOTE Confidence: 0.66292364
+
+00:48:35.640 --> 00:48:41.136
+Are there other uses that should be updated?
+
+NOTE Confidence: 0.66292364
+
+00:48:41.140 --> 00:48:44.320
+But I think this is a good first step and.
+
+NOTE Confidence: 0.66292364
+
+00:48:44.320 --> 00:48:47.806
+Is nice and self-contained and um.
+
+NOTE Confidence: 0.66292364
+
+00:48:47.810 --> 00:48:49.586
+Doesn't touch on the, the question of OK,
+
+NOTE Confidence: 0.66292364
+
+00:48:49.590 --> 00:48:51.690
+how exactly how do we enforce this?
+
+NOTE Confidence: 0.66292364
+
+00:48:51.690 --> 00:48:53.726
+Um, so I'm, I'm happy, I'm happy with this.
+
+NOTE Confidence: 0.66292364
+
+00:48:53.726 --> 00:48:55.310
+I'm going to update that comment.
+
+NOTE Confidence: 0.66292364
+
+00:48:55.310 --> 00:48:55.627
+Uh,
+
+NOTE Confidence: 0.66292364
+
+00:48:55.627 --> 00:48:58.163
+really the only thing is that that comment,
+
+NOTE Confidence: 0.66292364
+
+00:48:58.170 --> 00:49:01.250
+I can just go ahead and push that after this.
+
+NOTE Confidence: 0.66292364
+
+00:49:01.250 --> 00:49:06.440
+So I can go ahead and finish this review.
+
+NOTE Confidence: 0.66292364
+
+00:49:06.440 --> 00:49:08.132
+I'll just comment and I'll push
+
+NOTE Confidence: 0.66292364
+
+00:49:08.132 --> 00:49:09.260
+changes right after this.
+
+NOTE Confidence: 0.9527668
+
+00:49:14.200 --> 00:49:18.118
+OK. And yeah, that's the existing thing.
+
+NOTE Confidence: 0.9527668
+
+00:49:18.120 --> 00:49:19.776
+And Alex, who submitted the issues,
+
+NOTE Confidence: 0.9527668
+
+00:49:19.780 --> 00:49:21.952
+already approved, so he's happy with
+
+NOTE Confidence: 0.9527668
+
+00:49:21.952 --> 00:49:24.478
+the changes that are being made here.
+
+NOTE Confidence: 0.9527668
+
+00:49:24.480 --> 00:49:27.211
+Uh, OK, I think that's it for this PR's.
+
+NOTE Confidence: 0.9527668
+
+00:49:27.211 --> 00:49:29.116
+Are there any additional questions?
+
+NOTE Confidence: 0.9527668
+
+00:49:29.120 --> 00:49:33.536
+Let me look through the chat.
+
+NOTE Confidence: 0.9527668
+
+00:49:33.540 --> 00:49:35.590
+Casey agreed that the parentheses
+
+NOTE Confidence: 0.9527668
+
+00:49:35.590 --> 00:49:37.640
+seemed like overkill in LCM.
+
+NOTE Confidence: 0.9527668
+
+00:49:37.640 --> 00:49:39.628
+You know, if I got to push
+
+NOTE Confidence: 0.9527668
+
+00:49:39.628 --> 00:49:41.500
+changes for the extra comment,
+
+NOTE Confidence: 0.9527668
+
+00:49:41.500 --> 00:49:44.580
+I can push a removal of those parentheses.
+
+NOTE Confidence: 0.9527668
+
+00:49:44.580 --> 00:49:46.057
+I can go ahead and do that,
+
+NOTE Confidence: 0.9527668
+
+00:49:46.060 --> 00:49:46.916
+even though I didn't.
+
+NOTE Confidence: 0.9527668
+
+00:49:46.916 --> 00:49:48.326
+Get a comment for it. Yeah.
+
+NOTE Confidence: 0.9527668
+
+00:49:48.326 --> 00:49:51.350
+It's obviously not a huge issue but you know,
+
+NOTE Confidence: 0.9527668
+
+00:49:51.350 --> 00:49:54.427
+we try to avoid them when they're well
+
+NOTE Confidence: 0.9527668
+
+00:49:54.427 --> 00:49:56.689
+known precedence operators or and I
+
+NOTE Confidence: 0.9527668
+
+00:49:56.689 --> 00:49:59.896
+think pretty much everybody who took,
+
+NOTE Confidence: 0.9527668
+
+00:49:59.896 --> 00:50:03.502
+you know, algebra in elementary school,
+
+NOTE Confidence: 0.9527668
+
+00:50:03.502 --> 00:50:04.660
+most that multiplication
+
+NOTE Confidence: 0.9527668
+
+00:50:04.660 --> 00:50:06.204
+division of this president.
+
+NOTE Confidence: 0.9527668
+
+00:50:06.210 --> 00:50:09.437
+So yeah, in fact, I believe the
+
+NOTE Confidence: 0.9527668
+
+00:50:09.437 --> 00:50:11.550
+parentheses were guarding against.
+
+NOTE Confidence: 0.9527668
+
+00:50:11.550 --> 00:50:12.686
+The uh ohh wait,
+
+NOTE Confidence: 0.9527668
+
+00:50:12.686 --> 00:50:14.106
+you're talking about these parentheses?
+
+NOTE Confidence: 0.9527668
+
+00:50:14.110 --> 00:50:16.805
+Yes? Ohh no, I like these parentheses.
+
+NOTE Confidence: 0.9527668
+
+00:50:16.810 --> 00:50:19.267
+Um, so this is a special exception.
+
+NOTE Confidence: 0.9527668
+
+00:50:19.270 --> 00:50:21.604
+It is true that multiplication and
+
+NOTE Confidence: 0.9527668
+
+00:50:21.604 --> 00:50:23.990
+division have the same precedence,
+
+NOTE Confidence: 0.9527668
+
+00:50:23.990 --> 00:50:25.202
+and they're well known.
+
+NOTE Confidence: 0.9527668
+
+00:50:25.202 --> 00:50:26.414
+Evaluated left to right.
+
+NOTE Confidence: 0.9527668
+
+00:50:26.420 --> 00:50:26.850
+However,
+
+NOTE Confidence: 0.9527668
+
+00:50:26.850 --> 00:50:29.860
+it can be visually ambiguous if you
+
+NOTE Confidence: 0.9527668
+
+00:50:29.860 --> 00:50:33.928
+say um X / y * Z whether it was
+
+NOTE Confidence: 0.9527668
+
+00:50:33.928 --> 00:50:36.506
+intended for y * Z to group together.
+
+NOTE Confidence: 0.9527668
+
+00:50:36.506 --> 00:50:38.510
+It's certainly unambiguous according to the
+
+NOTE Confidence: 0.9527668
+
+00:50:38.568 --> 00:50:40.918
+rules of C Plus that you value left to right.
+
+NOTE Confidence: 0.9527668
+
+00:50:40.920 --> 00:50:42.648
+And I believe if you ask
+
+NOTE Confidence: 0.9527668
+
+00:50:42.648 --> 00:50:43.800
+a mathematician that yes,
+
+NOTE Confidence: 0.9527668
+
+00:50:43.800 --> 00:50:45.480
+it's also an ambiguous,
+
+NOTE Confidence: 0.9527668
+
+00:50:45.480 --> 00:50:47.580
+but many people just conventionally
+
+NOTE Confidence: 0.9527668
+
+00:50:47.580 --> 00:50:49.188
+will write X / y * Z,
+
+NOTE Confidence: 0.9527668
+
+00:50:49.188 --> 00:50:50.758
+and they do mean y * Z to
+
+NOTE Confidence: 0.9527668
+
+00:50:50.758 --> 00:50:51.520
+be grouped together.
+
+NOTE Confidence: 0.9527668
+
+00:50:51.520 --> 00:50:53.228
+So just to avoid any hint of,
+
+NOTE Confidence: 0.9527668
+
+00:50:53.230 --> 00:50:54.115
+you know, surprise.
+
+NOTE Confidence: 0.9527668
+
+00:50:54.115 --> 00:50:56.591
+This is the one case where I do
+
+NOTE Confidence: 0.9527668
+
+00:50:56.591 --> 00:50:58.649
+believe it's OK to have parentheses.
+
+NOTE Confidence: 0.9527668
+
+00:50:58.650 --> 00:51:00.450
+Uh, even though they're technically
+
+NOTE Confidence: 0.9527668
+
+00:51:00.450 --> 00:51:01.170
+not necessary.
+
+NOTE Confidence: 0.9527668
+
+00:51:01.170 --> 00:51:03.706
+Uh, it could also be expressed as BX.
+
+NOTE Confidence: 0.9527668
+
+00:51:03.710 --> 00:51:06.650
+Put that first and then.
+
+NOTE Confidence: 0.9527668
+
+00:51:06.650 --> 00:51:09.320
+The parentheses are, uh, not needed,
+
+NOTE Confidence: 0.9527668
+
+00:51:09.320 --> 00:51:10.550
+but actually there I think,
+
+NOTE Confidence: 0.9527668
+
+00:51:10.550 --> 00:51:11.910
+uh, we would want to.
+
+NOTE Confidence: 0.9527668
+
+00:51:11.910 --> 00:51:13.548
+Yeah, we want to avoid that.
+
+NOTE Confidence: 0.9527668
+
+00:51:13.550 --> 00:51:15.410
+We would still need parentheses.
+
+NOTE Confidence: 0.9527668
+
+00:51:15.410 --> 00:51:16.929
+We would want to avoid any overflow.
+
+NOTE Confidence: 0.9527668
+
+00:51:16.930 --> 00:51:17.885
+So I'm actually happy with
+
+NOTE Confidence: 0.9527668
+
+00:51:17.885 --> 00:51:18.649
+how this is written.
+
+NOTE Confidence: 0.9527668
+
+00:51:18.650 --> 00:51:20.875
+The parentheses I was thinking
+
+NOTE Confidence: 0.9527668
+
+00:51:20.875 --> 00:51:22.520
+of are where are they?
+
+NOTE Confidence: 0.843451
+
+00:51:25.130 --> 00:51:26.900
+These ones here.
+
+NOTE Confidence: 0.843451
+
+00:51:26.900 --> 00:51:28.596
+These parentheses are necessary
+
+NOTE Confidence: 0.843451
+
+00:51:28.596 --> 00:51:30.716
+because they're protecting the less.
+
+NOTE Confidence: 0.843451
+
+00:51:30.720 --> 00:51:32.340
+I believe they're protecting
+
+NOTE Confidence: 0.843451
+
+00:51:32.340 --> 00:51:34.530
+the less equal um from being,
+
+NOTE Confidence: 0.843451
+
+00:51:34.530 --> 00:51:36.810
+uh, parsed as like a start of a
+
+NOTE Confidence: 0.843451
+
+00:51:36.886 --> 00:51:39.077
+template Arg list and safe add X.
+
+NOTE Confidence: 0.843451
+
+00:51:39.080 --> 00:51:40.370
+But I don't think that was
+
+NOTE Confidence: 0.843451
+
+00:51:40.370 --> 00:51:41.740
+ever an issue because it's less
+
+NOTE Confidence: 0.843451
+
+00:51:41.740 --> 00:51:43.120
+equal and that's a whole token.
+
+NOTE Confidence: 0.843451
+
+00:51:43.120 --> 00:51:45.560
+Even in the horrible days of C + O X,
+
+NOTE Confidence: 0.843451
+
+00:51:45.560 --> 00:51:47.620
+when compilers were still implementing,
+
+NOTE Confidence: 0.843451
+
+00:51:47.620 --> 00:51:49.126
+you know, all the rules for
+
+NOTE Confidence: 0.843451
+
+00:51:49.126 --> 00:51:49.879
+nested angle brackets,
+
+NOTE Confidence: 0.843451
+
+00:51:49.880 --> 00:51:51.638
+I think this was never ambiguous,
+
+NOTE Confidence: 0.843451
+
+00:51:51.640 --> 00:51:53.299
+at least I I think this is
+
+NOTE Confidence: 0.843451
+
+00:51:53.299 --> 00:51:53.773
+completely unnecessary.
+
+NOTE Confidence: 0.843451
+
+00:51:53.780 --> 00:51:54.851
+That's why I was thinking, oh,
+
+NOTE Confidence: 0.843451
+
+00:51:54.851 --> 00:51:56.117
+should I just remove those brands?
+
+NOTE Confidence: 0.879098556666667
+
+00:51:58.430 --> 00:51:59.456
+What do you think about those?
+
+NOTE Confidence: 0.879098556666667
+
+00:51:59.460 --> 00:52:01.238
+Should we get rid of those or.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:01.240 --> 00:52:03.680
+Yeah, those two and OK,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:03.680 --> 00:52:04.640
+that's that's preexisting.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:04.640 --> 00:52:06.416
+It was there before. Weird, yeah,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:06.416 --> 00:52:08.400
+which is why I didn't comment on it.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:08.400 --> 00:52:09.564
+And if if there were no
+
+NOTE Confidence: 0.879098556666667
+
+00:52:09.564 --> 00:52:10.340
+other changes to push,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:10.340 --> 00:52:11.692
+I would have just let it go because
+
+NOTE Confidence: 0.879098556666667
+
+00:52:11.692 --> 00:52:13.039
+it was definitely pre-existing.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:13.040 --> 00:52:15.220
+It's not even that bad.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:15.220 --> 00:52:17.119
+But if I got to push changes for the
+
+NOTE Confidence: 0.879098556666667
+
+00:52:17.119 --> 00:52:18.815
+comment that I do really want to keep,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:18.820 --> 00:52:20.338
+May as well change this thing
+
+NOTE Confidence: 0.879098556666667
+
+00:52:20.338 --> 00:52:21.660
+that's like 2 lines away,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:21.660 --> 00:52:24.880
+but here I think in the LCM.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:24.880 --> 00:52:26.386
+Even though they are technically unnecessary,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:26.390 --> 00:52:28.217
+I think this does warrant the parentheses,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:28.220 --> 00:52:29.786
+which is probably why I wrote it that or
+
+NOTE Confidence: 0.879098556666667
+
+00:52:29.786 --> 00:52:31.154
+rewrote it that way in that first place.
+
+NOTE Confidence: 0.879098556666667
+
+00:52:31.160 --> 00:52:32.162
+I can't remember if I wrote
+
+NOTE Confidence: 0.879098556666667
+
+00:52:32.162 --> 00:52:33.000
+this or somebody else did,
+
+NOTE Confidence: 0.879098556666667
+
+00:52:33.000 --> 00:52:34.490
+but I like these ones.
+
+NOTE Confidence: 0.83198917625
+
+00:52:40.040 --> 00:52:42.976
+OK. So I believe that's all the comments.
+
+NOTE Confidence: 0.83198917625
+
+00:52:42.980 --> 00:52:44.540
+So I think that's it.
+
+NOTE Confidence: 0.83198917625
+
+00:52:44.540 --> 00:52:45.896
+If you have any further questions,
+
+NOTE Confidence: 0.83198917625
+
+00:52:45.900 --> 00:52:47.328
+feel free to leave them in
+
+NOTE Confidence: 0.83198917625
+
+00:52:47.328 --> 00:52:48.640
+the comments on this video.
+
+NOTE Confidence: 0.83198917625
+
+00:52:48.640 --> 00:52:49.876
+Otherwise, we'll see you next time.
+
+NOTE Confidence: 0.83198917625
+
+00:52:49.880 --> 00:52:50.528
+Thanks for watching.
