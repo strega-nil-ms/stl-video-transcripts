@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "GH-3164, Re-enable ASAN string annotations",
+  "description": "In this video we review GH-3164: https://github.com/microsoft/STL/pull/3164, titled \"Re-enable ASAN string annotations\"",
   "private-link": "https://youtu.be/zu2MOJ_HqS0",
   "public-link": ""
 }
