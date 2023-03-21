@@ -2,12 +2,10 @@
 
 NOTE duration:"01:24:08"
 
-NOTE recognizability:0.767
-
 NOTE language:en-us
 
 00:00:10.710 --> 00:00:12.420
-Hi and welcome back to another
+&gt;&gt; Stephan: Hi and welcome back to another
 
 00:00:12.420 --> 00:00:13.990
 VC libraries Open code review.
@@ -70,7 +68,7 @@ construct within it either characters
 or elements, and as more elements
 
 00:01:11.904 --> 00:01:14.070
-are pushed back or and placed
+are pushed back or emplaced
 
 00:01:14.144 --> 00:01:15.488
 into the container,
@@ -121,10 +119,10 @@ which you would not get if
 you had a naive policy of: 
 
 00:01:53.200 --> 00:01:54.520
-“oh, let's just allocate like plus
+"oh, let's just allocate like plus
 
 00:01:54.520 --> 00:01:55.576
-10 elements or something”,
+10 elements or something",
 
 00:01:55.580 --> 00:01:57.740
 which other libraries have had,
@@ -223,7 +221,7 @@ there are these commands that
 you can give to ASan that say:
 
 00:03:04.450 --> 00:03:06.790
-“OK, I have allocated some memory,
+"OK, I have allocated some memory,
 
 00:03:06.790 --> 00:03:08.515
 but even though that memory
@@ -235,7 +233,7 @@ has been allocated,
 I would like you to consider
 
 00:03:11.818 --> 00:03:14.350
-it bogus for the time being”.
+it bogus for the time being".
 
 00:03:14.350 --> 00:03:14.935
 And these are…
@@ -349,7 +347,7 @@ And then we've got product code changes
 and we've got a new header being added,
 
 00:04:37.030 --> 00:04:41.596
-an internal header stl/inc/__msvc_sanitizer_annotate_container
+an internal header &lt;stl/inc/__msvc_sanitizer_annotate_container.hpp&gt;
 
 00:04:41.596 --> 00:04:45.528
 So the presence of a new header means that
@@ -376,10 +374,10 @@ it's useful when making changes in the STL.
 So here is our wiki page.
 
 00:05:05.190 --> 00:05:07.066
-I fondly refer to this as “hack
+I fondly refer to this as "hack
 
 00:05:07.066 --> 00:05:08.888
-these files” because that was the
+these files" because that was the
 
 00:05:08.888 --> 00:05:10.493
 name of our internal SharePoint
@@ -550,7 +548,7 @@ Um, Next up,
 there's a file in our legacy
 
 00:06:56.880 --> 00:06:58.005
-MS Build directory,
+MSBuild directory,
 
 00:06:58.010 --> 00:06:59.669
 and this is not a source file.
@@ -628,7 +626,7 @@ OK, there will also be needed edits,
 internal needed edits internally because
 
 00:07:49.155 --> 00:07:53.378
-there is a compiler test for hitter units.
+there is a compiler test for header units.
 
 00:07:53.380 --> 00:07:54.927
 OK then, that's in the section below.
@@ -697,7 +695,7 @@ That's why we've got it here.
 So I'm going to briefly scan to see OK,
 
 00:08:38.370 --> 00:08:40.992
-some of this alternate name stuff
+some of this /alternatename stuff
 
 00:08:40.992 --> 00:08:43.590
 and then actual changes to string.
@@ -712,7 +710,7 @@ Again,
 the stuff that turns on the annotation,
 
 00:08:50.740 --> 00:08:52.258
-more of that alternate name stuff.
+more of that /alternatename stuff.
 
 00:08:52.260 --> 00:08:54.063
 Yeah, that code is either, it's,
@@ -748,7 +746,7 @@ so when adding a new header,
 I like to look at an existing
 
 00:09:12.082 --> 00:09:12.694
-header precedent,
+header for precedent,
 
 00:09:12.700 --> 00:09:14.032
 because here we don't exactly have
@@ -781,7 +779,7 @@ Let's split this side by side.
 Nope, that's not what I want.
 
 00:09:37.770 --> 00:09:42.958
-There we go. OK, he's uh, 120 length lines
+There we go. OK, these uh, 120 length lines
 
 00:09:42.958 --> 00:09:45.710
 are a little bit too long for this window.
@@ -862,10 +860,10 @@ and can be used by itself,
 and we do do that for like internal
 
 00:10:32.914 --> 00:10:35.399
-test errors for all of our public
+test headers for all of our public
 
 00:10:35.399 --> 00:10:37.610
-headers we define and include guard.
+headers we define an include guard.
 
 00:10:37.610 --> 00:10:40.170
 The theory being that we can use this
@@ -883,25 +881,26 @@ Interestingly, this is also
 not doing the usual dance of
 
 00:10:53.530 --> 00:10:55.195
-pushing and popping,
+pushing and popping packing,
 
 00:10:55.195 --> 00:10:57.415
-packing or disabling warnings,
+or disabling warnings,
 
 00:10:57.420 --> 00:10:59.472
-this is purely macros.
+this is purely macros?
 
 00:10:59.472 --> 00:11:01.524
 We've got some declarations.
 
 00:11:03.720 --> 00:11:07.388
-There is exactly 1 declaration of container,
+&gt;&gt; Nicole: There is exactly 1 declaration of container,
 
 00:11:07.388 --> 00:11:11.910
 er, __sanitizer_annotate_contiguous_container.
 
 00:11:11.910 --> 00:11:16.141
-Yeah. Alright, sorry, I, I don't know if
+&gt;&gt; Stephan: Yeah. Alright,
+&gt;&gt; Nicole: sorry, I, I don't know if
 
 00:11:16.141 --> 00:11:19.599
 that if that requires pushing and popping.
@@ -940,7 +939,7 @@ Tomorrow it will be small vector or super
 string or, or who knows what they add.
 
 00:11:49.014 --> 00:11:50.816
-And C++, you know,
+In C++, you know,
 
 00:11:50.816 --> 00:11:53.678
 37 or or whatever. Um, uh.
@@ -1006,7 +1005,7 @@ it's just a quick summary – the
 _STL_COMPILER_PREPROCESSOR defense,
 
 00:12:57.210 --> 00:13:01.130
-the packing/warning defensesm
+the packing/warning defenses,
 
 00:13:01.130 --> 00:13:06.030
 and the `new` macroization defense.
@@ -1036,7 +1035,7 @@ OK, got all my escapes there.
 Start a review. OK, so #pragma once,
 
 00:13:41.325 --> 00:13:44.020
-once we are going to imagine the
+we are going to imagine the
 
 00:13:44.110 --> 00:13:48.180
 usual defenses being present, OK?
@@ -1102,7 +1101,7 @@ for is I'm currently working
 on changes to extend /clr,
 
 00:14:30.460 --> 00:14:33.746
-the plain one, not pure to more headers.
+the plain one, not pure, to more headers.
 
 00:14:33.746 --> 00:14:36.922
 So we're trying to avoid as much as
@@ -1135,7 +1134,7 @@ It's only if they are simultaneously
 disabled that we would not want this.
 
 00:15:02.810 --> 00:15:04.586
-This does make sense, I think so.
+Does this make sense, I think so.
 
 00:15:04.590 --> 00:15:11.550
 So what would De Morgan do? If defined pure and…
@@ -1147,7 +1146,7 @@ Uh, either not defined vector…
 Yeah, it doesn't read better
 
 00:15:16.530 --> 00:15:17.850
-De Morganed, it reads good.
+De Morgan'd, it reads good.
 
 00:15:17.850 --> 00:15:19.058
 Uh, it reads, um,
@@ -1243,7 +1242,7 @@ insists on indenting everything at 0.
 Then, if defined,
 
 00:16:29.750 --> 00:16:32.250
-double __SANITIZE_ADDRESS__,
+__SANITIZE_ADDRESS__,
 
 00:16:32.250 --> 00:16:35.015
 which I believe is a compiler macro
@@ -1279,7 +1278,7 @@ OK.
 Does it make sense to have these
 
 00:16:58.603 --> 00:16:59.659
-as separate tests?
+are separate tests?
 
 00:16:59.660 --> 00:17:00.316
 Yes, otherwise,
@@ -1294,40 +1293,46 @@ that get real confusing.
 It seems reasonable to have
 
 00:17:05.720 --> 00:17:08.536
-multiple layers. So, uh, yeah,
+multiple layers.
+&gt;&gt; Nicole: So, uh, yeah,
 
 00:17:08.536 --> 00:17:11.640
 this that is actually not the end of that
 
 00:17:11.640 --> 00:17:17.080
-#if it's not, there's a, there's a big block #if. Oh. Right.
+#if it's not, there's a, there's a big block at the front.
+&gt;&gt; Stephan: Oh. Right.
 
 00:17:17.080 --> 00:17:19.240
 Yeah. I see. OK.
 
 00:17:19.240 --> 00:17:22.964
-All of the other things. OK, then other stuff.
+&gt;&gt; Nicole: And then, all of the other things.
+&gt;&gt: Stephan: OK, then other stuff.
 
 00:17:22.964 --> 00:17:25.770
 OK. Thanks for pointing it out.
+&gt;&gt Nicole: Because clang and MSVC do this differently
 
 00:17:25.770 --> 00:17:28.950
-Differently where MSVC defines _SANITIZE_ADDRESS_
+where MSVC defines __SANITIZE_ADDRESS__,
 
 00:17:28.950 --> 00:17:34.470
-playing defines, you know.
+clang defines, you know.
 
 00:17:34.470 --> 00:17:36.074
-__has_feature(sanitizer) or
+__has_feature(sanitize) or
 
 00:17:36.074 --> 00:17:38.106
-something like that. Ah, OK.
+something like that.
+&gt;&gt; Stephan: Ah, OK.
 
 00:17:38.106 --> 00:17:39.758
 I see that here.
 
 00:17:39.760 --> 00:17:42.760
 OK, yeah, line 19.
+&gt;&gt; Nicole: oh yeah, address_sanitizer.
 
 00:17:42.760 --> 00:17:45.120
 Um, and then finally there's.
@@ -1336,7 +1341,7 @@ Um, and then finally there's.
 Doesn't have any address,
 
 00:17:46.684 --> 00:17:48.281
-doesn't have [unintelligible]
+doesn't have ASan turned on,
 
 00:17:48.281 --> 00:17:51.649
 but we're building like an internal CPP file
@@ -1348,7 +1353,7 @@ and therefore we need to at least make sure
 that the string annotations are correct.
 
 00:17:58.630 --> 00:17:59.530
-OK, that makes sense.
+&gt;&gt; Stephan: OK, that makes sense.
 
 00:17:59.530 --> 00:18:01.230
 So it's not a whole file thing.
@@ -1423,10 +1428,10 @@ I think that's reasonable.
 I won't complain about that.
 
 00:18:53.950 --> 00:18:56.950
-Then if we can use has
+Then if we can use __has_feature
 
 00:18:56.950 --> 00:18:58.950
-feature on address sanitizer,
+on address_sanitizer,
 
 00:18:58.950 --> 00:19:01.670
 then define these four macros,
@@ -1438,10 +1443,10 @@ insert vector and activate
 vector and so forth,
 
 00:19:04.370 --> 00:19:06.190
-and then have a #pragma comment(linker, …).
+and then have a #pragma comment(linker, …)
 
 00:19:06.190 --> 00:19:07.650
-And for ASan libs.
+for ASan libs.
 
 00:19:07.650 --> 00:19:09.840
 I think this __clang__ does not
@@ -1495,13 +1500,13 @@ mark the regions of vector that are
 valid or invalid, but don't actually try to
 
 00:19:45.730 --> 00:19:47.750
-Terminate the program or anything
+terminate the program or anything
 
 00:19:47.750 --> 00:19:51.750
 if invalid accesses happen. Um.
 
 00:19:51.750 --> 00:19:53.790
-OK, the comments here messed up.
+OK, the comments here are messed up.
 
 00:19:53.790 --> 00:19:56.310
 Um, this #endif should be commented
@@ -1525,7 +1530,7 @@ Uh,
 need to be fixed.
 
 00:20:16.410 --> 00:20:17.976
-#endif comments here need to be fixed. OK.
+The #endif comments here need to be fixed. OK.
 
 00:20:20.040 --> 00:20:21.093
 So _ANNOTATE_INSERT…,
@@ -1543,7 +1548,7 @@ comments are fixed it's good.
 And then #endif. The whole region began
 
 00:20:30.470 --> 00:20:35.850
-with sanitized address OK. And then…
+with __SANITIZE_ADDRESS__ OK. And then…
 
 00:20:35.850 --> 00:20:39.186
 OK, these are also missing #endif comments.
@@ -1573,7 +1578,7 @@ There the rationale and we are, we
 are a little bit flexible these days
 
 00:20:58.337 --> 00:21:00.101
-on admitting the #endif comments,
+on omitting the #endif comments,
 
 00:21:00.110 --> 00:21:02.357
 but I'm, I'm generally a fan of
@@ -1600,10 +1605,10 @@ they do not have the same #endif
 discipline and it can get quite hard
 
 00:21:13.752 --> 00:21:15.806
-to figure out “hey you know what,
+to figure out "hey you know what,
 
 00:21:15.806 --> 00:21:19.108
-what region are we in here” as I just
+what region are we in here" as I just
 
 00:21:19.108 --> 00:21:21.148
 got confused. Needs #endif comments.
@@ -1687,7 +1692,7 @@ will happily run with that.
 Typos are much more common than with
 
 00:22:11.052 --> 00:22:12.550
-ordinary identifiers where you typo while
+ordinary identifiers where you typo, well,
 
 00:22:12.550 --> 00:22:14.083
 you're going to get a compiler error,
@@ -1699,7 +1704,7 @@ so you don't have to be constantly worried.
 OK,
 
 00:22:17.142 --> 00:22:18.858
-so Next up.
+so next up.
 
 00:22:18.858 --> 00:22:19.430
 Now,
@@ -1711,7 +1716,7 @@ after determining the values or the defined…
 definedness of _INSERT… and _ACTIVATE…,
 
 00:22:25.670 --> 00:22:27.679
-we're going to admit some detect mismatches.
+we're going to emit some detect mismatches.
 
 00:22:27.680 --> 00:22:28.071
 Mismatches.
@@ -1750,7 +1755,7 @@ with _ITERATOR_DEBUG_LEVEL mismatch
 and it was just not diagnosed
 
 00:22:47.698 --> 00:22:49.200
-at all by the tool set.
+at all by the toolset.
 
 00:22:49.200 --> 00:22:50.260
 I asked the compiler team,
@@ -1783,7 +1788,7 @@ to the compiler front end,
 it emits a linker directive which is
 
 00:23:09.046 --> 00:23:11.104
-/failed_mismatch and it just works
+/failifmismatch and it just works
 
 00:23:11.104 --> 00:23:13.669
 on a pretty simple key value
@@ -1795,10 +1800,10 @@ system with strings.
 detect_mismatch takes a key and a value.
 
 00:23:17.290 --> 00:23:18.490
-These fail if mismatched directives
+These failifmismatch directives
 
 00:23:18.490 --> 00:23:19.780
-then tell the linker, “hey,
+then tell the linker, "hey,
 
 00:23:19.780 --> 00:23:22.750
 if you ever see a source file or an
@@ -1813,7 +1818,7 @@ the same key to different values than
 some setting is really incompatible,
     
 00:23:30.260 --> 00:23:32.510
-you should fail the link”.
+you should fail the link".
 
 00:23:32.510 --> 00:23:34.280
 The linker doesn't actually know anything
@@ -1861,7 +1866,7 @@ one TU you with a key value and
 another TU you with nothing.
 
 00:23:59.160 --> 00:24:00.510
-So if you want detect mismatches,
+So if you want detect_mismatches,
 
 00:24:00.510 --> 00:24:03.598
 you've got to have them from the beginning.
@@ -1879,7 +1884,7 @@ because that totally predated.
 Of course it will fail to link for other
 
 00:24:12.513 --> 00:24:14.724
-reasons, just not detect mismatch.
+reasons, just not detect_mismatch.
 
 00:24:14.724 --> 00:24:16.512
 OK, so vector, vector, vector,
@@ -1921,13 +1926,13 @@ really set inconsistently,
 we'll end up getting a detect
 
 00:24:41.900 --> 00:24:43.779
-mismatch "0" and "1" in the same to you,
+mismatch "0" and "1" in the same TU,
 
 00:24:43.780 --> 00:24:45.260
 which is super horrible and
 
 00:24:45.260 --> 00:24:46.444
-will totally [unintelligible] the link.
+will totally fail the link.
 
 00:24:46.450 --> 00:24:48.786
 OK, so if you haven't turned on even
@@ -1963,7 +1968,7 @@ if you are inserting vector annotations,
 but you have not activated them,
 
 00:25:09.270 --> 00:25:11.356
-then you don't have any detect mismatch.
+then you don't have any detect_mismatch.
 
 00:25:11.360 --> 00:25:12.530
 I believe this is intentional.
@@ -1972,16 +1977,16 @@ I believe this is intentional.
 That allows our separately
 
 00:25:14.350 --> 00:25:16.170
-compiled libs to, [unintelligible]
+compiled libs to, I see Nicole nodding
 
 00:25:16.170 --> 00:25:19.380
-[unintelligible] some on the right track.
+so I'm on the right track.
 
 00:25:19.380 --> 00:25:22.005
 Emits the annotations um to update ASan
 
 00:25:22.005 --> 00:25:24.780
-about what regions the vector valid or not,
+about what regions of the vector are valid or not,
 
 00:25:24.780 --> 00:25:25.852
 but we're not actually
@@ -1999,44 +2004,44 @@ something that will perform checking.
 That seems correct and this…
 
 00:25:33.480 --> 00:25:35.450
-and to be clear here,
+&gt;&gt; Nicole: and to be clear here,
 
 00:25:35.450 --> 00:25:37.676
 the reason that we can do this
 
 00:25:37.676 --> 00:25:40.064
-is because of the alternate name
+is because of the /alternatename
 
 00:25:40.064 --> 00:25:42.770
-comments below or the alternate name
+comments below, or the alternate name
 
 00:25:42.770 --> 00:25:46.284
-Um, annotation below? I don't know what.
+um, annotation below? I don't know what.
 
 00:25:46.290 --> 00:25:50.370
-OK, there are linker directives I think.
+&gt;&gt; Stephan: They are linker directives I think.
 
 00:25:50.370 --> 00:25:52.509
-Thank you directive.
+&gt;&gt; Nicole: Thank you, directive.
 
 00:25:52.510 --> 00:25:53.278
-Because of people.
+Because of people [silence]
 
 00:26:00.600 --> 00:26:02.376
-I'm your your audio is completely
+&gt;&gt; Stephan: Um, your your audio is completely
 
 00:26:02.376 --> 00:26:04.538
 broken up and your video is frozen,
-
 
 00:26:04.540 --> 00:26:07.540
 if you can still hear me.
 
 00:26:07.540 --> 00:26:09.700
-Can can you hear me now?
+&gt;&gt; Nicole: Nooo, can you hear me now?
 
 00:26:09.700 --> 00:26:14.220
-I can hear you now. OK, cool.
+&gt;&gt; Stephan: I can hear you now.
+&gt;&gt; Nicole: OK, cool.
 
 00:26:14.220 --> 00:26:17.942
 So uh. Basically, if you
@@ -2048,7 +2053,7 @@ don't link with the address sanitizer
 libs. Then you get the default behavior
 
 00:26:24.385 --> 00:26:27.149
-of pulling into that thing function.
+of calling into that alternatename function.
 
 00:26:27.150 --> 00:26:29.470
 If you don't get those,
@@ -2060,7 +2065,7 @@ if you don't have that,
 uh, if if you do, sorry,
 
 00:26:32.515 --> 00:26:34.510
-you do link with the adverse entitlement,
+you do link with the Address Sanitizer libs,
 
 00:26:34.510 --> 00:26:36.875
 then you get the actual
@@ -2072,7 +2077,7 @@ behavior of doing something.
 I hope that made sense.
 
 00:26:40.960 --> 00:26:42.416
-I yeah, I think that makes sense.
+&gt;&gt; Stephan: I yeah, I think that makes sense.
 
 00:26:42.420 --> 00:26:45.116
 I think, um, there may be one case
@@ -2102,7 +2107,7 @@ I was wondering what about the case
 where you have one TU, translation
 
 00:26:59.417 --> 00:27:01.462
-unit that is inserting the
+unit, that is inserting the
 
 00:27:01.462 --> 00:27:03.690
 annotations but not activating them,
@@ -2129,10 +2134,10 @@ not even inserting annotations has a
 detect_mismatch of "annotate_vector"
 
 00:27:17.395 --> 00:27:20.093
-"0" and it's OK if some but not all to
+"0" and it's OK if some but not all TUs
 
 00:27:20.093 --> 00:27:21.743
-use are inserting the annotations.
+are inserting the annotations.
 
 00:27:21.743 --> 00:27:24.089
 But we have forbidden anything from
@@ -2150,7 +2155,7 @@ annotations turned on the detect_mismatch.
 So and no point can you ever mix
 
 00:27:32.400 --> 00:27:33.720
-this setting and this setting?
+this setting and this setting.
 
 00:27:33.720 --> 00:27:35.664
 But if you have setting in the middle that
@@ -2246,19 +2251,19 @@ But. There shouldn't be harmful to
 make two of them, um.
 
 00:28:33.000 --> 00:28:35.177
-Then the detect mismatch is are different.
+Then the detect_mismatches are different.
 
 00:28:35.180 --> 00:28:37.040
 OK good.
 
 00:28:37.040 --> 00:28:38.756
-Next nice comment explain
+Next. Nice comment explaining
 
 00:28:38.756 --> 00:28:39.804
 what's going on here.
 
 00:28:39.810 --> 00:28:41.805
-Only under _INSERT_*_ANNOTATIONS
+Only _INSERT_*_ANNOTATIONS
 
 00:28:41.805 --> 00:28:44.409
 should be used from here on.
@@ -2300,13 +2305,13 @@ but it's not really harmful, OK.
 And we have expanded.
 
 00:29:06.922 --> 00:29:09.219
-That's why I put that in that order because
+&gt;&gt; Nicole: That's why I put that in that order because
 
 00:29:09.219 --> 00:29:12.258
 it was opposite, so the declaration order.
 
 00:29:12.258 --> 00:29:12.800
-OK.
+&gt;&gt; Stephan: OK.
 
 00:29:12.800 --> 00:29:14.080
 Push, push, pop, pop.
@@ -2321,7 +2326,7 @@ OK, next we have extern "C" blocks.
 We have not included anything.
 
 00:29:20.490 --> 00:29:24.025
-We haven't even included yvals_core.h,
+We haven't even included &lt;yvals_core.h&gt;,
 
 00:29:24.030 --> 00:29:26.664
 which the central with the which
@@ -2381,10 +2386,10 @@ could actually survive as a C header,
 which we no longer support.
 
 00:30:13.790 --> 00:30:15.774
-I do wonder whether we should come at
+I do wonder whether we should comment at
 
 00:30:15.774 --> 00:30:17.970
-the close here of that externality block.
+the close here of that extern "C" block.
 
 00:30:17.970 --> 00:30:19.146
 Usually I feel that we do.
@@ -2411,7 +2416,7 @@ Yeah, everything else is so
 small it doesn't get a comment,
 
 00:30:31.950 --> 00:30:33.280
-and if playing format doesn't add one,
+and if clang-format doesn't add one,
 
 00:30:33.280 --> 00:30:35.820
 it's fine.
@@ -2420,13 +2425,13 @@ it's fine.
 These `#endif`s are at least I
 
 00:30:37.206 --> 00:30:38.530
-know I'm not picking these.
+know I'm nitpicking,
 
 00:30:38.530 --> 00:30:40.346
-Are there at least only controlling one line
+these are at least only controlling one line
 
 00:30:40.346 --> 00:30:42.098
-and they're separated from everything else?
+and they're separated from everything else.
 
 00:30:42.100 --> 00:30:44.055
 I don't feel that they
@@ -2435,10 +2440,10 @@ I don't feel that they
 absolutely need comments.
 
 00:30:45.230 --> 00:30:48.968
-OK, so if _INSERT_VECTOR_ANNOTATION,
+OK, so #ifdef _INSERT_VECTOR_ANNOTATION,
 
 00:30:48.970 --> 00:30:50.860
-we have an external const bool
+we have an extern const bool
 
 00:30:50.860 --> 00:30:52.372
 _Asan_vector_should_annotate
@@ -2450,7 +2455,7 @@ similarly for string and string.
 That's good.
 
 00:30:54.592 --> 00:30:55.947
-Here are mentally checking do
+Here I'm mentally checking do
 
 00:30:55.947 --> 00:30:57.360
 we need anything for modules?
@@ -2522,7 +2527,7 @@ We return void, so no reason for like
 calling convention
 
 00:31:40.220 --> 00:31:41.374
-_cdecl
+__cdecl
 
 00:31:41.374 --> 00:31:43.105
 __sanitizer_annotate_contiguous_container
@@ -2531,7 +2536,7 @@ __sanitizer_annotate_contiguous_container
 has some names of parameters,
 
 00:31:45.990 --> 00:31:47.792
-first, end, old_last, new_last,
+_First, _End, _Old_last, _New_last,
 
 00:31:47.792 --> 00:31:48.956
 all ugly,
@@ -2546,7 +2551,7 @@ It is not marked noexcept.
 But we might need to survive, OK?
 
 00:31:59.580 --> 00:32:03.108
-It's not marked, noexcept in the
+&gt;gt; Nicole: It's not marked, noexcept in the
 
 00:32:03.108 --> 00:32:05.522
 address sanitizer header and so,
@@ -2558,10 +2563,11 @@ if you included both the standard
 header and the actual sanitizer header,
 
 00:32:11.650 --> 00:32:14.910
-you would get no accept mismatches. Ah, OK.
+you would get noexcept mismatches.
+&gt;&gt; Stephan: Ah, OK.
 
 00:32:17.470 --> 00:32:21.210
-OK. And eternity will, at least under /EHc,
+OK. And extern "C" will, at least under /EHc,
 
 00:32:21.210 --> 00:32:22.890
 assume that it will not throw exceptions,
@@ -2582,7 +2588,7 @@ just extracting what we already had.
 Um. This is the sort of stuff
 
 00:32:33.755 --> 00:32:35.220
-that is needed for to work,
+that is needed for it to work,
 
 00:32:35.220 --> 00:32:37.180
 so I'm not too worried about typos here.
@@ -2606,13 +2612,13 @@ then they've got these real special
 mangled names #elif defined(_M_HYBRID)
 
 00:32:50.925 --> 00:32:56.368
-for the chippy older architecture. OK.
+for the CHPE older architecture. OK.
 
 00:32:56.370 --> 00:33:01.596
 #elif defined(_M_IX86) for x86 otherwise
 
 00:33:01.596 --> 00:33:06.422
-for the NORMALISH architectures …X64,
+for the normalish architectures …X64,
 
 00:33:06.422 --> 00:33:08.018
 …ARM, …ARM64.
@@ -2651,7 +2657,7 @@ well, you're compiling on, you know,
 something from the far future,
 
 00:33:30.340 --> 00:33:31.980
-so we say “unknown architecture”.
+so we say "unknown architecture".
 
 00:33:31.980 --> 00:33:35.730
 OK, that seems reasonable. OK.
@@ -2676,6 +2682,7 @@ OK, that'll looks good.
 
 00:33:55.640 --> 00:33:55.943
 OK,
+
 00:33:55.943 --> 00:33:57.458
 and our validation ensures that
 
@@ -2698,7 +2705,7 @@ get to the actual &lt;string&gt; stuff.
 This is essentially should be
 
 00:34:12.485 --> 00:34:15.190
-I recommend &lt;xmemory&gt; first. OK,
+&gt;&gt; Nicole: I recommend &lt;xmemory&gt; first. OK,
 
 00:34:15.190 --> 00:34:17.910
 first because it has a very large comment.
@@ -2713,7 +2720,8 @@ and our annotations for vector
 were wrong in very specific
 
 00:34:25.100 --> 00:34:27.820
-weird cases. Ohh, interesting.
+weird cases.
+&gt;&gt; Stephan: Ohh, interesting.
 
 00:34:27.820 --> 00:34:29.640
 OK, well let's review that then.
@@ -2770,7 +2778,7 @@ OK, let's see.
 We conventionally use _Ugly_snake_case for
 
 00:35:19.620 --> 00:35:23.658
-types and functions in the STL
+types and functions in the STL.
 
 00:35:23.660 --> 00:35:29.276
 _UglyCamelCase is used for
@@ -2782,7 +2790,7 @@ template parameters like _RanIt.
 It's a good example of an internal type.
 
 00:35:39.550 --> 00:35:41.559
-I think the vector values the one
+I think, _Vector_val is the one
 
 00:35:41.559 --> 00:35:45.478
 that comes to mind. Like _Vector_val.
@@ -2833,7 +2841,7 @@ It has a couple `const void*`s,
 _First and _End.
 
 00:36:19.390 --> 00:36:22.390
-They are not initialized anything,
+They are not initialized to anything,
 
 00:36:22.390 --> 00:36:23.630
 so this is an aggregate,
@@ -2866,7 +2874,7 @@ Uh, there's one use.
 Oh, there's a function that returns it.
 
 00:36:42.580 --> 00:36:47.503
-_Get_asan_aligned_first_end in &lt;xmemory&gt.
+_Get_asan_aligned_first_end in &lt;xmemory&gt;.
 
 00:36:47.510 --> 00:36:47.842
 OK,
@@ -2902,10 +2910,10 @@ it's internal only.
 If this was intended for wider use,
 
 00:37:11.190 --> 00:37:13.764
-I think it might be nice to have [unintelligible],
+I think it might be nice to have NSDMIs,
 
 00:37:13.770 --> 00:37:15.195
-but mixing like non null
+but mixing, like, non-null
 
 00:37:15.195 --> 00:37:16.930
 and null would be bad too.
@@ -2923,10 +2931,10 @@ then we have a helper function or a function.
 Um, this is a pure observer?
 
 00:37:28.130 --> 00:37:31.168
-So it should definitely be no discard.
+So it should definitely be [[nodiscard]].
 
 00:37:31.170 --> 00:37:34.285
-It is constexpr returns a construed star.
+It is constexpr returns a const void*.
 
 00:37:34.290 --> 00:37:35.714
 It's called _Clamp_to_end.
@@ -2935,7 +2943,7 @@ It's called _Clamp_to_end.
 Takes const void* _Mid.
 
 00:37:37.140 --> 00:37:40.479
-It's constant snow, except that looks good.
+It's const, it's noexcept, that looks good.
 
 00:37:40.480 --> 00:37:42.460
 We have an _STL_ASSERT that
@@ -2953,7 +2961,7 @@ be greater than equal to _First. Um.
 Why is there an empty string here?
 
 00:37:54.320 --> 00:37:55.839
-Does that _STL_ASSERT even take a…?
+Does _STL_ASSERT even take a…?
 
 00:37:55.840 --> 00:37:57.620
 Yeah, it takes a string.
@@ -2968,16 +2976,16 @@ Yeah.
 At least a minimal one. Yeah,
 
 00:38:08.083 --> 00:38:10.270
-it's a debug function or. Sorry,
+&gt;&gt; Nicole: it's a debug function or. Sorry,
 
 00:38:10.270 --> 00:38:12.648
 no, it's an internal function like,
 
 00:38:12.648 --> 00:38:14.038
-Does it really need it?
+Does it really need it? [unintelligible]
 
 00:38:16.960 --> 00:38:18.283
-Um, they actually,
+&gt;&gt; Stephan: Um, the, actually,
 
 00:38:18.283 --> 00:38:21.370
 the question that comes to mind is,
@@ -2986,7 +2994,7 @@ the question that comes to mind is,
 we usually use _STL_ASSERT and its uh
 
 00:38:24.154 --> 00:38:26.383
-companion still verify when user
+companion _STL_VERIFY, when user
 
 00:38:26.383 --> 00:38:28.323
 submitted arguments could violate
@@ -3007,34 +3015,36 @@ through their own misadventures,
 but would only happen if the
 
 00:38:38.786 --> 00:38:40.510
-library code is logic errors,
+library code has logic errors,
 
 00:38:40.510 --> 00:38:44.206
-then we usually use an STL internal assert
+then we usually use an STL-internal assert
 
 00:38:44.210 --> 00:38:47.210
 which is only active for our code base.
 
 00:38:47.210 --> 00:38:48.938
-We I know we have one for stack::
+We I know we have one for static_assert
 
 00:38:48.938 --> 00:38:50.328
-insert we have just killed.
+&gt&gt; Nicole: Do we have one?
 
 00:38:50.330 --> 00:38:52.544
-Yeah, I thought we had one
+Yeah.
+&gt;&gt Stephan: I thought we had one
 
 00:38:52.544 --> 00:38:54.790
-that was always STL internal.
+It's always _STL_INTERNAL…
 
 00:38:54.790 --> 00:38:57.478
 It looks like _STL_INTERNAL_CHECK is
 
 00:38:57.478 --> 00:39:02.052
-the name um for the runtime, yeah? Yeah.
+the name um for the runtime, one. Yeah.
+&gt;&gt; Nicole: Oh that's why I couldn't find it.
 
 00:39:02.052 --> 00:39:04.304
-It's like STL_INTERNAL…-something-other.
+&gt;&gt Stephan: It's like STL_INTERNAL…-something-other.
 
 00:39:04.304 --> 00:39:06.317
 We got a lot of uses of it. Um.
@@ -3130,7 +3140,7 @@ And then this is doing the clamping.
 If the provided _Mid pointer is strictly
 
 00:40:39.127 --> 00:40:41.969
-greater than our stored end pointer,
+greater than our stored _End pointer,
 
 00:40:41.970 --> 00:40:43.806
 then clamp to _End.
@@ -3160,10 +3170,10 @@ OK, so now the big comment. Um, here we go.
 Uh, the way that ASan shadow memory works.
 
 00:41:08.090 --> 00:41:10.554
-Each eight byte block of memory shadow
+Each eight byte block of memory (shadow
 
 00:41:10.554 --> 00:41:12.764
-memory section has a single byte to
+memory section) has a single byte to
 
 00:41:12.764 --> 00:41:14.830
 mark it as either poison or valid.
@@ -3190,7 +3200,7 @@ Or. 8 valid are OK,
 but poisons followed by valid
 
 00:41:33.306 --> 00:41:36.809
-is not OK that makes sense.
+is not OK, that makes sense.
 
 00:41:36.810 --> 00:41:37.864
 This function,
@@ -3331,16 +3341,16 @@ spanning bytes 0 through 4.
 OK,
 
 00:43:11.200 --> 00:43:13.370
-non inclusive we have a char buffer
+non inclusive we have a char buffer[16]
 
 00:43:13.370 --> 00:43:15.426
-[16] with no alignment requirement
+with no alignment requirement
 
 00:43:15.426 --> 00:43:17.696
 and that extends through bytes
 
 00:43:17.700 --> 00:43:19.698
-4U through 20 not inclusive and
+4 up through 20 not inclusive and
 
 00:43:19.698 --> 00:43:22.310
 then an int purr occupying the end
@@ -3379,7 +3389,7 @@ Can't remember if I've mentioned
 it before in code reviews,
 
 00:43:50.080 --> 00:43:53.455
-but this is ever necessary.
+but if this is ever necessary.
 
 00:43:53.460 --> 00:43:58.066
 Uh, let's use MSVC. We want um.
@@ -3439,10 +3449,10 @@ So if you're ever confused or
 uncertain about the layout of a class,
 
 00:44:40.500 --> 00:44:42.414
-try using D1 report single class
+try using /d1ReportSingleClassLayout
 
 00:44:42.414 --> 00:44:44.299
-layout and then name of class.
+and then name of class.
 
 00:44:44.300 --> 00:44:45.668
 It's undocumented and unsupported,
@@ -3497,6 +3507,7 @@ OK, so meow is all valid the buffer?
 
 00:45:19.910 --> 00:45:22.353
 OK, these SMs are the shadow memory
+
 00:45:22.353 --> 00:45:24.281
 segments because ASan thinks about
 
@@ -3537,7 +3548,7 @@ is… I see the cat noises have attracted well,
 Hi Kitty.
 
 00:45:48.140 --> 00:45:52.114
-Now we can mark all of SM3s valid.
+Now we can mark all of SM3 as valid.
 
 00:45:52.114 --> 00:45:52.471
 OK,
@@ -3570,7 +3581,7 @@ This was obviously a ton of effort to draft,
 but the pictures demonstrate the
 
 00:46:14.320 --> 00:46:16.088
-complicated concepts here are
+complicated concepts here
 
 00:46:16.088 --> 00:46:18.317
 much better than the words can.
@@ -3579,16 +3590,16 @@ much better than the words can.
 OK, very useful.
 
 00:46:19.607 --> 00:46:22.181
-Incredible amount of trial and error
+&gt;&gt Nicole: There was an incredible amount of trial and error
 
 00:46:22.181 --> 00:46:25.579
 that went into figuring this out by the way.
 
 00:46:25.580 --> 00:46:28.780
-No, not documented unfortunately.
+This is all not documented unfortunately.
 
 00:46:28.780 --> 00:46:30.540
-Yeah, and yeah, the result is oh,
+&gt;&gt Stephan: Yeah, and yeah, the result is oh,
 
 00:46:30.540 --> 00:46:31.980
 just crashes with some horrible,
@@ -3600,22 +3611,22 @@ you know,
 inexplicable reason rather than
 
 00:46:34.692 --> 00:46:37.480
-a nice compiler or anything so.
+a nice compiler error or anything so.
 
 00:46:37.480 --> 00:46:37.865
 OK,
 
 00:46:37.865 --> 00:46:40.175
-so we call aligned equals get
+so we call aligned = _Get_asan_aligned_first_end
 
 00:46:40.175 --> 00:46:42.620
-aligned first end with cat buffer,
+with cat.buffer,
 
 00:46:42.620 --> 00:46:46.490
-cat buffer plus 16 and we get back aligned
+cat.buffer + 16, and we get back aligned
 
 00:46:46.490 --> 00:46:50.394
-with members first is address of cat.meow.
+with members _First is address of cat.meow.
 
 00:46:50.400 --> 00:46:51.510
 OK, that's a plain pointer,
@@ -3624,7 +3635,7 @@ OK, that's a plain pointer,
 not any sort of pointer to data member,
 
 00:46:54.318 --> 00:46:57.053
-and the end is the cat.buffer plus 12,
+and _End is the cat.buffer + 12,
 
 00:46:57.060 --> 00:46:59.154
 which is here.
@@ -3645,7 +3656,7 @@ __sanitizer_annotate_contiguous_container(
 aligned._First, aligned._End,
 
 00:47:10.000 --> 00:47:16.120
-OK, uh, can.buffer here, and then 
+OK, uh, cat.buffer here, and then 
 
 00:47:16.120 --> 00:47:17.680
 aligned._Clamp_to_end(
@@ -3663,7 +3674,7 @@ So the… OK that… that finds this boundary.
 Here we are allowed to assume that
 
 00:47:29.271 --> 00:47:31.043
-address can't meow is valid since
+&amp;cat.meow is valid since
 
 00:47:31.043 --> 00:47:32.583
 otherwise cat.buffer plus anywhere
@@ -3675,10 +3686,10 @@ between zero and four could not be valid.
 We cannot poison up to cat.buffer
 
 00:47:36.855 --> 00:47:38.792
-+ 16 since then the address
++ 16 since then the
 
 00:47:38.792 --> 00:47:40.570
-of &purr what could not be valid.
+&amp;purr could not be valid.
 
 00:47:40.570 --> 00:47:42.768
 Thus, this results in the shadow memory
@@ -3687,13 +3698,13 @@ Thus, this results in the shadow memory
 state from the second example. OK.
 
 00:47:45.500 --> 00:47:51.310
-And? That would be this example here.
+And, that would be this example here.
 
 00:47:51.310 --> 00:47:52.786
 Yeah, because this is clearly not
 
 00:47:52.786 --> 00:47:54.190
-the first and second example.
+the first example.
 
 00:47:54.190 --> 00:47:59.620
 OK, this comment makes sense. Thank you.
@@ -3726,10 +3737,10 @@ Because it returns a _First and an _End.
 Those are the names of the members.
 
 00:48:20.060 --> 00:48:21.845
-We take _First which is a constant
+We take _First which is a const
 
 00:48:21.845 --> 00:48:22.900
-pointer to constant void.
+pointer to const void.
 
 00:48:22.900 --> 00:48:24.580
 Same with _Last.
@@ -3750,10 +3761,10 @@ is not necessary but not wrong,
 so that's fine.
 
 00:48:36.510 --> 00:48:38.796
-static constexpt uintptr_t
+static constexpr uintptr_t _Mask
 
 00:48:38.796 --> 00:48:41.650
-_Mask is take the _Asan_granularity.
+is take the _Asan_granularity.
 
 00:48:41.650 --> 00:48:43.126
 Which is a power 2 minus 1,
@@ -3780,10 +3791,10 @@ and then go back to const void*.
 OK, that's great.
 
 00:48:59.520 --> 00:49:02.136
-Amy, who is the tech lead on Asan,
+Amy, who is the tech lead on ASan,
 
 00:49:02.140 --> 00:49:04.640
-says: “for the _Last pointer,
+says: "for the _Last pointer,
 
 00:49:04.640 --> 00:49:05.880
 I think this goes back to the beginning
@@ -3792,13 +3803,13 @@ I think this goes back to the beginning
 of the current longest of advancing to
 
 00:49:07.184 --> 00:49:08.576
-the beginning of the next chunk?” “Correct.
+the beginning of the next chunk?" "Correct.
 
 00:49:08.576 --> 00:49:09.948
 We can't advance the beginning of next
 
 00:49:09.948 --> 00:49:11.320
-chunk; see the example in the comment”.
+chunk; see the example in the comment".
 
 00:49:11.320 --> 00:49:14.150
 OK, so we're only ever
@@ -3852,13 +3863,13 @@ actual inline variables,
 but partial specializations are OK.
 
 00:49:46.040 --> 00:49:47.650
-So template<class _Container,
+So template&lt;class _Container,
 
 00:49:47.650 --> 00:49:48.938
-class = void>,
+class = void&gt;,
 
 00:49:48.940 --> 00:49:51.430
-because we're going to do void_t.
+because we're going to do void_t SFINAE.
 
 00:49:51.430 --> 00:49:54.280
 _INLINE_VAR constexpr size_t
@@ -3879,13 +3890,10 @@ _Container::value_type OK,
 but if something is valid.
 
 00:50:04.470 --> 00:50:07.894
-If we can form a [unintelligible] void_t,
+If we can form a smash to void_t,
 
-00:50:07.900 --> 00:50:10.861
-the decltype of the _Container::allocator_type::
-
-00:50:10.861 --> 00:50:12.850
-minimum_allocation_alignment.
+00:50:07.900 --> 00:50:12.850
+the decltype of the _Container::allocator_type::_Minimum_allocation_alignment.
 
 00:50:12.850 --> 00:50:14.578
 So if you have…,
@@ -3936,7 +3944,7 @@ then we're guaranteed that the allocator
 will at least be returning stuff aligned to
 
 00:50:45.445 --> 00:50:47.838
-80 or 16 byte or whatever boundary it says.
+8 byte or 16 byte or whatever boundary it says.
 
 00:50:47.840 --> 00:50:49.316
 But if the element type has
@@ -3972,7 +3980,7 @@ See. So now we've got changes to
 &lt;string&gt; and &lt;vector&gt; and then the test.
 
 00:51:05.620 --> 00:51:07.940
-OK, let's see. Got a little bit time.
+OK, let's see. Got a little bit of time.
 
 00:51:07.940 --> 00:51:10.770
 Let me go through &lt;vector&gt;.
@@ -4047,7 +4055,7 @@ and it's doing std::max. This is…
 This is returning a bool:
 
 00:52:11.500 --> 00:52:15.196
-“Do you have a minimum allocation alignment?”
+"Do you have a minimum allocation alignment?"
 
 00:52:15.200 --> 00:52:17.629
 The other one just returned what the
@@ -4080,7 +4088,7 @@ Replaces this, but it's not just a
 code extraction. OK, so here we go.
 
 00:52:40.280 --> 00:52:43.020
-So that tight there was wrong.
+&gt;&gt; Nicole: So that thing right there was wrong.
 
 00:52:43.020 --> 00:52:43.730
 Basically,
@@ -4092,7 +4100,7 @@ If you have a pointer pointing at first.
 Uh. This is like up in memory towards
 
 00:52:53.510 --> 00:52:57.950
-end and this is back in the [unintelligible]
+end and this is back in memory towards begin.
 
 00:52:57.950 --> 00:53:00.698
 It would push the pointer forward.
@@ -4107,7 +4115,7 @@ the first four bytes of the buffer.
 But it turns out. That's not true.
 
 00:53:08.562 --> 00:53:10.410
-We can't just push the pointer backwards,
+We can just push the pointer backwards,
 
 00:53:10.410 --> 00:53:12.939
 because we know that this must be valid in
@@ -4116,16 +4124,16 @@ because we know that this must be valid in
 order for this to ever possibly be valid,
 
 00:53:15.330 --> 00:53:17.244
-and so we can't actually poison
+and so we can actually poison
 
 00:53:17.244 --> 00:53:19.548
 the 1st 4 bytes of the buffer.
 
 00:53:19.550 --> 00:53:22.480
-OK. Through the masking.
+&gt;&gt; Stephan: OK. Through the masking.
 
 00:53:24.630 --> 00:53:26.790
-Uh, first and I think is what it's called.
+&gt;&gt; Nicole: Yeah, that _Get_aligned_first_end I think is what it's called.
 
 00:53:26.790 --> 00:53:31.552
 Uh does that? That's the correct masking,
@@ -4137,7 +4145,7 @@ so this is the OK.
 And. Pretty complex.
 
 00:53:36.098 --> 00:53:38.690
-OK, so this is actually a correctness fix.
+&gt;&gt; Stephan: OK, so this is actually a correctness fix.
 
 00:53:38.690 --> 00:53:42.169
 OK, that's good. OK, so goodbye,
@@ -4197,7 +4205,7 @@ OK, and then uh, extra parentheses here
 to make clang format do the right thing.
 
 00:54:22.110 --> 00:54:29.372
-If constexpr the _container_allocation_minimum alignment for our vector is
+If constexpr the _Container_allocation_minimum alignment for our vector is
 
 00:54:29.372 --> 00:54:33.062
 strictly greater than _Asan_granularity then…
@@ -4210,9 +4218,10 @@ without adjustments.
 
 00:54:38.210 --> 00:54:42.060
 Otherwise we need to adjust. OK and here.
+&gt;&gt; Nicole: That should be greater than or equal.
 
 00:54:44.070 --> 00:54:45.480
-Ohh greater than or equal. OK.
+&gt;&gt; Stephan: Ohh greater than or equal. OK.
 
 00:54:47.490 --> 00:54:48.972
 Looks like this comment doesn't mention
@@ -4269,16 +4278,17 @@ because it's making things more complex.
 I'll let you decide whether that's necessary.
 
 00:55:40.560 --> 00:55:45.849
-OK, so the old state, not an optimization.
+OK, so the old state,
+&gt;&gt; Nicole: This is actually not an optimization.
 
 00:55:45.850 --> 00:55:48.167
-That's when you know about the allocator.
+That's what I meant to say, 'cus when you know about the allocator.
 
 00:55:48.170 --> 00:55:50.330
 We can push it forward.
 
 00:55:50.330 --> 00:55:55.389
-We can push the. Could have back.
+We can push the end pointer forward, instead of back.
 
 00:55:55.390 --> 00:55:57.623
 So this is actually fixed in my
@@ -4290,7 +4300,8 @@ local branch and I apparently forgot
 to push before I left for home.
 
 00:56:02.050 --> 00:56:07.845
-So OK. Sorry. OK, let's uh,
+So OK. Sorry.
+&gt;&gt; Stephan: OK, let's uh,
 
 00:56:07.845 --> 00:56:10.120
 let's see if I'm catching this correctly.
@@ -4308,7 +4319,7 @@ is needed for correctness and
 is not purely an optimization.
 
 00:56:21.060 --> 00:56:25.492
-OK. Okay, oll state include _First
+OK. Okay, old state: include _First
 
 00:56:25.492 --> 00:56:28.332
 exclude _Old_last is valid,
@@ -4320,13 +4331,13 @@ and then from _Old_last
 excluding _End is poison.
 
 00:56:30.888 --> 00:56:32.820
-New state _First to _New_last
+New state: _First to _New_last
 
 00:56:32.886 --> 00:56:34.560
-is valid and then _New_last…
+is valid and then _New_last to
 
 00:56:34.560 --> 00:56:36.720
-And… so there simply _Old_last was the
+_end, so there simply _Old_last was the
 
 00:56:36.720 --> 00:56:38.180
 boundary between valid and poison.
@@ -4335,7 +4346,7 @@ boundary between valid and poison.
 We're moving that to wherever
 
 00:56:40.120 --> 00:56:43.079
-_New_last is so _CSTD qualify,
+_New_last is, so _CSTD qualified,
 
 00:56:43.080 --> 00:56:45.060
 which just means global scope 
@@ -4377,16 +4388,17 @@ The buffer does not end at least one
 shadow memory section. Nothing to do.
 
 00:57:12.610 --> 00:57:15.283
-Am I misparsing this? What is end mean here?
+Am I misparsing this? What does end mean here?
 
 00:57:15.290 --> 00:57:18.910
-Does it mean contain? No.
+Does it mean contain?
+&gt;&gt; Nicole: No.
 
 00:57:18.910 --> 00:57:22.130
 Basically, in order to mark part of
 
 00:57:22.130 --> 00:57:25.506
-a shadow of every section as poison,
+a shadow memory section as poison,
 
 00:57:25.506 --> 00:57:29.484
 we need to know that we own the final
@@ -4395,7 +4407,7 @@ we need to know that we own the final
 byte in that shadow memory section.
 
 00:57:32.940 --> 00:57:34.602
-OK, so for like you're purely
+&gt;&gt; Stephan: OK, so for like, if you're purely
 
 00:57:34.602 --> 00:57:36.200
 within a shadow memory section,
@@ -4407,7 +4419,7 @@ you don't contain the end of one of them.
 OK, so that's what this means.
 
 00:57:40.900 --> 00:57:43.428
-OK, so yeah, so we can actually be
+&gt;&gt Nicole: Right, so, yeah, so we can actually be
 
 00:57:43.428 --> 00:57:46.069
 in the middle to another middle,
@@ -4416,10 +4428,10 @@ in the middle to another middle,
 and we can poison at least
 
 00:57:47.522 --> 00:57:50.125
-like the 1st 4 bytes. Right.
+like the first 4 bytes. Right.
 
 00:57:50.125 --> 00:57:52.565
-Yeah. But you can't be purely
+&gt;&gt; Stephan: Yeah. But you can't be purely
 
 00:57:52.565 --> 00:57:53.545
 within a shadow memory.
@@ -4428,16 +4440,16 @@ within a shadow memory.
 OK. I think that makes sense
 
 00:57:59.150 --> 00:58:01.449
-that the charger for my phone.
+&gt;&gt Nicole: I need to go get the charger for my phone.
 
 00:58:01.450 --> 00:58:05.678
-OK, um, then early return.
+&gt;&gt Stephan: OK [laugh], um, then early return.
 
 00:58:05.678 --> 00:58:08.286
 _Old_fixed and _New_fixed,
 
 00:58:08.290 --> 00:58:11.866
-_Clamp_to_end _Old_last and _New_last.
+_Clamp_to_end, _Old_last, and _New_last.
 
 00:58:11.870 --> 00:58:13.466
 OK, so now some comments of the
@@ -4530,16 +4542,16 @@ Now #ifdef _INSERT_STRING_ANNOTATION,
 we have a helper function.
 
 00:59:33.810 --> 00:59:36.850
-We look like we're within.
+We look like we're within
 
 00:59:36.850 --> 00:59:39.678
-A class here indeed we are within
+a class here indeed we are within
 
 00:59:39.678 --> 00:59:41.510
-within basic string itself.
+within basic_string itself.
 
 00:59:41.510 --> 00:59:44.898
-Yeah, this looks like basic string itself.
+Yeah, this looks like basic_string itself.
 
 00:59:44.900 --> 00:59:48.316
 OK, um, so and are we in?
@@ -4653,7 +4665,7 @@ Uh, let's see…
 This whole condition must be true,
 
 01:01:02.880 --> 01:01:04.518
-the sizeof.
+the sizeof
 
 01:01:08.610 --> 01:01:10.750
 value_type of _BUF_SIZE.
@@ -4668,7 +4680,7 @@ I was like index into a value type. No.
 This is the size of an array of, um,
 
 01:01:21.694 --> 01:01:26.780
-buff size elements of value type. OK.
+_BUF_SIZE elements of value_type. OK.
 
 01:01:26.780 --> 01:01:28.446
 Which I guess could have been expressed
@@ -4704,7 +4716,7 @@ The align of our size_type…
 Ohh this is looking at the x86 or x64.
 
 01:02:01.634 --> 01:02:05.470
-Basically the reason for all of this
+&gt;&gt; Nicole: Basically the reason for all of this
 
 01:02:05.470 --> 01:02:08.822
 is because I am trying to check one
@@ -4761,10 +4773,10 @@ but that that's basically the idea.
 Is is so that you don't poison size_type,
 
 01:02:59.290 --> 01:03:02.350
-You're my size accidentally.
+You're _Mysize accidentally.
 
 01:03:02.350 --> 01:03:05.455
-OK, Umm, I'm going to add a comment here.
+&gt;&gt; Stephan: OK, Umm, I'm going to add a comment here.
 
 01:03:05.460 --> 01:03:08.337
 Um. If it would be possible to
@@ -4815,22 +4827,22 @@ Uh, _CONSTEXPR20 cause string and vector
 have to be constexpr in C++20 mode.
 
 01:03:50.620 --> 01:03:52.398
-But now instead of just taking account,
+But now instead of just taking a count,
 
 01:03:52.400 --> 01:03:54.432
 we take a const size_type _Old_size, const
 
 01:03:54.432 --> 01:03:56.250
-size_type _new_size, const noexcept.
+size_type _New_size, const noexcept.
 
 01:03:56.250 --> 01:03:59.330
-OK, Umm, this no longer just says “Extends/
+OK, Umm, this no longer just says "Extends/
 
 01:03:59.400 --> 01:04:01.986
-shrinks the annotator range by count”.
+shrinks the annotator range by count".
 
 01:04:01.990 --> 01:04:02.632
-You have it.
+You have,
 
 01:04:02.632 --> 01:04:04.380
 You have to explicitly tell it what we're…
@@ -4842,10 +4854,10 @@ what was the old size and the new size.
 That's nice. That avoids confusion.
 
 01:04:08.190 --> 01:04:09.570
-If they were the same, “hey,
+If they were the same, "hey,
 
 01:04:09.570 --> 01:04:10.730
-nothing to do, return”.
+nothing to do, return".
 
 01:04:10.730 --> 01:04:11.825
 Otherwise they're different.
@@ -4872,7 +4884,7 @@ We now have a new function.
 _CONSTEXPR20 static void _Remove_sso_annotation
 
 01:04:30.572 --> 01:04:33.028
-(const _Scary_val&
+(const _Scary_val&amp;
 
 01:04:33.028 --> 01:04:35.620
 _My_data) noexcept. OK.
@@ -4881,7 +4893,7 @@ _My_data) noexcept. OK.
 This thing is um,
 
 01:04:36.752 --> 01:04:38.960
-I think we mentioned another code reviews,
+I think we mentioned in other code reviews,
 
 01:04:38.960 --> 01:04:39.450
 but uh,
@@ -4944,11 +4956,10 @@ Because we're not going to do
 any ASan stuff, of course.
 
 01:05:21.142 --> 01:05:23.206
-ib, um, constexpr land.
+in, um, constexpr land.
 
 01:05:23.210 --> 01:05:23.537
 OK.
-
 
 01:05:23.537 --> 01:05:23.864
 Um.
@@ -4966,7 +4977,7 @@ or um,
 we are in 20 but we've
 
 01:05:31.832 --> 01:05:33.190
-determined where at runtime.
+determined we're at runtime.
 
 01:05:33.190 --> 01:05:35.050
 OK, so we can proceed.
@@ -4999,13 +5010,13 @@ Then nice before after comments,
 old state,
 
 01:05:54.240 --> 01:05:56.360
-new state from _My_buf to _End is
+new state, from _My_buf to _End is
 
 01:05:56.423 --> 01:05:58.889
 unknown and now _My_buf to _End is valid.
 
 01:05:58.890 --> 01:06:01.494
-_My_buf _End _My_buf _End OK.
+_My_buf, _End, _My_buf, _End, OK.
 
 01:06:01.500 --> 01:06:03.692
 Otherwise const auto _Aligned =
@@ -5041,16 +5052,16 @@ The small string isn't always ASan aligned,
 so we want to just remove
 
 01:06:28.024 --> 01:06:29.460
-that annotation to say: “hey,
+that annotation to say: "hey,
 
 01:06:29.460 --> 01:06:30.192
-everybody's valid”,
+everybody's valid",
 
 01:06:30.192 --> 01:06:30.558
 OK.
 
 01:06:33.060 --> 01:06:34.455
-OK, looks good.
+OK, that looks good.
 
 01:06:34.455 --> 01:06:36.780
 Another function _CONSTEXPR20
@@ -5059,7 +5070,7 @@ Another function _CONSTEXPR20
 static void _Annotate_switch_to_large,
 
 01:06:39.660 --> 01:06:41.568
-(_Scary_val& _My_data)
+(_Scary_val&amp; _My_data)
 
 01:06:41.570 --> 01:06:45.158
 noexcept. annotates exactly the pointers
@@ -5077,7 +5088,7 @@ a pointer in that union.
 Again, if we're in CXX20 mode,
 
 01:06:54.740 --> 01:06:58.100
-if we're constant evaluated then return.
+if we're constant evaluated, early return.
 
 01:06:58.100 --> 01:07:00.460
 Remove any SSO annotation.
@@ -5110,7 +5121,7 @@ Um, I'm wondering if it makes sense
 to group _My_buf/_End just so
 
 01:07:26.982 --> 01:07:28.781
-that puts the buffs together and
+that puts the bufs together and
 
 01:07:28.781 --> 01:07:31.547
 then the _Ptr one is separate.
@@ -5119,7 +5130,7 @@ then the _Ptr one is separate.
 It's probably not strictly necessary.
 
 01:07:34.500 --> 01:07:37.240
-OK, _My_buf comes before,
+&gt;&gt Nicole: The idea is that, _My_buf comes before
 
 01:07:37.240 --> 01:07:40.030
 _Ptr_last comes before _End
@@ -5128,7 +5139,7 @@ _Ptr_last comes before _End
 OK. The locations?
 
 01:07:43.780 --> 01:07:44.340
-Ah, OK.
+&gt;&gt Stephan: Ah, OK.
 
 01:07:48.140 --> 01:07:49.796
 And this is doing pointer arithmetic.
@@ -5161,7 +5172,7 @@ but from _Ptr_last to _End is poison.
 OK, otherwise const auto
 
 01:08:07.960 --> 01:08:10.500
-_Aligned = _Get_asan_aligned_first_end get AC line for send.
+_Aligned = _Get_asan_aligned_first_end
 
 01:08:10.500 --> 01:08:13.952
 The old state again.
@@ -5191,7 +5202,7 @@ OK, but the pointer, of course is fine.
 OK.
 
 01:08:36.620 --> 01:08:39.116
-_Alinged._First, _Alinged._End, _Alinged._End, _Ptr_last.
+_Aligned._First, _Aligned._End, _Aligned._End, _Ptr_last.
 
 01:08:41.510 --> 01:08:41.850
 Yeah.
@@ -5221,13 +5232,13 @@ arithmetic in the byte domain and
 arithmetic in the pointer domain um.
 
 01:09:10.804 --> 01:09:15.234
-I think I may need A to look at.
+I think I may need a, to look at.
 
 01:09:15.234 --> 01:09:17.186
 Whoops, where's string itself?
 
 01:09:17.190 --> 01:09:20.778
-I want to go to &lt;xstring&&gt;.
+I want to go to &lt;xstring&gt;.
 
 01:09:23.250 --> 01:09:28.520
 OK, so we've got a _Buf, I think _Bx.
@@ -5248,7 +5259,7 @@ the array of _BUF_SIZE `value_type`s.
 For a narrow string,
 
 01:09:37.920 --> 01:09:39.670
-this is 16 narrow carriers.
+this is 16 narrow chars.
 
 01:09:39.670 --> 01:09:41.210
 Followed by a pointer.
@@ -5338,7 +5349,7 @@ It doesn't point at the end
 of the second pointer,
 
 01:11:17.620 --> 01:11:21.220
-and there is no second pointer point set.
+and there is no second pointer, it points at.
 
 01:11:21.220 --> 01:11:22.720
 The end of that reach.
@@ -5368,7 +5379,7 @@ is valid but excluding it.
 OK, so this is saying.
 
 01:11:39.070 --> 01:11:41.090
-The order is valid.
+The ptr is valid.
 
 01:11:41.090 --> 01:11:43.110
 Everything from _Ptr_last
@@ -5401,7 +5412,7 @@ but we're only consuming one.
 That's all good.
 
 01:11:55.330 --> 01:11:58.530
-I mentally create the diagram in my head.
+I had to mentally create the diagram in my head.
 
 01:11:58.530 --> 01:12:00.420
 OK, we're now done with 
@@ -5434,7 +5445,7 @@ I want to switch to side by side.
 What I really want is the thing that
 
 01:12:25.630 --> 01:12:27.016
-we have in our internal reveal tool,
+we have in our internal review tool,
 
 01:12:27.020 --> 01:12:29.722
 where I can switch entirely to new
@@ -5500,13 +5511,13 @@ but why would we be doing
 this for capacity here?
 
 01:13:33.120 --> 01:13:36.800
-Because our capacity is.
+&gt;&gt; Nicole: Because our capacity is.
 
 01:13:36.800 --> 01:13:40.160
 Our actual capacity minus one.
 
 01:13:40.160 --> 01:13:42.050
-Ah, OK, that's why I forgot.
+&gt;&gt; Stephan: Ah, OK, that's why I forgot.
 
 01:13:44.180 --> 01:13:45.230
 [unintelligible] Done. Yeah, yeah.
@@ -5527,10 +5538,10 @@ OK, so that's all correct. Yeah.
 So whenever I see a null terminator,
 
 01:13:54.670 --> 01:13:56.728
-I'm like: “whoa, sirens, you know,
+I'm like: "whoa, sirens, you know,
 
 01:13:56.730 --> 01:14:00.330
-something could be wrong here”, um.
+something could be wrong here", um.
 
 01:14:00.330 --> 01:14:01.308
 constexpr bool
@@ -5539,10 +5550,10 @@ constexpr bool
 _Large_string_asan_always_aligned
 
 01:14:06.710 --> 01:14:07.618
-Oh yeah, and you
+&gt;&gt; Nicole: Oh yeah, is null spelled wrong there?
 
 01:14:10.150 --> 01:14:11.650
-um, so n-u-l is the ASCII name
+&gt;&gt; Stephan: oh yeah, n-u-l-l, so n-u-l is the ASCII name
 
 01:14:11.650 --> 01:14:12.850
 for the null character.
@@ -5554,10 +5565,10 @@ But if you spell it out as a word,
 it's reasonable spelled out like
 
 01:14:16.085 --> 01:14:17.350
-this thing that would be wrong.
+this. The thing that would be wrong,
 
 01:14:17.350 --> 01:14:18.358
-Would be all capital and all,
+Would be all capital NULL,
 
 01:14:18.360 --> 01:14:20.040
 because that's the macro for
@@ -5590,7 +5601,7 @@ Um, the the one I'm allergic
 to is referring to a null
 
 01:14:33.697 --> 01:14:34.905
-terminator is all capital,
+terminator is all capital NULL,
 
 01:14:34.910 --> 01:14:35.879
 which it's not.
@@ -5614,10 +5625,10 @@ than or equal to _Asan_granularity.
 OK, if constexpr _Large_string_asan_always_aligned
 
 01:14:51.774 --> 01:14:55.996
-and _Small_string_always_asan_aligned, then “hey,
+and _Small_string_always_asan_aligned, then "hey,
 
 01:14:55.996 --> 01:15:00.540
-the stars have aligned!” old state: _First
+the stars have aligned!" old state: _First
 
 01:15:00.540 --> 01:15:02.262
 valid ends at _Old_last and
@@ -5629,7 +5640,7 @@ then the rest is poison.
 We're moving that to _New_last.
 
 01:15:05.700 --> 01:15:08.406
-OK, good. _First and _Old_last
+OK, good. _First, _End, _Old_last
 
 01:15:08.406 --> 01:15:10.360
 _New_last, otherwise, OK,
@@ -5653,7 +5664,7 @@ It's just not doing interline differing.
 OK, otherwise const auto _Aligned
 
 01:15:24.920 --> 01:15:27.429
-is _STD _Get_asan_aligned_first_end.
+is _STD _Get_asan_aligned_first_end(_First, _End).
 
 01:15:27.430 --> 01:15:30.265
 the buffer must always have
@@ -5674,7 +5685,7 @@ OK, so you have that guarantee
 that we talked about. Last must be
 
 01:15:38.968 --> 01:15:41.250
-less than or equal to than end.
+less than or equal to, than _End.
 
 01:15:41.250 --> 01:15:43.374
 So fix up when _Aligned._End
@@ -5682,16 +5693,14 @@ So fix up when _Aligned._End
 01:15:43.374 --> 01:15:44.790
 is strictly less than
 
-
 01:15:46.840 --> 01:15:51.778
 _*_Last OK um.
 
-
 01:15:51.780 --> 01:15:53.364
-_Old_fixed _Clamp_to_end,
+_Old_fixed._Clamp_to_end,
 
 01:15:53.364 --> 01:15:55.688
-_Old_last, _New_fixed _Clamp_to_end,
+_Old_last, _New_fixed._Clamp_to_end,
 
 01:15:55.688 --> 01:15:57.704
 _New_last, OK. Old state.
@@ -5703,7 +5712,7 @@ Here these are actually contiguous lines,
 just the narrow screen is messing things up.
 
 01:16:03.680 --> 01:16:05.852
-The valid boundary was an _Old_fixed
+The valid boundary was at _Old_fixed
 
 01:16:05.852 --> 01:16:07.790
 _Aligned._End poison, new state.
@@ -5745,7 +5754,7 @@ OK, the macro helper macros.
 No more _ASAN_STRING_MODIFY
 
 01:16:43.434 --> 01:16:45.264
-in taking one arg.
+is taking one arg.
 
 01:16:45.270 --> 01:16:50.240
 Now we take 3 args, _Str, _Old_size, _New_size.
@@ -5803,10 +5812,10 @@ This looks like… this is a change that
 Casey recently made, I thought.
 
 01:17:31.740 --> 01:17:34.818
-Yeah, that must be merge damage.
+&gt;&gt; Nicole: Yeah, that must be merge damage.
 
 01:17:34.820 --> 01:17:36.488
-OK, I'll add a comment.
+&gt;&gt; Stephan: OK, I'll add a comment.
 
 01:17:39.910 --> 01:17:45.280
 I think a merge was incorrectly
@@ -5863,7 +5872,7 @@ but I don't remember exactly what changed.
 OK, So what is the history?
 
 01:18:27.550 --> 01:18:31.910
-I was Casey's miscellaneous cleanups.
+Ah, it was Casey's miscellaneous cleanups.
 
 01:18:31.910 --> 01:18:34.370
 We… we created PRs almost simultaneously.
@@ -5884,7 +5893,7 @@ but small enough that it didn't
 make sense to accept for PRs.
 
 01:18:43.410 --> 01:18:45.707
-Yeah, so here Casey said: “OK,
+Yeah, so here Casey said: "OK,
 
 01:18:45.707 --> 01:18:47.728
 we're going to take _Al, we're
@@ -5899,7 +5908,7 @@ allocator in our compressed pair,
 but then we don't need to redundantly
 
 01:18:52.032 --> 01:18:53.708
-provide it to _Move_construct_from_substr”.
+provide it to _Move_construct_from_substr".
 
 01:18:53.710 --> 01:18:55.229
 That one can just use our allocator.
@@ -5908,13 +5917,13 @@ That one can just use our allocator.
 We have a whole function for that,
 
 01:18:56.830 --> 01:18:58.830
-so this function doesn't take out at all.
+so this function doesn't take _Al at all.
 
 01:18:58.830 --> 01:19:00.210
 So if you've merged with main,
 
 01:19:00.210 --> 01:19:02.352
-there should not be showing up as an edit.
+that should not be showing up as an edit.
 
 01:19:02.360 --> 01:19:04.540
 Um, yeah, something's gone wrong.
@@ -5998,7 +6007,7 @@ So we want to pick up 3178,
 um.
 
 01:19:58.770 --> 01:20:03.170
-OK. Double check that sorry citation it is.
+OK. Double check that, sorry citation it is.
 
 01:20:03.170 --> 01:20:04.283
 OK, straight damage.
@@ -6031,22 +6040,22 @@ Was there a rationale for
 moving this assignment?
 
 01:20:24.630 --> 01:20:27.038
-So everywhere else. Because.
+&gt;&gt Nicole: So everywhere else, we have,
 
 01:20:27.038 --> 01:20:30.650
 I think everywhere else we have
 
 01:20:30.650 --> 01:20:32.162
-_Myres assigned first _Count,
+_Myres assigned first, _Count
 
 01:20:32.162 --> 01:20:34.430
-assigned second or _Mysize assigned
+assigned second, _Mysize assigned
 
 01:20:34.490 --> 01:20:36.302
-second string create third.
+second, _ASAN_STRING_CREATE third.
 
 01:20:36.302 --> 01:20:40.609
-Ah, so that that's what that the idea was,
+&gt;&gt; Stephan: Ah, so that that's what that the idea was,
 
 01:20:40.610 --> 01:20:43.998
 then. OK, big fan of following um,
@@ -6091,25 +6100,25 @@ Switch to large.
 Miscco, who worked extensively on string,
 
 01:21:14.820 --> 01:21:15.596
-says: “something's fishy here.
+says: "something's fishy here.
 
 01:21:15.596 --> 01:21:16.760
 At the end of the function,
 
 01:21:16.760 --> 01:21:18.470
-we call _ASAN_STRING_CREATE…”
+we call _ASAN_STRING_CREATE…"
 
 01:21:18.470 --> 01:21:20.295
-Nicole reply switch to large
+Nicole's reply, _ASAN_STRING_SWITCH_TO_LARGE
 
 01:21:20.295 --> 01:21:22.120
-creates a validation region inside
+creates a valid region inside
 
 01:21:22.182 --> 01:21:24.270
 the SSO buffer for the pointer
 
 01:21:24.270 --> 01:21:26.010
-because we're switching large mode,
+because we're switching to large mode,
 
 01:21:26.010 --> 01:21:28.481
 and then _ASAN_STRING_CREATE creates a
@@ -6181,7 +6190,7 @@ We'll just create call macro.
 Sorry for scrolling.
 
 01:22:10.880 --> 01:22:13.300
-Because the existing create annotation,
+Create calls the existing create annotation,
 
 01:22:13.300 --> 01:22:14.248
 OK, I think,
@@ -6220,7 +6229,7 @@ these are actually correct.
 Interesting that _Right_size
 
 01:22:40.244 --> 01:22:42.290
-was a asked as a delta before,
+was asked as a delta before,
 
 01:22:42.290 --> 01:22:44.670
 it's always because we're concatenating.
@@ -6268,7 +6277,7 @@ Then we're starting with _Right_size
 and becoming _New_size.
 
 01:23:22.160 --> 01:23:25.205
-And I need to go so OK,
+&gt;&gt; Nicole: And I need to go so OK,
 
 01:23:25.210 --> 01:23:27.010
 thanks for the review.
