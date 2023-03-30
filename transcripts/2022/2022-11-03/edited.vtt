@@ -1,0 +1,6337 @@
+﻿WEBVTT
+
+NOTE duration:"01:24:08"
+
+NOTE language:en-us
+
+00:00:10.710 --> 00:00:12.420
+&gt;&gt; Stephan: Hi and welcome back to another
+
+00:00:12.420 --> 00:00:13.990
+VC libraries Open code review.
+
+00:00:13.990 --> 00:00:17.554
+Today we'll be looking at a PR from Nicole
+
+00:00:17.554 --> 00:00:20.790
+called Re-enable ASan string annotations.
+
+00:00:20.790 --> 00:00:24.695
+This is PR #3164, so the background here
+
+00:00:24.695 --> 00:00:28.213
+is that MSVC is working hard on adding
+
+00:00:28.213 --> 00:00:31.321
+support for the address sanitizer that was
+
+00:00:31.405 --> 00:00:34.370
+originally implemented in clang LLVM.
+
+00:00:34.370 --> 00:00:37.639
+So we're taking their open source code
+
+00:00:37.639 --> 00:00:41.918
+base and applying that to MSVC, and then,
+
+00:00:41.918 --> 00:00:44.600
+additionally, our containers,
+
+00:00:44.600 --> 00:00:46.920
+in particular the most popular
+
+00:00:46.920 --> 00:00:47.848
+contiguous containers,
+
+00:00:47.850 --> 00:00:51.450
+std::string and std::vector do something
+
+00:00:51.450 --> 00:00:54.620
+that is a little bit unusual compared
+
+00:00:54.620 --> 00:00:57.260
+to how users directly allocate memory.
+
+00:00:57.260 --> 00:01:00.260
+With a string or a vector,
+
+00:01:00.260 --> 00:01:02.642
+the container will allocate a big
+
+00:01:02.642 --> 00:01:06.088
+block of memory all at once, and then
+
+00:01:06.088 --> 00:01:09.208
+construct within it either characters
+
+00:01:09.208 --> 00:01:11.904
+or elements, and as more elements
+
+00:01:11.904 --> 00:01:14.070
+are pushed back or emplaced
+
+00:01:14.144 --> 00:01:15.488
+into the container,
+
+00:01:15.490 --> 00:01:17.494
+um, the originally allocated
+
+00:01:17.494 --> 00:01:20.500
+but not yet consumed memory is
+
+00:01:20.587 --> 00:01:23.047
+used to store those elements,
+
+00:01:23.050 --> 00:01:25.678
+and it's only when the container runs out of
+
+00:01:25.678 --> 00:01:28.148
+unused capacity that it needs to reallocate.
+
+00:01:28.150 --> 00:01:30.544
+And both string and vector use what's
+
+00:01:30.544 --> 00:01:33.790
+known as a geometric reallocation policy.
+
+00:01:33.790 --> 00:01:34.840
+Well, they'll,
+
+00:01:34.840 --> 00:01:37.990
+where they'll allocate some multiple of
+
+00:01:37.990 --> 00:01:41.166
+their capacity whenever they need to grow.
+
+00:01:41.170 --> 00:01:43.282
+This is somewhat counterintuitive, but
+
+00:01:43.282 --> 00:01:47.037
+it means that pushing back into them
+
+00:01:47.037 --> 00:01:49.210
+results in amortized constant time,
+
+00:01:49.210 --> 00:01:51.220
+which you would not get if
+
+00:01:51.220 --> 00:01:53.198
+you had a naive policy of: 
+
+00:01:53.200 --> 00:01:54.520
+"oh, let's just allocate like plus
+
+00:01:54.520 --> 00:01:55.576
+10 elements or something",
+
+00:01:55.580 --> 00:01:57.740
+which other libraries have had,
+
+00:01:57.740 --> 00:02:00.799
+but the STL has never suffered from.
+
+00:02:00.800 --> 00:02:03.608
+So the fact that for string and vector
+
+00:02:03.608 --> 00:02:06.140
+the allocated memory is different from
+
+00:02:06.140 --> 00:02:08.774
+the memory that actually holds elements,
+
+00:02:08.780 --> 00:02:11.510
+or that the capacity in general
+
+00:02:11.510 --> 00:02:14.239
+can be larger than the size,
+
+00:02:14.240 --> 00:02:16.070
+um, poses challenges for ASan.
+
+00:02:16.070 --> 00:02:17.792
+For address sanitizer,
+
+00:02:17.792 --> 00:02:21.810
+we would like out of bounds accesses
+
+00:02:21.810 --> 00:02:24.267
+to be detected if pointers or whatever
+
+00:02:24.267 --> 00:02:26.091
+are being dereferenced into memory
+
+00:02:26.091 --> 00:02:28.209
+that does not actually hold elements.
+
+00:02:28.210 --> 00:02:29.926
+So just because it's been allocated,
+
+00:02:29.930 --> 00:02:31.820
+if it's in that unused capacity
+
+00:02:31.820 --> 00:02:33.847
+between the end of the container
+
+00:02:33.847 --> 00:02:36.311
+size and the end of the container's
+
+00:02:36.311 --> 00:02:37.929
+actual allocated capacity,
+
+00:02:37.930 --> 00:02:40.900
+we would like that range to
+
+00:02:40.900 --> 00:02:42.385
+be considered invalid.
+
+00:02:42.390 --> 00:02:44.720
+Merely looking at what allocations the
+
+00:02:44.720 --> 00:02:45.968
+program is performing would
+
+00:02:45.968 --> 00:02:47.840
+not be sufficient to do that.
+
+00:02:47.840 --> 00:02:49.865
+So that's where these annotations
+
+00:02:49.865 --> 00:02:51.080
+come into play.
+
+00:02:51.080 --> 00:02:53.208
+There are special commands that you can
+
+00:02:53.208 --> 00:02:55.858
+give to the address sanitizer machinery –
+
+00:02:55.860 --> 00:02:56.572
+and Nicole,
+
+00:02:56.572 --> 00:02:59.420
+please jump in to correct me if I'm
+
+00:02:59.420 --> 00:03:01.230
+characterizing this incorrectly –
+
+00:03:01.230 --> 00:03:02.570
+there are these commands that
+
+00:03:02.570 --> 00:03:04.449
+you can give to ASan that say:
+
+00:03:04.450 --> 00:03:06.790
+"OK, I have allocated some memory,
+
+00:03:06.790 --> 00:03:08.515
+but even though that memory
+
+00:03:08.515 --> 00:03:09.550
+has been allocated,
+
+00:03:09.550 --> 00:03:11.818
+I would like you to consider
+
+00:03:11.818 --> 00:03:14.350
+it bogus for the time being".
+
+00:03:14.350 --> 00:03:14.935
+And these are…
+
+00:03:14.935 --> 00:03:15.910
+these are what are referred
+
+00:03:15.910 --> 00:03:16.830
+to as annotations.
+
+00:03:16.830 --> 00:03:19.015
+So we've applied those to
+
+00:03:19.015 --> 00:03:20.763
+both string and vector,
+
+00:03:20.770 --> 00:03:23.125
+but then we discovered problems
+
+00:03:23.125 --> 00:03:25.009
+with the string annotation.
+
+00:03:25.010 --> 00:03:27.465
+String is an unusual container
+
+00:03:27.465 --> 00:03:30.292
+because – unlike vector – it has
+
+00:03:30.292 --> 00:03:32.996
+Small String Optimization where
+
+00:03:32.996 --> 00:03:36.336
+strings that are below um 16 narrow
+
+00:03:36.336 --> 00:03:37.866
+characters can be stored directly
+
+00:03:37.866 --> 00:03:39.090
+within the string itself,
+
+00:03:39.090 --> 00:03:41.016
+that never happens for a vector.
+
+00:03:41.020 --> 00:03:44.875
+And additionally string has interesting
+
+00:03:44.875 --> 00:03:47.800
+alignment properties compared to vector.
+
+00:03:47.800 --> 00:03:50.560
+It does some unusual math there.
+
+00:03:50.560 --> 00:03:52.185
+So we discovered some pretty
+
+00:03:52.185 --> 00:03:54.214
+severe problems with the ASan string
+
+00:03:54.214 --> 00:03:55.949
+annotations and had to disable
+
+00:03:55.949 --> 00:03:57.986
+them before shipping so that it
+
+00:03:57.986 --> 00:03:59.738
+wouldn't go break users who were
+
+00:03:59.740 --> 00:04:00.937
+enabling address sanitizer.
+
+00:04:00.937 --> 00:04:04.608
+So that has been the status quo for a while.
+
+00:04:04.610 --> 00:04:07.262
+Nicole has now done the intensive
+
+00:04:07.262 --> 00:04:09.540
+investigation needed to restore these
+
+00:04:09.540 --> 00:04:11.750
+annotations and get them correct.
+
+00:04:11.750 --> 00:04:14.774
+So that's what we'll be reviewing today.
+
+00:04:14.780 --> 00:04:17.420
+So that is the background.
+
+00:04:17.420 --> 00:04:18.892
+Let me take a look at the files
+
+00:04:18.892 --> 00:04:20.189
+that are being changed here.
+
+00:04:22.570 --> 00:04:25.600
+And Alt Click to minimize everything.
+
+00:04:25.600 --> 00:04:28.860
+OK, so we have got changes to the ASan tests,
+
+00:04:28.860 --> 00:04:29.736
+the existing tests,
+
+00:04:29.736 --> 00:04:31.488
+we're not adding any new tests.
+
+00:04:31.490 --> 00:04:34.087
+And then we've got product code changes
+
+00:04:34.087 --> 00:04:37.027
+and we've got a new header being added,
+
+00:04:37.030 --> 00:04:41.596
+an internal header &lt;stl/inc/__msvc_sanitizer_annotate_container.hpp&gt;
+
+00:04:41.596 --> 00:04:45.528
+So the presence of a new header means that
+
+00:04:45.528 --> 00:04:48.460
+we need to follow a checklist. In the STL
+
+00:04:48.460 --> 00:04:51.436
+we are very fond of using checklists for
+
+00:04:51.436 --> 00:04:53.741
+any complicated processes that we have to
+
+00:04:53.741 --> 00:04:56.829
+do so that we don't forget important steps.
+
+00:04:56.830 --> 00:04:59.510
+Um, if it's useful when flying a plane,
+
+00:04:59.510 --> 00:05:02.206
+it's useful when making changes in the STL.
+
+00:05:02.210 --> 00:05:05.186
+So here is our wiki page.
+
+00:05:05.190 --> 00:05:07.066
+I fondly refer to this as "hack
+
+00:05:07.066 --> 00:05:08.888
+these files" because that was the
+
+00:05:08.888 --> 00:05:10.493
+name of our internal SharePoint
+
+00:05:10.493 --> 00:05:12.269
+document before we made this public.
+
+00:05:12.270 --> 00:05:14.650
+Now it's called, less excitingly,
+
+00:05:14.650 --> 00:05:17.370
+files to edit when adding or removing files.
+
+00:05:17.370 --> 00:05:19.788
+Ideally this would all be automated.
+
+00:05:19.790 --> 00:05:21.902
+In practice we just need to make manual
+
+00:05:21.902 --> 00:05:24.028
+edits to a bunch of different places.
+
+00:05:24.030 --> 00:05:27.355
+The most annoying part is actually automated.
+
+00:05:27.360 --> 00:05:29.005
+That's the part that Amy took care
+
+00:05:29.005 --> 00:05:30.779
+of in the MSVC internal repo,
+
+00:05:30.780 --> 00:05:31.578
+this LKG thing.
+
+00:05:31.578 --> 00:05:33.729
+So there's just a script you need to
+
+00:05:33.729 --> 00:05:35.776
+run there, but for everything else
+
+00:05:35.776 --> 00:05:38.140
+it needs to be essentially manual.
+
+00:05:38.140 --> 00:05:40.219
+So many possible things to forget there.
+
+00:05:40.220 --> 00:05:42.770
+I will be comparing against those.
+
+00:05:42.770 --> 00:05:44.810
+Let me split these. Um.
+
+00:05:44.810 --> 00:05:46.490
+Wow, that split is not great.
+
+00:05:46.490 --> 00:05:48.704
+Can I make that flow into a single line?
+
+00:05:48.710 --> 00:05:51.710
+Yes, I can. OK.
+
+00:05:51.710 --> 00:05:52.241
+So, new header.
+
+00:05:52.241 --> 00:05:53.820
+I'll take a look at the new header.
+
+00:05:53.820 --> 00:05:55.450
+Um, let's first go through.
+
+00:05:55.450 --> 00:05:56.680
+This is divided into 3 sections,
+
+00:05:56.680 --> 00:05:58.580
+edits in the GitHub repository,
+
+00:05:58.580 --> 00:06:00.960
+MSVC internal, and then VS.
+
+00:06:00.960 --> 00:06:02.576
+The VS IDE needs to be told when we're
+
+00:06:02.576 --> 00:06:03.960
+adding new extensionless headers,
+
+00:06:03.960 --> 00:06:05.860
+like the upcoming &lt;print&gt; header.
+
+00:06:05.860 --> 00:06:07.300
+This is not an extensionless header
+
+00:06:07.300 --> 00:06:08.780
+because it's internal and nonstandard.
+
+00:06:08.780 --> 00:06:10.244
+It ends with hpp,
+
+00:06:10.244 --> 00:06:11.708
+so that's not applicable.
+
+00:06:11.710 --> 00:06:13.090
+So on the GitHub side,
+
+00:06:13.090 --> 00:06:14.882
+new header means we should edit CMakeLists,
+
+00:06:14.882 --> 00:06:16.673
+because we need to tell the
+
+00:06:16.673 --> 00:06:18.125
+build system to copy these things.
+
+00:06:18.130 --> 00:06:21.078
+So here it is. Uh, we've got.
+
+00:06:21.078 --> 00:06:22.692
+I'm virtually certain this will work
+
+00:06:22.692 --> 00:06:24.258
+because if this were misspelled,
+
+00:06:24.260 --> 00:06:26.960
+it would not work at all.
+
+00:06:26.960 --> 00:06:28.091
+Here we go.
+
+00:06:28.091 --> 00:06:29.976
+Amy has commented that yes,
+
+00:06:29.980 --> 00:06:31.835
+there is a needed setup change.
+
+00:06:31.840 --> 00:06:32.970
+Yep, that is absolutely correct.
+
+00:06:32.970 --> 00:06:37.574
+That's called out in the document here.
+
+00:06:37.574 --> 00:06:39.328
+It's below.
+
+00:06:39.330 --> 00:06:42.066
+So we've got the new header being added here.
+
+00:06:42.070 --> 00:06:44.290
+It's in sorted order.
+
+00:06:44.290 --> 00:06:47.065
+sa comes before sy, perfect,
+
+00:06:47.070 --> 00:06:48.270
+and that's the only edit.
+
+00:06:48.270 --> 00:06:49.915
+There's a few files where we need
+
+00:06:49.915 --> 00:06:50.990
+to make two edits.
+
+00:06:50.990 --> 00:06:53.198
+This is not one of them, so that's good.
+
+00:06:53.198 --> 00:06:54.626
+Um, Next up,
+
+00:06:54.630 --> 00:06:56.880
+there's a file in our legacy
+
+00:06:56.880 --> 00:06:58.005
+MSBuild directory,
+
+00:06:58.010 --> 00:06:59.669
+and this is not a source file.
+
+00:06:59.670 --> 00:07:00.982
+It's not separately compiled,
+
+00:07:00.982 --> 00:07:02.294
+so this isn't applicable.
+
+00:07:02.300 --> 00:07:02.618
+Um,
+
+00:07:02.618 --> 00:07:05.162
+so next is if you add a public
+
+00:07:05.162 --> 00:07:07.715
+header that is intended to be
+
+00:07:07.715 --> 00:07:09.439
+directly consumed by users,
+
+00:07:09.440 --> 00:07:11.843
+we need to put it in this test helper.
+
+00:07:11.850 --> 00:07:13.200
+But this is an internal header,
+
+00:07:13.200 --> 00:07:16.020
+it's not intended for users.
+
+00:07:16.020 --> 00:07:18.120
+Onward header-units.json. This is
+
+00:07:18.120 --> 00:07:21.039
+used for the C++20 header units feature.
+
+00:07:21.040 --> 00:07:22.990
+When adding headers, regardless of
+
+00:07:22.990 --> 00:07:25.480
+their whether they're public or private,
+
+00:07:25.480 --> 00:07:28.077
+they should be eligible to be automatically
+
+00:07:28.077 --> 00:07:30.060
+translated with a compiler option
+
+00:07:30.060 --> 00:07:32.478
+from includes to header unit imports.
+
+00:07:32.480 --> 00:07:36.377
+So we do need to edit header-units.json,
+
+00:07:36.380 --> 00:07:38.060
+and here it's being listed again,
+
+00:07:38.060 --> 00:07:40.240
+it is in sorted order.
+
+00:07:40.240 --> 00:07:41.416
+That search is not picking it up
+
+00:07:41.416 --> 00:07:42.440
+because I expanded that.
+
+00:07:42.440 --> 00:07:44.480
+Yep, that's great.
+
+00:07:44.480 --> 00:07:46.440
+OK, there will also be needed edits,
+
+00:07:46.440 --> 00:07:49.155
+internal needed edits internally because
+
+00:07:49.155 --> 00:07:53.378
+there is a compiler test for header units.
+
+00:07:53.380 --> 00:07:54.927
+OK then, that's in the section below.
+
+00:07:54.930 --> 00:07:56.970
+Here we're only reviewing the
+
+00:07:56.970 --> 00:07:59.010
+changes for the GitHub repo.
+
+00:07:59.010 --> 00:08:02.665
+OK, this is not a standard public header,
+
+00:08:02.670 --> 00:08:04.945
+so no impact on the named module.
+
+00:08:04.950 --> 00:08:06.010
+It's not a public header,
+
+00:08:06.010 --> 00:08:07.445
+so we don't need to test whether
+
+00:08:07.445 --> 00:08:08.999
+it can be included alone, and
+
+00:08:08.999 --> 00:08:10.469
+not a standard public header.
+
+00:08:10.470 --> 00:08:12.990
+OK, so checklist is good for the GitHub repo.
+
+00:08:12.990 --> 00:08:14.760
+We will have to do additional
+
+00:08:14.760 --> 00:08:16.308
+validation for the MSVC internal
+
+00:08:16.308 --> 00:08:18.168
+repo when we mirror this over.
+
+00:08:18.170 --> 00:08:20.780
+OK, so I'm gonna go ahead and close that.
+
+00:08:20.780 --> 00:08:22.778
+Uh, let's take a look briefly
+
+00:08:22.778 --> 00:08:25.379
+at what code is being extracted.
+
+00:08:25.380 --> 00:08:27.400
+Nicole mentioned that to avoid
+
+00:08:27.400 --> 00:08:29.420
+duplication between vector and string,
+
+00:08:29.420 --> 00:08:31.405
+she's lifting code out into
+
+00:08:31.405 --> 00:08:32.993
+this new internal header.
+
+00:08:33.000 --> 00:08:35.388
+That's why we've got it here.
+
+00:08:35.390 --> 00:08:38.369
+So I'm going to briefly scan to see OK,
+
+00:08:38.370 --> 00:08:40.992
+some of this /alternatename stuff
+
+00:08:40.992 --> 00:08:43.590
+and then actual changes to string.
+
+00:08:43.590 --> 00:08:47.318
+OK, and then vector.
+
+00:08:47.320 --> 00:08:47.747
+Again,
+
+00:08:47.747 --> 00:08:50.736
+the stuff that turns on the annotation,
+
+00:08:50.740 --> 00:08:52.258
+more of that /alternatename stuff.
+
+00:08:52.260 --> 00:08:54.063
+Yeah, that code is either, it's,
+
+00:08:54.063 --> 00:08:55.778
+I think, not quite identical,
+
+00:08:55.780 --> 00:08:57.628
+but it's extremely similar,
+
+00:08:57.628 --> 00:08:59.780
+just sort of exchanging vector
+
+00:08:59.780 --> 00:09:00.980
+and string or swapping,
+
+00:09:00.980 --> 00:09:02.680
+swapping them out, replacing them.
+
+00:09:02.680 --> 00:09:05.000
+So OK, I believe that's what's being unified.
+
+00:09:05.000 --> 00:09:07.920
+So now let's take a look at the new header.
+
+00:09:07.920 --> 00:09:08.208
+OK,
+
+00:09:08.208 --> 00:09:09.936
+so when adding a new header,
+
+00:09:09.940 --> 00:09:12.082
+I like to look at an existing
+
+00:09:12.082 --> 00:09:12.694
+header for precedent,
+
+00:09:12.700 --> 00:09:14.032
+because here we don't exactly have
+
+00:09:14.032 --> 00:09:14.476
+a checklist,
+
+00:09:14.480 --> 00:09:17.728
+but there is a certain dance that
+
+00:09:17.728 --> 00:09:19.926
+we need to follow of special macros
+
+00:09:19.926 --> 00:09:22.100
+to defend against and so forth.
+
+00:09:22.100 --> 00:09:23.318
+So vector is a good one,
+
+00:09:23.320 --> 00:09:25.148
+it's a great header.
+
+00:09:27.350 --> 00:09:30.150
+OK, so here's vector.
+
+00:09:30.150 --> 00:09:33.339
+Let's split this side by side.
+
+00:09:33.339 --> 00:09:35.517
+Nope, that's not what I want.
+
+00:09:37.770 --> 00:09:42.958
+There we go. OK, these uh, 120 length lines
+
+00:09:42.958 --> 00:09:45.710
+are a little bit too long for this window.
+
+00:09:45.710 --> 00:09:47.082
+That's OK. How come I don't get
+
+00:09:47.082 --> 00:09:48.080
+a horizontal scroll bar here?
+
+00:09:48.080 --> 00:09:50.519
+That's quite annoying.
+
+00:09:50.520 --> 00:09:52.860
+Uh, OK, so let's review this.
+
+00:09:52.860 --> 00:09:54.610
+Um, first, let's make sure that the
+
+00:09:54.610 --> 00:09:56.836
+header name is spelled properly. It is.
+
+00:09:56.836 --> 00:09:59.140
+OK, so we begin with a comment saying
+
+00:09:59.211 --> 00:10:01.436
+whether it's standard or internal.
+
+00:10:01.440 --> 00:10:02.763
+The idea is that tools could pick
+
+00:10:02.763 --> 00:10:04.164
+this up to distinguish between
+
+00:10:04.164 --> 00:10:05.349
+standard internal headers.
+
+00:10:05.350 --> 00:10:06.518
+I don't actually know if they ended up
+
+00:10:06.518 --> 00:10:08.200
+doing that, but that's just our convention.
+
+00:10:08.200 --> 00:10:10.162
+This is one of the rare cases where we
+
+00:10:10.162 --> 00:10:12.215
+allow anything to occur before our banner.
+
+00:10:12.220 --> 00:10:14.299
+So this is indeed an internal header.
+
+00:10:14.300 --> 00:10:15.644
+We've got the banner for a new file,
+
+00:10:15.650 --> 00:10:16.934
+which is good.
+
+00:10:16.934 --> 00:10:19.502
+Uh, we've got the #pragma once.
+
+00:10:19.510 --> 00:10:22.166
+We do not have a classic include guard.
+
+00:10:22.170 --> 00:10:24.978
+This is not conventional.
+
+00:10:24.978 --> 00:10:26.988
+Um, even though pragma once
+
+00:10:26.988 --> 00:10:28.623
+does supersede the include guard
+
+00:10:28.623 --> 00:10:30.209
+and can be used by itself,
+
+00:10:30.210 --> 00:10:32.914
+and we do do that for like internal
+
+00:10:32.914 --> 00:10:35.399
+test headers for all of our public
+
+00:10:35.399 --> 00:10:37.610
+headers we define an include guard.
+
+00:10:37.610 --> 00:10:40.170
+The theory being that we can use this
+
+00:10:40.170 --> 00:10:42.647
+to detect when headers are included.
+
+00:10:44.680 --> 00:10:47.936
+It seems like a good system to follow.
+
+00:10:47.940 --> 00:10:50.176
+Interestingly, this is also
+
+00:10:50.176 --> 00:10:53.530
+not doing the usual dance of
+
+00:10:53.530 --> 00:10:55.195
+pushing and popping packing,
+
+00:10:55.195 --> 00:10:57.415
+or disabling warnings,
+
+00:10:57.420 --> 00:10:59.472
+this is purely macros?
+
+00:10:59.472 --> 00:11:01.524
+We've got some declarations.
+
+00:11:03.720 --> 00:11:07.388
+&gt;&gt; Nicole: There is exactly 1 declaration of container,
+
+00:11:07.388 --> 00:11:11.910
+er, __sanitizer_annotate_contiguous_container.
+
+00:11:11.910 --> 00:11:16.141
+&gt;&gt; Stephan: Yeah. Alright,
+&gt;&gt; Nicole: sorry, I, I don't know if
+
+00:11:16.141 --> 00:11:19.599
+that if that requires pushing and popping.
+
+00:11:19.600 --> 00:11:22.660
+Yeah, there's also a couple declarations.
+
+00:11:22.660 --> 00:11:25.054
+OK, um, there there are a couple
+
+00:11:25.054 --> 00:11:26.820
+of declarations of variables.
+
+00:11:26.820 --> 00:11:28.760
+Mostly I think that we,
+
+00:11:28.760 --> 00:11:31.800
+I think we should have the, the macros,
+
+00:11:31.800 --> 00:11:34.878
+the macro defenses, the warning defenses.
+
+00:11:34.878 --> 00:11:38.274
+Mostly because headers grow over time.
+
+00:11:38.280 --> 00:11:40.845
+Today we're adding stuff for
+
+00:11:40.845 --> 00:11:42.897
+sanitizing vector and string.
+
+00:11:42.900 --> 00:11:46.300
+Tomorrow it will be small vector or super
+
+00:11:46.300 --> 00:11:49.014
+string or, or who knows what they add.
+
+00:11:49.014 --> 00:11:50.816
+In C++, you know,
+
+00:11:50.816 --> 00:11:53.678
+37 or or whatever. Um, uh.
+
+00:11:53.678 --> 00:11:56.506
+And if we don't have those defenses,
+
+00:11:56.510 --> 00:11:58.386
+it would be very hard to notice
+
+00:11:58.386 --> 00:12:00.535
+later on that they're missing.
+
+00:12:00.535 --> 00:12:01.070
+Additionally,
+
+00:12:01.070 --> 00:12:04.280
+we should defend against things like
+
+00:12:04.363 --> 00:12:06.793
+non compiler tools like Qt's mock
+
+00:12:06.793 --> 00:12:08.814
+dragging this in, unless there were
+
+00:12:08.814 --> 00:12:10.422
+an extremely good reason not to.
+
+00:12:10.430 --> 00:12:11.970
+I think we should have the usual
+
+00:12:11.970 --> 00:12:15.984
+incantations, so I will add a comment here.
+
+00:12:15.990 --> 00:12:23.926
+We should have the usual incantations for a…
+
+00:12:23.926 --> 00:12:28.716
+a header, um, including preprocessor –
+
+00:12:28.716 --> 00:12:32.548
+let's call them classic –
+
+00:12:32.550 --> 00:12:35.922
+um, preprocessor guards, uh
+
+00:12:35.922 --> 00:12:42.910
+(which we conventionally have in addition to
+
+00:12:42.910 --> 00:12:46.548
+#pragma once). Let's see.
+
+00:12:46.548 --> 00:12:50.000
+Uh, what else? The –
+
+00:12:50.000 --> 00:12:51.140
+this is not an exhaustive list,
+
+00:12:51.140 --> 00:12:53.037
+it's just a quick summary – the
+
+00:12:53.037 --> 00:12:57.210
+_STL_COMPILER_PREPROCESSOR defense,
+
+00:12:57.210 --> 00:13:01.130
+the packing/warning defenses,
+
+00:13:01.130 --> 00:13:06.030
+and the `new` macroization defense.
+
+00:13:06.030 --> 00:13:09.990
+Even if they aren't needed now,
+
+00:13:09.990 --> 00:13:14.052
+this could be useful if code
+
+00:13:14.052 --> 00:13:18.530
+is added/moved in the future,
+
+00:13:18.530 --> 00:13:24.338
+and it also serves as a good precedent
+
+00:13:24.340 --> 00:13:26.630
+for anyone
+
+00:13:26.630 --> 00:13:30.340
+copying or imitating this header.
+
+00:13:34.840 --> 00:13:37.198
+OK, got all my escapes there.
+
+00:13:37.200 --> 00:13:41.325
+Start a review. OK, so #pragma once,
+
+00:13:41.325 --> 00:13:44.020
+we are going to imagine the
+
+00:13:44.110 --> 00:13:48.180
+usual defenses being present, OK?
+
+00:13:48.180 --> 00:13:50.196
+Then I don't think I need to look at
+
+00:13:50.196 --> 00:13:51.640
+vector anymore, because that's really
+
+00:13:51.640 --> 00:13:53.140
+just a reference for the defenses.
+
+00:13:53.140 --> 00:13:56.494
+OK, let's look at just the code here.
+
+00:13:56.494 --> 00:13:58.996
+So we are extracting some stuff,
+
+00:13:59.000 --> 00:14:02.620
+but first it is guarded.
+
+00:14:02.620 --> 00:14:04.560
+For my nemesis /clr:pure,
+
+00:14:04.560 --> 00:14:07.776
+which we do not activate any ASan for.
+
+00:14:07.780 --> 00:14:09.978
+Um, we, we need to ensure that
+
+00:14:09.978 --> 00:14:11.540
+/clr:pure continues to compile,
+
+00:14:11.540 --> 00:14:12.635
+but it does not participate
+
+00:14:12.635 --> 00:14:14.220
+in any of our new features.
+
+00:14:14.220 --> 00:14:16.158
+So guarding here is entirely appropriate,
+
+00:14:16.160 --> 00:14:18.836
+if not defined _M_CEE_PURE.
+
+00:14:18.840 --> 00:14:20.590
+That's the macro predefined macros
+
+00:14:20.590 --> 00:14:22.340
+documented that indicates /clr:pure.
+
+00:14:22.340 --> 00:14:24.300
+So for not pure.
+
+00:14:24.300 --> 00:14:26.407
+And the other thing that I'm checking
+
+00:14:26.407 --> 00:14:28.150
+for is I'm currently working
+
+00:14:28.150 --> 00:14:30.460
+on changes to extend /clr,
+
+00:14:30.460 --> 00:14:33.746
+the plain one, not pure, to more headers.
+
+00:14:33.746 --> 00:14:36.922
+So we're trying to avoid as much as
+
+00:14:36.922 --> 00:14:39.855
+possible any special code for plain /clr.
+
+00:14:39.860 --> 00:14:42.724
+And this is not caring about plain /clr,
+
+00:14:42.730 --> 00:14:43.902
+so that is good.
+
+00:14:43.902 --> 00:14:46.959
+So if we're not pure and grouped together,
+
+00:14:46.960 --> 00:14:50.310
+we are not simultaneously disabling
+
+00:14:50.310 --> 00:14:54.562
+vector and the string annotations. So if
+
+00:14:54.562 --> 00:14:57.670
+either are enabled, we want all this stuff.
+
+00:14:57.670 --> 00:15:00.310
+It's only if they are simultaneously
+
+00:15:00.310 --> 00:15:02.810
+disabled that we would not want this.
+
+00:15:02.810 --> 00:15:04.586
+Does this make sense, I think so.
+
+00:15:04.590 --> 00:15:11.550
+So what would De Morgan do? If defined pure and…
+
+00:15:11.550 --> 00:15:15.321
+Uh, either not defined vector…
+
+00:15:15.321 --> 00:15:16.526
+Yeah, it doesn't read better
+
+00:15:16.530 --> 00:15:17.850
+De Morgan'd, it reads good.
+
+00:15:17.850 --> 00:15:19.058
+Uh, it reads, um,
+
+00:15:19.058 --> 00:15:20.266
+comprehensibly the way that
+
+00:15:20.266 --> 00:15:21.530
+Nicole has written it.
+
+00:15:21.530 --> 00:15:24.034
+OK, so for not pure and we have
+
+00:15:24.034 --> 00:15:25.609
+not simultaneously disabled both.
+
+00:15:25.610 --> 00:15:28.046
+Then let's define the support machinery.
+
+00:15:28.050 --> 00:15:29.794
+I think I want to quickly check that
+
+00:15:29.794 --> 00:15:31.467
+these are the right control macros.
+
+00:15:31.470 --> 00:15:33.470
+I'm assuming that they are.
+
+00:15:33.470 --> 00:15:38.834
+The old ones were _DISABLE_VECTOR_ANNOTAION, singular, and
+
+00:15:38.834 --> 00:15:43.718
+Same for string, _DISABLE_STRING_ANNOTAION, singular.
+
+00:15:43.720 --> 00:15:48.060
+OK, not too worried about typos there.
+
+00:15:48.060 --> 00:15:51.000
+We do mention vector before string,
+
+00:15:51.000 --> 00:15:53.009
+there's no real argument for sorted order.
+
+00:15:53.010 --> 00:15:54.015
+OK, that's fine.
+
+00:15:54.015 --> 00:15:57.215
+And the nice thing is that the rest of it
+
+00:15:57.215 --> 00:16:00.400
+is at least consistent vector before string,
+
+00:16:00.400 --> 00:16:01.600
+so OK.
+
+00:16:01.600 --> 00:16:03.992
+OK, so if we're not pure and we
+
+00:16:03.992 --> 00:16:05.419
+haven't simultaneously disabled both,
+
+00:16:05.420 --> 00:16:08.619
+then declare cool stuff. At the end
+
+00:16:08.620 --> 00:16:11.275
+We have matching comment #endif
+
+00:16:11.275 --> 00:16:13.399
+not _M_CEE_PURE,
+
+00:16:13.400 --> 00:16:16.400
+and ASan has not been disabled.
+
+00:16:16.400 --> 00:16:19.370
+OK, that's the reasonable summary.
+
+00:16:19.370 --> 00:16:19.580
+Uh,
+
+00:16:19.580 --> 00:16:21.260
+we have those #endif comments so that
+
+00:16:21.260 --> 00:16:23.285
+we don't forget which #endif pairs with,
+
+00:16:23.290 --> 00:16:25.665
+but especially because clang-format
+
+00:16:25.665 --> 00:16:28.250
+insists on indenting everything at 0.
+
+00:16:28.250 --> 00:16:29.750
+Then, if defined,
+
+00:16:29.750 --> 00:16:32.250
+__SANITIZE_ADDRESS__,
+
+00:16:32.250 --> 00:16:35.015
+which I believe is a compiler macro
+
+00:16:35.020 --> 00:16:38.255
+indicating that /fsanitize=address
+
+00:16:38.255 --> 00:16:41.570
+has been passed on the command line,
+
+00:16:41.570 --> 00:16:42.946
+I see Nicole nodding,
+
+00:16:42.946 --> 00:16:45.540
+so I've guessed that correctly and that's
+
+00:16:45.540 --> 00:16:47.845
+matched with insert ASan annotations.
+
+00:16:47.850 --> 00:16:53.370
+OK. Um, so if we are
+
+00:16:53.370 --> 00:16:54.378
+compiling with ASan enabled,
+
+00:16:54.378 --> 00:16:56.160
+then do stuff, otherwise do nothing.
+
+00:16:56.160 --> 00:16:56.500
+OK.
+
+00:16:56.500 --> 00:16:58.540
+Does it make sense to have these
+
+00:16:58.603 --> 00:16:59.659
+are separate tests?
+
+00:16:59.660 --> 00:17:00.316
+Yes, otherwise,
+
+00:17:00.316 --> 00:17:02.940
+if we fuse them into a single test
+
+00:17:03.011 --> 00:17:04.619
+that get real confusing.
+
+00:17:04.620 --> 00:17:05.720
+It seems reasonable to have
+
+00:17:05.720 --> 00:17:08.536
+multiple layers.
+&gt;&gt; Nicole: So, uh, yeah,
+
+00:17:08.536 --> 00:17:11.640
+this that is actually not the end of that
+
+00:17:11.640 --> 00:17:17.080
+#if it's not, there's a, there's a big block at the front.
+&gt;&gt; Stephan: Oh. Right.
+
+00:17:17.080 --> 00:17:19.240
+Yeah. I see. OK.
+
+00:17:19.240 --> 00:17:22.964
+&gt;&gt; Nicole: And then, all of the other things.
+&gt;&gt: Stephan: OK, then other stuff.
+
+00:17:22.964 --> 00:17:25.770
+OK. Thanks for pointing it out.
+&gt;&gt Nicole: Because clang and MSVC do this differently
+
+00:17:25.770 --> 00:17:28.950
+where MSVC defines __SANITIZE_ADDRESS__,
+
+00:17:28.950 --> 00:17:34.470
+clang defines, you know.
+
+00:17:34.470 --> 00:17:36.074
+__has_feature(sanitize) or
+
+00:17:36.074 --> 00:17:38.106
+something like that.
+&gt;&gt; Stephan: Ah, OK.
+
+00:17:38.106 --> 00:17:39.758
+I see that here.
+
+00:17:39.760 --> 00:17:42.760
+OK, yeah, line 19.
+&gt;&gt; Nicole: oh yeah, address_sanitizer.
+
+00:17:42.760 --> 00:17:45.120
+Um, and then finally there's.
+
+00:17:45.120 --> 00:17:46.684
+Doesn't have any address,
+
+00:17:46.684 --> 00:17:48.281
+doesn't have ASan turned on,
+
+00:17:48.281 --> 00:17:51.649
+but we're building like an internal CPP file
+
+00:17:51.649 --> 00:17:55.256
+and therefore we need to at least make sure
+
+00:17:55.256 --> 00:17:58.628
+that the string annotations are correct.
+
+00:17:58.630 --> 00:17:59.530
+&gt;&gt; Stephan: OK, that makes sense.
+
+00:17:59.530 --> 00:18:01.230
+So it's not a whole file thing.
+
+00:18:01.230 --> 00:18:04.128
+OK, thanks for pointing that out.
+
+00:18:04.130 --> 00:18:05.504
+OK, very useful.
+
+00:18:05.504 --> 00:18:08.710
+OK, so it actually matches up here.
+
+00:18:08.710 --> 00:18:09.604
+OK, good.
+
+00:18:09.604 --> 00:18:11.839
+That is the right macro,
+
+00:18:11.840 --> 00:18:12.353
+OK.
+
+00:18:12.353 --> 00:18:14.918
+So if we are defining
+
+00:18:14.918 --> 00:18:16.457
+__SANITIZE_ADDRESS__ then…
+
+00:18:19.420 --> 00:18:22.716
+OK, these look like macros that are either:
+
+00:18:22.720 --> 00:18:24.680
+if they're defined, they're active;
+
+00:18:24.680 --> 00:18:26.666
+if they're not defined, they're inactive.
+
+00:18:26.670 --> 00:18:28.608
+OK, so we're going to activate
+
+00:18:28.608 --> 00:18:29.900
+and insert vector annotations.
+
+00:18:29.900 --> 00:18:31.658
+Same for string.
+
+00:18:31.658 --> 00:18:34.378
+Otherwise, OK, here's the __has_feature
+
+00:18:34.378 --> 00:18:36.313
+that Nicole mentioned, if defined
+
+00:18:36.313 --> 00:18:38.636
+__clang__, and defined __has_feature above
+
+00:18:38.640 --> 00:18:43.300
+__SANITIZE_ADDRESS__ below __clang__.
+
+00:18:43.300 --> 00:18:47.066
+This is not 100% matching the condition,
+
+00:18:47.070 --> 00:18:48.780
+but it is OK um,
+
+00:18:48.780 --> 00:18:50.110
+this is already pretty lengthy.
+
+00:18:50.110 --> 00:18:51.814
+I think that's reasonable.
+
+00:18:51.814 --> 00:18:53.944
+I won't complain about that.
+
+00:18:53.950 --> 00:18:56.950
+Then if we can use __has_feature
+
+00:18:56.950 --> 00:18:58.950
+on address_sanitizer,
+
+00:18:58.950 --> 00:19:01.670
+then define these four macros,
+
+00:19:01.670 --> 00:19:03.018
+insert vector and activate
+
+00:19:03.018 --> 00:19:04.366
+vector and so forth,
+
+00:19:04.370 --> 00:19:06.190
+and then have a #pragma comment(linker, …)
+
+00:19:06.190 --> 00:19:07.650
+for ASan libs.
+
+00:19:07.650 --> 00:19:09.840
+I think this __clang__ does not
+
+00:19:09.924 --> 00:19:12.808
+imply this the way that MSVC does
+
+00:19:12.808 --> 00:19:14.980
+because of __SANITIZE_ADDRESS__ OK.
+
+00:19:14.980 --> 00:19:15.622
+Otherwise, OK,
+
+00:19:15.622 --> 00:19:18.190
+I like the spacing here or the new
+
+00:19:18.255 --> 00:19:20.373
+lines because this helps me keep
+
+00:19:20.373 --> 00:19:23.398
+track of what's going on with all the
+
+00:19:23.398 --> 00:19:25.323
+preprocessor stuff above __clang__ below.
+
+00:19:25.330 --> 00:19:27.508
+If we're not __clang__ and we're
+
+00:19:27.508 --> 00:19:29.454
+not __SANITIZE_ADDRESS__, OK,
+
+00:19:29.454 --> 00:19:32.870
+then our fallbacks are:
+
+00:19:32.870 --> 00:19:35.060
+if we're supposed to annotate vector,
+
+00:19:35.060 --> 00:19:36.308
+insert the vector annotations,
+
+00:19:36.308 --> 00:19:38.180
+but do not try to activate.
+
+00:19:38.180 --> 00:19:41.260
+So basically, like Nicole mentioned,
+
+00:19:41.260 --> 00:19:43.122
+mark the regions of vector that are
+
+00:19:43.122 --> 00:19:45.730
+valid or invalid, but don't actually try to
+
+00:19:45.730 --> 00:19:47.750
+terminate the program or anything
+
+00:19:47.750 --> 00:19:51.750
+if invalid accesses happen. Um.
+
+00:19:51.750 --> 00:19:53.790
+OK, the comments here are messed up.
+
+00:19:53.790 --> 00:19:56.310
+Um, this #endif should be commented
+
+00:19:56.310 --> 00:19:57.030
+_ANNOTATE_VECTOR.
+
+00:19:57.030 --> 00:20:00.606
+This #endif matches with _ANNOTATE_STRING.
+
+00:20:00.610 --> 00:20:04.910
+OK. There… the…
+
+00:20:04.910 --> 00:20:10.760
+#endif comments here are…
+
+00:20:10.760 --> 00:20:11.190
+Uh,
+
+00:20:11.190 --> 00:20:12.910
+need to be fixed.
+
+00:20:16.410 --> 00:20:17.976
+The #endif comments here need to be fixed. OK.
+
+00:20:20.040 --> 00:20:21.093
+So _ANNOTATE_INSERT…,
+
+00:20:21.093 --> 00:20:22.757
+_ANNOTATE_INSERT_VECTOR, …VECTOR,
+
+00:20:22.757 --> 00:20:24.556
+…STRING, …STRING. OK, so once the #endif
+
+00:20:24.556 --> 00:20:26.059
+comments are fixed it's good.
+
+00:20:26.060 --> 00:20:30.470
+And then #endif. The whole region began
+
+00:20:30.470 --> 00:20:35.850
+with __SANITIZE_ADDRESS__ OK. And then…
+
+00:20:35.850 --> 00:20:39.186
+OK, these are also missing #endif comments.
+
+00:20:39.190 --> 00:20:41.269
+I am going to be a stickler about the #endif
+
+00:20:41.269 --> 00:20:43.583
+comments here just because of the
+
+00:20:43.583 --> 00:20:47.999
+preprocessor stuff is so packed together and
+
+00:20:48.000 --> 00:20:49.952
+it's not just like a single #if/#endif
+
+00:20:49.952 --> 00:20:52.396
+in a stream of mostly normal code,
+
+00:20:52.400 --> 00:20:54.730
+um, needs.
+
+00:20:54.730 --> 00:20:56.396
+There the rationale and we are, we
+
+00:20:56.396 --> 00:20:58.337
+are a little bit flexible these days
+
+00:20:58.337 --> 00:21:00.101
+on omitting the #endif comments,
+
+00:21:00.110 --> 00:21:02.357
+but I'm, I'm generally a fan of
+
+00:21:02.357 --> 00:21:03.970
+having them because this code
+
+00:21:03.970 --> 00:21:05.435
+is added to preprocessor stuff.
+
+00:21:05.435 --> 00:21:07.205
+It really helps keep in track.
+
+00:21:07.210 --> 00:21:08.540
+We've seen other code bases,
+
+00:21:08.540 --> 00:21:10.178
+we work with other code bases where
+
+00:21:10.178 --> 00:21:12.077
+they do not have the same #endif
+
+00:21:12.077 --> 00:21:13.752
+discipline and it can get quite hard
+
+00:21:13.752 --> 00:21:15.806
+to figure out "hey you know what,
+
+00:21:15.806 --> 00:21:19.108
+what region are we in here" as I just
+
+00:21:19.108 --> 00:21:21.148
+got confused. Needs #endif comments.
+
+00:21:21.150 --> 00:21:23.238
+OK, so. #if
+
+00:21:23.238 --> 00:21:27.414
+_DISABLE_VECTOR_ANNOTAION has been defined,
+
+00:21:27.420 --> 00:21:30.438
+then #undef the _ACTIVATE… and _INSERT…
+
+00:21:30.440 --> 00:21:32.176
+OK, so it's a full escape hatch.
+
+00:21:32.180 --> 00:21:33.152
+Same with string.
+
+00:21:33.152 --> 00:21:35.420
+OK here I'm just making sure that
+
+00:21:35.488 --> 00:21:37.458
+there's no vector string swaps.
+
+00:21:37.460 --> 00:21:39.130
+If I was extremely paranoid
+
+00:21:39.130 --> 00:21:40.800
+or GitHub made it easier,
+
+00:21:40.800 --> 00:21:43.355
+I would be like in VS code.
+
+00:21:43.360 --> 00:21:44.320
+If I double click one,
+
+00:21:44.320 --> 00:21:45.728
+it'll highlight lightly all
+
+00:21:45.728 --> 00:21:47.136
+occurrences of the thing.
+
+00:21:47.140 --> 00:21:49.016
+I can do that manually by searching.
+
+00:21:49.020 --> 00:21:52.508
+This is what I do if I'm very
+
+00:21:52.508 --> 00:21:54.939
+concerned about typos. Here the
+
+00:21:54.940 --> 00:21:56.716
+macro name is short enough that
+
+00:21:56.716 --> 00:21:58.414
+I can notice typos, I believe,
+
+00:21:58.414 --> 00:21:59.442
+or like double underscores,
+
+00:21:59.442 --> 00:22:00.470
+or anything like that,
+
+00:22:00.470 --> 00:22:02.890
+so I think that's good.
+
+00:22:02.890 --> 00:22:04.530
+It's a with the preprocessor
+
+00:22:04.530 --> 00:22:06.768
+Because of something like not defined,
+
+00:22:06.770 --> 00:22:07.460
+preprocessor statements
+
+00:22:07.460 --> 00:22:09.185
+will happily run with that.
+
+00:22:09.190 --> 00:22:11.052
+Typos are much more common than with
+
+00:22:11.052 --> 00:22:12.550
+ordinary identifiers where you typo, well,
+
+00:22:12.550 --> 00:22:14.083
+you're going to get a compiler error,
+
+00:22:14.090 --> 00:22:16.570
+so you don't have to be constantly worried.
+
+00:22:16.570 --> 00:22:17.142
+OK,
+
+00:22:17.142 --> 00:22:18.858
+so next up.
+
+00:22:18.858 --> 00:22:19.430
+Now,
+
+00:22:19.430 --> 00:22:22.678
+after determining the values or the defined…
+
+00:22:22.678 --> 00:22:25.669
+definedness of _INSERT… and _ACTIVATE…,
+
+00:22:25.670 --> 00:22:27.679
+we're going to emit some detect mismatches.
+
+00:22:27.680 --> 00:22:28.071
+Mismatches.
+
+00:22:28.071 --> 00:22:30.417
+This helps us make sure that
+
+00:22:30.417 --> 00:22:32.741
+everything being linked into a single
+
+00:22:32.741 --> 00:22:34.907
+binary is going to use consistent
+
+00:22:34.907 --> 00:22:36.309
+definitions of these macros.
+
+00:22:36.310 --> 00:22:37.732
+I'm very happy to see that
+
+00:22:37.732 --> 00:22:39.259
+this is being used for ASan.
+
+00:22:39.260 --> 00:22:41.171
+This is actually a feature that I
+
+00:22:41.171 --> 00:22:42.662
+requested from the compiler back
+
+00:22:42.662 --> 00:22:44.516
+in 2010 when we were struggling
+
+00:22:44.516 --> 00:22:46.030
+with _ITERATOR_DEBUG_LEVEL mismatch
+
+00:22:46.030 --> 00:22:47.698
+and it was just not diagnosed
+
+00:22:47.698 --> 00:22:49.200
+at all by the toolset.
+
+00:22:49.200 --> 00:22:50.260
+I asked the compiler team,
+
+00:22:50.260 --> 00:22:52.255
+hey could we have like a #pragma?
+
+00:22:52.260 --> 00:22:54.282
+And we invented the scheme that
+
+00:22:54.282 --> 00:22:56.323
+was originally only for the STL
+
+00:22:56.323 --> 00:22:57.898
+_ITERATOR_DEBUG_LEVEL but was
+
+00:22:57.900 --> 00:23:00.048
+specified in a generic way that
+
+00:23:00.048 --> 00:23:02.404
+it can be extended here, where if
+
+00:23:02.404 --> 00:23:04.096
+you send a #pragma detect_mismatch
+
+00:23:04.096 --> 00:23:05.799
+to the compiler front end,
+
+00:23:05.800 --> 00:23:09.046
+it emits a linker directive which is
+
+00:23:09.046 --> 00:23:11.104
+/failifmismatch and it just works
+
+00:23:11.104 --> 00:23:13.669
+on a pretty simple key value
+
+00:23:13.669 --> 00:23:15.019
+system with strings.
+
+00:23:15.020 --> 00:23:17.284
+detect_mismatch takes a key and a value.
+
+00:23:17.290 --> 00:23:18.490
+These failifmismatch directives
+
+00:23:18.490 --> 00:23:19.780
+then tell the linker, "hey,
+
+00:23:19.780 --> 00:23:22.750
+if you ever see a source file or an
+
+00:23:22.840 --> 00:23:25.455
+object file with the directives that set
+
+00:23:25.455 --> 00:23:28.092
+the same key to different values than
+
+00:23:28.092 --> 00:23:30.257
+some setting is really incompatible,
+    
+00:23:30.260 --> 00:23:32.510
+you should fail the link".
+
+00:23:32.510 --> 00:23:34.280
+The linker doesn't actually know anything
+
+00:23:34.280 --> 00:23:36.069
+about ASan or _ITERATOR_DEBUG_LEVEL,
+
+00:23:36.070 --> 00:23:38.126
+it just knows about these keys and values.
+
+00:23:38.130 --> 00:23:39.348
+So this is a sort of
+
+00:23:39.350 --> 00:23:41.438
+generic way, extensible way for us
+
+00:23:41.438 --> 00:23:43.187
+to ensure that inconsistent things
+
+00:23:43.187 --> 00:23:45.294
+are not linked into a single binary.
+
+00:23:45.300 --> 00:23:46.896
+OK, so if not defined…
+
+00:23:46.900 --> 00:23:48.846
+Oh, and the other thing about 
+
+00:23:48.846 --> 00:23:50.525
+detect_mismatch is the linker will only
+
+00:23:50.525 --> 00:23:52.352
+complain if it sees two of the
+
+00:23:52.417 --> 00:23:54.197
+same keys with different values.
+
+00:23:54.200 --> 00:23:55.824
+It will never complain if it sees
+
+00:23:55.824 --> 00:23:57.864
+one TU you with a key value and
+
+00:23:57.864 --> 00:23:59.154
+another TU you with nothing.
+
+00:23:59.160 --> 00:24:00.510
+So if you want detect_mismatches,
+
+00:24:00.510 --> 00:24:03.598
+you've got to have them from the beginning.
+
+00:24:03.600 --> 00:24:06.426
+So for example we can't detect
+
+00:24:06.426 --> 00:24:09.646
+mixing like VS 2008 code with 2022
+
+00:24:09.646 --> 00:24:11.190
+because that totally predated.
+
+00:24:11.190 --> 00:24:12.513
+Of course it will fail to link for other
+
+00:24:12.513 --> 00:24:14.724
+reasons, just not detect_mismatch.
+
+00:24:14.724 --> 00:24:16.512
+OK, so vector, vector, vector,
+
+00:24:16.512 --> 00:24:17.967
+string, string, string. Good.
+
+00:24:17.967 --> 00:24:20.241
+If we haven't defined _INSERT_VECTOR_ANNOTATION
+
+00:24:20.241 --> 00:24:22.780
+then "annotate_vector" is off.
+
+00:24:22.780 --> 00:24:25.116
+OK same for string.
+
+00:24:25.116 --> 00:24:26.855
+OK, "0" mean off,
+
+00:24:26.855 --> 00:24:30.950
+"0" means off and then activating.
+
+00:24:30.950 --> 00:24:31.780
+Um.
+
+00:24:35.350 --> 00:24:35.960
+Oh interesting.
+
+00:24:35.960 --> 00:24:37.790
+So these are being done separately.
+
+00:24:37.790 --> 00:24:39.608
+So if these are ever like
+
+00:24:39.608 --> 00:24:40.517
+really set inconsistently,
+
+00:24:40.520 --> 00:24:41.900
+we'll end up getting a detect
+
+00:24:41.900 --> 00:24:43.779
+mismatch "0" and "1" in the same TU,
+
+00:24:43.780 --> 00:24:45.260
+which is super horrible and
+
+00:24:45.260 --> 00:24:46.444
+will totally fail the link.
+
+00:24:46.450 --> 00:24:48.786
+OK, so if you haven't turned on even
+
+00:24:48.786 --> 00:24:50.748
+just _INSERT_VECTOR_ANNOTATION,
+
+00:24:50.750 --> 00:24:53.246
+then you clearly want it off, if you're
+
+00:24:53.246 --> 00:24:55.169
+actually activating the vector annotations,
+
+00:24:55.170 --> 00:24:56.630
+meaning do the checks and
+
+00:24:56.630 --> 00:24:57.506
+terminate the program,
+
+00:24:57.510 --> 00:24:59.646
+If you see badness then _ANNOTATE_VECTOR
+
+00:24:59.646 --> 00:25:01.070
+is definitely on.
+
+00:25:01.070 --> 00:25:03.850
+And in the middle case,
+
+00:25:03.850 --> 00:25:06.376
+if you are inserting vector annotations,
+
+00:25:06.376 --> 00:25:09.269
+but you have not activated them,
+
+00:25:09.270 --> 00:25:11.356
+then you don't have any detect_mismatch.
+
+00:25:11.360 --> 00:25:12.530
+I believe this is intentional.
+
+00:25:12.530 --> 00:25:14.350
+That allows our separately
+
+00:25:14.350 --> 00:25:16.170
+compiled libs to, I see Nicole nodding
+
+00:25:16.170 --> 00:25:19.380
+so I'm on the right track.
+
+00:25:19.380 --> 00:25:22.005
+Emits the annotations um to update ASan
+
+00:25:22.005 --> 00:25:24.780
+about what regions of the vector are valid or not,
+
+00:25:24.780 --> 00:25:25.852
+but we're not actually
+
+00:25:25.852 --> 00:25:26.656
+performing any checking,
+
+00:25:26.660 --> 00:25:29.110
+so it's OK to mix that with
+
+00:25:29.110 --> 00:25:31.510
+something that will perform checking.
+
+00:25:31.510 --> 00:25:33.480
+That seems correct and this…
+
+00:25:33.480 --> 00:25:35.450
+&gt;&gt; Nicole: and to be clear here,
+
+00:25:35.450 --> 00:25:37.676
+the reason that we can do this
+
+00:25:37.676 --> 00:25:40.064
+is because of the /alternatename
+
+00:25:40.064 --> 00:25:42.770
+comments below, or the alternate name
+
+00:25:42.770 --> 00:25:46.284
+um, annotation below? I don't know what.
+
+00:25:46.290 --> 00:25:50.370
+&gt;&gt; Stephan: They are linker directives I think.
+
+00:25:50.370 --> 00:25:52.509
+&gt;&gt; Nicole: Thank you, directive.
+
+00:25:52.510 --> 00:25:53.278
+Because of people [silence]
+
+00:26:00.600 --> 00:26:02.376
+&gt;&gt; Stephan: Um, your your audio is completely
+
+00:26:02.376 --> 00:26:04.538
+broken up and your video is frozen,
+
+00:26:04.540 --> 00:26:07.540
+if you can still hear me.
+
+00:26:07.540 --> 00:26:09.700
+&gt;&gt; Nicole: Nooo, can you hear me now?
+
+00:26:09.700 --> 00:26:14.220
+&gt;&gt; Stephan: I can hear you now.
+&gt;&gt; Nicole: OK, cool.
+
+00:26:14.220 --> 00:26:17.942
+So uh. Basically, if you
+
+00:26:17.942 --> 00:26:21.548
+don't link with the address sanitizer
+
+00:26:21.550 --> 00:26:24.385
+libs. Then you get the default behavior
+
+00:26:24.385 --> 00:26:27.149
+of calling into that alternatename function.
+
+00:26:27.150 --> 00:26:29.470
+If you don't get those,
+
+00:26:29.470 --> 00:26:30.750
+if you don't have that,
+
+00:26:30.750 --> 00:26:32.515
+uh, if if you do, sorry,
+
+00:26:32.515 --> 00:26:34.510
+you do link with the Address Sanitizer libs,
+
+00:26:34.510 --> 00:26:36.875
+then you get the actual
+
+00:26:36.875 --> 00:26:38.767
+behavior of doing something.
+
+00:26:38.770 --> 00:26:40.960
+I hope that made sense.
+
+00:26:40.960 --> 00:26:42.416
+&gt;&gt; Stephan: I yeah, I think that makes sense.
+
+00:26:42.420 --> 00:26:45.116
+I think, um, there may be one case
+
+00:26:45.116 --> 00:26:47.788
+here that we're not detecting that.
+
+00:26:47.790 --> 00:26:48.164
+Actually, no.
+
+00:26:48.164 --> 00:26:48.538
+Maybe it's…
+
+00:26:48.538 --> 00:26:49.473
+Maybe it's not too bad.
+
+00:26:52.050 --> 00:26:53.443
+Yeah, yeah, I think this is actually…
+
+00:26:53.443 --> 00:26:54.770
+this is correct in all situations.
+
+00:26:54.770 --> 00:26:57.115
+I was wondering what about the case
+
+00:26:57.115 --> 00:26:59.417
+where you have one TU, translation
+
+00:26:59.417 --> 00:27:01.462
+unit, that is inserting the
+
+00:27:01.462 --> 00:27:03.690
+annotations but not activating them,
+
+00:27:03.690 --> 00:27:06.354
+and that's linked with another TU that
+
+00:27:06.354 --> 00:27:09.209
+is not even inserting the annotations.
+
+00:27:09.210 --> 00:27:10.290
+Wouldn't that lead to
+
+00:27:10.290 --> 00:27:10.830
+inconsistent annotations?
+
+00:27:10.830 --> 00:27:13.315
+But that's safe because the one that's
+
+00:27:13.315 --> 00:27:15.555
+not even inserting annotations has a
+
+00:27:15.555 --> 00:27:17.395
+detect_mismatch of "annotate_vector"
+
+00:27:17.395 --> 00:27:20.093
+"0" and it's OK if some but not all TUs
+
+00:27:20.093 --> 00:27:21.743
+are inserting the annotations.
+
+00:27:21.743 --> 00:27:24.089
+But we have forbidden anything from
+
+00:27:24.089 --> 00:27:26.076
+trying to activate them because the
+
+00:27:26.076 --> 00:27:28.422
+one that didn't bother to insert the
+
+00:27:28.422 --> 00:27:30.678
+annotations turned on the detect_mismatch.
+
+00:27:30.680 --> 00:27:32.400
+So and no point can you ever mix
+
+00:27:32.400 --> 00:27:33.720
+this setting and this setting.
+
+00:27:33.720 --> 00:27:35.664
+But if you have setting in the middle that
+
+00:27:35.664 --> 00:27:37.494
+will link freely with one or the other,
+
+00:27:37.500 --> 00:27:38.879
+it just can't be used to chain
+
+00:27:38.879 --> 00:27:40.441
+them together and end you with a bad
+
+00:27:40.441 --> 00:27:41.919
+situation where some but not all TUs
+
+00:27:41.919 --> 00:27:43.194
+are annotating and then
+
+00:27:43.194 --> 00:27:44.788
+somebody's trying to activate them.
+
+00:27:44.788 --> 00:27:46.858
+So OK, this makes sense.
+
+00:27:46.860 --> 00:27:48.804
+And I assume you're simply extracting
+
+00:27:48.804 --> 00:27:50.643
+the existing scheme that we had
+
+00:27:50.643 --> 00:27:51.619
+in string and vector,
+
+00:27:51.620 --> 00:27:53.654
+but sort of just mentally double
+
+00:27:53.654 --> 00:27:56.190
+checking it now and this makes sense.
+
+00:27:56.190 --> 00:27:58.350
+OK, so for _ACTIVATE… we got a vector,
+
+00:27:58.350 --> 00:28:00.110
+vector, vector, string, string, string.
+
+00:28:00.110 --> 00:28:04.436
+That looks good. Everybody says activate.
+
+00:28:04.440 --> 00:28:06.990
+And either one will insert a
+
+00:28:06.990 --> 00:28:09.700
+#pragma comment(lib, …) for "stl_asan".
+
+00:28:09.700 --> 00:28:11.656
+We use the same support lib
+
+00:28:11.656 --> 00:28:12.960
+for either vector string.
+
+00:28:12.960 --> 00:28:14.460
+If they're both being activated,
+
+00:28:14.460 --> 00:28:16.038
+we'll get 2 #pragma comment(lib, …)s.
+
+00:28:16.040 --> 00:28:17.876
+That's OK, the linker will survive.
+
+00:28:17.880 --> 00:28:20.280
+It would be more work to try to avoid that.
+
+00:28:20.280 --> 00:28:22.224
+We could have a separate preprocessor
+
+00:28:22.224 --> 00:28:23.914
+preprocessor conditional that says #if
+
+00:28:23.914 --> 00:28:25.624
+defined(_ACTIVATE_VECTOR_ANNOTATION) ||
+
+00:28:25.624 --> 00:28:26.992
+defined(_ACTIVATE_STRING_ANNOTATION),
+
+00:28:27.000 --> 00:28:28.519
+then have the single #pragma comment(lib, …).
+
+00:28:28.520 --> 00:28:31.068
+But. There shouldn't be harmful to
+
+00:28:31.070 --> 00:28:33.000
+make two of them, um.
+
+00:28:33.000 --> 00:28:35.177
+Then the detect_mismatches are different.
+
+00:28:35.180 --> 00:28:37.040
+OK good.
+
+00:28:37.040 --> 00:28:38.756
+Next. Nice comment explaining
+
+00:28:38.756 --> 00:28:39.804
+what's going on here.
+
+00:28:39.810 --> 00:28:41.805
+Only _INSERT_*_ANNOTATIONS
+
+00:28:41.805 --> 00:28:44.409
+should be used from here on.
+
+00:28:44.410 --> 00:28:47.146
+So for the rest of the files we
+
+00:28:47.146 --> 00:28:49.390
+will #undef …STRING… and …VECTOR….
+
+00:28:49.390 --> 00:28:50.092
+As a nitpick,
+
+00:28:50.092 --> 00:28:51.262
+I notice that this is
+
+00:28:51.262 --> 00:28:52.568
+not using the same order.
+
+00:28:52.570 --> 00:28:54.270
+This is saying string and
+
+00:28:54.270 --> 00:28:55.970
+then vector in sorted order.
+
+00:28:55.970 --> 00:28:58.194
+It doesn't really matter and I guess it
+
+00:28:58.194 --> 00:29:00.809
+is the opposite of the definition order.
+
+00:29:00.810 --> 00:29:02.070
+My brain notes that,
+
+00:29:02.070 --> 00:29:06.010
+but it's not really harmful, OK.
+
+00:29:06.010 --> 00:29:06.922
+And we have expanded.
+
+00:29:06.922 --> 00:29:09.219
+&gt;&gt; Nicole: That's why I put that in that order because
+
+00:29:09.219 --> 00:29:12.258
+it was opposite, so the declaration order.
+
+00:29:12.258 --> 00:29:12.800
+&gt;&gt; Stephan: OK.
+
+00:29:12.800 --> 00:29:14.080
+Push, push, pop, pop.
+
+00:29:14.080 --> 00:29:16.830
+Makes sense, yeah.
+
+00:29:16.830 --> 00:29:18.776
+OK, next we have extern "C" blocks.
+
+00:29:18.780 --> 00:29:20.490
+We have not included anything.
+
+00:29:20.490 --> 00:29:24.025
+We haven't even included &lt;yvals_core.h&gt;,
+
+00:29:24.030 --> 00:29:26.664
+which the central with the which
+
+00:29:26.664 --> 00:29:28.420
+"usual incantations" would probably
+
+00:29:28.499 --> 00:29:31.075
+end up doing because we want at
+
+00:29:31.075 --> 00:29:33.180
+least _STL_COMPILER_PREPROCESSOR.
+
+00:29:33.180 --> 00:29:35.620
+We might want to use the _EXTERN_C macro here.
+
+00:29:35.620 --> 00:29:38.800
+It always expands to extern "C".
+
+00:29:41.330 --> 00:29:42.410
+It's not absolutely necessary.
+
+00:29:42.410 --> 00:29:44.390
+Let me, let me check the precedent.
+
+00:29:44.390 --> 00:29:46.642
+Um, do we use?
+
+00:29:46.642 --> 00:29:50.670
+Plain extern "C" blocks in stl/inc.
+
+00:29:50.670 --> 00:29:53.410
+Let's turn off this. We do.
+
+00:29:53.410 --> 00:29:56.130
+We have a macro _EXTERN_C,
+
+00:29:56.130 --> 00:29:58.349
+but we do not consistently use it.
+
+00:29:58.350 --> 00:30:00.050
+Um, we've plenty of uses
+
+00:30:00.050 --> 00:30:01.810
+of plain extern "C". OK.
+
+00:30:05.710 --> 00:30:07.246
+That the existence of that macro,
+
+00:30:07.250 --> 00:30:09.290
+I believe dates back to when yvals_core.h
+
+00:30:09.290 --> 00:30:10.890
+could actually survive as a C header,
+
+00:30:10.890 --> 00:30:13.790
+which we no longer support.
+
+00:30:13.790 --> 00:30:15.774
+I do wonder whether we should comment at
+
+00:30:15.774 --> 00:30:17.970
+the close here of that extern "C" block.
+
+00:30:17.970 --> 00:30:19.146
+Usually I feel that we do.
+
+00:30:19.150 --> 00:30:20.990
+If it's big. I don't know if we
+
+00:30:20.990 --> 00:30:23.205
+have a lot of examples of big ones,
+
+00:30:23.210 --> 00:30:25.916
+it's not actually that big here.
+
+00:30:25.920 --> 00:30:28.269
+That's about the upper limit of what I would,
+
+00:30:28.270 --> 00:30:29.056
+uh, find reasonable.
+
+00:30:29.056 --> 00:30:30.366
+Yeah, everything else is so
+
+00:30:30.366 --> 00:30:31.950
+small it doesn't get a comment,
+
+00:30:31.950 --> 00:30:33.280
+and if clang-format doesn't add one,
+
+00:30:33.280 --> 00:30:35.820
+it's fine.
+
+00:30:35.820 --> 00:30:37.206
+These `#endif`s are at least I
+
+00:30:37.206 --> 00:30:38.530
+know I'm nitpicking,
+
+00:30:38.530 --> 00:30:40.346
+these are at least only controlling one line
+
+00:30:40.346 --> 00:30:42.098
+and they're separated from everything else.
+
+00:30:42.100 --> 00:30:44.055
+I don't feel that they
+
+00:30:44.055 --> 00:30:45.228
+absolutely need comments.
+
+00:30:45.230 --> 00:30:48.968
+OK, so #ifdef _INSERT_VECTOR_ANNOTATION,
+
+00:30:48.970 --> 00:30:50.860
+we have an extern const bool
+
+00:30:50.860 --> 00:30:52.372
+_Asan_vector_should_annotate
+
+00:30:52.372 --> 00:30:54.048
+similarly for string and string.
+
+00:30:54.050 --> 00:30:54.592
+That's good.
+
+00:30:54.592 --> 00:30:55.947
+Here I'm mentally checking do
+
+00:30:55.947 --> 00:30:57.360
+we need anything for modules?
+
+00:30:57.360 --> 00:30:59.796
+We do not because it's extern "C".
+
+00:30:59.800 --> 00:31:01.186
+And I'm sure that was capturing
+
+00:31:01.186 --> 00:31:02.380
+the original code as well.
+
+00:31:02.380 --> 00:31:03.096
+Um, OK,
+
+00:31:03.096 --> 00:31:05.960
+Next up we do have a combined #ifdef
+
+00:31:06.054 --> 00:31:08.480
+check if either defined(
+
+00:31:08.480 --> 00:31:10.505
+_INSERT_VECTOR_ANNOTATION) or
+
+00:31:10.505 --> 00:31:12.540
+defined(_INSERT_STRING_ANNOTATION),
+
+00:31:12.540 --> 00:31:15.977
+then have all this common support machinery.
+
+00:31:15.980 --> 00:31:17.317
+OK. And this is the #endif.
+
+00:31:17.320 --> 00:31:19.390
+I believe that's paired with that
+
+00:31:19.390 --> 00:31:20.770
+#ifdef _INSERT_VECTOR_ANNOTATION
+
+00:31:20.770 --> 00:31:23.542
+OK, so then we're gonna have an
+
+00:31:23.542 --> 00:31:25.599
+extern "C" declaration of a function.
+
+00:31:25.600 --> 00:31:28.274
+OK, so going through my mental list.
+
+00:31:28.280 --> 00:31:28.760
+Um.
+
+00:31:28.760 --> 00:31:31.640
+It's not template, it's not static,
+
+00:31:31.640 --> 00:31:34.330
+not inline, explicits procedures only,
+
+00:31:34.330 --> 00:31:35.308
+it's not virtual.
+
+00:31:35.308 --> 00:31:37.570
+We return void, so no reason for like
+
+00:31:37.570 --> 00:31:39.460
+[[nodiscard]]. Always needs a
+
+00:31:39.460 --> 00:31:40.216
+calling convention
+
+00:31:40.220 --> 00:31:41.374
+__cdecl
+
+00:31:41.374 --> 00:31:43.105
+__sanitizer_annotate_contiguous_container
+
+00:31:43.105 --> 00:31:45.990
+has some names of parameters,
+
+00:31:45.990 --> 00:31:47.792
+_First, _End, _Old_last, _New_last,
+
+00:31:47.792 --> 00:31:48.956
+all ugly,
+
+00:31:48.956 --> 00:31:50.120
+all ugly.
+
+00:31:52.230 --> 00:31:56.140
+It is not marked noexcept.
+
+00:31:56.140 --> 00:31:59.580
+But we might need to survive, OK?
+
+00:31:59.580 --> 00:32:03.108
+&gt;gt; Nicole: It's not marked, noexcept in the
+
+00:32:03.108 --> 00:32:05.522
+address sanitizer header and so,
+
+00:32:05.522 --> 00:32:08.228
+if you included both the standard
+
+00:32:08.228 --> 00:32:11.648
+header and the actual sanitizer header,
+
+00:32:11.650 --> 00:32:14.910
+you would get noexcept mismatches.
+&gt;&gt; Stephan: Ah, OK.
+
+00:32:17.470 --> 00:32:21.210
+OK. And extern "C" will, at least under /EHc,
+
+00:32:21.210 --> 00:32:22.890
+assume that it will not throw exceptions,
+
+00:32:22.890 --> 00:32:24.978
+so that seems reasonable.
+
+00:32:24.980 --> 00:32:29.356
+OK, and then a dense forest of #pragmas.
+
+00:32:29.360 --> 00:32:30.432
+This is, I'm assuming,
+
+00:32:30.432 --> 00:32:32.040
+just extracting what we already had.
+
+00:32:32.040 --> 00:32:33.755
+Um. This is the sort of stuff
+
+00:32:33.755 --> 00:32:35.220
+that is needed for it to work,
+
+00:32:35.220 --> 00:32:37.180
+so I'm not too worried about typos here.
+
+00:32:37.180 --> 00:32:39.202
+I'm just going to check the
+
+00:32:39.202 --> 00:32:39.876
+architecture conditions.
+
+00:32:39.880 --> 00:32:41.968
+We have so many architectures, it's fun.
+
+00:32:41.968 --> 00:32:45.590
+#if defined(_M_ARM64EC) [EC – emulation compatible],
+
+00:32:45.590 --> 00:32:47.876
+then they've got these real special
+
+00:32:47.876 --> 00:32:50.925
+mangled names #elif defined(_M_HYBRID)
+
+00:32:50.925 --> 00:32:56.368
+for the CHPE older architecture. OK.
+
+00:32:56.370 --> 00:33:01.596
+#elif defined(_M_IX86) for x86 otherwise
+
+00:33:01.596 --> 00:33:06.422
+for the normalish architectures …X64,
+
+00:33:06.422 --> 00:33:08.018
+…ARM, …ARM64.
+
+00:33:08.018 --> 00:33:10.685
+OK, so we have to intercept …ARM64EC,
+
+00:33:10.690 --> 00:33:13.240
+and …HYBRID before anything else
+
+00:33:13.240 --> 00:33:15.670
+because these are overlapping otherwise.
+
+00:33:15.670 --> 00:33:18.730
+The classic ones …X86/…X64/…ARM/…ARM64,
+
+00:33:18.730 --> 00:33:20.025
+these are all mutually exclusive
+
+00:33:20.025 --> 00:33:21.636
+so the order here doesn't matter,
+
+00:33:21.636 --> 00:33:22.708
+and this is reasonable,
+
+00:33:22.710 --> 00:33:24.565
+we do this elsewhere. And then if
+
+00:33:24.565 --> 00:33:26.570
+none of those have been activated,
+
+00:33:26.570 --> 00:33:28.886
+well, you're compiling on, you know,
+
+00:33:28.890 --> 00:33:30.340
+something from the far future,
+
+00:33:30.340 --> 00:33:31.980
+so we say "unknown architecture".
+
+00:33:31.980 --> 00:33:35.730
+OK, that seems reasonable. OK.
+
+00:33:35.730 --> 00:33:41.346
+Yep, uh, the …X64 and so forth mangling
+
+00:33:41.350 --> 00:33:44.258
+does not add anything,
+
+00:33:44.260 --> 00:33:47.067
+and we just say use the defaults.
+
+00:33:47.070 --> 00:33:48.798
+…X86 adds an extra under score for extern "C"
+
+00:33:48.800 --> 00:33:52.896
+…HYBRID adds some of these pound signs.
+
+00:33:52.900 --> 00:33:55.640
+OK, that'll looks good.
+
+00:33:55.640 --> 00:33:55.943
+OK,
+
+00:33:55.943 --> 00:33:57.458
+and our validation ensures that
+
+00:33:57.458 --> 00:33:59.319
+the header ends with a new line.
+
+00:33:59.320 --> 00:34:00.587
+OK, this looks like a good header.
+
+00:34:03.500 --> 00:34:07.400
+OK, now let's look at um,
+
+00:34:07.400 --> 00:34:08.600
+maybe &lt;vector&gt; first before we
+
+00:34:08.600 --> 00:34:10.120
+get to the actual &lt;string&gt; stuff.
+
+00:34:10.120 --> 00:34:12.485
+This is essentially should be
+
+00:34:12.485 --> 00:34:15.190
+&gt;&gt; Nicole: I recommend &lt;xmemory&gt; first. OK,
+
+00:34:15.190 --> 00:34:17.910
+first because it has a very large comment.
+
+00:34:17.910 --> 00:34:20.190
+That's exactly what's going on,
+
+00:34:20.190 --> 00:34:22.645
+and our annotations for vector
+
+00:34:22.645 --> 00:34:25.100
+were wrong in very specific
+
+00:34:25.100 --> 00:34:27.820
+weird cases.
+&gt;&gt; Stephan: Ohh, interesting.
+
+00:34:27.820 --> 00:34:29.640
+OK, well let's review that then.
+
+00:34:29.640 --> 00:34:32.988
+Thank you. Um.
+
+00:34:32.990 --> 00:34:35.034
+OK, &lt;xmemory&gt;, which is one of
+
+00:34:35.034 --> 00:34:37.059
+our centralish internal headers.
+
+00:34:37.060 --> 00:34:38.830
+Although not the most central,
+
+00:34:38.830 --> 00:34:40.018
+this is one is included by,
+
+00:34:40.020 --> 00:34:45.258
+like, all of the containers. We have a struct.
+
+00:34:45.260 --> 00:34:48.228
+This camel case naming is not quite
+
+00:34:48.228 --> 00:34:53.188
+conventional for us, but it's OK-ish.
+
+00:34:53.188 --> 00:34:54.761
+Umm. Though that's new,
+
+00:34:54.761 --> 00:34:56.063
+we didn't used to have that.
+
+00:34:56.070 --> 00:34:57.820
+Uh, we should probably follow the convention.
+
+00:35:00.430 --> 00:35:01.642
+Yeah, I'll comment on that because
+
+00:35:01.642 --> 00:35:03.447
+if we want to change it later, um,
+
+00:35:03.447 --> 00:35:05.109
+it would be possible to change,
+
+00:35:05.110 --> 00:35:08.110
+but we should have followed the convention now.
+
+00:35:08.110 --> 00:35:10.942
+OK, let's see.
+
+00:35:10.942 --> 00:35:19.620
+We conventionally use _Ugly_snake_case for
+
+00:35:19.620 --> 00:35:23.658
+types and functions in the STL.
+
+00:35:23.660 --> 00:35:29.276
+_UglyCamelCase is used for
+
+00:35:29.280 --> 00:35:33.540
+template parameters like _RanIt.
+
+00:35:36.100 --> 00:35:39.548
+It's a good example of an internal type.
+
+00:35:39.550 --> 00:35:41.559
+I think, _Vector_val is the one
+
+00:35:41.559 --> 00:35:45.478
+that comes to mind. Like _Vector_val.
+
+00:35:48.950 --> 00:35:51.084
+OK. Naming. We conventionally
+
+00:35:51.084 --> 00:35:53.030
+use _Ugly_snake_case for types and
+
+00:35:53.083 --> 00:35:54.826
+functions in the STL (like _Vector_val).
+
+00:35:54.830 --> 00:35:57.452
+_UglyCamelCase used for template
+
+00:35:57.452 --> 00:35:59.088
+parameters (like _RanIt). OK,
+
+00:35:59.088 --> 00:36:01.632
+so we've got a struct _AsanAlignedPointers.
+
+00:36:01.640 --> 00:36:03.425
+It's internal so I'm mentally
+
+00:36:03.425 --> 00:36:04.496
+checking against modules.
+
+00:36:04.500 --> 00:36:06.288
+No modules impact.
+
+00:36:06.288 --> 00:36:08.570
+That's good that none of this PR
+
+00:36:08.570 --> 00:36:09.660
+should be affecting public names,
+
+00:36:09.660 --> 00:36:11.550
+so we shouldn't expect to
+
+00:36:11.550 --> 00:36:13.440
+see any changes to export.
+
+00:36:13.440 --> 00:36:16.954
+It has a couple `const void*`s,
+
+00:36:16.960 --> 00:36:19.390
+_First and _End.
+
+00:36:19.390 --> 00:36:22.390
+They are not initialized to anything,
+
+00:36:22.390 --> 00:36:23.630
+so this is an aggregate,
+
+00:36:23.630 --> 00:36:26.120
+there's no constructors.
+
+00:36:26.120 --> 00:36:29.200
+How do we use this?
+
+00:36:29.200 --> 00:36:30.559
+Do we use it in this header or no?
+
+00:36:30.560 --> 00:36:32.716
+It looks like we use that elsewhere.
+
+00:36:32.720 --> 00:36:34.504
+Let me look at some uses so I
+
+00:36:34.504 --> 00:36:36.387
+get an idea of how it's used.
+
+00:36:36.390 --> 00:36:39.510
+There's a very big explaining comment.
+
+00:36:39.510 --> 00:36:40.950
+Uh, there's one use.
+
+00:36:40.950 --> 00:36:42.580
+Oh, there's a function that returns it.
+
+00:36:42.580 --> 00:36:47.503
+_Get_asan_aligned_first_end in &lt;xmemory&gt;.
+
+00:36:47.510 --> 00:36:47.842
+OK,
+
+00:36:47.842 --> 00:36:49.170
+returns it with braces.
+
+00:36:52.090 --> 00:36:55.228
+OK. It seems fine this in aggregate.
+
+00:36:55.230 --> 00:36:58.110
+I don't see a need for nonstatic data member
+
+00:36:58.110 --> 00:37:00.064
+initializers because we never use them.
+
+00:37:00.064 --> 00:37:02.423
+If we said initialize them to nullptr,
+
+00:37:02.430 --> 00:37:04.446
+that would just be dead code.
+
+00:37:04.450 --> 00:37:05.942
+It wouldn't be wrong,
+
+00:37:05.942 --> 00:37:07.807
+but there's no strong motivation,
+
+00:37:07.810 --> 00:37:08.824
+it's internal only.
+
+00:37:08.824 --> 00:37:11.190
+If this was intended for wider use,
+
+00:37:11.190 --> 00:37:13.764
+I think it might be nice to have NSDMIs,
+
+00:37:13.770 --> 00:37:15.195
+but mixing, like, non-null
+
+00:37:15.195 --> 00:37:16.930
+and null would be bad too.
+
+00:37:16.930 --> 00:37:18.946
+So sort of better to just
+
+00:37:18.946 --> 00:37:20.647
+not have anything there. OK,
+
+00:37:20.647 --> 00:37:23.860
+then we have a helper function or a function.
+
+00:37:23.860 --> 00:37:28.126
+Um, this is a pure observer?
+
+00:37:28.130 --> 00:37:31.168
+So it should definitely be [[nodiscard]].
+
+00:37:31.170 --> 00:37:34.285
+It is constexpr returns a const void*.
+
+00:37:34.290 --> 00:37:35.714
+It's called _Clamp_to_end.
+
+00:37:35.714 --> 00:37:37.138
+Takes const void* _Mid.
+
+00:37:37.140 --> 00:37:40.479
+It's const, it's noexcept, that looks good.
+
+00:37:40.480 --> 00:37:42.460
+We have an _STL_ASSERT that
+
+00:37:42.460 --> 00:37:44.200
+activates only in debug mode.
+
+00:37:44.200 --> 00:37:46.965
+That the _Mid being passed in must
+
+00:37:46.965 --> 00:37:51.270
+be greater than equal to _First. Um.
+
+00:37:51.270 --> 00:37:54.315
+Why is there an empty string here?
+
+00:37:54.320 --> 00:37:55.839
+Does _STL_ASSERT even take a…?
+
+00:37:55.840 --> 00:37:57.620
+Yeah, it takes a string.
+
+00:37:57.620 --> 00:37:59.810
+We should have a message here.
+
+00:37:59.810 --> 00:38:00.170
+Yeah.
+
+00:38:04.980 --> 00:38:08.083
+At least a minimal one. Yeah,
+
+00:38:08.083 --> 00:38:10.270
+&gt;&gt; Nicole: it's a debug function or. Sorry,
+
+00:38:10.270 --> 00:38:12.648
+no, it's an internal function like,
+
+00:38:12.648 --> 00:38:14.038
+Does it really need it? [unintelligible]
+
+00:38:16.960 --> 00:38:18.283
+&gt;&gt; Stephan: Um, the, actually,
+
+00:38:18.283 --> 00:38:21.370
+the question that comes to mind is,
+
+00:38:21.370 --> 00:38:24.154
+we usually use _STL_ASSERT and its uh
+
+00:38:24.154 --> 00:38:26.383
+companion _STL_VERIFY, when user
+
+00:38:26.383 --> 00:38:28.323
+submitted arguments could violate
+
+00:38:28.323 --> 00:38:30.470
+preconditions of the standard.
+
+00:38:30.470 --> 00:38:32.906
+If it's something that we expect
+
+00:38:32.906 --> 00:38:35.014
+users to never activate
+
+00:38:35.014 --> 00:38:36.950
+through their own misadventures,
+
+00:38:36.950 --> 00:38:38.786
+but would only happen if the
+
+00:38:38.786 --> 00:38:40.510
+library code has logic errors,
+
+00:38:40.510 --> 00:38:44.206
+then we usually use an STL-internal assert
+
+00:38:44.210 --> 00:38:47.210
+which is only active for our code base.
+
+00:38:47.210 --> 00:38:48.938
+We I know we have one for static_assert
+
+00:38:48.938 --> 00:38:50.328
+&gt&gt; Nicole: Do we have one?
+
+00:38:50.330 --> 00:38:52.544
+Yeah.
+&gt;&gt Stephan: I thought we had one
+
+00:38:52.544 --> 00:38:54.790
+It's always _STL_INTERNAL…
+
+00:38:54.790 --> 00:38:57.478
+It looks like _STL_INTERNAL_CHECK is
+
+00:38:57.478 --> 00:39:02.052
+the name um for the runtime, one. Yeah.
+&gt;&gt; Nicole: Oh that's why I couldn't find it.
+
+00:39:02.052 --> 00:39:04.304
+&gt;&gt Stephan: It's like STL_INTERNAL…-something-other.
+
+00:39:04.304 --> 00:39:06.317
+We got a lot of uses of it. Um.
+
+00:39:06.317 --> 00:39:09.493
+Yeah, I think that's what this should be.
+
+00:39:12.200 --> 00:39:14.260
+No, hold on. What is? What's going on here?
+
+00:39:17.470 --> 00:39:21.890
+Ohh we use _ENABLE_STL_INTERNAL_CHECK to activate
+
+00:39:21.890 --> 00:39:23.468
+The _STL_INTERNAL_STATIC_ASSERT
+
+00:39:23.470 --> 00:39:24.628
+but where do we use it?
+
+00:39:24.630 --> 00:39:26.674
+Oh yvals.h uses it to activate
+
+00:39:26.674 --> 00:39:28.340
+OK becomes an _STL_VERIFY.
+
+00:39:30.500 --> 00:39:34.010
+OK, so external check will always
+
+00:39:34.010 --> 00:39:36.274
+run this, but only in the test harness.
+
+00:39:36.280 --> 00:39:37.450
+There's no reason for _STL_ASSERT.
+
+00:39:37.450 --> 00:39:39.478
+OK, I will add a comment
+
+00:39:39.480 --> 00:39:42.716
+saying that that's what we want and that
+
+00:39:42.716 --> 00:39:44.690
+one I believe, does not take a message.
+
+00:39:44.690 --> 00:39:47.940
+It does not take a message, OK. Um.
+
+00:39:47.940 --> 00:39:55.894
+If this is checking for logic errors in the
+
+00:39:55.894 --> 00:40:02.154
+library implementation (such that user code
+
+00:40:02.154 --> 00:40:07.454
+passing, say, or can't. Er… such that
+
+00:40:07.454 --> 00:40:10.430
+user code violating preconditions.
+
+00:40:10.430 --> 00:40:11.948
+No let's not get into that.
+
+00:40:11.950 --> 00:40:13.774
+Umm. This is checking for logic
+
+00:40:13.774 --> 00:40:14.990
+errors in the library implementation,
+
+00:40:14.990 --> 00:40:18.542
+we should use _STL_INTERNAL_CHECK
+
+00:40:18.542 --> 00:40:21.880
+which doesn't take a message.
+
+00:40:21.880 --> 00:40:24.875
+OK. This is checking for logic
+
+00:40:24.875 --> 00:40:25.735
+errors in library implementation,
+
+00:40:25.740 --> 00:40:27.275
+we should use _STL_INTERNAL_CHECK
+
+00:40:27.275 --> 00:40:28.810
+(which doesn't take a message).
+
+00:40:28.810 --> 00:40:33.020
+Umm, excuse me. OK.
+
+00:40:33.020 --> 00:40:36.107
+And then this is doing the clamping.
+
+00:40:36.110 --> 00:40:39.127
+If the provided _Mid pointer is strictly
+
+00:40:39.127 --> 00:40:41.969
+greater than our stored _End pointer,
+
+00:40:41.970 --> 00:40:43.806
+then clamp to _End.
+
+00:40:43.806 --> 00:40:47.929
+Otherwise it is less than or equal to _End.
+
+00:40:47.930 --> 00:40:49.121
+And. We are…
+
+00:40:49.121 --> 00:40:51.503
+We've already asserted that it's got
+
+00:40:51.503 --> 00:40:54.102
+to be at least _First, maybe bigger,
+
+00:40:54.102 --> 00:40:56.358
+so we can just return _Mid.
+
+00:40:56.360 --> 00:40:58.360
+OK. That seems reasonable.
+
+00:41:00.530 --> 00:41:04.534
+OK, so now the big comment. Um, here we go.
+
+00:41:04.534 --> 00:41:08.088
+Uh, the way that ASan shadow memory works.
+
+00:41:08.090 --> 00:41:10.554
+Each eight byte block of memory (shadow
+
+00:41:10.554 --> 00:41:12.764
+memory section) has a single byte to
+
+00:41:12.764 --> 00:41:14.830
+mark it as either poison or valid.
+
+00:41:14.830 --> 00:41:16.930
+Each section has zero to 8 valid
+
+00:41:16.930 --> 00:41:20.440
+bytes followed by poison bytes, so.
+
+00:41:20.440 --> 00:41:21.790
+And then here's some examples
+
+00:41:21.790 --> 00:41:23.390
+for how many bytes there are.
+
+00:41:23.390 --> 00:41:26.426
+Three valid, followed by 5 poison.
+
+00:41:26.430 --> 00:41:30.486
+Or. 8 valid are OK,
+
+00:41:30.486 --> 00:41:33.306
+but poisons followed by valid
+
+00:41:33.306 --> 00:41:36.809
+is not OK, that makes sense.
+
+00:41:36.810 --> 00:41:37.864
+This function,
+
+00:41:37.864 --> 00:41:41.026
+which is being defined way below,
+
+00:41:41.030 --> 00:41:43.790
+exists to fix up first and end pointers
+
+00:41:43.790 --> 00:41:46.247
+so that one can call
+
+00:41:46.250 --> 00:41:49.561
+__sanitizer_annotate_contiguous_container and
+
+00:41:49.561 --> 00:41:51.205
+__sanitizer_annotate_contiguous_container
+
+00:41:51.205 --> 00:41:53.260
+checks that `first` is
+
+00:41:53.324 --> 00:41:55.470
+aligned to an 8 byte boundary if
+
+00:41:55.470 --> 00:41:58.190
+`end` is not aligned to an 8 byte.
+
+00:41:58.190 --> 00:42:00.074
+__sanitizer_annotate_contiguous_container
+
+00:42:00.074 --> 00:42:02.429
+still poisons the
+
+00:42:02.429 --> 00:42:04.997
+remaining bytes in the shadow memory section.
+
+00:42:05.000 --> 00:42:08.296
+OK, so we're going to check that the
+
+00:42:08.296 --> 00:42:11.717
+first one snaps to 8 bytes and if `end`
+
+00:42:11.720 --> 00:42:12.488
+is jagged.
+
+00:42:12.488 --> 00:42:15.560
+If it doesn't align to an 8 byte boundary,
+
+00:42:15.560 --> 00:42:17.492
+we're still at least going to
+
+00:42:17.492 --> 00:42:19.233
+poison the remaining bytes, OK.
+
+00:42:19.233 --> 00:42:21.498
+Because of the second property,
+
+00:42:21.500 --> 00:42:25.118
+we can only mark poison up to the final
+
+00:42:25.118 --> 00:42:28.099
+aligned address before the true last.
+
+00:42:28.100 --> 00:42:29.535
+OK, otherwise we'd poison the
+
+00:42:29.535 --> 00:42:30.970
+memory after last as well,
+
+00:42:30.970 --> 00:42:33.070
+and that doesn't belong to us.
+
+00:42:33.070 --> 00:42:35.240
+OK.
+
+00:42:35.240 --> 00:42:35.455
+OK,
+
+00:42:35.455 --> 00:42:37.175
+I think I understand what's going on here.
+
+00:42:37.180 --> 00:42:38.916
+For the first property we can assume
+
+00:42:38.916 --> 00:42:40.372
+that everything before `first` in the
+
+00:42:40.372 --> 00:42:41.477
+shadow memory section is valid,
+
+00:42:41.480 --> 00:42:43.305
+since otherwise we couldn't mark
+
+00:42:43.305 --> 00:42:45.565
+first valid and so we just return
+
+00:42:45.565 --> 00:42:47.530
+back the first address in `first`.
+
+00:42:47.530 --> 00:42:48.942
+Shadow memory section OK,
+
+00:42:48.942 --> 00:42:51.504
+and I very much like that every
+
+00:42:51.504 --> 00:42:54.073
+mention of `first` in its meaning of
+
+00:42:54.073 --> 00:42:56.269
+parameter is escaped by backtick,
+
+00:42:56.270 --> 00:42:58.447
+so we can use the plain word
+
+00:42:58.447 --> 00:42:59.380
+first without confusion.
+
+00:42:59.380 --> 00:43:00.600
+OK, so here's an example.
+
+00:43:00.600 --> 00:43:01.896
+cpp code.
+
+00:43:01.896 --> 00:43:04.056
+Uh, you've got a struct
+
+00:43:04.056 --> 00:43:06.140
+with alignment of eight cat,
+
+00:43:06.140 --> 00:43:08.515
+which has an int meow
+
+00:43:08.515 --> 00:43:10.890
+spanning bytes 0 through 4.
+
+00:43:10.890 --> 00:43:11.200
+OK,
+
+00:43:11.200 --> 00:43:13.370
+non inclusive we have a char buffer[16]
+
+00:43:13.370 --> 00:43:15.426
+with no alignment requirement
+
+00:43:15.426 --> 00:43:17.696
+and that extends through bytes
+
+00:43:17.700 --> 00:43:19.698
+4 up through 20 not inclusive and
+
+00:43:19.698 --> 00:43:22.310
+then an int purr occupying the end
+
+00:43:22.310 --> 00:43:25.028
+bytes 20 through 24 not inclusive.
+
+00:43:25.030 --> 00:43:27.510
+OK that looks good.
+
+00:43:27.510 --> 00:43:32.510
+It is aligned as 8; 24 is divisible by 8.
+
+00:43:32.510 --> 00:43:34.018
+OK, as an aside,
+
+00:43:34.018 --> 00:43:35.903
+we have an undocumented compiler
+
+00:43:35.903 --> 00:43:38.165
+option /d1reportSingleClassLayout
+
+00:43:38.165 --> 00:43:40.730
+which is quite useful to view this.
+
+00:43:40.730 --> 00:43:43.327
+I'm going to take a little detour
+
+00:43:43.327 --> 00:43:46.190
+and show this on Compiler Explorer.
+
+00:43:46.190 --> 00:43:47.775
+Can't remember if I've mentioned
+
+00:43:47.775 --> 00:43:50.080
+it before in code reviews,
+
+00:43:50.080 --> 00:43:53.455
+but if this is ever necessary.
+
+00:43:53.460 --> 00:43:58.066
+Uh, let's use MSVC. We want um.
+
+00:43:58.070 --> 00:44:05.060
+Compiler output. OK, so x64 MSVC, latest.
+
+00:44:05.060 --> 00:44:07.258
+OK, so if we compile with 
+
+00:44:07.260 --> 00:44:08.915
+/d1reportSingleClassLayout and
+
+00:44:08.915 --> 00:44:10.880
+then this takes a substring of
+
+00:44:10.880 --> 00:44:12.623
+the classes you want to look at.
+
+00:44:12.630 --> 00:44:13.682
+This one is cat,
+
+00:44:13.682 --> 00:44:15.840
+so I'm going to say lowercase cat here.
+
+00:44:15.840 --> 00:44:18.936
+It prints out an ASCII art diagram here.
+
+00:44:18.940 --> 00:44:22.270
+It's picked up a couple of other things like.
+
+00:44:22.270 --> 00:44:23.666
+atl::implements_categoryAttribute,
+
+00:44:23.666 --> 00:44:25.760
+which is like predefined or something,
+
+00:44:25.760 --> 00:44:27.320
+but here we get class cat.
+
+00:44:27.320 --> 00:44:29.496
+It's a 24 byte class and it begins.
+
+00:44:29.500 --> 00:44:32.182
+It offsets 04 and 20 from your buffer and
+
+00:44:32.182 --> 00:44:34.708
+per just like Nicole's comments demonstrate,
+
+00:44:34.708 --> 00:44:35.812
+and no padding.
+
+00:44:35.812 --> 00:44:38.020
+So if you're ever confused or
+
+00:44:38.087 --> 00:44:40.495
+uncertain about the layout of a class,
+
+00:44:40.500 --> 00:44:42.414
+try using /d1ReportSingleClassLayout
+
+00:44:42.414 --> 00:44:44.299
+and then name of class.
+
+00:44:44.300 --> 00:44:45.668
+It's undocumented and unsupported,
+
+00:44:45.668 --> 00:44:47.036
+but we've supported well,
+
+00:44:47.040 --> 00:44:49.189
+we've implemented it for many years and
+
+00:44:49.189 --> 00:44:51.469
+it's probably not going away anytime soon.
+
+00:44:51.470 --> 00:44:53.241
+OK, so first meow and purr are
+
+00:44:53.241 --> 00:44:54.490
+just regular data members,
+
+00:44:54.490 --> 00:44:57.770
+not container buffers, so they must be valid.
+
+00:44:57.770 --> 00:44:59.930
+OK, then assume we want to
+
+00:44:59.930 --> 00:45:01.370
+poison all of buffer.
+
+00:45:01.370 --> 00:45:03.410
+This would mean that in a perfect world,
+
+00:45:03.410 --> 00:45:04.802
+we want something like…
+
+00:45:04.802 --> 00:45:07.430
+OK, here's a very nice diagram.
+
+00:45:07.430 --> 00:45:08.616
+Um, with
+
+00:45:08.616 --> 00:45:12.767
+bars showing where bytes begin and end,
+
+00:45:12.770 --> 00:45:14.765
+and the bars begin on these spaces.
+
+00:45:14.770 --> 00:45:15.798
+Very nice.
+
+00:45:15.798 --> 00:45:19.910
+OK, so meow is all valid the buffer?
+
+00:45:19.910 --> 00:45:22.353
+OK, these SMs are the shadow memory
+
+00:45:22.353 --> 00:45:24.281
+segments because ASan thinks about
+
+00:45:24.281 --> 00:45:26.326
+things in eight byte granularity.
+
+00:45:26.330 --> 00:45:28.990
+OK, so the entire buffer is poisoned.
+
+00:45:28.990 --> 00:45:29.368
+OK,
+
+00:45:29.368 --> 00:45:32.014
+and then however note that by the
+
+00:45:32.014 --> 00:45:34.295
+rules above sm3 the shadow memory is
+
+00:45:34.295 --> 00:45:36.370
+not a valid shadow memory section.
+
+00:45:36.370 --> 00:45:38.008
+We always need the valid bytes
+
+00:45:38.008 --> 00:45:39.890
+to come before the poison bytes.
+
+00:45:39.890 --> 00:45:40.183
+Thus,
+
+00:45:40.183 --> 00:45:42.527
+the closest we can actually get to it
+
+00:45:42.527 --> 00:45:45.494
+is… I see the cat noises have attracted well,
+
+00:45:45.500 --> 00:45:48.140
+Hi Kitty.
+
+00:45:48.140 --> 00:45:52.114
+Now we can mark all of SM3 as valid.
+
+00:45:52.114 --> 00:45:52.471
+OK,
+
+00:45:52.471 --> 00:45:56.110
+so we're sort of losing out on some checking,
+
+00:45:56.110 --> 00:45:58.045
+but this is unavoidable where
+
+00:45:58.045 --> 00:46:00.380
+dereferencing near the end of the
+
+00:46:00.380 --> 00:46:02.384
+buffer has to be accepted because
+
+00:46:02.384 --> 00:46:05.578
+it's so close to the valid memory purr.
+
+00:46:05.578 --> 00:46:07.598
+This example is extremely enlightening!
+
+00:46:07.600 --> 00:46:09.070
+Thank you for writing this up!
+
+00:46:09.070 --> 00:46:12.103
+This was obviously a ton of effort to draft,
+
+00:46:12.110 --> 00:46:14.320
+but the pictures demonstrate the
+
+00:46:14.320 --> 00:46:16.088
+complicated concepts here
+
+00:46:16.088 --> 00:46:18.317
+much better than the words can.
+
+00:46:18.320 --> 00:46:19.607
+OK, very useful.
+
+00:46:19.607 --> 00:46:22.181
+&gt;&gt Nicole: There was an incredible amount of trial and error
+
+00:46:22.181 --> 00:46:25.579
+that went into figuring this out by the way.
+
+00:46:25.580 --> 00:46:28.780
+This is all not documented unfortunately.
+
+00:46:28.780 --> 00:46:30.540
+&gt;&gt Stephan: Yeah, and yeah, the result is oh,
+
+00:46:30.540 --> 00:46:31.980
+just crashes with some horrible,
+
+00:46:31.980 --> 00:46:32.884
+you know,
+
+00:46:32.884 --> 00:46:34.692
+inexplicable reason rather than
+
+00:46:34.692 --> 00:46:37.480
+a nice compiler error or anything so.
+
+00:46:37.480 --> 00:46:37.865
+OK,
+
+00:46:37.865 --> 00:46:40.175
+so we call aligned = _Get_asan_aligned_first_end
+
+00:46:40.175 --> 00:46:42.620
+with cat.buffer,
+
+00:46:42.620 --> 00:46:46.490
+cat.buffer + 16, and we get back aligned
+
+00:46:46.490 --> 00:46:50.394
+with members _First is address of cat.meow.
+
+00:46:50.400 --> 00:46:51.510
+OK, that's a plain pointer,
+
+00:46:51.510 --> 00:46:54.318
+not any sort of pointer to data member,
+
+00:46:54.318 --> 00:46:57.053
+and _End is the cat.buffer + 12,
+
+00:46:57.060 --> 00:46:59.154
+which is here.
+
+00:46:59.154 --> 00:47:00.550
+OK. Um.
+
+00:47:00.550 --> 00:47:02.650
+Then we poison as much of
+
+00:47:02.650 --> 00:47:05.309
+buffer as we can via
+
+00:47:05.310 --> 00:47:07.206
+__sanitizer_annotate_contiguous_container(
+
+00:47:07.206 --> 00:47:10.000
+aligned._First, aligned._End,
+
+00:47:10.000 --> 00:47:16.120
+OK, uh, cat.buffer here, and then 
+
+00:47:16.120 --> 00:47:17.680
+aligned._Clamp_to_end(
+
+00:47:17.680 --> 00:47:19.760
+cat.buffer + 16))
+
+00:47:21.770 --> 00:47:22.230
+OK.
+
+00:47:24.590 --> 00:47:27.430
+So the… OK that… that finds this boundary.
+
+00:47:27.430 --> 00:47:29.271
+Here we are allowed to assume that
+
+00:47:29.271 --> 00:47:31.043
+&amp;cat.meow is valid since
+
+00:47:31.043 --> 00:47:32.583
+otherwise cat.buffer plus anywhere
+
+00:47:32.583 --> 00:47:34.648
+between zero and four could not be valid.
+
+00:47:34.650 --> 00:47:36.855
+We cannot poison up to cat.buffer
+
+00:47:36.855 --> 00:47:38.792
++ 16 since then the
+
+00:47:38.792 --> 00:47:40.570
+&amp;purr could not be valid.
+
+00:47:40.570 --> 00:47:42.768
+Thus, this results in the shadow memory
+
+00:47:42.768 --> 00:47:45.500
+state from the second example. OK.
+
+00:47:45.500 --> 00:47:51.310
+And, that would be this example here.
+
+00:47:51.310 --> 00:47:52.786
+Yeah, because this is clearly not
+
+00:47:52.786 --> 00:47:54.190
+the first example.
+
+00:47:54.190 --> 00:47:59.620
+OK, this comment makes sense. Thank you.
+
+00:47:59.620 --> 00:48:02.077
+OK, so now we've got plain inline function,
+
+00:48:02.080 --> 00:48:05.762
+so it is _NODISCARD because it's
+
+00:48:05.762 --> 00:48:07.340
+only returning stuff.
+
+00:48:07.340 --> 00:48:09.092
+It's got to be inline because
+
+00:48:09.092 --> 00:48:10.260
+it's not a template.
+
+00:48:10.260 --> 00:48:12.360
+We return an _AsanAlignedPointer struct,
+
+00:48:12.360 --> 00:48:15.130
+_Get_asan_aligned_first_end.
+
+00:48:15.130 --> 00:48:17.610
+Because it returns a _First and an _End.
+
+00:48:17.610 --> 00:48:20.060
+Those are the names of the members.
+
+00:48:20.060 --> 00:48:21.845
+We take _First which is a const
+
+00:48:21.845 --> 00:48:22.900
+pointer to const void.
+
+00:48:22.900 --> 00:48:24.580
+Same with _Last.
+
+00:48:24.580 --> 00:48:26.696
+It's noexcept OK,
+
+00:48:26.696 --> 00:48:28.004
+We have a…
+
+00:48:28.004 --> 00:48:30.620
+constexpr uintptr_t; `static` here
+
+00:48:30.714 --> 00:48:33.366
+is not necessary but not wrong,
+
+00:48:33.370 --> 00:48:33.988
+so that's fine.
+
+00:48:36.510 --> 00:48:38.796
+static constexpr uintptr_t _Mask
+
+00:48:38.796 --> 00:48:41.650
+is take the _Asan_granularity.
+
+00:48:41.650 --> 00:48:43.126
+Which is a power 2 minus 1,
+
+00:48:43.130 --> 00:48:47.010
+flip the bits so it turns off all the bits.
+
+00:48:47.010 --> 00:48:48.160
+For the power of two, OK,
+
+00:48:48.160 --> 00:48:50.470
+and that's why we can mask it.
+
+00:48:50.470 --> 00:48:52.138
+We reinterpret _First and _Last to
+
+00:48:52.138 --> 00:48:54.216
+uintptr_t, apply the mask,
+
+00:48:54.216 --> 00:48:56.470
+and then go back to const void*.
+
+00:48:56.470 --> 00:48:59.518
+OK, that's great.
+
+00:48:59.520 --> 00:49:02.136
+Amy, who is the tech lead on ASan,
+
+00:49:02.140 --> 00:49:04.640
+says: "for the _Last pointer,
+
+00:49:04.640 --> 00:49:05.880
+I think this goes back to the beginning
+
+00:49:05.880 --> 00:49:07.184
+of the current longest of advancing to
+
+00:49:07.184 --> 00:49:08.576
+the beginning of the next chunk?" "Correct.
+
+00:49:08.576 --> 00:49:09.948
+We can't advance the beginning of next
+
+00:49:09.948 --> 00:49:11.320
+chunk; see the example in the comment".
+
+00:49:11.320 --> 00:49:14.150
+OK, so we're only ever
+
+00:49:14.150 --> 00:49:15.140
+stepping things back,
+
+00:49:15.140 --> 00:49:17.450
+because of the nature of the mask.
+
+00:49:17.450 --> 00:49:18.050
+OK, good,
+
+00:49:18.050 --> 00:49:20.450
+that's going to result in nice codegen.
+
+00:49:20.450 --> 00:49:23.826
+Then we have a couple of variable templates.
+
+00:49:23.830 --> 00:49:25.670
+This code goes down to C++14,
+
+00:49:25.670 --> 00:49:27.805
+so we need the _INLINE_VAR macro.
+
+00:49:27.810 --> 00:49:30.108
+We are…
+
+00:49:30.108 --> 00:49:31.640
+partially specializing,
+
+00:49:31.640 --> 00:49:33.044
+but not explicitly specializing.
+
+00:49:33.044 --> 00:49:34.097
+So that's good.
+
+00:49:34.100 --> 00:49:37.760
+We've got this headache where if we ever
+
+00:49:37.760 --> 00:49:39.580
+explicitly specialize a variable template,
+
+00:49:39.580 --> 00:49:41.636
+that's actually bogus without
+
+00:49:41.636 --> 00:49:43.178
+actual inline variables,
+
+00:49:43.180 --> 00:49:46.040
+but partial specializations are OK.
+
+00:49:46.040 --> 00:49:47.650
+So template&lt;class _Container,
+
+00:49:47.650 --> 00:49:48.938
+class = void&gt;,
+
+00:49:48.940 --> 00:49:51.430
+because we're going to do void_t SFINAE.
+
+00:49:51.430 --> 00:49:54.280
+_INLINE_VAR constexpr size_t
+
+00:49:54.280 --> 00:49:56.450
+_Container_allocation_minimum_alignment is…
+
+00:49:56.450 --> 00:49:58.370
+so by default we get the alignof
+
+00:49:58.370 --> 00:50:00.314
+the element type, the typename
+
+00:50:00.314 --> 00:50:01.826
+_Container::value_type OK,
+
+00:50:01.830 --> 00:50:04.470
+but if something is valid.
+
+00:50:04.470 --> 00:50:07.894
+If we can form a smash to void_t,
+
+00:50:07.900 --> 00:50:12.850
+the decltype of the _Container::allocator_type::_Minimum_allocation_alignment.
+
+00:50:12.850 --> 00:50:14.578
+So if you have…,
+
+00:50:14.578 --> 00:50:17.170
+if the allocator has this value,
+
+00:50:17.170 --> 00:50:19.034
+this thing does not need typename anywhere,
+
+00:50:19.034 --> 00:50:20.709
+because we eventually end a new value.
+
+00:50:20.710 --> 00:50:24.208
+Then we call
+
+00:50:24.210 --> 00:50:24.864
+std::max,
+
+00:50:24.864 --> 00:50:26.826
+and here we're in &lt;xmemory&gt;,
+
+00:50:26.830 --> 00:50:28.923
+so we have that available wrapped in
+
+00:50:28.923 --> 00:50:30.650
+parentheses to defend against macros.
+
+00:50:30.650 --> 00:50:34.070
+Um, and what are we taking the maximum of?
+
+00:50:34.070 --> 00:50:36.254
+Either the thing that we would usually use,
+
+00:50:36.260 --> 00:50:38.094
+alignof(typename _Container::value_type).
+
+00:50:38.100 --> 00:50:39.156
+But if that's tiny,
+
+00:50:39.156 --> 00:50:41.609
+like if it's just a char or something,
+
+00:50:41.610 --> 00:50:43.272
+then we're guaranteed that the allocator
+
+00:50:43.272 --> 00:50:45.445
+will at least be returning stuff aligned to
+
+00:50:45.445 --> 00:50:47.838
+8 byte or 16 byte or whatever boundary it says.
+
+00:50:47.840 --> 00:50:49.316
+But if the element type has
+
+00:50:49.316 --> 00:50:50.300
+a huge alignment requirement,
+
+00:50:50.300 --> 00:50:50.514
+well,
+
+00:50:50.514 --> 00:50:52.012
+of course then that is the alignment
+
+00:50:52.012 --> 00:50:52.938
+requirement we're going to use.
+
+00:50:52.940 --> 00:50:54.660
+So, maximum is correct.
+
+00:50:54.660 --> 00:50:55.867
+OK, that looks good.
+
+00:50:55.867 --> 00:50:57.680
+That's all the changes to &lt;xmemory&gt;.
+
+00:50:57.680 --> 00:50:58.190
+OK.
+
+00:51:00.350 --> 00:51:03.017
+See. So now we've got changes to
+
+00:51:03.017 --> 00:51:05.617
+&lt;string&gt; and &lt;vector&gt; and then the test.
+
+00:51:05.620 --> 00:51:07.940
+OK, let's see. Got a little bit of time.
+
+00:51:07.940 --> 00:51:10.770
+Let me go through &lt;vector&gt;.
+
+00:51:10.770 --> 00:51:14.010
+OK, so we're now going to include the
+
+00:51:14.010 --> 00:51:16.458
+support header with angle brackets.
+
+00:51:16.460 --> 00:51:18.500
+Uh, we're going to do that.
+
+00:51:18.500 --> 00:51:21.180
+Within the compiler processor guard,
+
+00:51:21.180 --> 00:51:23.244
+but it's not conditional on language
+
+00:51:23.244 --> 00:51:25.459
+mode and it's outside our push pack.
+
+00:51:25.460 --> 00:51:27.200
+This is the right location.
+
+00:51:27.200 --> 00:51:29.496
+OK, so then we're lifting out all this,
+
+00:51:29.500 --> 00:51:32.430
+uh, duplicated slash unified code.
+
+00:51:32.430 --> 00:51:34.397
+Yep, so this is activating the stuff,
+
+00:51:34.400 --> 00:51:37.104
+the #pragma comment(lib …),
+
+00:51:37.104 --> 00:51:40.884
+the declarations, the alternate names.
+
+00:51:40.884 --> 00:51:44.264
+This is great. This was detecting
+
+00:51:44.264 --> 00:51:45.536
+the minimum allocation alignment.
+
+00:51:45.540 --> 00:51:47.888
+We've just reviewed this.
+
+00:51:47.890 --> 00:51:50.986
+Um, this has been generalized too.
+
+00:51:50.990 --> 00:51:53.732
+Previously it took a vector and
+
+00:51:53.732 --> 00:51:56.360
+asked what its value type is.
+
+00:51:56.360 --> 00:52:00.820
+And now the stuff that's in the &lt;xmemory&gt; um,
+
+00:52:00.820 --> 00:52:02.588
+works with arbitrary containers,
+
+00:52:02.588 --> 00:52:03.914
+not specifically _Vec,
+
+00:52:03.920 --> 00:52:07.105
+and it's doing std::max. This is…
+
+00:52:09.340 --> 00:52:11.500
+This is returning a bool:
+
+00:52:11.500 --> 00:52:15.196
+"Do you have a minimum allocation alignment?"
+
+00:52:15.200 --> 00:52:17.629
+The other one just returned what the
+
+00:52:17.629 --> 00:52:18.940
+minimum allocation alignment was.
+
+00:52:18.940 --> 00:52:21.880
+OK. And then the detect_mismatch.
+
+00:52:21.880 --> 00:52:25.250
+OK, _Get_aligned_first
+
+00:52:25.250 --> 00:52:28.818
+This is being removed.
+
+00:52:28.820 --> 00:52:30.452
+Looks like some of the masking work is
+
+00:52:30.452 --> 00:52:31.877
+being moved to that helper function,
+
+00:52:31.880 --> 00:52:33.847
+so we're going to see something that.
+
+00:52:33.850 --> 00:52:36.951
+Replaces this, but it's not just a
+
+00:52:36.951 --> 00:52:40.280
+code extraction. OK, so here we go.
+
+00:52:40.280 --> 00:52:43.020
+&gt;&gt; Nicole: So that thing right there was wrong.
+
+00:52:43.020 --> 00:52:43.730
+Basically,
+
+00:52:47.070 --> 00:52:50.670
+If you have a pointer pointing at first.
+
+00:52:50.670 --> 00:52:53.510
+Uh. This is like up in memory towards
+
+00:52:53.510 --> 00:52:57.950
+end and this is back in memory towards begin.
+
+00:52:57.950 --> 00:53:00.698
+It would push the pointer forward.
+
+00:53:00.700 --> 00:53:03.470
+So that you couldn't poison like, let's say,
+
+00:53:03.470 --> 00:53:05.675
+the first four bytes of the buffer.
+
+00:53:05.680 --> 00:53:08.562
+But it turns out. That's not true.
+
+00:53:08.562 --> 00:53:10.410
+We can just push the pointer backwards,
+
+00:53:10.410 --> 00:53:12.939
+because we know that this must be valid in
+
+00:53:12.939 --> 00:53:15.324
+order for this to ever possibly be valid,
+
+00:53:15.330 --> 00:53:17.244
+and so we can actually poison
+
+00:53:17.244 --> 00:53:19.548
+the 1st 4 bytes of the buffer.
+
+00:53:19.550 --> 00:53:22.480
+&gt;&gt; Stephan: OK. Through the masking.
+
+00:53:24.630 --> 00:53:26.790
+&gt;&gt; Nicole: Yeah, that _Get_aligned_first_end I think is what it's called.
+
+00:53:26.790 --> 00:53:31.552
+Uh does that? That's the correct masking,
+
+00:53:31.552 --> 00:53:33.692
+so this is the OK.
+
+00:53:33.700 --> 00:53:36.098
+And. Pretty complex.
+
+00:53:36.098 --> 00:53:38.690
+&gt;&gt; Stephan: OK, so this is actually a correctness fix.
+
+00:53:38.690 --> 00:53:42.169
+OK, that's good. OK, so goodbye,
+
+00:53:42.169 --> 00:53:43.108
+_Get_aligned_first.
+
+00:53:43.110 --> 00:53:45.396
+Um, now we are _Unfancy'ing pointers
+
+00:53:45.396 --> 00:53:47.600
+because we support fancy pointers,
+
+00:53:47.600 --> 00:53:49.316
+which are things that we obtained
+
+00:53:49.316 --> 00:53:51.115
+from an allocator that look like
+
+00:53:51.115 --> 00:53:52.620
+pointers but are actually user
+
+00:53:52.620 --> 00:53:54.090
+defined classes or something.
+
+00:53:54.090 --> 00:53:55.854
+So whenever you see _Unfancy or _Refancy,
+
+00:53:55.860 --> 00:53:57.140
+that's what we're dealing with.
+
+00:53:59.170 --> 00:54:01.142
+So we are taking…
+
+00:54:01.142 --> 00:54:04.692
+Are we doing here… applying annotation which
+
+00:54:04.692 --> 00:54:08.143
+works with fancy pointers in a vector.
+
+00:54:08.150 --> 00:54:10.432
+We have to _Unfancy them all to
+
+00:54:10.432 --> 00:54:12.689
+raw pointers, they're just losing
+
+00:54:12.689 --> 00:54:14.288
+their trailing underscores.
+
+00:54:14.290 --> 00:54:15.954
+They're all double const.
+
+00:54:15.954 --> 00:54:18.902
+OK, and then uh, extra parentheses here
+
+00:54:18.902 --> 00:54:22.107
+to make clang format do the right thing.
+
+00:54:22.110 --> 00:54:29.372
+If constexpr the _Container_allocation_minimum alignment for our vector is
+
+00:54:29.372 --> 00:54:33.062
+strictly greater than _Asan_granularity then…
+
+00:54:33.062 --> 00:54:36.494
+We can call __sanitizer_annotate_contiguous_container
+
+00:54:36.494 --> 00:54:38.210
+without adjustments.
+
+00:54:38.210 --> 00:54:42.060
+Otherwise we need to adjust. OK and here.
+&gt;&gt; Nicole: That should be greater than or equal.
+
+00:54:44.070 --> 00:54:45.480
+&gt;&gt; Stephan: Ohh greater than or equal. OK.
+
+00:54:47.490 --> 00:54:48.972
+Looks like this comment doesn't mention
+
+00:54:48.972 --> 00:54:51.800
+that, so I will add that. Let's see.
+
+00:54:56.720 --> 00:55:01.888
+As you mentioned that this
+
+00:55:01.888 --> 00:55:05.188
+should be a greater equal check.
+
+00:55:07.480 --> 00:55:09.080
+OK, great. Thank you.
+
+00:55:09.080 --> 00:55:10.753
+I didn't. I actually wasn't.
+
+00:55:10.753 --> 00:55:13.192
+Even though I'm a fan of uh checking
+
+00:55:13.192 --> 00:55:15.320
+for uh strict versus um except equal,
+
+00:55:15.320 --> 00:55:16.860
+I didn't think to question it there,
+
+00:55:16.860 --> 00:55:18.700
+so I'm glad you did.
+
+00:55:18.700 --> 00:55:20.615
+So if the allocation minimum
+
+00:55:20.615 --> 00:55:22.530
+alignment is greater than or
+
+00:55:22.599 --> 00:55:24.279
+equal to _Asan_granularity,
+
+00:55:24.280 --> 00:55:27.520
+then this adjustment is not necessary.
+
+00:55:27.520 --> 00:55:31.510
+OK, um, there's some comment here about.
+
+00:55:33.900 --> 00:55:35.548
+Possibly removing an optimization
+
+00:55:35.548 --> 00:55:38.020
+because it's making things more complex.
+
+00:55:38.020 --> 00:55:40.554
+I'll let you decide whether that's necessary.
+
+00:55:40.560 --> 00:55:45.849
+OK, so the old state,
+&gt;&gt; Nicole: This is actually not an optimization.
+
+00:55:45.850 --> 00:55:48.167
+That's what I meant to say, 'cus when you know about the allocator.
+
+00:55:48.170 --> 00:55:50.330
+We can push it forward.
+
+00:55:50.330 --> 00:55:55.389
+We can push the end pointer forward, instead of back.
+
+00:55:55.390 --> 00:55:57.623
+So this is actually fixed in my
+
+00:55:57.623 --> 00:55:59.670
+local branch and I apparently forgot
+
+00:55:59.670 --> 00:56:02.043
+to push before I left for home.
+
+00:56:02.050 --> 00:56:07.845
+So OK. Sorry.
+&gt;&gt; Stephan: OK, let's uh,
+
+00:56:07.845 --> 00:56:10.120
+let's see if I'm catching this correctly.
+
+00:56:15.520 --> 00:56:16.600
+OK, how does this sound?
+
+00:56:16.600 --> 00:56:18.070
+And Nicole mentioned that this
+
+00:56:18.070 --> 00:56:19.540
+is needed for correctness and
+
+00:56:19.590 --> 00:56:21.060
+is not purely an optimization.
+
+00:56:21.060 --> 00:56:25.492
+OK. Okay, old state: include _First
+
+00:56:25.492 --> 00:56:28.332
+exclude _Old_last is valid,
+
+00:56:28.340 --> 00:56:29.600
+and then from _Old_last
+
+00:56:29.600 --> 00:56:30.888
+excluding _End is poison.
+
+00:56:30.888 --> 00:56:32.820
+New state: _First to _New_last
+
+00:56:32.886 --> 00:56:34.560
+is valid and then _New_last to
+
+00:56:34.560 --> 00:56:36.720
+_end, so there simply _Old_last was the
+
+00:56:36.720 --> 00:56:38.180
+boundary between valid and poison.
+
+00:56:38.180 --> 00:56:40.120
+We're moving that to wherever
+
+00:56:40.120 --> 00:56:43.079
+_New_last is, so _CSTD qualified,
+
+00:56:43.080 --> 00:56:45.060
+which just means global scope 
+
+00:56:45.060 --> 00:56:46.050
+__sanitizer_annotate_contiguous_container(
+
+00:56:46.050 --> 00:56:48.763
+_First, _End, _Old_last, _New_last) OK.
+
+00:56:48.763 --> 00:56:51.768
+Otherwise, so, call the new thing
+
+00:56:51.770 --> 00:56:54.190
+um const auto _Aligned is _STD
+
+00:56:54.190 --> 00:56:55.510
+_Get_asan_aligned_first_end
+
+00:56:55.510 --> 00:56:57.430
+give it _First and _End.
+
+00:56:57.430 --> 00:56:59.257
+If the struct that we're given says
+
+00:56:59.257 --> 00:57:01.668
+if _Aligned._First is equal to _Aligned._End,
+
+00:57:01.670 --> 00:57:02.594
+well then there's nothing
+
+00:57:02.594 --> 00:57:03.749
+the buffer does not end…
+
+00:57:05.980 --> 00:57:08.276
+The buffer does not end at least one
+
+00:57:08.276 --> 00:57:10.450
+shadow memory section. Nothing to do.
+
+00:57:12.610 --> 00:57:15.283
+Am I misparsing this? What does end mean here?
+
+00:57:15.290 --> 00:57:18.910
+Does it mean contain?
+&gt;&gt; Nicole: No.
+
+00:57:18.910 --> 00:57:22.130
+Basically, in order to mark part of
+
+00:57:22.130 --> 00:57:25.506
+a shadow memory section as poison,
+
+00:57:25.506 --> 00:57:29.484
+we need to know that we own the final
+
+00:57:29.484 --> 00:57:32.940
+byte in that shadow memory section.
+
+00:57:32.940 --> 00:57:34.602
+&gt;&gt; Stephan: OK, so for like, if you're purely
+
+00:57:34.602 --> 00:57:36.200
+within a shadow memory section,
+
+00:57:36.200 --> 00:57:39.260
+you don't contain the end of one of them.
+
+00:57:39.260 --> 00:57:40.898
+OK, so that's what this means.
+
+00:57:40.900 --> 00:57:43.428
+&gt;&gt Nicole: Right, so, yeah, so we can actually be
+
+00:57:43.428 --> 00:57:46.069
+in the middle to another middle,
+
+00:57:46.070 --> 00:57:47.522
+and we can poison at least
+
+00:57:47.522 --> 00:57:50.125
+like the first 4 bytes. Right.
+
+00:57:50.125 --> 00:57:52.565
+&gt;&gt; Stephan: Yeah. But you can't be purely
+
+00:57:52.565 --> 00:57:53.545
+within a shadow memory.
+
+00:57:56.870 --> 00:57:59.150
+OK. I think that makes sense
+
+00:57:59.150 --> 00:58:01.449
+&gt;&gt Nicole: I need to go get the charger for my phone.
+
+00:58:01.450 --> 00:58:05.678
+&gt;&gt Stephan: OK [laugh], um, then early return.
+
+00:58:05.678 --> 00:58:08.286
+_Old_fixed and _New_fixed,
+
+00:58:08.290 --> 00:58:11.866
+_Clamp_to_end, _Old_last, and _New_last.
+
+00:58:11.870 --> 00:58:13.466
+OK, so now some comments of the
+
+00:58:13.466 --> 00:58:15.325
+old state and new state and these
+
+00:58:15.325 --> 00:58:16.954
+are all inclusive-exclusive.
+
+00:58:16.954 --> 00:58:21.116
+They're all properly uglified, OK.
+
+00:58:21.116 --> 00:58:25.220
+Ah, that makes sense.
+
+00:58:25.220 --> 00:58:26.052
+_Old_fixed,
+
+00:58:26.052 --> 00:58:28.132
+_Old_fixed and _Aligned._End
+
+00:58:28.132 --> 00:58:30.723
+were the old boundaries and now
+
+00:58:30.723 --> 00:58:33.237
+_New_fixed and _Aligned._End. OK.
+
+00:58:33.240 --> 00:58:35.148
+So we're just moving _Old_fixed
+
+00:58:35.148 --> 00:58:36.420
+to _New_fixed, OK.
+
+00:58:36.420 --> 00:58:39.010
+Call __sanitizer_annotate_contiguous_container
+
+00:58:41.030 --> 00:58:43.474
+OK, more discussion here.
+
+00:58:43.474 --> 00:58:46.529
+Clamped end handling the concern.
+
+00:58:49.860 --> 00:58:52.149
+OK. It looks like this is resolved.
+
+00:58:52.150 --> 00:58:52.778
+That's good.
+
+00:58:52.778 --> 00:58:54.976
+OK, that's all the changes to &lt;vector&gt;!
+
+00:58:54.980 --> 00:58:57.192
+OK, I think I've worked at my
+
+00:58:57.192 --> 00:58:59.728
+confidence and I can now review &lt;string&gt;.
+
+00:58:59.730 --> 00:59:03.864
+OK. &lt;string&gt; includes the
+
+00:59:03.864 --> 00:59:07.204
+support header not guarded by
+
+00:59:07.210 --> 00:59:11.250
+compiler version or standard version.
+
+00:59:11.250 --> 00:59:13.266
+OK, that's in the right place.
+
+00:59:13.270 --> 00:59:15.250
+We are extracting out the string
+
+00:59:15.250 --> 00:59:17.830
+annotations and we are now activating them,
+
+00:59:17.830 --> 00:59:20.006
+so we'll need to go resolve this bug,
+
+00:59:20.010 --> 00:59:24.690
+which is great. OK.
+
+00:59:24.690 --> 00:59:27.030
+Extract out the allocation stuff, OK.
+
+00:59:29.850 --> 00:59:31.866
+Now #ifdef _INSERT_STRING_ANNOTATION,
+
+00:59:31.870 --> 00:59:33.810
+we have a helper function.
+
+00:59:33.810 --> 00:59:36.850
+We look like we're within
+
+00:59:36.850 --> 00:59:39.678
+a class here indeed we are within
+
+00:59:39.678 --> 00:59:41.510
+within basic_string itself.
+
+00:59:41.510 --> 00:59:44.898
+Yeah, this looks like basic_string itself.
+
+00:59:44.900 --> 00:59:48.316
+OK, um, so and are we in?
+
+00:59:48.320 --> 00:59:49.400
+We're in the private section.
+
+00:59:49.400 --> 00:59:51.736
+OK, #ifdef because this is a defined
+
+00:59:51.736 --> 00:59:54.500
+or not macro _INSERT_STRING_ANNOTATION,
+
+00:59:54.500 --> 00:59:55.630
+then we're going to have
+
+00:59:55.630 --> 00:59:56.534
+a helper function here.
+
+00:59:56.540 --> 00:59:58.646
+This is a function so we can get the
+
+00:59:58.646 --> 01:00:00.516
+alignment of the class while defining it.
+
+01:00:00.520 --> 01:00:02.347
+Because of the fun fact that a
+
+01:00:02.347 --> 01:00:04.139
+class is only complete within
+
+01:00:04.139 --> 01:00:06.035
+its member function definitions.
+
+01:00:06.040 --> 01:00:08.224
+If you're simply looking at like
+
+01:00:08.224 --> 01:00:10.240
+variables, like static data members,
+
+01:00:10.240 --> 01:00:11.860
+then it's not actually complete yet.
+
+01:00:11.860 --> 01:00:13.620
+It would be circularity if you try to
+
+01:00:13.620 --> 01:00:15.610
+check the alignment and size of the class.
+
+01:00:15.610 --> 01:00:17.530
+So it actually has to be a function.
+
+01:00:17.530 --> 01:00:18.866
+So that makes sense.
+
+01:00:18.866 --> 01:00:20.315
+Um, that's subtle enough that it
+
+01:00:20.315 --> 01:00:21.984
+is worth a comment. I like that.
+
+01:00:21.984 --> 01:00:23.532
+So we have _NODISCARD because
+
+01:00:23.532 --> 01:00:24.729
+it's a pure observer.
+
+01:00:24.730 --> 01:00:26.590
+This is a static contexpr
+
+01:00:26.590 --> 01:00:30.646
+bool _Small_string_always_asan_aligned.
+
+01:00:30.650 --> 01:00:32.438
+Can't be const because you're static.
+
+01:00:32.438 --> 01:00:34.226
+It's no except OK,
+
+01:00:34.230 --> 01:00:36.126
+so the small string is always ASan aligned.
+
+01:00:36.130 --> 01:00:38.650
+When a bunch of conditions are true,
+
+01:00:38.650 --> 01:00:40.820
+the align of ourselves, basic_string
+
+01:00:40.820 --> 01:00:42.990
+must be strictly…
+
+01:00:42.990 --> 01:00:46.251
+Sorry, must be greater than or equal to _Asan_granularity.
+
+01:00:46.251 --> 01:00:48.056
+So this check is good.
+
+01:00:48.060 --> 01:00:51.224
+And the _Memcpy_val_offset modulo
+
+01:00:51.224 --> 01:00:53.719
+the _Asan_granularity must be zero.
+
+01:00:53.720 --> 01:00:58.208
+OK, so our boundaries at the right place. And…
+
+01:00:58.208 --> 01:01:00.716
+Uh, let's see…
+
+01:01:00.720 --> 01:01:02.880
+This whole condition must be true,
+
+01:01:02.880 --> 01:01:04.518
+the sizeof
+
+01:01:08.610 --> 01:01:10.750
+value_type of _BUF_SIZE.
+
+01:01:15.060 --> 01:01:16.060
+Oh, this is an array.
+
+01:01:16.060 --> 01:01:18.395
+I was like index into a value type. No.
+
+01:01:18.395 --> 01:01:21.694
+This is the size of an array of, um,
+
+01:01:21.694 --> 01:01:26.780
+_BUF_SIZE elements of value_type. OK.
+
+01:01:26.780 --> 01:01:28.446
+Which I guess could have been expressed
+
+01:01:28.446 --> 01:01:30.482
+as sizeof(value_type) * _BUF_SIZE
+
+01:01:30.482 --> 01:01:32.180
+because we don't expect any padding.
+
+01:01:32.180 --> 01:01:34.492
+But that seems reasonable.
+
+01:01:34.492 --> 01:01:37.960
+So the size of essentially our
+
+01:01:37.960 --> 01:01:41.116
+small string buffer modulo _Asan_granularity.
+
+01:01:41.120 --> 01:01:43.712
+Must be 0, so you've got to be evenly
+
+01:01:43.712 --> 01:01:48.716
+divisible. Um. Or if it's not um?
+
+01:01:48.720 --> 01:01:54.420
+Then. If they align of this size_type…
+
+01:01:57.270 --> 01:01:58.470
+The align of our size_type…
+
+01:01:58.470 --> 01:02:01.634
+Ohh this is looking at the x86 or x64.
+
+01:02:01.634 --> 01:02:05.470
+&gt;&gt; Nicole: Basically the reason for all of this
+
+01:02:05.470 --> 01:02:08.822
+is because I am trying to check one
+
+01:02:08.822 --> 01:02:11.669
+whether it's always aligned to the
+
+01:02:11.670 --> 01:02:13.188
+like the beginning of the buffer
+
+01:02:13.188 --> 01:02:14.879
+is always aligned on the boundary.
+
+01:02:17.150 --> 01:02:20.438
+That's true. The first two things are true.
+
+01:02:20.440 --> 01:02:22.650
+The second thing is checking
+
+01:02:25.530 --> 01:02:28.652
+if size doesn't get put in the shadow
+
+01:02:28.652 --> 01:02:31.629
+memory section of the buffer.
+
+01:02:31.630 --> 01:02:35.118
+So having in between
+
+01:02:35.120 --> 01:02:37.368
+If the buffer and a shadow memory buffer,
+
+01:02:37.370 --> 01:02:41.240
+that's fine. Or if padding like
+
+01:02:41.240 --> 01:02:46.040
+pads the size, type out to the…
+
+01:02:46.040 --> 01:02:47.525
+the next shadow memory buffer
+
+01:02:47.525 --> 01:02:51.370
+shadow memory section, that's fine.
+
+01:02:51.370 --> 01:02:53.266
+Yeah, this is a. This is a lot.
+
+01:02:53.270 --> 01:02:54.450
+It is kind of terrible,
+
+01:02:54.450 --> 01:02:56.610
+but that that's basically the idea.
+
+01:02:56.610 --> 01:02:59.283
+Is is so that you don't poison size_type,
+
+01:02:59.290 --> 01:03:02.350
+You're _Mysize accidentally.
+
+01:03:02.350 --> 01:03:05.455
+&gt;&gt; Stephan: OK, Umm, I'm going to add a comment here.
+
+01:03:05.460 --> 01:03:08.337
+Um. If it would be possible to
+
+01:03:08.337 --> 01:03:09.851
+add additional comments, um,
+
+01:03:09.851 --> 01:03:11.256
+explaining what you just explained,
+
+01:03:11.260 --> 01:03:12.536
+that would be helpful,
+
+01:03:12.536 --> 01:03:14.890
+because there are a lot of conditions
+
+01:03:14.890 --> 01:03:17.459
+here and the intention of them is
+
+01:03:17.460 --> 01:03:20.048
+less than completely obvious.
+
+01:03:20.050 --> 01:03:23.895
+So comments explaining what
+
+01:03:23.895 --> 01:03:26.570
+is the meaning of this,
+
+01:03:26.570 --> 01:03:30.128
+the meaning of each sub-condition
+
+01:03:30.128 --> 01:03:33.530
+here would be very helpful.
+
+01:03:35.840 --> 01:03:36.990
+OK, great.
+
+01:03:39.930 --> 01:03:43.295
+OK, so now _Modify_annotation
+
+01:03:43.295 --> 01:03:45.314
+is changing signature.
+
+01:03:45.320 --> 01:03:48.016
+Uh, _CONSTEXPR20 cause string and vector
+
+01:03:48.016 --> 01:03:50.620
+have to be constexpr in C++20 mode.
+
+01:03:50.620 --> 01:03:52.398
+But now instead of just taking a count,
+
+01:03:52.400 --> 01:03:54.432
+we take a const size_type _Old_size, const
+
+01:03:54.432 --> 01:03:56.250
+size_type _New_size, const noexcept.
+
+01:03:56.250 --> 01:03:59.330
+OK, Umm, this no longer just says "Extends/
+
+01:03:59.400 --> 01:04:01.986
+shrinks the annotator range by count".
+
+01:04:01.990 --> 01:04:02.632
+You have,
+
+01:04:02.632 --> 01:04:04.380
+You have to explicitly tell it what we're…
+
+01:04:04.380 --> 01:04:06.189
+what was the old size and the new size.
+
+01:04:06.190 --> 01:04:08.190
+That's nice. That avoids confusion.
+
+01:04:08.190 --> 01:04:09.570
+If they were the same, "hey,
+
+01:04:09.570 --> 01:04:10.730
+nothing to do, return".
+
+01:04:10.730 --> 01:04:11.825
+Otherwise they're different.
+
+01:04:11.825 --> 01:04:14.634
+We gotta do stuff. So _Apply_annotation(
+
+01:04:14.634 --> 01:04:18.308
+_My_data._Myptr(), _My_data._Myres,
+
+01:04:18.310 --> 01:04:19.885
+_Old_size, _New_size).
+
+01:04:19.890 --> 01:04:21.570
+OK, simple as can be.
+
+01:04:21.570 --> 01:04:23.124
+Um, and then.
+
+01:04:23.124 --> 01:04:26.232
+We now have a new function.
+
+01:04:26.240 --> 01:04:30.572
+_CONSTEXPR20 static void _Remove_sso_annotation
+
+01:04:30.572 --> 01:04:33.028
+(const _Scary_val&amp;
+
+01:04:33.028 --> 01:04:35.620
+_My_data) noexcept. OK.
+
+01:04:35.620 --> 01:04:36.752
+This thing is um,
+
+01:04:36.752 --> 01:04:38.960
+I think we mentioned in other code reviews,
+
+01:04:38.960 --> 01:04:39.450
+but uh,
+
+01:04:39.450 --> 01:04:41.410
+basic_string and vector and all the other
+
+01:04:41.464 --> 01:04:43.144
+containers have base classes to help
+
+01:04:43.144 --> 01:04:45.119
+limit the impact of their allocator.
+
+01:04:45.120 --> 01:04:46.228
+So allocator,
+
+01:04:46.228 --> 01:04:48.998
+iterator or iterators for containers
+
+01:04:49.000 --> 01:04:50.800
+only depend on important attributes of
+
+01:04:50.800 --> 01:04:51.972
+the container,
+
+01:04:51.972 --> 01:04:55.488
+and not on different allocator types.
+
+01:04:55.490 --> 01:04:55.899
+Um,
+
+01:04:55.899 --> 01:04:58.762
+so, removes annotation of this small string
+
+01:04:58.762 --> 01:05:00.829
+optimization buffer with shadow memory.
+
+01:05:00.830 --> 01:05:02.615
+This results in the ability to copy
+
+01:05:02.615 --> 01:05:04.748
+into the SSO buffer without worrying.
+
+01:05:04.750 --> 01:05:10.474
+OK #if _HAS_CXX20 / #endif _HAS_CXX20,
+
+01:05:10.480 --> 01:05:13.294
+OK, so if we are constant evaluated,
+
+01:05:13.300 --> 01:05:15.836
+which we do with our runtime check runtime,
+
+01:05:15.836 --> 01:05:16.588
+then return.
+
+01:05:16.588 --> 01:05:18.844
+Because we're not going to do
+
+01:05:18.844 --> 01:05:21.142
+any ASan stuff, of course.
+
+01:05:21.142 --> 01:05:23.206
+in, um, constexpr land.
+
+01:05:23.210 --> 01:05:23.537
+OK.
+
+01:05:23.537 --> 01:05:23.864
+Um.
+
+01:05:23.864 --> 01:05:26.480
+Otherwise we're either not 20 mode so we
+
+01:05:26.549 --> 01:05:29.475
+don't have to worry about constexpr string,
+
+01:05:29.480 --> 01:05:30.068
+or um,
+
+01:05:30.068 --> 01:05:31.832
+we are in 20 but we've
+
+01:05:31.832 --> 01:05:33.190
+determined we're at runtime.
+
+01:05:33.190 --> 01:05:35.050
+OK, so we can proceed.
+
+01:05:35.050 --> 01:05:37.052
+So we have a couple const void*
+
+01:05:37.052 --> 01:05:39.348
+const _My_buf = _My_data._Bx._Buf;
+
+01:05:39.350 --> 01:05:43.181
+_End = … _Buf + _BUF_SIZE, ok?
+
+01:05:43.181 --> 01:05:45.136
+Repeating them has no cost
+
+01:05:45.136 --> 01:05:46.700
+and aligning them nicely,
+
+01:05:46.700 --> 01:05:49.490
+so that's fine. if constexpr(
+
+01:05:49.490 --> 01:05:51.350
+_Small_string_always_asan_aligned()).
+
+01:05:51.350 --> 01:05:53.710
+Then nice before after comments,
+
+01:05:53.710 --> 01:05:54.240
+old state,
+
+01:05:54.240 --> 01:05:56.360
+new state, from _My_buf to _End is
+
+01:05:56.423 --> 01:05:58.889
+unknown and now _My_buf to _End is valid.
+
+01:05:58.890 --> 01:06:01.494
+_My_buf, _End, _My_buf, _End, OK.
+
+01:06:01.500 --> 01:06:03.692
+Otherwise const auto _Aligned =
+
+01:06:03.692 --> 01:06:06.432
+_Get_asan_aligned_first_end.
+
+01:06:06.440 --> 01:06:06.920
+OK.
+
+01:06:06.920 --> 01:06:10.760
+The old state we had valid some unknown
+
+01:06:10.760 --> 01:06:14.770
+stuff in the middle and then valid again,
+
+01:06:14.770 --> 01:06:16.594
+and now everything's going
+
+01:06:16.594 --> 01:06:18.418
+to be valid because…
+
+01:06:18.420 --> 01:06:20.236
+What's going on here?
+
+01:06:20.236 --> 01:06:22.960
+We are removing the SSO annotation.
+
+01:06:22.960 --> 01:06:26.320
+The small string isn't always ASan aligned,
+
+01:06:26.320 --> 01:06:28.024
+so we want to just remove
+
+01:06:28.024 --> 01:06:29.460
+that annotation to say: "hey,
+
+01:06:29.460 --> 01:06:30.192
+everybody's valid",
+
+01:06:30.192 --> 01:06:30.558
+OK.
+
+01:06:33.060 --> 01:06:34.455
+OK, that looks good.
+
+01:06:34.455 --> 01:06:36.780
+Another function _CONSTEXPR20
+
+01:06:36.780 --> 01:06:39.657
+static void _Annotate_switch_to_large,
+
+01:06:39.660 --> 01:06:41.568
+(_Scary_val&amp; _My_data)
+
+01:06:41.570 --> 01:06:45.158
+noexcept. annotates exactly the pointers
+
+01:06:45.158 --> 01:06:48.840
+as valid because we're switching to large mode.
+
+01:06:48.840 --> 01:06:50.748
+And we're going to be storing
+
+01:06:50.748 --> 01:06:52.500
+a pointer in that union.
+
+01:06:52.500 --> 01:06:54.740
+Again, if we're in CXX20 mode,
+
+01:06:54.740 --> 01:06:58.100
+if we're constant evaluated, early return.
+
+01:06:58.100 --> 01:07:00.460
+Remove any SSO annotation.
+
+01:07:00.460 --> 01:07:06.708
+And then capture _My_buf, _Ptr_last is…
+
+01:07:06.710 --> 01:07:08.650
+OK, this is a repeating.
+
+01:07:08.650 --> 01:07:09.850
+Oh no, this is not repeating.
+
+01:07:09.850 --> 01:07:12.594
+This says _My_buf is _Bx._Buf 
+
+01:07:12.594 --> 01:07:15.298
+_Ptr_last is _Bx._Ptr + 1.
+
+01:07:15.300 --> 01:07:20.460
+And then _End is using _My_buf + _BUF_SIZE.
+
+01:07:20.460 --> 01:07:22.812
+Uh, that's… that's correct.
+
+01:07:22.812 --> 01:07:25.032
+Um, I'm wondering if it makes sense
+
+01:07:25.032 --> 01:07:26.982
+to group _My_buf/_End just so
+
+01:07:26.982 --> 01:07:28.781
+that puts the bufs together and
+
+01:07:28.781 --> 01:07:31.547
+then the _Ptr one is separate.
+
+01:07:31.550 --> 01:07:34.500
+It's probably not strictly necessary.
+
+01:07:34.500 --> 01:07:37.240
+&gt;&gt Nicole: The idea is that, _My_buf comes before
+
+01:07:37.240 --> 01:07:40.030
+_Ptr_last comes before _End
+
+01:07:40.030 --> 01:07:41.140
+OK. The locations?
+
+01:07:43.780 --> 01:07:44.340
+&gt;&gt Stephan: Ah, OK.
+
+01:07:48.140 --> 01:07:49.796
+And this is doing pointer arithmetic.
+
+01:07:49.800 --> 01:07:50.650
+It's not plus one byte,
+
+01:07:50.650 --> 01:07:53.058
+it's plus one pointer worth, OK.
+
+01:07:53.060 --> 01:07:54.964
+if constexpr _Small_string_always_asan_aligned,
+
+01:07:54.970 --> 01:07:57.194
+then the old state _My_buf to _End
+
+01:07:57.194 --> 01:07:59.378
+is valid from _Remove_sso_annotation
+
+01:07:59.378 --> 01:08:01.702
+which we just called, new state from
+
+01:08:01.702 --> 01:08:03.480
+_My_buf to _Ptr_last is valid,
+
+01:08:03.480 --> 01:08:06.154
+but from _Ptr_last to _End is poison.
+
+01:08:06.160 --> 01:08:07.960
+OK, otherwise const auto
+
+01:08:07.960 --> 01:08:10.500
+_Aligned = _Get_asan_aligned_first_end
+
+01:08:10.500 --> 01:08:13.952
+The old state again.
+
+01:08:13.952 --> 01:08:16.814
+_Aligned._First, which we just got here and,
+
+01:08:16.820 --> 01:08:19.178
+is valid for _Remove_sso_annotation,
+
+01:08:19.180 --> 01:08:20.780
+and then we're going to
+
+01:08:20.780 --> 01:08:22.060
+mark the middle as poison.
+
+01:08:22.060 --> 01:08:25.245
+OK, because we are switching to large,
+
+01:08:25.250 --> 01:08:29.054
+so the buffer in general is poison. Um.
+
+01:08:29.054 --> 01:08:33.758
+OK, but the pointer, of course is fine.
+
+01:08:33.758 --> 01:08:34.360
+OK.
+
+01:08:36.620 --> 01:08:39.116
+_Aligned._First, _Aligned._End, _Aligned._End, _Ptr_last.
+
+01:08:41.510 --> 01:08:41.850
+Yeah.
+
+01:08:46.560 --> 01:08:49.758
+[unintelligible]. Kind of think um.
+
+01:08:52.530 --> 01:08:54.450
+This is an extra pointer.
+
+01:08:58.280 --> 01:08:59.624
+Does this make sense?
+
+01:08:59.624 --> 01:09:01.640
+I'm worrying about exactly where this
+
+01:09:01.701 --> 01:09:03.636
+boundary is because I'm wondering,
+
+01:09:03.640 --> 01:09:05.910
+is there a distinction between
+
+01:09:05.910 --> 01:09:08.274
+arithmetic in the byte domain and
+
+01:09:08.274 --> 01:09:10.804
+arithmetic in the pointer domain um.
+
+01:09:10.804 --> 01:09:15.234
+I think I may need a, to look at.
+
+01:09:15.234 --> 01:09:17.186
+Whoops, where's string itself?
+
+01:09:17.190 --> 01:09:20.778
+I want to go to &lt;xstring&gt;.
+
+01:09:23.250 --> 01:09:28.520
+OK, so we've got a _Buf, I think _Bx.
+
+01:09:28.520 --> 01:09:30.778
+No, we don't say union that often.
+
+01:09:30.780 --> 01:09:32.740
+OK, there's one occurence union here we go,
+
+01:09:32.740 --> 01:09:34.052
+um, so we've got
+
+01:09:34.052 --> 01:09:36.520
+the array of _BUF_SIZE `value_type`s.
+
+01:09:36.520 --> 01:09:37.920
+For a narrow string,
+
+01:09:37.920 --> 01:09:39.670
+this is 16 narrow chars.
+
+01:09:39.670 --> 01:09:41.210
+Followed by a pointer.
+
+01:09:41.210 --> 01:09:44.379
+And then followed by this alias thing that,
+
+01:09:44.380 --> 01:09:46.716
+um, it's a union of all these things,
+
+01:09:46.720 --> 01:09:48.099
+and this one we can basically ignore.
+
+01:09:48.100 --> 01:09:49.864
+So it's a union of them both.
+
+01:09:51.900 --> 01:09:53.436
+Interesting. And then we've got the
+
+01:09:53.436 --> 01:09:56.480
+_Mysize and Myres after that, OK.
+
+01:09:56.480 --> 01:10:01.430
+So want to split this.
+
+01:10:01.430 --> 01:10:08.548
+Here and here OK. OK, so we've got.
+
+01:10:08.550 --> 01:10:12.678
+_My_buf is the beginning of the string.
+
+01:10:12.680 --> 01:10:18.107
+Because that the _Bxty union is the first
+
+01:10:18.107 --> 01:10:22.867
+element um _Ptr_last is the address of.
+
+01:10:22.870 --> 01:10:25.084
+The _Ptr which is also the
+
+01:10:25.084 --> 01:10:26.560
+beginning of the string.
+
+01:10:26.560 --> 01:10:33.750
+Plus one so. OK, so _Ptr_last
+
+01:10:33.750 --> 01:10:38.580
+points to the byte
+
+01:10:38.580 --> 01:10:39.672
+immediately after the pointer.
+
+01:10:39.672 --> 01:10:42.618
+So if a pointer is 8 bytes, this will
+
+01:10:42.618 --> 01:10:46.330
+the pointer exists in the 1st 8 bytes,
+
+01:10:46.330 --> 01:10:50.024
+0 through 7 index and then blah plus
+
+01:10:50.024 --> 01:10:52.803
+one is pointing to the 8th byte,
+
+01:10:52.810 --> 01:10:57.578
+the byte at index 8, the 9th Byte actually.
+
+01:10:57.580 --> 01:11:01.678
+OK. So and then _End is
+
+01:11:01.680 --> 01:11:04.352
+_Bx._Buf + _BUF_SIZE which is
+
+01:11:04.352 --> 01:11:07.860
+the end of _Bxty or an end of _Bx
+
+01:11:07.860 --> 01:11:12.481
+OK. OK, so _Ptr_last does indeed
+
+01:11:12.481 --> 01:11:14.559
+point right beyond the _Ptr.
+
+01:11:14.560 --> 01:11:16.396
+It doesn't point at the end
+
+01:11:16.396 --> 01:11:17.620
+of the second pointer,
+
+01:11:17.620 --> 01:11:21.220
+and there is no second pointer, it points at.
+
+01:11:21.220 --> 01:11:22.720
+The end of that reach.
+
+01:11:22.720 --> 01:11:25.650
+OK, so _Ptr_last.
+
+01:11:25.650 --> 01:11:26.874
+That is the right name for it too,
+
+01:11:26.880 --> 01:11:30.430
+because it's exclusive. OK, so.
+
+01:11:30.430 --> 01:11:31.480
+Did this make I think I'm
+
+01:11:31.480 --> 01:11:32.500
+convincing myself this is correct.
+
+01:11:32.500 --> 01:11:34.916
+New state _Aligned._First, up to _Ptr_last
+
+01:11:34.916 --> 01:11:37.247
+is valid but excluding it.
+
+01:11:37.250 --> 01:11:39.070
+OK, so this is saying.
+
+01:11:39.070 --> 01:11:41.090
+The ptr is valid.
+
+01:11:41.090 --> 01:11:43.110
+Everything from _Ptr_last
+
+01:11:43.110 --> 01:11:45.428
+to _Aligned._End is poison.
+
+01:11:45.430 --> 01:11:47.285
+So the part of the union that
+
+01:11:47.285 --> 01:11:48.729
+we're not using is poison.
+
+01:11:48.730 --> 01:11:48.921
+OK,
+
+01:11:48.921 --> 01:11:49.494
+this is correct.
+
+01:11:49.494 --> 01:11:50.640
+I was worried that we're like
+
+01:11:50.678 --> 01:11:51.710
+consuming 2 pointers worth,
+
+01:11:51.710 --> 01:11:52.700
+but we're only consuming one.
+
+01:11:52.700 --> 01:11:53.258
+That's all good.
+
+01:11:55.330 --> 01:11:58.530
+I had to mentally create the diagram in my head.
+
+01:11:58.530 --> 01:12:00.420
+OK, we're now done with 
+
+01:12:00.420 --> 01:12:04.960
+_Annotate_switch_to_large. _Apply_annotation.
+
+01:12:04.960 --> 01:12:06.100
+Parameter used to be called _Ptr,
+
+01:12:06.100 --> 01:12:07.935
+now it's called _First and
+
+01:12:07.935 --> 01:12:09.403
+gains top level const.
+
+01:12:09.410 --> 01:12:12.490
+Uh. This code goes away.
+
+01:12:12.490 --> 01:12:15.260
+We have new code here.
+
+01:12:15.260 --> 01:12:18.110
+This is not helping things GitHub.
+
+01:12:18.110 --> 01:12:21.030
+I want to switch to side by side.
+
+01:12:24.350 --> 01:12:25.630
+What I really want is the thing that
+
+01:12:25.630 --> 01:12:27.016
+we have in our internal review tool,
+
+01:12:27.020 --> 01:12:29.722
+where I can switch entirely to new
+
+01:12:29.722 --> 01:12:33.496
+code but see only what's changed.
+
+01:12:33.496 --> 01:12:35.162
+Rather than just looking at the file
+
+01:12:35.162 --> 01:12:37.128
+as a whole, I dislike split mode,
+
+01:12:37.128 --> 01:12:39.840
+but I'll use it if I need to.
+
+01:12:39.840 --> 01:12:42.556
+OK, too far down, here we go.
+
+01:12:42.560 --> 01:12:45.619
+We just finished _Annotate_switch_to_large.
+
+01:12:45.620 --> 01:12:48.360
+OK, _Apply_annotation comes first.
+
+01:12:48.360 --> 01:12:51.608
+OK, so old code goes away. Now we have:
+
+01:12:51.608 --> 01:12:53.964
+Note that capacity, _Old_size and _New_size
+
+01:12:53.964 --> 01:12:56.620
+do not include the null terminator.
+
+01:12:56.620 --> 01:12:58.174
+So const void* const
+
+01:12:58.174 --> 01:13:03.170
+_End = _First + _Capacity + 1; OK.
+
+01:13:03.170 --> 01:13:06.650
+_Old_last = _First + _Old_size + 1;
+
+01:13:06.650 --> 01:13:09.877
+These are… what are these `value_type`s?
+
+01:13:15.410 --> 01:13:17.914
+Why are they plus one? Oh,
+
+01:13:17.914 --> 01:13:19.798
+because of the the null terminator.
+
+01:13:24.350 --> 01:13:27.527
+The null terminator is a factor for the size.
+
+01:13:27.530 --> 01:13:28.610
+So I could imagine that,
+
+01:13:28.610 --> 01:13:31.316
+but why would we be doing
+
+01:13:31.316 --> 01:13:33.120
+this for capacity here?
+
+01:13:33.120 --> 01:13:36.800
+&gt;&gt; Nicole: Because our capacity is.
+
+01:13:36.800 --> 01:13:40.160
+Our actual capacity minus one.
+
+01:13:40.160 --> 01:13:42.050
+&gt;&gt; Stephan: Ah, OK, that's why I forgot.
+
+01:13:44.180 --> 01:13:45.230
+[unintelligible] Done. Yeah, yeah.
+
+01:13:45.230 --> 01:13:46.630
+It's an old representation
+
+01:13:46.630 --> 01:13:50.430
+choice before my time, so. OK.
+
+01:13:50.430 --> 01:13:52.230
+Thanks for mentioning that.
+
+01:13:52.230 --> 01:13:53.452
+OK, so that's all correct. Yeah.
+
+01:13:53.452 --> 01:13:54.664
+So whenever I see a null terminator,
+
+01:13:54.670 --> 01:13:56.728
+I'm like: "whoa, sirens, you know,
+
+01:13:56.730 --> 01:14:00.330
+something could be wrong here", um.
+
+01:14:00.330 --> 01:14:01.308
+constexpr bool
+
+01:14:01.308 --> 01:14:03.280
+_Large_string_asan_always_aligned
+
+01:14:06.710 --> 01:14:07.618
+&gt;&gt; Nicole: Oh yeah, is null spelled wrong there?
+
+01:14:10.150 --> 01:14:11.650
+&gt;&gt; Stephan: oh yeah, n-u-l-l, so n-u-l is the ASCII name
+
+01:14:11.650 --> 01:14:12.850
+for the null character.
+
+01:14:12.850 --> 01:14:15.064
+But if you spell it out as a word,
+
+01:14:15.070 --> 01:14:16.085
+it's reasonable spelled out like
+
+01:14:16.085 --> 01:14:17.350
+this. The thing that would be wrong,
+
+01:14:17.350 --> 01:14:18.358
+Would be all capital NULL,
+
+01:14:18.360 --> 01:14:20.040
+because that's the macro for
+
+01:14:20.040 --> 01:14:21.384
+the null pointer constant.
+
+01:14:21.390 --> 01:14:22.728
+Null terminator like this I think,
+
+01:14:22.730 --> 01:14:23.740
+is conventional.
+
+01:14:23.740 --> 01:14:26.265
+I don't think that's wrong.
+
+01:14:26.270 --> 01:14:28.016
+I… I… I guess you could have, um,
+
+01:14:28.016 --> 01:14:29.474
+different stylistic convention,
+
+01:14:29.474 --> 01:14:30.446
+I suppose.
+
+01:14:30.450 --> 01:14:31.998
+Um, the the one I'm allergic
+
+01:14:31.998 --> 01:14:33.697
+to is referring to a null
+
+01:14:33.697 --> 01:14:34.905
+terminator is all capital NULL,
+
+01:14:34.910 --> 01:14:35.879
+which it's not.
+
+01:14:39.220 --> 01:14:41.299
+OK, uh, _Large_string_asan_always_aligned.
+
+01:14:41.300 --> 01:14:43.868
+It's constexpr bool when the
+
+01:14:43.868 --> 01:14:45.580
+_Container_allocation_minimum_alignment
+
+01:14:45.645 --> 01:14:47.433
+for our basic_string is greater
+
+01:14:47.433 --> 01:14:49.679
+than or equal to _Asan_granularity.
+
+01:14:49.680 --> 01:14:51.774
+OK, if constexpr _Large_string_asan_always_aligned
+
+01:14:51.774 --> 01:14:55.996
+and _Small_string_always_asan_aligned, then "hey,
+
+01:14:55.996 --> 01:15:00.540
+the stars have aligned!" old state: _First
+
+01:15:00.540 --> 01:15:02.262
+valid ends at _Old_last and
+
+01:15:02.262 --> 01:15:03.940
+then the rest is poison.
+
+01:15:03.940 --> 01:15:05.698
+We're moving that to _New_last.
+
+01:15:05.700 --> 01:15:08.406
+OK, good. _First, _End, _Old_last
+
+01:15:08.406 --> 01:15:10.360
+_New_last, otherwise, OK,
+
+01:15:10.360 --> 01:15:13.332
+this is just getting indented.
+
+01:15:13.332 --> 01:15:15.620
+Why is this not?
+
+01:15:18.100 --> 01:15:19.200
+No, it's not getting it.
+
+01:15:19.200 --> 01:15:20.772
+It's getting significantly changed.
+
+01:15:20.772 --> 01:15:23.130
+It's just not doing interline differing.
+
+01:15:23.130 --> 01:15:24.920
+OK, otherwise const auto _Aligned
+
+01:15:24.920 --> 01:15:27.429
+is _STD _Get_asan_aligned_first_end(_First, _End).
+
+01:15:27.430 --> 01:15:30.265
+the buffer must always have
+
+01:15:30.265 --> 01:15:33.026
+size greater than or equal to 9 bytes,
+
+01:15:33.030 --> 01:15:34.650
+so we'll always end at least
+
+01:15:34.650 --> 01:15:35.730
+one shadow memory section.
+
+01:15:35.730 --> 01:15:37.086
+OK, so you have that guarantee
+
+01:15:37.086 --> 01:15:38.968
+that we talked about. Last must be
+
+01:15:38.968 --> 01:15:41.250
+less than or equal to, than _End.
+
+01:15:41.250 --> 01:15:43.374
+So fix up when _Aligned._End
+
+01:15:43.374 --> 01:15:44.790
+is strictly less than
+
+01:15:46.840 --> 01:15:51.778
+_*_Last OK um.
+
+01:15:51.780 --> 01:15:53.364
+_Old_fixed._Clamp_to_end,
+
+01:15:53.364 --> 01:15:55.688
+_Old_last, _New_fixed._Clamp_to_end,
+
+01:15:55.688 --> 01:15:57.704
+_New_last, OK. Old state.
+
+01:15:57.704 --> 01:16:00.296
+Here these are actually contiguous lines,
+
+01:16:00.300 --> 01:16:03.676
+just the narrow screen is messing things up.
+
+01:16:03.680 --> 01:16:05.852
+The valid boundary was at _Old_fixed
+
+01:16:05.852 --> 01:16:07.790
+_Aligned._End poison, new state.
+
+01:16:07.790 --> 01:16:10.261
+These old state / new states are very
+
+01:16:10.261 --> 01:16:13.278
+nice to explain what the intention is.
+
+01:16:13.280 --> 01:16:17.480
+Um. OK, that's good.
+
+01:16:17.480 --> 01:16:19.340
+Now we have some helper macros.
+
+01:16:19.340 --> 01:16:21.797
+Everything after this is a lot easier
+
+01:16:21.797 --> 01:16:24.003
+and once all the support machinery
+
+01:16:24.003 --> 01:16:26.509
+is defined and I think we can
+
+01:16:26.588 --> 01:16:28.976
+actually go back to intra diffing.
+
+01:16:28.980 --> 01:16:30.160
+Reload.
+
+01:16:36.370 --> 01:16:39.550
+OK, scroll, scroll, scroll.
+
+01:16:39.550 --> 01:16:41.970
+OK, the macro helper macros.
+
+01:16:41.970 --> 01:16:43.434
+No more _ASAN_STRING_MODIFY
+
+01:16:43.434 --> 01:16:45.264
+is taking one arg.
+
+01:16:45.270 --> 01:16:50.240
+Now we take 3 args, _Str, _Old_size, _New_size.
+
+01:16:50.240 --> 01:16:51.984
+Calls (_Str)._Modify_annotation
+
+01:16:51.984 --> 01:16:53.874
+(_Old_size, _New_size)
+
+01:16:53.874 --> 01:16:57.930
+We now have other macro …_SWITCH_TO_LARGE
+
+
+01:16:57.930 --> 01:17:00.100
+Which will take our _Scary_val base
+
+01:17:00.100 --> 01:17:02.716
+class call _Annotate_switch_to_large,
+
+01:17:02.716 --> 01:17:05.315
+or _Remove_sso_annotation, OK.
+
+01:17:05.315 --> 01:17:07.730
+These match the names that seems reasonable.
+
+01:17:07.730 --> 01:17:09.258
+Otherwise expands to nothing.
+
+01:17:09.258 --> 01:17:11.550
+We still have remove and create,
+
+01:17:11.550 --> 01:17:12.880
+but none of this modify
+
+01:17:12.880 --> 01:17:14.210
+or the single arg modify.
+
+01:17:14.210 --> 01:17:15.740
+OK.
+
+01:17:15.740 --> 01:17:17.020
+So
+
+01:17:17.020 --> 01:17:18.300
+Um.
+
+01:17:23.410 --> 01:17:24.810
+Is this merge damage?
+
+01:17:27.500 --> 01:17:29.620
+This looks like… this is a change that 
+
+01:17:29.620 --> 01:17:31.737
+Casey recently made, I thought.
+
+01:17:31.740 --> 01:17:34.818
+&gt;&gt; Nicole: Yeah, that must be merge damage.
+
+01:17:34.820 --> 01:17:36.488
+&gt;&gt; Stephan: OK, I'll add a comment.
+
+01:17:39.910 --> 01:17:45.280
+I think a merge was incorrectly
+
+01:17:45.280 --> 01:17:50.830
+resolved here. Um, I also,
+
+01:17:50.830 --> 01:17:52.326
+I'm not sure if you've merged with main.
+
+01:17:52.330 --> 01:17:58.188
+Um. Please double check that you have
+
+01:17:58.190 --> 01:18:01.088
+merged with main and picked up…
+
+01:18:01.090 --> 01:18:03.815
+Let's annotate for the records
+
+01:18:03.815 --> 01:18:06.540
+what PR we're talking about.
+
+01:18:06.540 --> 01:18:08.116
+This was like a whole seven days ago,
+
+01:18:08.120 --> 01:18:09.780
+so I've completely forgotten.
+
+01:18:09.780 --> 01:18:11.440
+That's not actually useful.
+
+01:18:11.440 --> 01:18:12.808
+Let me look at &lt;xstring&gt;
+
+01:18:16.350 --> 01:18:17.508
+My memory is sort of timeless.
+
+01:18:17.510 --> 01:18:18.854
+I'm like, oh, we changed something there.
+
+01:18:18.860 --> 01:18:20.142
+And it could be, you know, 12 years ago,
+
+01:18:20.142 --> 01:18:21.306
+it could be seven days ago,
+
+01:18:21.310 --> 01:18:22.348
+and I'll remember it the same,
+
+01:18:22.350 --> 01:18:25.304
+but I don't remember exactly what changed.
+
+01:18:25.310 --> 01:18:27.548
+OK, So what is the history?
+
+01:18:27.550 --> 01:18:31.910
+Ah, it was Casey's miscellaneous cleanups.
+
+01:18:31.910 --> 01:18:34.370
+We… we created PRs almost simultaneously.
+
+01:18:34.370 --> 01:18:36.026
+Mine was various cleanups.
+
+01:18:36.026 --> 01:18:38.096
+His was miscellaneous cleanups and
+
+01:18:38.096 --> 01:18:40.250
+finding some good stuff to clean up,
+
+01:18:40.250 --> 01:18:41.864
+but small enough that it didn't
+
+01:18:41.864 --> 01:18:43.410
+make sense to accept for PRs.
+
+01:18:43.410 --> 01:18:45.707
+Yeah, so here Casey said: "OK,
+
+01:18:45.707 --> 01:18:47.728
+we're going to take _Al, we're
+
+01:18:47.728 --> 01:18:49.156
+going to use to construct the
+
+01:18:49.156 --> 01:18:50.659
+allocator in our compressed pair,
+
+01:18:50.660 --> 01:18:52.032
+but then we don't need to redundantly
+
+01:18:52.032 --> 01:18:53.708
+provide it to _Move_construct_from_substr".
+
+01:18:53.710 --> 01:18:55.229
+That one can just use our allocator.
+
+01:18:55.230 --> 01:18:56.826
+We have a whole function for that,
+
+01:18:56.830 --> 01:18:58.830
+so this function doesn't take _Al at all.
+
+01:18:58.830 --> 01:19:00.210
+So if you've merged with main,
+
+01:19:00.210 --> 01:19:02.352
+that should not be showing up as an edit.
+
+01:19:02.360 --> 01:19:04.540
+Um, yeah, something's gone wrong.
+
+01:19:04.540 --> 01:19:06.280
+Interesting with the merge there.
+
+01:19:06.280 --> 01:19:09.240
+As an aside, I can.
+
+01:19:09.240 --> 01:19:10.724
+Uh, use this opportunity to mention a
+
+01:19:10.724 --> 01:19:12.684
+tool which I really like and I think
+
+01:19:12.684 --> 01:19:13.959
+I've mentioned another code reviews.
+
+01:19:13.960 --> 01:19:17.576
+I know you're aware, but for our audience.
+
+01:19:17.580 --> 01:19:18.666
+If you're looking at our repo,
+
+01:19:18.670 --> 01:19:20.990
+or any repo if you've got git installed,
+
+01:19:20.990 --> 01:19:23.447
+you can use gitk and that will launch…
+
+01:19:23.450 --> 01:19:26.216
+Let me drag it over here…
+
+01:19:26.220 --> 01:19:28.660
+A graphical viewer of history,
+
+01:19:28.660 --> 01:19:30.473
+and this lets you to see what
+
+01:19:30.473 --> 01:19:31.608
+branch you're on, um,
+
+01:19:31.608 --> 01:19:33.398
+what commits you're looking at.
+
+01:19:33.400 --> 01:19:36.125
+Our main branch always has
+
+01:19:36.125 --> 01:19:37.760
+completely linear history,
+
+01:19:37.760 --> 01:19:41.280
+but it's possible to see merges and stuff.
+
+01:19:41.280 --> 01:19:42.840
+And there's other ways to get this info.
+
+01:19:42.840 --> 01:19:43.592
+There's other graphical viewers.
+
+01:19:43.592 --> 01:19:44.985
+You can do this on the command
+
+01:19:44.985 --> 01:19:46.100
+line with some graph arguments,
+
+01:19:46.100 --> 01:19:49.406
+but I like gitk and it can be helpful to
+
+01:19:49.406 --> 01:19:51.290
+understand what you've merged recently.
+
+01:19:51.290 --> 01:19:51.670
+OK.
+
+01:19:51.670 --> 01:19:54.745
+So we want to pick up 3178,
+
+01:19:54.745 --> 01:19:55.540
+um.
+
+01:19:58.770 --> 01:20:03.170
+OK. Double check that, sorry citation it is.
+
+01:20:03.170 --> 01:20:04.283
+OK, straight damage.
+
+01:20:04.283 --> 01:20:06.880
+Um, let's see what's going on here.
+
+01:20:06.880 --> 01:20:09.340
+So we're moving the assignment
+
+01:20:09.340 --> 01:20:11.144
+of count down, that's fine.
+
+01:20:11.144 --> 01:20:13.179
+And then _ASAN_STRING_CREATE
+
+01:20:13.179 --> 01:20:14.850
+with this. OK.
+
+01:20:17.450 --> 01:20:19.346
+I don't know if it's necessary
+
+01:20:19.346 --> 01:20:21.390
+to move the _Mysize down.
+
+01:20:21.390 --> 01:20:23.415
+Was there a rationale for
+
+01:20:23.415 --> 01:20:24.630
+moving this assignment?
+
+01:20:24.630 --> 01:20:27.038
+&gt;&gt Nicole: So everywhere else, we have,
+
+01:20:27.038 --> 01:20:30.650
+I think everywhere else we have
+
+01:20:30.650 --> 01:20:32.162
+_Myres assigned first, _Count
+
+01:20:32.162 --> 01:20:34.430
+assigned second, _Mysize assigned
+
+01:20:34.490 --> 01:20:36.302
+second, _ASAN_STRING_CREATE third.
+
+01:20:36.302 --> 01:20:40.609
+&gt;&gt; Stephan: Ah, so that that's what that the idea was,
+
+01:20:40.610 --> 01:20:43.998
+then. OK, big fan of following um,
+
+01:20:44.000 --> 01:20:45.506
+uh conventions within a single file,
+
+01:20:45.510 --> 01:20:46.254
+so thanks.
+
+01:20:46.254 --> 01:20:48.858
+And then we're moving up the
+
+01:20:48.858 --> 01:20:51.122
+_ASAN_STRING_CREATE before we start
+
+01:20:51.122 --> 01:20:53.392
+actually assigning to the stuff.
+
+01:20:53.400 --> 01:20:56.560
+That seems entirely reasonable.
+
+01:20:56.560 --> 01:20:59.918
+OK. Um, here. What are we doing?
+
+01:20:59.920 --> 01:21:01.558
+Are we still within the same function?
+
+01:21:01.560 --> 01:21:04.728
+Nope. We're in _Construct_from_iter.
+
+01:21:04.730 --> 01:21:07.810
+So _ASAN_STRING_REMOVE(*this),
+
+01:21:07.810 --> 01:21:10.578
+remove any special annotations.
+
+01:21:10.578 --> 01:21:12.654
+Switch to large.
+
+01:21:12.660 --> 01:21:14.820
+Miscco, who worked extensively on string,
+
+01:21:14.820 --> 01:21:15.596
+says: "something's fishy here.
+
+01:21:15.596 --> 01:21:16.760
+At the end of the function,
+
+01:21:16.760 --> 01:21:18.470
+we call _ASAN_STRING_CREATE…"
+
+01:21:18.470 --> 01:21:20.295
+Nicole's reply, _ASAN_STRING_SWITCH_TO_LARGE
+
+01:21:20.295 --> 01:21:22.120
+creates a valid region inside
+
+01:21:22.182 --> 01:21:24.270
+the SSO buffer for the pointer
+
+01:21:24.270 --> 01:21:26.010
+because we're switching to large mode,
+
+01:21:26.010 --> 01:21:28.481
+and then _ASAN_STRING_CREATE creates a
+
+01:21:28.481 --> 01:21:30.838
+valid ASan region in the large buffer.
+
+01:21:30.840 --> 01:21:33.250
+OK.
+
+01:21:33.250 --> 01:21:33.621
+Yeah,
+
+01:21:33.621 --> 01:21:35.476
+trying to communicate complicated concepts
+
+01:21:35.476 --> 01:21:38.610
+and like 3 and one words is difficult but,
+
+01:21:38.610 --> 01:21:41.754
+and this seems reasonable.
+
+01:21:41.754 --> 01:21:42.540
+Um.
+
+01:21:42.540 --> 01:21:43.262
+I wonder,
+
+01:21:43.262 --> 01:21:45.067
+I wonder if comments like
+
+01:21:45.067 --> 01:21:47.123
+we've generally moved away from
+
+01:21:47.123 --> 01:21:48.939
+redundant comments and functions,
+
+01:21:48.940 --> 01:21:51.010
+but maybe explaining this in the
+
+01:21:51.010 --> 01:21:52.870
+actual functions would be useful.
+
+01:21:52.870 --> 01:21:56.080
+Did we have that? Umm.
+
+01:21:56.080 --> 01:21:57.440
+Where? Where are they?
+
+01:21:57.440 --> 01:21:59.140
+This is a plain annotation.
+
+01:21:59.140 --> 01:22:00.532
+Switch to large annotates
+
+01:22:00.532 --> 01:22:02.272
+exactly the pointer is valid.
+
+01:22:02.280 --> 01:22:03.978
+OK, that summarizes what you said.
+
+01:22:03.980 --> 01:22:06.255
+Then what was the other one create?
+
+01:22:06.260 --> 01:22:08.320
+We'll just create call macro.
+
+01:22:08.320 --> 01:22:10.879
+Sorry for scrolling.
+
+01:22:10.880 --> 01:22:13.300
+Create calls the existing create annotation,
+
+01:22:13.300 --> 01:22:14.248
+OK, I think,
+
+01:22:14.248 --> 01:22:16.460
+I think we've already got comments there.
+
+01:22:16.460 --> 01:22:19.379
+So this doesn't demand an extra comment.
+
+01:22:19.380 --> 01:22:20.100
+OK.
+
+01:22:22.370 --> 01:22:23.910
+And then changing the arguments
+
+01:22:23.910 --> 01:22:25.450
+because modify is no longer
+
+01:22:25.508 --> 01:22:26.730
+taking a delta of size.
+
+01:22:26.730 --> 01:22:28.548
+You take the _Left_size, _New_size,
+
+01:22:28.548 --> 01:22:31.320
+or you pass the _Left_size and _New_size.
+
+01:22:31.320 --> 01:22:32.455
+OK, let's make sure all
+
+01:22:32.455 --> 01:22:33.363
+these are actually correct.
+
+01:22:38.820 --> 01:22:40.244
+Interesting that _Right_size
+
+01:22:40.244 --> 01:22:42.290
+was asked as a delta before,
+
+01:22:42.290 --> 01:22:44.670
+it's always because we're concatenating.
+
+01:22:44.670 --> 01:22:47.508
+Yeah, we're concatenating. OK, got it.
+
+01:22:47.510 --> 01:22:49.526
+I was also checking to see if some
+
+01:22:49.526 --> 01:22:51.509
+variables had become no longer necessary,
+
+01:22:51.510 --> 01:22:52.884
+but of course we're going to
+
+01:22:52.884 --> 01:22:56.220
+still need the _Right_size. Um. OK.
+
+01:22:59.570 --> 01:23:01.670
+So we are concatenating it
+
+01:23:01.670 --> 01:23:04.450
+_Fits_in_left take _Left's buffer.
+
+01:23:04.450 --> 01:23:08.470
+So old was left, new was new size.
+
+01:23:08.470 --> 01:23:12.130
+If. And here I'm assuming we're
+
+01:23:12.130 --> 01:23:13.830
+fitting _Fits_in_right.
+
+01:23:13.830 --> 01:23:16.750
+Yeah, _Fits_in_right.
+
+01:23:16.750 --> 01:23:18.326
+You have allocators equal in _Fits_in_right.
+
+01:23:18.330 --> 01:23:20.245
+Then we're starting with _Right_size
+
+01:23:20.245 --> 01:23:22.160
+and becoming _New_size.
+
+01:23:22.160 --> 01:23:25.205
+&gt;&gt; Nicole: And I need to go so OK,
+
+01:23:25.210 --> 01:23:27.010
+thanks for the review.
+
+01:23:29.410 --> 01:23:30.950
+Awesome. Thank you, Nicole.
+
+01:23:30.950 --> 01:23:33.610
+And I should probably um finish up
+
+01:23:33.610 --> 01:23:35.515
+uh myself because we are at 5:26.
+
+01:23:35.515 --> 01:23:37.315
+It looks like the rest of the changes
+
+01:23:37.315 --> 01:23:38.949
+here to string are pretty minimal.
+
+01:23:38.950 --> 01:23:41.309
+So I will go ahead and submit
+
+01:23:41.309 --> 01:23:43.160
+partial comments. I'll come back
+
+01:23:43.160 --> 01:23:45.890
+and our review the test code later,
+
+01:23:45.890 --> 01:23:47.888
+but I'll capture these comments here.
+
+01:23:47.890 --> 01:23:49.150
+This is looking very solid.
+
+01:23:49.150 --> 01:23:52.405
+So thank you for working on this
+
+01:23:52.405 --> 01:23:54.890
+extremely difficult problem and enabling.
+
+01:23:54.890 --> 01:23:56.546
+String ASan annotations which
+
+01:23:56.546 --> 01:23:58.616
+will be a great feature.
+
+01:23:58.620 --> 01:23:59.246
+Bye, Nicole,
+
+01:23:59.246 --> 01:24:01.124
+and thank you for watching another
+
+01:24:01.124 --> 01:24:02.688
+VC libraries Open code review.
+
+01:24:02.690 --> 01:24:03.600
+We'll see you next time.
