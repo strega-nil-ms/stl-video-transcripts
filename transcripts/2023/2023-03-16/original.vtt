@@ -1,0 +1,4911 @@
+WEBVTT
+
+00:00:15.347 --> 00:00:18.657
+Welcome to another VC lives open
+quarter view.
+
+00:00:18.737 --> 00:00:19.237
+Ah.
+
+00:00:20.277 --> 00:00:23.187
+Today, we're going to be doing
+the.
+
+00:00:24.467 --> 00:00:29.456
+82093 R 14 Provision 14
+formatted output. This basically
+
+00:00:29.456 --> 00:00:32.607
+allows you to write something
+like.
+
+00:00:33.967 --> 00:00:34.307
+Example.
+
+00:00:39.427 --> 00:00:42.137
+And just say stood print. Hello
+blah.
+
+00:00:44.427 --> 00:00:49.875
+This gets us up to the nice
+standard of printing that other
+
+00:00:49.875 --> 00:00:53.507
+room have very pretty. I like it
+a lot.
+
+00:00:56.317 --> 00:00:58.947
+Honestly, it's one of my
+favorite new kind of.
+
+00:01:00.027 --> 00:01:02.157
+Beginner ish features like.
+
+00:01:03.147 --> 00:01:06.794
+New it's one of my favorite new
+features for everyday
+
+00:01:06.794 --> 00:01:07.537
+developers.
+
+00:01:10.627 --> 00:01:12.237
+So if you look through it.
+
+00:01:14.387 --> 00:01:14.827
+Girl.
+
+00:01:15.717 --> 00:01:16.187
+Let's see.
+
+00:01:18.897 --> 00:01:23.904
+It's like the wording. There
+isn't a significant number of
+
+00:01:23.904 --> 00:01:29.420
+new API for such a I consider to
+be significant feature. We have
+
+00:01:29.420 --> 00:01:30.947
+our classic print.
+
+00:01:32.677 --> 00:01:33.007
+Which?
+
+00:01:33.777 --> 00:01:37.224
+Just prints 2. So now we have
+print which prints 2 of file
+
+00:01:37.224 --> 00:01:40.437
+star where you can choose
+whether it's stood out stood
+
+00:01:40.437 --> 00:01:40.787
+there.
+
+00:01:43.217 --> 00:01:46.157
+For like a a file that you've
+opened.
+
+00:01:47.777 --> 00:01:51.267
+Similarly print Ln which will
+add new line afterwards.
+
+00:01:52.597 --> 00:01:55.647
+And then we got the V prints.
+
+00:01:59.717 --> 00:02:03.227
+Forgot print to an ostream. I
+actually don't.
+
+00:02:03.987 --> 00:02:06.539
+Really understand what the
+difference between reprint
+
+00:02:06.539 --> 00:02:06.917
+Unicode.
+
+00:02:09.917 --> 00:02:11.937
+And be printing on Unicode is
+it's.
+
+00:02:12.997 --> 00:02:16.827
+On to me, I I don't fully
+understand that I.
+
+00:02:17.607 --> 00:02:18.487
+Until can you?
+
+00:02:19.267 --> 00:02:21.597
+Say something about what this
+actually means.
+
+00:02:22.387 --> 00:02:25.568
+I do not remember it in detail.
+I reviewed it and I did a like a
+
+00:02:25.568 --> 00:02:28.259
+wonder one. You know,
+correspondence between Yep, this
+
+00:02:28.259 --> 00:02:31.244
+seems to do with the standard
+says, but I don't recall it in
+
+00:02:31.244 --> 00:02:33.837
+enough detail to be able to
+explain it from scratch.
+
+00:02:34.907 --> 00:02:38.937
+I think it it's does like UTF 8
+conversion or something. I think
+
+00:02:38.937 --> 00:02:40.177
+that's a difference.
+
+00:02:47.647 --> 00:02:49.807
+I'd say since my mother
+somewhere.
+
+00:02:58.277 --> 00:03:00.767
+The text is a little tiny. Can
+you zoom in a bit?
+
+00:03:07.557 --> 00:03:08.127
+Wrong with me?
+
+00:03:10.447 --> 00:03:11.067
+Can you read it now?
+
+00:03:12.357 --> 00:03:14.607
+Yeah, that should be more
+visible for the recording.
+
+00:03:17.037 --> 00:03:21.301
+So right. So the difference
+between viewpoint and Conan
+
+00:03:21.301 --> 00:03:25.107
+viewpoint nonunit code is that
+the print Unicode.
+
+00:03:27.607 --> 00:03:32.830
+If this is not important on Mac
+OS or Linux because they're
+
+00:03:32.830 --> 00:03:34.397
+streams are never.
+
+00:03:35.087 --> 00:03:36.507
+Anything other than bites.
+
+00:03:37.337 --> 00:03:42.563
+On Windows, if you're writing to
+a a like a file or to a pipe
+
+00:03:42.563 --> 00:03:47.957
+like, you're piping output from
+one program to another, that'll
+
+00:03:47.957 --> 00:03:49.137
+be done in by.
+
+00:03:49.877 --> 00:03:50.607
+However.
+
+00:03:51.907 --> 00:03:55.537
+If you're writing to the
+console, if you want.
+
+00:03:57.567 --> 00:03:58.017
+Be.
+
+00:04:00.507 --> 00:04:03.917
+God that that the output to come
+up.
+
+00:04:04.787 --> 00:04:09.162
+When you're using Unicode
+characters, you have to actually
+
+00:04:09.162 --> 00:04:12.647
+convert to UTF 16 and then
+prints the console.
+
+00:04:13.377 --> 00:04:18.205
+And so be print Unicode. Does
+this like magic stuff and it
+
+00:04:18.205 --> 00:04:23.361
+checks if the streamer you're
+printing to isn't. Is it console
+
+00:04:23.361 --> 00:04:24.097
+terminal?
+
+00:04:25.157 --> 00:04:28.586
+And then it does that Unicode
+version. The conversion to you
+
+00:04:28.586 --> 00:04:30.777
+have 16 and then prints it out
+to the.
+
+00:04:31.987 --> 00:04:33.677
+So this all makes sense.
+
+00:04:39.177 --> 00:04:42.687
+Like there's also P2539R3.
+
+00:04:49.137 --> 00:04:50.267
+And this is just saying.
+
+00:04:51.047 --> 00:04:51.487
+If.
+
+00:04:52.537 --> 00:04:55.697
+We use the Unicode API. We have
+to flush the stream buffer.
+
+00:04:57.717 --> 00:05:00.077
+And it just means an extra flush
+in be printing.
+
+00:05:02.697 --> 00:05:02.857
+So.
+
+00:05:05.157 --> 00:05:06.417
+Look at the code.
+
+00:05:07.637 --> 00:05:11.637
+I'm going to assume that pretty
+much all of the.
+
+00:05:12.347 --> 00:05:18.380
+External API stuff is good
+because I skills looked at it
+
+00:05:18.380 --> 00:05:19.967
+already and my.
+
+00:05:20.807 --> 00:05:25.806
+Feel like he's really good at
+this kind of thing, but what I
+
+00:05:25.806 --> 00:05:27.527
+really wanna look at.
+
+00:05:26.497 --> 00:05:26.917
+I did.
+
+00:05:28.097 --> 00:05:32.358
+I did forget an only realized at
+the last minute that we should
+
+00:05:29.187 --> 00:05:29.407
+Right.
+
+00:05:32.358 --> 00:05:36.286
+check our API usage for both
+operating system dependencies
+
+00:05:36.286 --> 00:05:40.346
+and app versus desktop. So the
+big questions, cuz we have to
+
+00:05:40.346 --> 00:05:44.341
+target all the way down to win
+seven and we need to work on
+
+00:05:44.341 --> 00:05:47.936
+both desktop and the Windows
+Store. We can't use APIs
+
+00:05:47.936 --> 00:05:51.730
+unconditionally that are only
+available on Windows 10 or
+
+00:05:51.730 --> 00:05:55.924
+Windows 11. And if we use APIs
+that are desktop only then that
+
+00:05:55.924 --> 00:05:58.387
+requires special incantations to
+be.
+
+00:05:58.477 --> 00:06:01.822
+Compatible for store and we
+don't have great test coverage
+
+00:06:01.822 --> 00:06:05.054
+of either. We always test our
+stuff on the latest OS and
+
+00:06:05.054 --> 00:06:05.507
+desktop.
+
+00:06:06.647 --> 00:06:10.527
+So that's a easy place to mess
+up when we're merging changes.
+
+00:06:10.527 --> 00:06:14.093
+Gonna works on a developer
+machine and then it fails. In
+
+00:06:14.093 --> 00:06:17.659
+this scenario that we don't
+really test, but we did look
+
+00:06:17.659 --> 00:06:21.038
+into it afterwards and we
+believe it should be OK. It
+
+00:06:21.038 --> 00:06:24.854
+looks like all the APIs are
+supported down to win seven, and
+
+00:06:24.854 --> 00:06:27.607
+although Microsoft Docs or
+Microsoft learn.
+
+00:06:28.847 --> 00:06:32.193
+Has some ominous incantations
+saying, oh, this is desktop
+
+00:06:32.193 --> 00:06:35.884
+only. It doesn't appear that the
+APIs are in fact supported for
+
+00:06:35.884 --> 00:06:39.402
+store, so I believe it's OK and
+worst case, we're gonna hear
+
+00:06:39.402 --> 00:06:42.689
+that there's an issue and
+involved. Have some if defs or
+
+00:06:42.689 --> 00:06:46.323
+something, but the features a
+leaf it's not modifying existing
+
+00:06:46.323 --> 00:06:49.956
+code and it's not modifying the
+DLL, it's only adding stuff to
+
+00:06:49.956 --> 00:06:53.302
+the import Lib for binary
+compatibility. So I believe the
+
+00:06:53.302 --> 00:06:54.397
+risk should be low.
+
+00:06:55.687 --> 00:06:57.297
+But definitely something to
+think about.
+
+00:06:58.277 --> 00:06:59.027
+Yeah, definitely.
+
+00:07:00.217 --> 00:07:04.051
+So I'm not interested in the
+same course for this video
+
+00:07:04.051 --> 00:07:06.447
+review. What I'm interested in
+is.
+
+00:07:07.337 --> 00:07:09.887
+Look at all the changes first
+so.
+
+00:07:11.037 --> 00:07:12.107
+More test stuff.
+
+00:07:13.777 --> 00:07:17.739
+You got some stuff moving
+around. I believe that this is
+
+00:07:17.739 --> 00:07:19.407
+just getting moved from.
+
+00:07:21.767 --> 00:07:22.067
+Girls.
+
+00:07:22.987 --> 00:07:26.317
+Can you also zoom this in as
+much as you can tolerate?
+
+00:07:25.957 --> 00:07:26.567
+Yeah.
+
+00:07:28.657 --> 00:07:30.707
+I need to start getting and.
+
+00:07:37.067 --> 00:07:38.517
+In this inline as well to me.
+
+00:07:41.407 --> 00:07:43.137
+So yeah, this is all getting
+moved.
+
+00:07:58.307 --> 00:07:59.067
+So.
+
+00:07:59.827 --> 00:08:03.858
+That's actually look at the
+stuff that I wanna talk about,
+
+00:08:03.858 --> 00:08:05.907
+which is actual windows stuff.
+
+00:08:11.757 --> 00:08:16.027
+Go to have stream no stream.
+
+00:08:21.557 --> 00:08:24.457
+This is where the ostream in
+our.
+
+00:08:25.637 --> 00:08:29.047
+And is this includes, we print
+no for right?
+
+00:08:29.137 --> 00:08:32.817
+I don't know. I'm gonna code
+different Unicode.
+
+00:08:34.137 --> 00:08:36.167
+Can't .1. Yeah, OK.
+
+00:08:39.017 --> 00:08:41.945
+So these are the two things I
+really wanted to talk about
+
+00:08:41.945 --> 00:08:42.247
+today.
+
+00:08:43.897 --> 00:08:44.587
+We've got.
+
+00:08:47.087 --> 00:08:47.387
+Thanks.
+
+00:08:49.737 --> 00:08:53.607
+Went to a a stream as well as
+to.
+
+00:08:54.477 --> 00:08:55.117
+Stood out.
+
+00:08:59.117 --> 00:09:00.487
+Yeah. So.
+
+00:09:03.787 --> 00:09:04.217
+Friends.
+
+00:09:05.657 --> 00:09:11.218
+Tested out is very simply. Print
+twisted out print to the stream
+
+00:09:11.218 --> 00:09:11.817
+stream.
+
+00:09:12.927 --> 00:09:13.737
+Thanks one.
+
+00:09:14.677 --> 00:09:18.837
+Now and then print one and the
+only difference is that.
+
+00:09:19.757 --> 00:09:21.947
+Print we pass false to print
+simple.
+
+00:09:23.187 --> 00:09:25.497
+Mental and passed through
+different info.
+
+00:09:27.547 --> 00:09:29.337
+Not sure about that, I I.
+
+00:09:30.227 --> 00:09:33.484
+Not sure about that
+implementation, given that it
+
+00:09:33.484 --> 00:09:35.177
+will basically double our.
+
+00:09:37.387 --> 00:09:41.791
+Conscience for these, and I
+doubt that it's that important,
+
+00:09:41.791 --> 00:09:45.827
+but still seems weird to have
+this add new line thing.
+
+00:09:48.287 --> 00:09:49.637
+And if we go here?
+
+00:09:50.407 --> 00:09:51.287
+Different temple.
+
+00:09:54.137 --> 00:09:55.497
+Take a file stream.
+
+00:09:56.837 --> 00:09:57.417
+String.
+
+00:10:00.007 --> 00:10:01.527
+If they have format ARGS.
+
+00:10:02.777 --> 00:10:07.897
+And if we're in, if we pass
+slash UTF 8 to Seattle so.
+
+00:10:08.647 --> 00:10:09.217
+We go.
+
+00:10:26.287 --> 00:10:28.757
+So normally if you write stuff.
+
+00:10:29.597 --> 00:10:30.167
+And.
+
+00:10:32.877 --> 00:10:33.197
+Hey.
+
+00:10:34.237 --> 00:10:38.117
+Collateral. It will be whatever.
+
+00:10:39.357 --> 00:10:43.249
+Code page you're currently
+assigned to. So for example for
+
+00:10:43.249 --> 00:10:43.447
+me.
+
+00:10:44.587 --> 00:10:50.096
+The code page is 437 which leave
+is US asking like extended US
+
+00:10:50.096 --> 00:10:51.757
+asking or whatever.
+
+00:10:54.137 --> 00:10:58.851
+And so so yeah, when it's
+looking at this file, we'll say.
+
+00:10:58.851 --> 00:11:01.567
+Ohh yeah, frosty it's encoded
+in.
+
+00:11:02.447 --> 00:11:03.877
+After you are asking.
+
+00:11:04.757 --> 00:11:05.837
+Some extensions.
+
+00:11:07.797 --> 00:11:11.337
+And it'll get put into the
+binary as.
+
+00:11:15.357 --> 00:11:17.797
+If I put something like you
+know.
+
+00:11:23.237 --> 00:11:23.707
+Ohgi.
+
+00:11:24.717 --> 00:11:29.039
+Now when the compiler is reading
+this, this set of bytes in the
+
+00:11:29.039 --> 00:11:30.997
+actual physical file on desk.
+
+00:11:32.697 --> 00:11:37.027
+Doesn't really make sense, and
+so if we for example print out.
+
+00:11:53.187 --> 00:11:57.924
+You get random gibberish and
+this is what the bites of this
+
+00:11:57.924 --> 00:11:59.187
+UTF 8 character.
+
+00:12:00.077 --> 00:12:03.827
+End up getting turned into in
+extended US ask.
+
+00:12:10.337 --> 00:12:10.917
+If you would.
+
+00:12:13.767 --> 00:12:14.637
+If you want.
+
+00:12:15.337 --> 00:12:17.757
+To be able to print Unicode to
+the console.
+
+00:12:18.937 --> 00:12:20.057
+You can also.
+
+00:12:22.107 --> 00:12:23.797
+UTF 8 to see how.
+
+00:12:29.337 --> 00:12:30.347
+Not like you to fit.
+
+00:12:31.427 --> 00:12:32.417
+And you need a dash.
+
+00:12:37.597 --> 00:12:41.422
+You get the same behavior,
+however, in the actual compiler
+
+00:12:41.422 --> 00:12:45.117
+itself. What's happening is it's
+seeing this as a UTF 8.
+
+00:12:43.497 --> 00:12:43.857
+I'm.
+
+00:12:45.637 --> 00:12:48.489
+Nicole, did you? Did you
+recompile with Slash UTF Dash 8I
+
+00:12:46.387 --> 00:12:46.857
+And.
+
+00:12:48.489 --> 00:12:51.487
+your terminal's too small? I
+couldn't see what happened. Oh,
+
+00:12:51.487 --> 00:12:52.077
+you did. OK.
+
+00:12:56.787 --> 00:12:57.037
+OK.
+
+00:12:57.337 --> 00:13:01.999
+You see the output is actually
+the same, because what happens
+
+00:13:01.999 --> 00:13:03.277
+with black UTF 8?
+
+00:13:04.337 --> 00:13:07.967
+This is kind of what I wanted to
+get to was the compiler.
+
+00:13:09.857 --> 00:13:13.336
+Generally what was happening is
+it was looking at this file it
+
+00:13:13.336 --> 00:13:14.937
+was saying. Ohh yeah this is.
+
+00:13:15.757 --> 00:13:17.097
+You ask extended.
+
+00:13:19.417 --> 00:13:19.717
+Thanks.
+
+00:13:20.577 --> 00:13:24.529
+We're going to take these fights
+in US Skies ended, turn them
+
+00:13:24.529 --> 00:13:25.357
+into uniform.
+
+00:13:26.267 --> 00:13:30.328
+And then when we're writing out
+the binary, we're going to take
+
+00:13:30.328 --> 00:13:34.261
+those Unicode characters and
+write them to disk in US. Asking
+
+00:13:34.261 --> 00:13:37.877
+extended because by default it
+just uses this, you know.
+
+00:13:40.277 --> 00:13:40.797
+Edge.
+
+00:13:41.847 --> 00:13:42.517
+437.
+
+00:13:44.087 --> 00:13:49.247
+When I and then when the when
+the thing runs, what happens is.
+
+00:13:52.137 --> 00:13:52.587
+It.
+
+00:13:55.497 --> 00:13:58.631
+It's a very it's like these
+three different things that are
+
+00:13:58.631 --> 00:14:02.079
+going on when the thing runs. It
+then takes this stuff in US apps
+
+00:14:02.079 --> 00:14:04.847
+get extended and writes it to
+the console in US ask.
+
+00:14:05.007 --> 00:14:07.297
+Have you ask ask you extended?
+
+00:14:10.557 --> 00:14:11.137
+And so.
+
+00:14:12.607 --> 00:14:16.424
+In order to actually write
+Unicode characters in the
+
+00:14:16.424 --> 00:14:20.457
+console, what you have to do is
+change all three parts.
+
+00:14:21.907 --> 00:14:22.597
+Your.
+
+00:14:25.907 --> 00:14:31.541
+So first you have to make sure
+that the compiler is reading in
+
+00:14:31.541 --> 00:14:32.077
+UTF 8.
+
+00:14:33.577 --> 00:14:37.995
+Then you have to make sure that
+when it writes it back out, it's
+
+00:14:37.995 --> 00:14:41.734
+writing it back out and you TFA
+into the actual, like,
+
+00:14:41.734 --> 00:14:42.957
+executable binary.
+
+00:14:44.967 --> 00:14:48.057
+Why you really when you write it
+to the screen?
+
+00:14:48.987 --> 00:14:52.267
+You have to make sure that it's
+being written to the screen.
+
+00:14:53.917 --> 00:14:55.477
+Unicode characters.
+
+00:15:00.177 --> 00:15:05.207
+This does would print dots is it
+takes care of that final piece.
+
+00:15:06.347 --> 00:15:07.197
+It says.
+
+00:15:09.667 --> 00:15:13.547
+We've got this V print unit code
+info C.
+
+00:15:17.357 --> 00:15:18.867
+We print print no format here.
+
+00:15:19.747 --> 00:15:20.747
+This is what happens.
+
+00:15:22.677 --> 00:15:23.677
+Is we?
+
+00:15:26.517 --> 00:15:28.127
+Where's the dirt steer?
+
+00:15:30.087 --> 00:15:31.487
+Actually happens in.
+
+00:15:42.057 --> 00:15:44.447
+That is the declaration one.
+
+00:15:47.737 --> 00:15:49.317
+Different Tina code console.
+
+00:15:50.657 --> 00:15:52.137
+It's a UTF 8 string.
+
+00:15:53.997 --> 00:15:55.207
+Converts it.
+
+00:15:56.327 --> 00:15:57.927
+The UTF 16.
+
+00:15:59.897 --> 00:16:00.317
+Then.
+
+00:16:01.287 --> 00:16:06.813
+Note that UTF 8, UTF 16 string
+to the console and Windows
+
+00:16:06.813 --> 00:16:08.147
+treats UTF 16.
+
+00:16:09.507 --> 00:16:12.827
+Always Unicode. You can always
+write whatever you want.
+
+00:16:15.337 --> 00:16:18.841
+Entertaining, you know, code
+thing. And so if you're using
+
+00:16:18.841 --> 00:16:20.147
+print, you have UTF 8.
+
+00:16:22.297 --> 00:16:23.657
+And you have UTF 8.
+
+00:16:26.637 --> 00:16:27.467
+And the binary.
+
+00:16:28.557 --> 00:16:31.067
+Then we can take that and at
+runtime.
+
+00:16:31.777 --> 00:16:35.395
+Make sure that the UTF 8 comes
+out as the correct Unicode
+
+00:16:35.395 --> 00:16:37.017
+characters on the console.
+
+00:16:39.537 --> 00:16:43.944
+This is all very confusing and
+has a lot of backwards
+
+00:16:43.944 --> 00:16:47.127
+compatibility kind of hide up
+into it.
+
+00:16:48.177 --> 00:16:50.247
+So if we look here for example.
+
+00:16:52.087 --> 00:16:53.517
+We go, OK.
+
+00:16:54.457 --> 00:16:59.601
+If Constexpr stood is ordinary
+little literal encoding UTF and
+
+00:16:59.601 --> 00:17:00.417
+we say OK.
+
+00:17:02.287 --> 00:17:03.387
+This is how we check.
+
+00:17:04.257 --> 00:17:04.867
+Go here.
+
+00:17:05.977 --> 00:17:07.347
+This is how we check.
+
+00:17:08.127 --> 00:17:08.427
+That.
+
+00:17:09.737 --> 00:17:10.347
+The.
+
+00:17:11.117 --> 00:17:11.657
+Ah.
+
+00:17:12.897 --> 00:17:15.297
+The string literals are UTF 8.
+
+00:17:17.317 --> 00:17:21.255
+If they are UTF, if they are not
+UTF 8, actually if they're not
+
+00:17:21.255 --> 00:17:25.070
+UTF 8, then we just do whatever
+the system does because there
+
+00:17:25.070 --> 00:17:28.947
+isn't really a better way to do
+it. We just write the bytes to
+
+00:17:28.947 --> 00:17:32.700
+the console and then whatever
+code page you have is what you
+
+00:17:32.700 --> 00:17:36.207
+get. There is unfortunately not
+a better way to do this.
+
+00:17:41.087 --> 00:17:41.777
+And ability is.
+
+00:17:46.887 --> 00:17:48.637
+No, that that's how that all
+works.
+
+00:17:49.957 --> 00:17:52.767
+Separate do you have any
+comments or anything you wanna
+
+00:17:52.767 --> 00:17:55.577
+ask or anything does? Is there
+anything that's unclear?
+
+00:17:56.027 --> 00:17:59.855
+Yeah, it might be useful to
+bring up the the old way of
+
+00:17:59.855 --> 00:18:04.093
+doing it, which is calling the
+nonstandard Microsoft specific
+
+00:18:04.093 --> 00:18:07.921
+functions that were actually
+implemented in VS. I think
+
+00:18:07.921 --> 00:18:11.818
+around the VS 2003 or 2005 time
+frame this is done by my
+
+00:18:11.818 --> 00:18:15.782
+predecessors and I did some
+archaeology when I joined the
+
+00:18:15.782 --> 00:18:19.747
+team and realized wait, like the
+CRT has a code path that
+
+00:18:19.747 --> 00:18:23.848
+actually calls right console W
+much the same way that stood
+
+00:18:23.848 --> 00:18:26.377
+print is doing. If you look for
+the.
+
+00:18:26.487 --> 00:18:31.836
+Magic identifier oh you 16 text
+that will bring up the Microsoft
+
+00:18:31.836 --> 00:18:32.247
+docs.
+
+00:18:33.577 --> 00:18:39.427
+It's spelled under score O under
+score U-16 tax. Yeah, like that.
+
+00:18:40.687 --> 00:18:42.977
+But not stack overflow. Get
+Microsoft learn.
+
+00:18:44.397 --> 00:18:46.137
+And it's the docs for.
+
+00:18:47.147 --> 00:18:47.847
+Ah.
+
+00:18:49.097 --> 00:18:50.507
+Not this, it's UM.
+
+00:18:51.787 --> 00:18:54.577
+Set Mode Set mode is usually the
+doc this.
+
+00:18:57.287 --> 00:18:57.927
+Yeah, that one.
+
+00:18:59.577 --> 00:19:02.827
+Yeah. If you look at the second
+example here, we got this put
+
+00:19:02.827 --> 00:19:03.927
+into the docs once I.
+
+00:19:05.207 --> 00:19:09.935
+I worked with Michael Kaplan to
+find out how this works. Yeah,
+
+00:19:09.935 --> 00:19:14.137
+this example. So these
+incantations you need to include
+
+00:19:14.137 --> 00:19:18.714
+three headers. You call this
+magic thing, set mode file node
+
+00:19:18.714 --> 00:19:23.366
+stood out. Oh you 16 text and
+then calling wprintf. Note that
+
+00:19:23.366 --> 00:19:26.067
+it's wprintf with UTF 16 will
+work.
+
+00:19:27.237 --> 00:19:31.039
+If you don't have that magic
+set, mode incantation doesn't
+
+00:19:27.747 --> 00:19:27.957
+I.
+
+00:19:31.039 --> 00:19:34.970
+matter if you come to W printf
+with totally valid UTF 16, it
+
+00:19:34.970 --> 00:19:38.965
+will get mangled on its way to
+the console. Doesn't matter if
+
+00:19:38.965 --> 00:19:41.607
+you set the console code page to
+UTF 16.
+
+00:19:43.067 --> 00:19:45.874
+I won't work, but with the magic
+incantation it does. Yeah. Try
+
+00:19:45.874 --> 00:19:48.680
+commenting out the set mode and
+see what happens. You won't get
+
+00:19:48.680 --> 00:19:49.557
+Koshka and then the.
+
+00:19:50.677 --> 00:19:52.736
+Ideographic characters.
+Afterwards, it'll just be
+
+00:19:52.736 --> 00:19:53.147
+gibberish.
+
+00:19:54.587 --> 00:19:55.957
+It doesn't even print anything
+awesome.
+
+00:19:57.087 --> 00:19:57.567
+That's great.
+
+00:19:58.717 --> 00:20:01.655
+Yeah, it used to point to where
+I don't know what's going on
+
+00:20:01.655 --> 00:20:04.593
+here. Yeah, with without the
+seven mode doesn't work. That's
+
+00:20:04.593 --> 00:20:07.483
+because I believe, although it's
+been years, so I might not
+
+00:20:07.483 --> 00:20:08.927
+remember exactly how it works.
+
+00:20:10.297 --> 00:20:13.489
+Without that, even W printf
+tries to do some sort of
+
+00:20:13.489 --> 00:20:15.777
+conversion on the way to the
+console.
+
+00:20:16.947 --> 00:20:21.016
+And trying to set the console
+code page to UTF 8 or 16 it does
+
+00:20:21.016 --> 00:20:21.597
+not help.
+
+00:20:22.097 --> 00:20:25.779
+Umm, only grade council. We can
+do it properly so that magic
+
+00:20:25.779 --> 00:20:29.522
+identifier or the magic constant
+used to be necessary and now
+
+00:20:29.522 --> 00:20:32.842
+printf provides a much more
+modern and portable way to
+
+00:20:32.842 --> 00:20:36.464
+achieve the same result. But
+ultimately on Windows we gotta
+
+00:20:36.464 --> 00:20:39.965
+call right Console W so that's
+what the implementation is
+
+00:20:39.965 --> 00:20:43.466
+doing. It's just horribly
+complicated. I don't pretend to
+
+00:20:43.466 --> 00:20:47.269
+understand it in full depth and
+I'm very glad that Tyler Brawl
+
+00:20:47.269 --> 00:20:50.528
+are contributor here. Did the
+investigation necessary
+
+00:20:50.528 --> 00:20:52.037
+implement all that stuff?
+
+00:20:54.667 --> 00:20:56.147
+So this is all.
+
+00:20:58.227 --> 00:21:01.269
+Reading your why wouldn't we
+confuse things? And it's all
+
+00:21:01.269 --> 00:21:02.527
+backwards compatibility.
+
+00:21:04.017 --> 00:21:06.367
+So however, in the future.
+
+00:21:07.367 --> 00:21:12.967
+If you pass whack I you TF8 to
+your compilable.
+
+00:21:13.817 --> 00:21:17.980
+And you use stood print, you
+don't have to worry about any of
+
+00:21:17.980 --> 00:21:22.343
+this because we've got this new
+awesome way of doing things that
+
+00:21:22.343 --> 00:21:24.827
+does all of the magic stuff for
+you.
+
+00:21:26.527 --> 00:21:30.119
+Let's actually take a look at
+this code, which basically we've
+
+00:21:30.119 --> 00:21:30.347
+got.
+
+00:21:31.317 --> 00:21:34.857
+Prince, Prince Alan be print
+Unicode, be print onion.
+
+00:21:44.087 --> 00:21:44.637
+No.
+
+00:21:46.357 --> 00:21:48.087
+Prince to print temple.
+
+00:21:50.977 --> 00:21:54.737
+You're not like that bull. Add
+new line, see.
+
+00:21:55.617 --> 00:21:58.613
+So we have view print unit code
+and pull you print onion code
+
+00:21:58.613 --> 00:21:59.047
+and pull.
+
+00:22:00.667 --> 00:22:03.577
+And that OK, so basically what
+we're saying is.
+
+00:22:04.367 --> 00:22:05.757
+This print info.
+
+00:22:07.407 --> 00:22:10.767
+Does the check for his ordinary
+literal encoding YouTube?
+
+00:22:12.207 --> 00:22:15.575
+And then dispatches to either
+reprint Unicode or V print
+
+00:22:15.575 --> 00:22:16.047
+nonunit.
+
+00:22:20.107 --> 00:22:22.217
+Which is exactly what he
+printing print.
+
+00:22:24.927 --> 00:22:26.027
+In the Carter, different one.
+
+00:22:28.397 --> 00:22:29.127
+So.
+
+00:22:29.997 --> 00:22:30.527
+In.
+
+00:22:32.657 --> 00:22:33.277
+Ohh.
+
+00:22:34.247 --> 00:22:34.967
+You.
+
+00:22:35.877 --> 00:22:40.001
+Different Unicode info be
+interesting one getting output
+
+00:22:40.001 --> 00:22:40.507
+string.
+
+00:22:41.517 --> 00:22:44.997
+If we had a new line we V
+format, the from the string.
+
+00:22:45.647 --> 00:22:48.387
+You know line otherwise we don't
+add a new line.
+
+00:22:50.127 --> 00:22:52.367
+Really don't understand why this
+is too functions.
+
+00:22:54.067 --> 00:22:55.197
+Why this is completed?
+
+00:22:56.157 --> 00:22:58.867
+Then we just call stood print no
+format and you know.
+
+00:23:04.257 --> 00:23:08.298
+Because none of code and pull
+does the same thing except it
+
+00:23:08.298 --> 00:23:10.587
+prints no format, no non
+Unicode.
+
+00:23:11.797 --> 00:23:12.197
+We just.
+
+00:23:13.107 --> 00:23:15.247
+Right to the.
+
+00:23:16.067 --> 00:23:19.927
+The stir to the stream, so
+that's kind of the trivial case.
+
+00:23:23.197 --> 00:23:25.077
+The print no format Unicode.
+
+00:23:26.067 --> 00:23:27.947
+It's like where it gets
+interesting.
+
+00:23:32.807 --> 00:23:35.583
+This first thing I'm going to
+comment on this being a
+
+00:23:35.583 --> 00:23:38.307
+template. I don't understand why
+this is a template.
+
+00:23:40.147 --> 00:23:41.647
+And then Prince?
+
+00:23:45.787 --> 00:23:48.387
+You would prefer to see a
+runtime parameter.
+
+00:23:49.867 --> 00:23:52.637
+Yeah, I mean it's it's like a A.
+
+00:23:55.417 --> 00:24:00.084
+Yeah, I I would prefer to see
+like if I knew line, push back
+
+00:24:00.084 --> 00:24:01.767
+and and whack at like.
+
+00:24:04.287 --> 00:24:05.247
+It seems very odd.
+
+00:24:29.827 --> 00:24:31.337
+Is actually code operational
+idea?
+
+00:24:58.497 --> 00:24:59.797
+So if context.
+
+00:24:58.567 --> 00:25:01.640
+I can I can easily change that
+as I revise it in response to
+
+00:25:01.640 --> 00:25:04.460
+your feedback. Would you
+additionally wanna see like an
+
+00:25:04.460 --> 00:25:07.583
+enum class? That's that's the
+thing I thought about. I didn't
+
+00:25:07.583 --> 00:25:10.655
+end up making that change or
+commenting about it. But it's a
+
+00:25:10.655 --> 00:25:13.929
+pool. And if we start passing it
+as like a runtime parameter, it
+
+00:25:13.929 --> 00:25:16.497
+seems reasonable to make an add
+new line. Yes? No.
+
+00:25:16.927 --> 00:25:20.337
+Umm, you know class just so it's
+sort of more self documenting.
+
+00:25:22.337 --> 00:25:23.847
+I.
+
+00:25:26.147 --> 00:25:28.857
+You don't have a strong opinion
+on that, I think.
+
+00:25:30.107 --> 00:25:31.177
+Fine either way.
+
+00:25:33.847 --> 00:25:34.227
+Like.
+
+00:25:36.447 --> 00:25:39.683
+Yeah, I guess the meaning
+password probably be better, but
+
+00:25:39.683 --> 00:25:41.767
+I'm not like super ******** but
+that.
+
+00:25:42.307 --> 00:25:44.657
+OK. If you're not opposed, I'll.
+I'll make that change.
+
+00:25:42.977 --> 00:25:45.187
+And I know Charlie, who is also
+on the call.
+
+00:25:46.367 --> 00:25:49.946
+Yeah, I I if we had multiple
+bulls then it would be a slam
+
+00:25:47.167 --> 00:25:47.977
+Preview version.
+
+00:25:49.946 --> 00:25:53.525
+dunk with one bull. I agree.
+It's sort of, you know, yeah,
+
+00:25:53.525 --> 00:25:57.407
+kind of nice to have, but if I'm
+gonna change it, I'll do that.
+
+00:25:57.407 --> 00:25:58.377
+So I agree that.
+
+00:25:59.217 --> 00:26:02.609
+Avoiding the template parameter
+should probably reduce some
+
+00:26:02.609 --> 00:26:06.057
+instantiation duplication, and
+it's not gonna complicate the
+
+00:26:06.057 --> 00:26:08.487
+code, so that's a great thing to
+bring up.
+
+00:26:10.827 --> 00:26:12.357
+And this should just become
+like.
+
+00:26:13.067 --> 00:26:17.260
+Outfit stir equals the deep
+format and then if a new line
+
+00:26:17.260 --> 00:26:18.777
+push back a new line.
+
+00:26:24.457 --> 00:26:25.497
+Their lives are move.
+
+00:26:26.377 --> 00:26:28.597
+I'm I'm I'm move I.
+
+00:26:29.777 --> 00:26:31.947
+With the final call that makes
+me happy.
+
+00:26:33.317 --> 00:26:35.567
+Directly instantiated into the.
+
+00:26:40.317 --> 00:26:42.127
+So alright.
+
+00:26:44.197 --> 00:26:49.052
+Looks like the only real
+interesting thing here is
+
+00:26:49.052 --> 00:26:51.527
+Prince. No format Unicode.
+
+00:26:52.537 --> 00:26:55.827
+This is called in both the print
+Unicode info.
+
+00:26:57.287 --> 00:27:03.637
+As well as printable. Basically
+it's saying OK if you're.
+
+00:27:04.677 --> 00:27:08.172
+If you're if you have format
+orgs, you know if you write
+
+00:27:08.172 --> 00:27:09.827
+something like stood print.
+
+00:27:11.037 --> 00:27:11.267
+Cool.
+
+00:27:16.657 --> 00:27:17.207
+Center.
+
+00:27:19.317 --> 00:27:23.884
+If you actually write this, then
+we do need to do the beep print.
+
+00:27:23.884 --> 00:27:28.174
+We need to do an allocation.
+However, if you just write stood
+
+00:27:28.174 --> 00:27:29.627
+print you know hello.
+
+00:27:30.977 --> 00:27:31.607
+City.
+
+00:27:34.517 --> 00:27:35.087
+That's fine.
+
+00:27:38.287 --> 00:27:39.597
+Ohh that's that's great.
+
+00:27:52.587 --> 00:27:56.721
+Well, the VS code terminal
+emulator being not very nice
+
+00:27:56.721 --> 00:27:57.237
+inside.
+
+00:28:00.887 --> 00:28:01.827
+It works that much.
+
+00:28:05.997 --> 00:28:09.510
+Yeah. So if if we just write
+the, you know, stood print
+
+00:28:09.510 --> 00:28:13.525
+hello, blah, then you shouldn't
+get a a duplicated string. They
+
+00:28:13.525 --> 00:28:14.717
+can just direct me.
+
+00:28:22.817 --> 00:28:23.237
+Right.
+
+00:28:24.387 --> 00:28:27.187
+And we do need, we need to
+escape thing.
+
+00:28:35.207 --> 00:28:36.437
+Ohh.
+
+00:28:38.817 --> 00:28:39.727
+OK.
+
+00:28:42.387 --> 00:28:43.597
+That doesn't make me happy.
+
+00:28:45.037 --> 00:28:45.827
+I think that.
+
+00:28:46.947 --> 00:28:49.517
+It's actually unescaped braces.
+I could be wrong.
+
+00:28:51.747 --> 00:28:52.687
+But it's because the.
+
+00:28:51.807 --> 00:28:52.837
+Yeah, it's, it's.
+
+00:28:54.537 --> 00:28:58.725
+That if if they haven't given us
+any four hours, so they they're
+
+00:28:58.725 --> 00:29:02.333
+saying something like Hello
+World, it's still in format
+
+00:29:02.333 --> 00:29:06.521
+syntax. So if it has like brace
+brace and then close close those
+
+00:29:06.521 --> 00:29:10.387
+should be collapsed down. So
+that's what that escape braces
+
+00:29:09.977 --> 00:29:10.647
+Yeah.
+
+00:29:10.387 --> 00:29:14.446
+does. Now function is actually I
+think it may be is it reverse
+
+00:29:14.446 --> 00:29:18.247
+named now that I think about it
+it made sense to me when I
+
+00:29:18.247 --> 00:29:21.597
+reviewed it but I think it might
+be named opposite.
+
+00:29:20.727 --> 00:29:22.567
+Yeah, it's definitely reverse
+named.
+
+00:29:23.037 --> 00:29:24.147
+It's unescaped really.
+
+00:29:38.947 --> 00:29:41.755
+Yeah, I was reviewing it at like
+the micro level. I was like, oh,
+
+00:29:39.527 --> 00:29:39.947
+Uh.
+
+00:29:41.755 --> 00:29:43.797
+we should do. Morgan, this
+condition to make it
+
+00:29:43.797 --> 00:29:46.307
+comprehensible. And I never even
+thought about the naming.
+
+00:29:50.767 --> 00:29:53.757
+So I'll I'll make that note that
+it should be unescaped.
+
+00:29:55.127 --> 00:29:55.957
+Have.
+
+00:30:06.637 --> 00:30:08.117
+Have feelings about this?
+
+00:30:11.847 --> 00:30:12.827
+And field.
+
+00:30:20.517 --> 00:30:20.837
+Spelling.
+
+00:30:20.917 --> 00:30:21.337
+OK.
+
+00:30:27.927 --> 00:30:30.235
+And that actually that flows
+through to all the variables
+
+00:30:30.235 --> 00:30:32.781
+because it's we're not returning
+an escape still it's returning
+
+00:30:32.781 --> 00:30:35.089
+on escape star. I I can make
+those changes. That's a good
+
+00:30:35.089 --> 00:30:35.327
+catch.
+
+00:30:37.797 --> 00:30:40.847
+And this is necessary like
+because the format syntax has
+
+00:30:40.847 --> 00:30:41.007
+us.
+
+00:30:44.537 --> 00:30:47.067
+We we have to handle the double
+double dot braces.
+
+00:30:47.797 --> 00:30:51.246
+There, there's no way to pass a
+raw raw string saying no, no,
+
+00:30:48.547 --> 00:30:48.977
+It's.
+
+00:30:51.246 --> 00:30:54.695
+I've I've, you know, put bear
+braces here and just don't mess
+
+00:30:54.695 --> 00:30:58.199
+with them. I don't want you to
+do any sort of translation, but
+
+00:30:58.199 --> 00:31:00.757
+it's all in memory. We shouldn't
+be too slow.
+
+00:31:00.117 --> 00:31:00.587
+Yeah.
+
+00:31:02.577 --> 00:31:03.937
+Technically, we do allocate
+here.
+
+00:31:08.527 --> 00:31:12.674
+I I'm convincing myself that
+it's worth it to do this rather
+
+00:31:12.674 --> 00:31:14.577
+than just pass to me format.
+
+00:31:22.277 --> 00:31:23.677
+You'll be tumbling about, OK.
+
+00:31:25.447 --> 00:31:27.917
+So we do actually have to escape
+the thing.
+
+00:31:29.297 --> 00:31:33.994
+Escape the braces because if you
+write for example print, you
+
+00:31:33.994 --> 00:31:34.827
+know hello.
+
+00:31:38.117 --> 00:31:42.708
+And this is still 0 characters,
+0 arguments, but it needs to
+
+00:31:42.708 --> 00:31:43.837
+actually print.
+
+00:31:45.797 --> 00:31:46.107
+With that.
+
+00:31:50.717 --> 00:31:52.167
+OK, with this OK with this.
+
+00:31:54.107 --> 00:31:57.516
+I'm not happy about that.
+Alright. OK. So we check if it's
+
+00:31:57.516 --> 00:32:01.098
+an ordinary literal encoding.
+Then we print no format uniform
+
+00:32:01.098 --> 00:32:03.177
+unless we print no format non
+unit.
+
+00:32:03.827 --> 00:32:07.400
+This one is boring. This one all
+kind of boring you care about is
+
+00:32:07.400 --> 00:32:10.864
+this print? No. Format Unicode
+because this also gives directly
+
+00:32:10.864 --> 00:32:12.217
+goes and print no format.
+
+00:32:14.157 --> 00:32:14.477
+Hello.
+
+00:32:21.847 --> 00:32:22.147
+Love you.
+
+00:32:24.157 --> 00:32:24.867
+So.
+
+00:32:26.467 --> 00:32:28.467
+To print no format Unicode.
+
+00:32:32.647 --> 00:32:34.647
+Look at this code, this is like.
+
+00:32:35.697 --> 00:32:39.167
+Interesting code. This is what
+actually turns the.
+
+00:32:40.447 --> 00:32:45.757
+UTF 8 input we at this point we
+know that the input is UTF A.
+
+00:32:47.337 --> 00:32:50.682
+Working so we know that you're
+code page that you're that
+
+00:32:50.682 --> 00:32:54.026
+you're compiling and whack you
+TF8 mode, in which case we
+
+00:32:54.026 --> 00:32:56.967
+assume that your car stairs,
+your your care stars.
+
+00:33:01.137 --> 00:33:01.817
+Are you typing?
+
+00:33:03.347 --> 00:33:03.597
+So.
+
+00:33:05.677 --> 00:33:10.081
+Let us check if this screen
+cause this stream might be a
+
+00:33:10.081 --> 00:33:10.467
+file.
+
+00:33:11.367 --> 00:33:13.477
+It might be a.
+
+00:33:15.147 --> 00:33:15.727
+A pipe.
+
+00:33:16.597 --> 00:33:19.897
+And in those two cases, we're
+writing bites, and so we just
+
+00:33:19.897 --> 00:33:20.997
+write UTF 8 to that.
+
+00:33:22.047 --> 00:33:27.707
+However, if you've got a console
+again, we have to actually.
+
+00:33:33.207 --> 00:33:37.651
+UTF 16 as opposed to YouTube, we
+cannot write bytes, so let's
+
+00:33:37.651 --> 00:33:39.227
+look in print dot CPP.
+
+00:33:51.757 --> 00:33:54.687
+Don't get Unicode console handle
+from filestream.
+
+00:33:58.737 --> 00:34:02.892
+Don't discard, which is good.
+Success returned on error equals
+
+00:34:02.892 --> 00:34:04.277
+to men error success.
+
+00:34:04.907 --> 00:34:07.707
+It's good Unicode console
+retrieval result.
+
+00:34:10.877 --> 00:34:15.727
+Something interesting, so this
+can be.
+
+00:34:16.897 --> 00:34:19.897
+The console handle so in.
+
+00:34:23.097 --> 00:34:23.997
+And windows.
+
+00:34:24.877 --> 00:34:27.597
+Pretty much everything is a.
+
+00:34:40.007 --> 00:34:42.097
+Everything passed around as
+handles.
+
+00:34:43.627 --> 00:34:44.527
+The console output.
+
+00:34:45.727 --> 00:34:52.517
+And then so we're grabbing a
+console handle. I'm a file star.
+
+00:34:54.247 --> 00:34:55.177
+Now we put in here.
+
+00:34:57.077 --> 00:35:00.058
+In this error. So if we have
+student error success, the
+
+00:35:00.058 --> 00:35:01.867
+operation completed
+successfully.
+
+00:35:02.797 --> 00:35:04.517
+This means that.
+
+00:35:05.797 --> 00:35:07.967
+The file star that was passed
+in.
+
+00:35:09.937 --> 00:35:12.537
+Was actually a console. It was
+not a file.
+
+00:35:14.937 --> 00:35:15.347
+Found.
+
+00:35:16.837 --> 00:35:19.097
+That means that the.
+
+00:35:21.017 --> 00:35:25.077
+That the that the file star
+passed in was not a console.
+
+00:35:27.367 --> 00:35:29.027
+Stood when they're not
+supported.
+
+00:35:30.467 --> 00:35:31.547
+But file star.
+
+00:35:32.347 --> 00:35:35.522
+Doesn't have an output stream
+that. That means that it's like
+
+00:35:35.522 --> 00:35:38.337
+stood in or something and all
+you can only take input.
+
+00:35:40.457 --> 00:35:42.167
+Instead, when error invalid
+parameter.
+
+00:35:43.937 --> 00:35:47.447
+That's broken like you've passed
+in an invalid file star.
+
+00:35:49.197 --> 00:35:49.477
+So.
+
+00:35:51.537 --> 00:35:53.367
+Look at where this is called.
+
+00:35:54.957 --> 00:35:58.671
+It might also be worth noting
+that this machinery exists
+
+00:35:58.671 --> 00:36:02.384
+because we don't directly
+include the Windows headers in
+
+00:36:02.384 --> 00:36:05.836
+STL headers, because they're
+enormous and enormously
+
+00:36:05.836 --> 00:36:09.875
+polluting, and ideally one would
+use. That's why we have like
+
+00:36:08.317 --> 00:36:08.567
+Yes.
+
+00:36:09.875 --> 00:36:13.719
+stood win error instead of
+directly using AD word. We have
+
+00:36:13.719 --> 00:36:17.758
+our own enum and this really
+morally is astute expected. It's
+
+00:36:17.758 --> 00:36:21.927
+expected console handle and the
+errors when error, but we don't
+
+00:36:21.927 --> 00:36:24.467
+use it because we were trying to
+have.
+
+00:36:24.577 --> 00:36:28.754
+A flat sea interface for
+anything that's in the import
+
+00:36:28.754 --> 00:36:29.057
+Lib.
+
+00:36:30.107 --> 00:36:33.724
+So, oddly enough, while we are
+the providers of awesome tech,
+
+00:36:33.724 --> 00:36:37.457
+like stood expected, we throw it
+all away and we go down to the
+
+00:36:37.457 --> 00:36:40.957
+simplest see stuff for our Avi
+because it gives us the most
+
+00:36:40.957 --> 00:36:41.657
+flexibility.
+
+00:36:43.077 --> 00:36:46.967
+Yeah, it turns out that C++ is
+not great at ABI boundaries.
+
+00:36:49.777 --> 00:36:50.497
+Yeah, this song.
+
+00:36:52.527 --> 00:36:55.757
+The same ABI spa lot, easier to
+keep.
+
+00:36:56.797 --> 00:36:58.407
+Strictly ABI compatible.
+
+00:36:59.517 --> 00:37:03.419
+And so you'll see in a lot of
+ABI libraries that care about
+
+00:37:03.419 --> 00:37:07.255
+ABI. I also work on address
+sanitizer, and we do this here
+
+00:37:07.255 --> 00:37:11.157
+as well. If you're library cares
+about ABI, or like talking
+
+00:37:11.157 --> 00:37:11.937
+between DLL.
+
+00:37:12.687 --> 00:37:13.047
+I.
+
+00:37:13.937 --> 00:37:15.297
+Please the boundaries should be
+seen.
+
+00:37:17.297 --> 00:37:19.157
+Because Pass introduces a lot
+of.
+
+00:37:19.757 --> 00:37:21.517
+Ways that you can break me back
+pretty easily.
+
+00:37:26.077 --> 00:37:26.317
+So.
+
+00:37:29.337 --> 00:37:33.538
+Different cases we've got
+success, in which case it's
+
+00:37:33.538 --> 00:37:36.027
+Unicode console Unicode console.
+
+00:37:37.457 --> 00:37:42.127
+I want found in which case you
+know it's a file or a.
+
+00:37:43.317 --> 00:37:45.899
+Right, in which case it's not
+Unicode, and so we just write
+
+00:37:45.899 --> 00:37:46.157
+bytes.
+
+00:37:46.827 --> 00:37:47.677
+It's not supported.
+
+00:37:48.907 --> 00:37:52.967
+Return. That means that there's
+past instead in or something.
+
+00:37:54.967 --> 00:37:56.357
+And the default.
+
+00:38:01.047 --> 00:38:03.077
+We just throw the the error.
+
+00:38:05.817 --> 00:38:09.797
+Should I have? Is it? Is it not
+a?
+
+00:38:11.387 --> 00:38:14.667
+I'm going to try and print to
+stood in.
+
+00:38:17.227 --> 00:38:18.447
+That seems odd to me.
+
+00:38:19.547 --> 00:38:21.307
+I don't know what the on the
+standard says.
+
+00:38:22.947 --> 00:38:24.977
+Now let's take a look.
+
+00:38:27.197 --> 00:38:30.777
+Actually like to read the actual
+C++ drop here.
+
+00:38:35.397 --> 00:38:35.887
+But.
+
+00:39:08.217 --> 00:39:09.537
+You print the onion a code.
+
+00:39:11.857 --> 00:39:13.367
+Ordinary literal encoding
+issues.
+
+00:39:13.457 --> 00:39:15.697
+OK, keep me.
+
+00:39:18.437 --> 00:39:22.447
+Previous strain is a valid
+pointer to an output C stream.
+
+00:39:24.727 --> 00:39:28.127
+OK, so that's that is incorrect.
+We should.
+
+00:39:29.727 --> 00:39:30.107
+We.
+
+00:39:31.607 --> 00:39:31.847
+No.
+
+00:39:33.617 --> 00:39:34.227
+Just saying.
+
+00:39:36.157 --> 00:39:38.917
+This is so you're trying to
+output to an.
+
+00:39:36.257 --> 00:39:39.017
+So your your audio is breaking
+up. I I didn't hear what you
+
+00:39:39.017 --> 00:39:39.247
+said.
+
+00:39:39.977 --> 00:39:41.797
+I'm sorry. Sorry. Sorry, sorry.
+OK.
+
+00:39:42.487 --> 00:39:45.947
+To if you're trying to print to
+an input only strain.
+
+00:39:48.997 --> 00:39:50.197
+It's this precondition.
+
+00:39:51.457 --> 00:39:52.567
+What we do now?
+
+00:39:53.597 --> 00:39:54.557
+As we return.
+
+00:39:56.197 --> 00:39:58.827
+Which seems wrong to me. We
+don't report an error.
+
+00:40:02.387 --> 00:40:03.917
+So. So in the STL.
+
+00:40:05.137 --> 00:40:08.726
+We we try not to Reis specially
+don't throw exceptions for
+
+00:40:08.726 --> 00:40:12.315
+preconditioned violations.
+Usually we ignore them like you
+
+00:40:12.315 --> 00:40:16.147
+just can't Billy preconditions
+if you do all all bets are off.
+
+00:40:17.387 --> 00:40:20.849
+Silently ignoring them is not as
+bad as throwing an error, but
+
+00:40:20.849 --> 00:40:22.937
+you're right, it's kind of
+squirrely.
+
+00:40:24.207 --> 00:40:27.950
+The the closest president is we
+used to have a case in it was
+
+00:40:27.950 --> 00:40:31.632
+either list top back or deck pop
+back where if the thing was
+
+00:40:31.632 --> 00:40:35.073
+empty, if the container was
+empty we just ignored it and
+
+00:40:35.073 --> 00:40:38.272
+that's actually bad tolerating
+non non standard code
+
+00:40:38.272 --> 00:40:42.014
+preconditioned violating code
+just by silently doing nothing.
+
+00:40:42.014 --> 00:40:45.757
+That's not as good as having a
+debug error or something. This
+
+00:40:45.757 --> 00:40:49.197
+should, I think, at a minimum we
+should probably assert.
+
+00:40:49.837 --> 00:40:53.254
+Umm these are, you know IDL
+check or still still verify,
+
+00:40:53.254 --> 00:40:56.910
+then we can, you know return or
+something. But that's a good
+
+00:40:55.097 --> 00:40:55.327
+Yeah.
+
+00:40:56.910 --> 00:40:59.007
+catch. I didn't even realize
+that.
+
+00:41:00.117 --> 00:41:01.227
+There was a precondition there.
+
+00:41:06.217 --> 00:41:06.807
+And.
+
+00:41:27.697 --> 00:41:29.407
+We want to your father.
+
+00:41:35.707 --> 00:41:36.067
+So.
+
+00:41:37.377 --> 00:41:40.107
+About if it's been a good
+console or if it's not,
+
+00:41:40.107 --> 00:41:41.417
+otherwise it's an error.
+
+00:41:42.047 --> 00:41:45.721
+Everyone is it's precondition
+relation. This is also a
+
+00:41:45.721 --> 00:41:47.257
+precondition violation.
+
+00:41:48.577 --> 00:41:49.317
+To be clear.
+
+00:41:48.747 --> 00:41:51.807
+Now one, I wonder what it
+runtime could cause that.
+
+00:41:53.607 --> 00:41:59.567
+This is like you passed a null
+file star or a an invalid file
+
+00:41:53.787 --> 00:41:54.277
+You're right.
+
+00:41:59.567 --> 00:42:00.047
+star.
+
+00:42:00.847 --> 00:42:03.377
+Yeah, that does seem like we
+shouldn't throw an exception.
+
+00:42:05.127 --> 00:42:08.874
+On the other hand, if it's only,
+I mean obviously no super bad,
+
+00:42:08.874 --> 00:42:12.328
+but if it if something goes
+wrong in like the internals of
+
+00:42:12.328 --> 00:42:16.192
+the CRT and it returns, you know
+some unknown error code, it does
+
+00:42:16.192 --> 00:42:19.177
+seem reasonable to throw a
+runtime error for that.
+
+00:42:21.787 --> 00:42:24.207
+That's a hard question because
+we definitely don't want to
+
+00:42:24.207 --> 00:42:26.585
+throw for obvious precondition
+violation. But for runtime
+
+00:42:26.585 --> 00:42:27.897
+errors, throwing his reasonable.
+
+00:42:30.157 --> 00:42:32.127
+And Zack, so it's not supported.
+
+00:42:34.467 --> 00:42:38.750
+Ohh I see what it is it's saying
+it doesn't have an associated
+
+00:42:38.750 --> 00:42:41.197
+output stream. This is like if
+you.
+
+00:42:42.207 --> 00:42:43.067
+Whack to know.
+
+00:42:47.357 --> 00:42:50.562
+OK. That makes sense. That's
+valid. It's just where it's
+
+00:42:47.407 --> 00:42:48.547
+This this is not.
+
+00:42:50.562 --> 00:42:51.967
+going into the ether, so.
+
+00:42:53.597 --> 00:42:56.814
+So we just don't have to do
+anything, OK? Never mind. OK,
+
+00:42:53.827 --> 00:42:54.317
+OK.
+
+00:42:56.814 --> 00:42:57.757
+this makes sense.
+
+00:42:58.507 --> 00:43:01.487
+So file no returns -, 2 if
+stream refers to either stood
+
+00:43:01.487 --> 00:43:04.727
+out or stood there, and there is
+no associated output stream.
+
+00:43:05.957 --> 00:43:09.768
+Perfect. This is not a
+precondition violation. It's
+
+00:43:09.768 --> 00:43:10.207
+wrong.
+
+00:43:12.297 --> 00:43:12.677
+Never.
+
+00:43:14.547 --> 00:43:15.957
+I think this is just a bad
+comment.
+
+00:43:20.417 --> 00:43:21.387
+I'm saying.
+
+00:43:24.007 --> 00:43:25.617
+I would like an Excel.
+
+00:43:44.967 --> 00:43:45.417
+I.
+
+00:43:47.177 --> 00:43:48.547
+Thing we can worry about later.
+
+00:43:49.887 --> 00:43:53.574
+And I'll I'll definitely since
+since I'll I'll rise to response
+
+00:43:50.727 --> 00:43:50.967
+So.
+
+00:43:53.574 --> 00:43:56.914
+to your comments, I'll test that
+see what happens when we
+
+00:43:56.914 --> 00:44:00.428
+redirect a null and if it goes
+through not supported then we
+
+00:44:00.428 --> 00:44:03.307
+can have that as a comment.
+That's a great catch.
+
+00:44:04.267 --> 00:44:08.035
+This this is like the perfect
+comment for what should be in
+
+00:44:08.035 --> 00:44:08.977
+the the header.
+
+00:44:11.157 --> 00:44:13.687
+So then if it's -, 1.
+
+00:44:15.427 --> 00:44:16.847
+This is our parameter.
+
+00:44:18.807 --> 00:44:22.177
+Otherwise it must be valid, so
+we get the console handle.
+
+00:44:23.397 --> 00:44:27.019
+Which we can do by reinterpret
+casting to handle of death OOF
+
+00:44:27.019 --> 00:44:27.427
+handle.
+
+00:44:42.777 --> 00:44:46.067
+Because that was the candle
+recount. Ohh so it doesn't
+
+00:44:46.067 --> 00:44:49.177
+happen, but that's that's OK. So
+we get the handle.
+
+00:44:49.877 --> 00:44:53.437
+If it's an invalid handle value,
+can we get an invalid parameter?
+
+00:45:02.187 --> 00:45:04.247
+You have FD as invalid which.
+
+00:45:05.867 --> 00:45:06.837
+Precondition language.
+
+00:45:08.997 --> 00:45:09.787
+I get console mode.
+
+00:45:12.737 --> 00:45:15.595
+You can try to get free
+counseling number. I can return
+
+00:45:15.595 --> 00:45:16.207
+value again.
+
+00:45:17.667 --> 00:45:19.307
+If it's not a Unicode console.
+
+00:45:20.227 --> 00:45:21.817
+And our error is not found.
+
+00:45:24.247 --> 00:45:24.727
+OK, fine.
+
+00:45:25.617 --> 00:45:28.267
+Wise we set we console handle
+to.
+
+00:45:30.657 --> 00:45:31.807
+Reinterpret casted.
+
+00:45:33.027 --> 00:45:33.787
+Council Randall.
+
+00:45:40.087 --> 00:45:44.618
+Yeah, I believe that that's true
+and the error 2 stood when error
+
+00:45:44.618 --> 00:45:45.167
+success.
+
+00:45:49.297 --> 00:45:53.393
+So the only two we care about is
+pilot pallets access success
+
+00:45:53.393 --> 00:45:57.488
+case. We return two and found
+case we return we have you know
+
+00:45:57.488 --> 00:45:59.007
+good console of faults.
+
+00:46:03.827 --> 00:46:05.297
+This is gonna code console.
+
+00:46:06.927 --> 00:46:09.797
+Successful higher we have to
+flush.
+
+00:46:10.877 --> 00:46:14.589
+Because of this, if the native
+Unicode API is used, the
+
+00:46:14.589 --> 00:46:18.500
+function flushes the string
+buffer before writing code. So
+
+00:46:18.500 --> 00:46:19.627
+flush the string.
+
+00:46:20.587 --> 00:46:22.167
+The Flash was unsuccessful.
+
+00:46:23.477 --> 00:46:23.907
+Error.
+
+00:46:27.917 --> 00:46:29.407
+Like to be in a code console.
+
+00:46:31.577 --> 00:46:32.027
+And if it?
+
+00:46:32.697 --> 00:46:33.777
+Was it successful?
+
+00:46:34.807 --> 00:46:35.887
+Throw US system error.
+
+00:46:38.867 --> 00:46:39.137
+Cool.
+
+00:46:40.947 --> 00:46:44.277
+Alright, now the final thing we
+have to check is stood printing
+
+00:46:44.277 --> 00:46:44.797
+in a code.
+
+00:46:46.667 --> 00:46:48.357
+That's the most interesting part
+of this.
+
+00:46:49.477 --> 00:46:53.585
+This all this rest of this stuff
+is just checking whether we
+
+00:46:53.585 --> 00:46:57.289
+should write directly bytes or
+directly in the code or
+
+00:46:57.289 --> 00:46:59.107
+indirectly I guess Unicode.
+
+00:47:02.177 --> 00:47:03.357
+We're saying, OK.
+
+00:47:04.087 --> 00:47:07.817
+You've gotten to the point where
+we are writing Unicode.
+
+00:47:10.127 --> 00:47:10.857
+To this works.
+
+00:47:17.047 --> 00:47:17.347
+No.
+
+00:47:19.957 --> 00:47:23.015
+No reason that we're doing this
+really basic string view
+
+00:47:23.015 --> 00:47:23.927
+allocated string.
+
+00:47:24.937 --> 00:47:25.367
+Stop.
+
+00:47:26.497 --> 00:47:26.967
+For the.
+
+00:47:27.637 --> 00:47:28.757
+Just including string view.
+
+00:47:27.657 --> 00:47:31.712
+This exists because this is
+being injected into the import
+
+00:47:31.712 --> 00:47:36.179
+Lib, so we cannot drag in stood
+string and even just dragging in
+
+00:47:36.179 --> 00:47:40.096
+like string view which is
+provided in the same header is
+
+00:47:40.096 --> 00:47:44.495
+extremely unwise. So we want to
+not drag in anything that could
+
+00:47:44.495 --> 00:47:48.412
+possibly depend on iterator
+debug level and the more STL
+
+00:47:48.412 --> 00:47:52.948
+machinery drag in the riskier it
+is. So this handwritten stuff is
+
+00:47:52.948 --> 00:47:56.727
+lower risk even though it seems
+like it's unnecessary.
+
+00:47:58.057 --> 00:47:58.607
+Alright, sounds.
+
+00:47:59.637 --> 00:48:00.097
+OK.
+
+00:48:01.237 --> 00:48:04.014
+Now that I'm now that I
+mentioned that now I worry about
+
+00:48:01.557 --> 00:48:02.127
+So.
+
+00:48:04.014 --> 00:48:06.938
+that graphene break property
+iterator. Where is that coming
+
+00:48:06.938 --> 00:48:09.909
+from? Is that something that's
+scary to drag into the import
+
+00:48:09.909 --> 00:48:11.127
+Lib? I didn't check that.
+
+00:48:13.037 --> 00:48:16.620
+And I should have because I have
+suffered more than anyone should
+
+00:48:16.620 --> 00:48:19.660
+ever suffer based on stuff
+getting into the input layer
+
+00:48:19.660 --> 00:48:20.637
+when it shouldn't.
+
+00:48:23.047 --> 00:48:23.887
+Unicode iterate.
+
+00:48:23.797 --> 00:48:26.097
+Unless we see, you know, code
+which of the core hunter.
+
+00:48:27.707 --> 00:48:30.312
+It doesn't claim to be core, it
+just drags in Yvals core. But if
+
+00:48:30.312 --> 00:48:32.957
+you look at line one, it doesn't
+have a comment about core there.
+
+00:48:34.087 --> 00:48:35.887
+It does seem that it's fairly
+minimal though.
+
+00:48:37.637 --> 00:48:40.497
+We might. We might be OK here.
+The tables are super minimal,
+
+00:48:40.497 --> 00:48:41.247
+I'm pretty sure.
+
+00:48:44.267 --> 00:48:47.276
+Yeah, I think Jack utility
+limits and sister then are all
+
+00:48:47.276 --> 00:48:50.285
+well, it's these event of
+course, but limits and actually
+
+00:48:50.285 --> 00:48:51.167
+utility are both.
+
+00:48:51.877 --> 00:48:55.227
+I don't think X utility is EXE.
+Utility is a big one that's got
+
+00:48:55.227 --> 00:48:58.681
+a lot of runtime stuff. It's got
+the vectorized algorithms that's
+
+00:48:58.277 --> 00:48:58.807
+4.
+
+00:48:58.681 --> 00:49:01.297
+super not core. Yeah, it's
+includes why's age so.
+
+00:49:03.787 --> 00:49:04.307
+Good point.
+
+00:49:05.517 --> 00:49:06.847
+This is not OK.
+
+00:49:08.357 --> 00:49:10.832
+Did Unicode iterators drag it
+in? What? What was the dragging?
+
+00:49:10.832 --> 00:49:13.267
+What was it including? Was that
+coming in through the tables?
+
+00:49:12.107 --> 00:49:12.937
+Yeah.
+
+00:49:14.657 --> 00:49:15.937
+And I didn't see the whole chain
+of.
+
+00:49:15.457 --> 00:49:17.137
+It's coming in from the UCD
+tables.
+
+00:49:17.617 --> 00:49:18.347
+Ah.
+
+00:49:17.877 --> 00:49:21.742
+It's and that's why you see the
+tables which drugs and acts
+
+00:49:21.742 --> 00:49:23.287
+utility which drags and.
+
+00:49:24.777 --> 00:49:27.227
+Ah, that's generated. Ohh no.
+
+00:49:29.027 --> 00:49:31.547
+OK. Yeah, that that's a real
+that's a problem.
+
+00:49:32.907 --> 00:49:33.877
+Yeah, that's sucks.
+
+00:49:32.977 --> 00:49:35.717
+It seems like the cables are
+just static data. We shouldn't
+
+00:49:35.717 --> 00:49:38.547
+need X utility. What? What are
+we even using ohh lower bound?
+
+00:49:39.867 --> 00:49:44.777
+Yeah, we we can, we can hand
+write something there. Ohh boy.
+
+00:49:47.467 --> 00:49:48.557
+Stood up about yeah.
+
+00:49:49.497 --> 00:49:51.807
+I would rather extract lower
+bound and just have a
+
+00:49:51.807 --> 00:49:54.659
+handwritten 1 here rather than
+drag and actually tell if we if
+
+00:49:54.659 --> 00:49:56.787
+we got injected in the. This is
+not a problem.
+
+00:49:56.457 --> 00:49:58.817
+Yeah, this is easy to do.
+
+00:49:58.087 --> 00:50:01.911
+Yeah, yeah, yeah. Or upper bound
+here. This is not a problem for
+
+00:50:01.911 --> 00:50:05.677
+format cause forehead has like
+the non the non queries non core
+
+00:50:05.677 --> 00:50:08.971
+header ever. But now we're
+injecting something into the
+
+00:50:08.971 --> 00:50:11.677
+import Lib for this graphene
+break stuff and.
+
+00:50:12.777 --> 00:50:14.597
+Yeah. Hmm. Interesting.
+
+00:50:16.997 --> 00:50:19.971
+The whole reason we have the
+graphene break is so we can
+
+00:50:19.971 --> 00:50:23.100
+transcode in segments of 8K, but
+I wonder if we should just
+
+00:50:23.100 --> 00:50:26.021
+allocate and just fail if
+somebody tries to stood print
+
+00:50:26.021 --> 00:50:26.647
+over 2 gigs.
+
+00:50:29.107 --> 00:50:30.737
+That's the other alternative to.
+
+00:50:29.587 --> 00:50:30.927
+And even this winter.
+
+00:50:31.897 --> 00:50:32.287
+You got.
+
+00:50:32.037 --> 00:50:33.907
+When did actually write code
+like this?
+
+00:50:35.637 --> 00:50:36.667
+Standard library.
+
+00:50:37.757 --> 00:50:39.567
+Sorry, say that again. I was
+talking over you.
+
+00:50:40.747 --> 00:50:44.774
+Sorry, I just said that I wrote
+code like this for the rest
+
+00:50:44.774 --> 00:50:47.257
+standard library, so I haven't
+been.
+
+00:50:54.957 --> 00:50:58.118
+Because I contribute to other
+people's standard libraries as
+
+00:50:58.118 --> 00:50:58.377
+well.
+
+00:51:03.547 --> 00:51:06.860
+What I really need to do here is
+make it so that we cannot
+
+00:51:06.860 --> 00:51:10.454
+include anything noncore in the
+import Lib. We're like one step
+
+00:51:10.454 --> 00:51:13.823
+away from being able to validate
+that this should be caught
+
+00:51:13.823 --> 00:51:14.777
+programmatically.
+
+00:51:16.037 --> 00:51:16.527
+Let me guess.
+
+00:51:16.417 --> 00:51:19.235
+I had deferred that because we
+were busy with other things and
+
+00:51:19.235 --> 00:51:21.919
+it's actually kind of obnoxious
+to untangle the last remain
+
+00:51:21.919 --> 00:51:24.737
+anything in X facet, but this is
+an indication where we really
+
+00:51:24.737 --> 00:51:27.107
+need that validation. I'll have
+to think about that.
+
+00:51:28.227 --> 00:51:31.168
+We definitely need untangle.
+This quested print. This is the
+
+00:51:29.077 --> 00:51:29.487
+We just.
+
+00:51:31.168 --> 00:51:32.277
+most significant issue.
+
+00:51:35.577 --> 00:51:37.857
+Add the defiant that this
+allows.
+
+00:51:39.677 --> 00:51:43.620
+Now the problem is I'm currently
+X facet is including a non core
+
+00:51:39.787 --> 00:51:40.637
+I'm 4 headers.
+
+00:51:43.620 --> 00:51:47.503
+header. In theory it's not doing
+anything bad but trying to add
+
+00:51:47.503 --> 00:51:51.263
+that compile time block will
+break it. So that's why I backed
+
+00:51:51.263 --> 00:51:52.537
+away from doing that.
+
+00:51:53.017 --> 00:51:56.590
+Umm, but I I should try again.
+In theory it should be
+
+00:51:56.590 --> 00:51:59.037
+intangible, it just needs some
+work.
+
+00:52:00.007 --> 00:52:01.187
+And that would have caught this
+issue.
+
+00:52:10.747 --> 00:52:13.647
+So to so to solve this, do you
+think we should?
+
+00:52:14.267 --> 00:52:18.537
+Try to make the graphene break
+stuff core. Or should we just?
+
+00:52:20.687 --> 00:52:24.097
+Not transcoding chunks and just
+tried to transcode the whole
+
+00:52:24.097 --> 00:52:27.619
+thing, and if it's over the two
+gig limit cause the underlying
+
+00:52:27.619 --> 00:52:29.407
+API has 22 gig limit, just fail.
+
+00:52:31.037 --> 00:52:31.467
+So.
+
+00:52:32.777 --> 00:52:36.400
+But I did OK cause cause I've
+implemented this code before for
+
+00:52:36.400 --> 00:52:36.687
+rust.
+
+00:52:38.437 --> 00:52:40.007
+When I did was.
+
+00:52:40.717 --> 00:52:42.177
+I basically just.
+
+00:52:45.987 --> 00:52:48.477
+Created and 8192.
+
+00:52:49.717 --> 00:52:50.937
+Right stack buffer.
+
+00:52:53.557 --> 00:52:54.627
+Transcoded.
+
+00:52:56.197 --> 00:53:03.197
+4009 or I guess it's a 4096 W
+care stock buffer. I transcoded
+
+00:53:03.197 --> 00:53:05.567
+4096 cares at a time.
+
+00:53:07.867 --> 00:53:08.127
+If.
+
+00:53:08.797 --> 00:53:10.167
+This is Unicode.
+
+00:53:11.417 --> 00:53:13.467
+If they if they were Unicode
+then.
+
+00:53:14.527 --> 00:53:15.557
+There is a.
+
+00:53:16.857 --> 00:53:18.557
+Then you won't fill the entire
+buffer.
+
+00:53:21.077 --> 00:53:21.697
+Alright.
+
+00:53:24.717 --> 00:53:27.947
+Isn't that big video kind of a
+thing so.
+
+00:53:31.417 --> 00:53:31.867
+Actually.
+
+00:53:32.407 --> 00:53:35.287
+I don't think I understand how
+that avoids the problem that the
+
+00:53:32.947 --> 00:53:33.897
+Is it OK for me to?
+
+00:53:34.617 --> 00:53:35.097
+Yeah.
+
+00:53:35.287 --> 00:53:37.447
+graphene back iterator is trying
+to solve here.
+
+00:53:38.817 --> 00:53:39.387
+So.
+
+00:53:43.757 --> 00:53:46.871
+Can we look at my Rust code
+actually cause this? Might it
+
+00:53:46.871 --> 00:53:48.427
+might explain it better if I.
+
+00:53:50.267 --> 00:53:52.327
+I show what I'm actually trying
+to explain.
+
+00:53:52.927 --> 00:53:57.377
+Ohh, how is it licensed? I kind
+of don't wanna see it.
+
+00:53:59.857 --> 00:54:00.537
+I think it's.
+
+00:54:02.217 --> 00:54:03.827
+T Apache.
+
+00:54:05.437 --> 00:54:08.288
+I would. I would prefer not to
+put it on this video or to see
+
+00:54:08.288 --> 00:54:08.747
+it myself.
+
+00:54:09.887 --> 00:54:13.217
+Keep my brain clean, even if it
+theoretically is possible.
+
+00:54:11.937 --> 00:54:12.847
+Yeah, I did write it.
+
+00:54:14.007 --> 00:54:14.427
+Yeah.
+
+00:54:15.957 --> 00:54:19.075
+So so the issue I do know a
+little bit here because I I did
+
+00:54:17.347 --> 00:54:18.267
+So I wonder.
+
+00:54:19.075 --> 00:54:21.933
+test this, this is that the
+graphene break iterator is
+
+00:54:20.777 --> 00:54:20.967
+Yeah.
+
+00:54:21.933 --> 00:54:24.896
+trying to solve is that UTF 8
+can be up to what was it 4
+
+00:54:24.896 --> 00:54:25.207
+bytes.
+
+00:54:26.097 --> 00:54:26.437
+Yes.
+
+00:54:26.387 --> 00:54:30.339
+Conclude to you know, encode any
+you know code point. Or is it 6
+
+00:54:30.339 --> 00:54:31.737
+bytes? No, that's four.
+
+00:54:32.817 --> 00:54:34.687
+And we don't want to try to.
+
+00:54:36.067 --> 00:54:37.517
+Break on.
+
+00:54:38.197 --> 00:54:42.358
+8192 bytes if that's gonna
+interrupt a UTF 8 segment, we
+
+00:54:42.358 --> 00:54:46.591
+need to stop and do only whole
+code points at a time. I'm
+
+00:54:46.591 --> 00:54:48.707
+sorry, code unit code points.
+
+00:54:49.437 --> 00:54:50.527
+I'm I'm confused but.
+
+00:54:50.567 --> 00:54:52.147
+Code points, code points.
+
+00:54:51.637 --> 00:54:52.207
+Points OK.
+
+00:54:53.537 --> 00:54:56.630
+And so that's what this iterator
+does is it knows those
+
+00:54:54.417 --> 00:54:56.627
+So I'm gonna. I'm gonna explain.
+I'm gonna explain.
+
+00:54:56.630 --> 00:54:57.237
+boundaries.
+
+00:54:58.997 --> 00:55:01.587
+Explain a little bit so in
+Unicode.
+
+00:55:03.537 --> 00:55:04.187
+Units.
+
+00:55:06.557 --> 00:55:07.937
+I'm sorry, code points.
+
+00:55:10.317 --> 00:55:14.567
+Being number assigned to a
+specific.
+
+00:55:16.557 --> 00:55:17.337
+Character.
+
+00:55:19.947 --> 00:55:22.847
+And so they are the minimal.
+
+00:55:24.547 --> 00:55:25.057
+Like.
+
+00:55:26.097 --> 00:55:26.747
+Element.
+
+00:55:27.817 --> 00:55:29.557
+I've a piece of Unicode text.
+
+00:55:31.057 --> 00:55:35.609
+So code point is that unit. So
+for example if we look up
+
+00:55:35.609 --> 00:55:36.727
+smiling Kitty.
+
+00:55:51.327 --> 00:55:54.587
+There is an example in the in
+the repo. If you look for it.
+
+00:55:56.107 --> 00:55:56.497
+Is there?
+
+00:55:56.967 --> 00:55:59.936
+Yeah. Look for under score emoji
+and you'll find the test code
+
+00:55:59.936 --> 00:56:01.067
+that has the the escape.
+
+00:56:02.997 --> 00:56:04.997
+Just don't do a whole word or
+case sensitive.
+
+00:56:12.267 --> 00:56:12.957
+Yeah, there you go.
+
+00:56:14.727 --> 00:56:22.047
+OK, so this X1 F 408 is this
+little friendly Kitty?
+
+00:56:23.207 --> 00:56:27.577
+So this little friendly Kitty is
+represented by the number.
+
+00:56:28.637 --> 00:56:31.367
+Hacks 1F408.
+
+00:56:32.907 --> 00:56:34.217
+So the code point.
+
+00:56:36.187 --> 00:56:37.097
+As you plus.
+
+00:56:37.757 --> 00:56:40.297
+01 after 408.
+
+00:56:41.417 --> 00:56:41.707
+OK.
+
+00:56:44.357 --> 00:56:49.831
+No. In order to store Unicode,
+we don't generally want to
+
+00:56:49.831 --> 00:56:50.397
+store.
+
+00:56:52.647 --> 00:56:54.317
+They 22 bit number.
+
+00:56:55.517 --> 00:56:57.737
+Ohh Unicode code points are 22
+bits.
+
+00:56:58.947 --> 00:57:03.722
+And the smallest power of two
+that you can that that can store
+
+00:57:03.722 --> 00:57:07.587
+that is 22 and so UTF 32 is the
+standard for life.
+
+00:57:08.737 --> 00:57:12.910
+I just want a thing that can
+hold a single code point that's
+
+00:57:12.910 --> 00:57:13.867
+called UTF 32.
+
+00:57:15.537 --> 00:57:20.117
+This is the rust terror type,
+for example, is a is a Unicode
+
+00:57:20.117 --> 00:57:20.867
+codepoint.
+
+00:57:21.637 --> 00:57:22.217
+But you have to.
+
+00:57:24.237 --> 00:57:29.153
+Then if you want to store it or
+to write it to a screen, you
+
+00:57:29.153 --> 00:57:32.617
+need to either have it in UTF
+eight which.
+
+00:57:33.327 --> 00:57:35.667
+Every unit of UCF 8 is event.
+
+00:57:36.287 --> 00:57:40.667
+Or you have 16. Whichever unit
+of UTF 16 is 16 bits.
+
+00:57:44.507 --> 00:57:47.770
+And if you look at the lines
+above the comment you just
+
+00:57:44.837 --> 00:57:45.557
+So.
+
+00:57:47.770 --> 00:57:51.266
+added, those have all three
+representations, the UTF 8, the
+
+00:57:51.266 --> 00:57:53.247
+16 and the 32. They're all
+there.
+
+00:57:54.487 --> 00:57:57.532
+So thanks for the reminder. I
+gotten confused between code
+
+00:57:57.532 --> 00:57:58.667
+points and code units.
+
+00:57:59.627 --> 00:58:02.107
+Yeah. So we're seeing here.
+
+00:58:03.147 --> 00:58:07.667
+This code point if we wanted to
+see it in UTF 8.
+
+00:58:08.547 --> 00:58:13.167
+Would be the bytes F09F9088.
+
+00:58:14.427 --> 00:58:18.317
+And this is basically this is
+the initial character.
+
+00:58:19.767 --> 00:58:20.887
+An F0.
+
+00:58:22.197 --> 00:58:25.837
+Means that there are 4 units.
+
+00:58:26.517 --> 00:58:27.167
+In this.
+
+00:58:28.547 --> 00:58:33.807
+You look at the the binary, it's
+zero B 11110000.
+
+00:58:35.447 --> 00:58:38.027
+This says OK first.
+
+00:58:38.667 --> 00:58:41.397
+This is the start of a UTF 8.
+
+00:58:45.067 --> 00:58:45.327
+Code.
+
+00:58:47.777 --> 00:58:50.617
+This code unit starts in UTF 8
+code.
+
+00:58:51.397 --> 00:58:51.697
+Right.
+
+00:58:53.477 --> 00:58:55.937
+There are four ones, so this is
+4.
+
+00:58:56.727 --> 00:58:57.917
+It's wrong.
+
+00:58:59.387 --> 00:59:01.727
+The top 4 bits.
+
+00:59:02.497 --> 00:59:05.597
+I've been code point R0.
+
+00:59:07.967 --> 00:59:10.977
+Next one is X9, so would be 0B.
+
+00:59:13.407 --> 00:59:15.257
+010.
+
+00:59:20.877 --> 00:59:24.257
+These top two bits say ohh I'm a
+continuing code unit.
+
+00:59:25.497 --> 00:59:28.937
+And then the next 6 bits of this
+code point are 01.
+
+00:59:29.667 --> 00:59:30.347
+111.
+
+00:59:39.777 --> 00:59:40.827
+This is saying OK.
+
+00:59:41.527 --> 00:59:42.807
+I'm 4 units long.
+
+00:59:44.127 --> 00:59:45.977
+My top four bits are.
+
+00:59:48.917 --> 00:59:49.357
+Right.
+
+00:59:51.857 --> 01:00:00.584
+Orbit our 0000, then 01, then
+1111, then 01, then 0000, then
+
+01:00:00.584 --> 01:00:02.587
+00, then 1000.
+
+01:00:04.987 --> 01:00:08.387
+So this is how UTF a code units
+get turned into a code point.
+
+01:00:10.447 --> 01:00:14.456
+Similarly here this is the UTF
+16 representation of the exact
+
+01:00:14.456 --> 01:00:15.167
+same thing.
+
+01:00:17.877 --> 01:00:19.867
+So what we want?
+
+01:00:23.957 --> 01:00:24.357
+Is.
+
+01:00:26.297 --> 01:00:26.827
+Here.
+
+01:00:28.687 --> 01:00:30.197
+Can't break property iterator.
+
+01:00:32.357 --> 01:00:36.027
+We need to find a pointer to the
+last valid code point.
+
+01:00:37.597 --> 01:00:38.107
+And Twitter.
+
+01:00:41.757 --> 01:00:47.445
+We need to make sure that when
+we're converting from UTF 8 to
+
+01:00:47.445 --> 01:00:48.087
+UTF 16.
+
+01:00:49.187 --> 01:00:51.577
+We don't attempt to convert.
+
+01:00:52.547 --> 01:00:55.757
+Up to the middle of a code.
+
+01:00:56.817 --> 01:00:57.277
+Right.
+
+01:00:58.127 --> 01:00:59.517
+So we have, you know.
+
+01:01:00.267 --> 01:01:08.139
+Zero X 11000000. That means
+that's a 2 by code unit code
+
+01:01:08.139 --> 01:01:08.967
+point.
+
+01:01:10.747 --> 01:01:14.680
+We don't want to only have that
+one at the end and then miss the
+
+01:01:14.680 --> 01:01:18.190
+remaining parts of the code
+point. The remaining units of
+
+01:01:18.190 --> 01:01:19.097
+the code point.
+
+01:01:22.187 --> 01:01:23.587
+And so we need to find.
+
+01:01:24.817 --> 01:01:25.717
+The final.
+
+01:01:27.167 --> 01:01:30.517
+In code point that we can
+actually like convert.
+
+01:01:32.937 --> 01:01:33.717
+And you make sense.
+
+01:01:34.437 --> 01:01:37.868
+Yeah. And I think also based on
+the comment, I think this is
+
+01:01:37.868 --> 01:01:41.467
+actually doing something even a
+little bit more fancier because
+
+01:01:41.467 --> 01:01:44.954
+it's talking about characters
+that consume more than one code
+
+01:01:44.954 --> 01:01:48.441
+point. And I think that's like
+combining characters where you
+
+01:01:48.441 --> 01:01:51.872
+have like C and then squiggle
+and then accent and stuff like
+
+01:01:51.872 --> 01:01:55.359
+that and write console W wants
+to see all those at once. So I
+
+01:01:55.359 --> 01:01:58.621
+think if we do any sort of
+partial convert and print some
+
+01:01:58.621 --> 01:02:02.276
+convert and print some loop, we
+do need this iterator. But if we
+
+01:02:02.276 --> 01:02:04.357
+do it all at once, I think we
+don't.
+
+01:02:05.087 --> 01:02:08.621
+So that's basically my question
+for refactoring this code is
+
+01:02:08.621 --> 01:02:11.922
+should we try to make the
+graphene big property iterator
+
+01:02:11.922 --> 01:02:15.108
+totally? You know, core
+freestanding ish? Or should we
+
+01:02:15.108 --> 01:02:18.641
+just throw it all away and say
+we can just do the conversion
+
+01:02:18.641 --> 01:02:22.291
+all at once. But if it's over 2
+gigs or whatever, then just we
+
+01:02:22.291 --> 01:02:25.650
+fail, which seems highly
+unlikely that somebody would try
+
+01:02:25.650 --> 01:02:27.677
+to shove that through stood
+print.
+
+01:02:28.847 --> 01:02:32.297
+In theory, it's should work, so
+I guess.
+
+01:02:33.337 --> 01:02:36.198
+Investigating and seeing if we
+can eliminate the X utility
+
+01:02:36.198 --> 01:02:38.865
+dependency is reasonable.
+Certainly a probably be less
+
+01:02:38.865 --> 01:02:41.872
+invasive. I guess I could try
+that first, but I was wondering
+
+01:02:41.872 --> 01:02:42.987
+what your thoughts are.
+
+01:02:44.127 --> 01:02:44.417
+So.
+
+01:02:46.357 --> 01:02:49.169
+Explain a little bit the
+difference between those
+
+01:02:49.169 --> 01:02:52.825
+Griffing break property iterator
+and what we might consider like
+
+01:02:52.825 --> 01:02:52.937
+a.
+
+01:02:53.907 --> 01:02:58.578
+That's good. Point is that you
+can have multiple code points
+
+01:02:58.578 --> 01:03:03.402
+that combine together to create
+one graphical character on the
+
+01:03:03.402 --> 01:03:07.537
+screen. So very obvious one is.
+If you do. Let's see.
+
+01:03:08.627 --> 01:03:08.857
+OK.
+
+01:03:16.767 --> 01:03:19.117
+It's on my keyboard. Let me
+switch to.
+
+01:03:20.957 --> 01:03:22.067
+See.
+
+01:03:25.467 --> 01:03:27.477
+So if we have a.
+
+01:03:28.947 --> 01:03:32.667
+In with a acute accent, there
+are two ways to represent this.
+
+01:03:32.667 --> 01:03:36.027
+In Unicode, you can either
+represent it as E with acute
+
+01:03:36.027 --> 01:03:36.447
+accent.
+
+01:03:37.437 --> 01:03:40.906
+Which would you know, I said it
+back to English because I don't
+
+01:03:40.906 --> 01:03:42.477
+know this keyboard very well.
+
+01:03:43.187 --> 01:03:44.587
+3E.
+
+01:03:45.397 --> 01:03:49.737
+Yeah. Thank you, accent. And
+that would be one code point or
+
+01:03:49.737 --> 01:03:52.297
+you can do E and then acute
+accent.
+
+01:03:53.317 --> 01:03:57.217
+Two code points with this code
+is trying to do is trying to
+
+01:03:57.217 --> 01:03:59.167
+make sure that we don't break.
+
+01:04:01.127 --> 01:04:04.467
+Being code points that form the
+same character.
+
+01:04:07.527 --> 01:04:08.537
+My question would be.
+
+01:04:09.307 --> 01:04:12.950
+Do we need to break? Do we need
+to make sure that we don't break
+
+01:04:12.950 --> 01:04:15.527
+between 2 characters that form
+the same code?
+
+01:04:16.367 --> 01:04:18.057
+Then from the same wrapping.
+
+01:04:19.287 --> 01:04:23.848
+He like, did you test and make
+sure that we couldn't write
+
+01:04:23.848 --> 01:04:28.717
+console down, WWE write console
+W combining acute accent mark.
+
+01:04:28.957 --> 01:04:33.498
+So so I tested a different case
+because I didn't realize that it
+
+01:04:33.498 --> 01:04:37.899
+was the combining character case
+that we really cared about. I
+
+01:04:37.899 --> 01:04:42.509
+tested the special the new emoji
+like Black can't that uses the 0
+
+01:04:42.509 --> 01:04:43.487
+width joiners.
+
+01:04:44.487 --> 01:04:48.024
+You know, cap and then Black
+Square with a 0 withdrawing her
+
+01:04:48.024 --> 01:04:51.503
+in between. That should be
+displayed as black add emoji and
+
+01:04:51.503 --> 01:04:55.329
+this code correctly handles that
+regardless of exactly where that
+
+01:04:55.329 --> 01:04:59.040
+10 byte sequence appears on the
+8K boundary. It gets printed as
+
+01:04:59.040 --> 01:05:02.692
+a whole black cat emoji, but I
+didn't test the E with the cute
+
+01:05:02.692 --> 01:05:04.547
+accent. That is a good question.
+
+01:05:05.847 --> 01:05:10.282
+Expect is that you could just
+print the first part of the
+
+01:05:10.282 --> 01:05:14.716
+graphene cluster and then the
+second part of the graphene
+
+01:05:14.716 --> 01:05:15.327
+cluster.
+
+01:05:16.887 --> 01:05:20.085
+I would actually be surprised if
+that would work, because right
+
+01:05:17.107 --> 01:05:18.127
+So that's my question.
+
+01:05:20.085 --> 01:05:23.084
+console W if you gave it an E
+and you say just print this E
+
+01:05:23.084 --> 01:05:26.182
+it's gonna print an E and then
+if you give it a free standing
+
+01:05:26.182 --> 01:05:29.430
+accent and you say print this, I
+think it's not going to go back
+
+01:05:29.430 --> 01:05:32.428
+and try to update the character
+it already printed. I think
+
+01:05:32.428 --> 01:05:33.477
+that's going to fail.
+
+01:05:34.577 --> 01:05:36.607
+So I think this graphing break.
+
+01:05:37.567 --> 01:05:38.607
+Is necessary.
+
+01:05:39.827 --> 01:05:40.197
+Yeah.
+
+01:05:43.887 --> 01:05:48.783
+Yeah. Then this means that the
+rest of the library has problems
+
+01:05:48.783 --> 01:05:52.837
+with it. So let let let's try
+this. So don't be TWC.
+
+01:05:54.467 --> 01:05:55.547
+Making calls.
+
+01:06:02.767 --> 01:06:03.347
+Or.
+
+01:06:04.677 --> 01:06:05.317
+Better.
+
+01:06:07.717 --> 01:06:08.127
+He.
+
+01:06:22.057 --> 01:06:22.747
+Finally.
+
+01:06:32.897 --> 01:06:36.317
+This file format website is very
+useful for stuff like this.
+
+01:06:51.627 --> 01:06:53.077
+X301, right? Yeah, there we go.
+
+01:06:59.947 --> 01:07:02.507
+We write console W.
+
+01:07:09.197 --> 01:07:11.057
+Handle you see.
+
+01:07:12.157 --> 01:07:14.467
+For characters writers too.
+
+01:07:15.807 --> 01:07:16.907
+For characters written.
+
+01:07:19.057 --> 01:07:19.597
+This is see.
+
+01:07:20.707 --> 01:07:21.617
+That was not see, OK.
+
+01:07:31.457 --> 01:07:33.327
+You know doing wrong here.
+
+01:07:34.077 --> 01:07:36.949
+I think you need to look at the
+right Council W docs. I think
+
+01:07:36.949 --> 01:07:39.774
+there's a function need to call
+to map that stood out. We'll
+
+01:07:39.774 --> 01:07:41.487
+handle constant to an actual
+handle.
+
+01:07:44.457 --> 01:07:48.135
+I am not a Windows 32 programmer
+and this and this PR I I joked
+
+01:07:47.717 --> 01:07:48.217
+Yeah.
+
+01:07:48.135 --> 01:07:51.410
+before they we started this
+review that I overhauled the
+
+01:07:51.410 --> 01:07:54.685
+test code to use Windows
+semaphores and that is the most
+
+01:07:54.685 --> 01:07:57.557
+I've programmed in the Windows
+API the long time.
+
+01:07:58.767 --> 01:08:02.557
+Most of the time I see response
+but platform specific.
+
+01:08:00.737 --> 01:08:01.587
+That's it handled.
+
+01:08:05.937 --> 01:08:07.377
+It's good handle.
+
+01:08:06.327 --> 01:08:06.997
+Yeah, that's it.
+
+01:08:10.137 --> 01:08:11.527
+Take some man stood handle.
+
+01:08:15.507 --> 01:08:17.057
+You're looking at a set, not
+yet.
+
+01:08:18.887 --> 01:08:19.907
+But I'm looking at.
+
+01:08:20.597 --> 01:08:20.987
+Thank you.
+
+01:08:27.327 --> 01:08:28.737
+You run this, we should get.
+
+01:08:30.757 --> 01:08:31.107
+No.
+
+01:08:32.247 --> 01:08:32.927
+Now.
+
+01:08:33.647 --> 01:08:35.197
+If you do it one at a time.
+
+01:08:38.017 --> 01:08:38.567
+Here we go.
+
+01:08:42.057 --> 01:08:44.157
+We do get it. That's what I
+thought would happen.
+
+01:08:44.577 --> 01:08:47.367
+That's very interesting. I have
+supplied that that works.
+
+01:08:45.217 --> 01:08:45.937
+So you do not.
+
+01:08:48.417 --> 01:08:52.417
+Yeah. So you do not need to do
+the graphing break code.
+
+01:08:53.617 --> 01:08:54.767
+That was when I was tracking.
+
+01:08:58.357 --> 01:09:02.669
+This this says to me that we can
+do the far more simple case of
+
+01:09:02.669 --> 01:09:04.757
+going to the end of the string.
+
+01:09:06.177 --> 01:09:09.207
+Are going to the end of the 8192
+bytes.
+
+01:09:09.927 --> 01:09:13.247
+And then popping back until we
+find a.
+
+01:09:15.857 --> 01:09:19.173
+At the beginning of a code white
+and use that as like the end
+
+01:09:19.173 --> 01:09:20.777
+pointer. Does that make sense?
+
+01:09:22.797 --> 01:09:25.819
+Yeah, because we we can
+recognize the boundaries between
+
+01:09:25.819 --> 01:09:26.137
+UTF 8.
+
+01:09:28.567 --> 01:09:31.704
+Reckon you recognize the
+boundaries between code points
+
+01:09:31.704 --> 01:09:35.066
+and UTF 8 stream without caring
+about exactly where we are,
+
+01:09:35.066 --> 01:09:38.651
+because the the values tell us
+whether we're starting a new one
+
+01:09:38.651 --> 01:09:40.387
+or not. That's very easy to do.
+
+01:09:42.067 --> 01:09:44.544
+That is, that is interesting.
+Does write console W say
+
+01:09:44.544 --> 01:09:47.426
+anything that this works because
+I'm I'm a little nervous about
+
+01:09:47.426 --> 01:09:49.317
+depending on the results of 1
+experiment.
+
+01:09:51.067 --> 01:09:54.446
+If the documentation said it
+could handle it, I would feel
+
+01:09:54.446 --> 01:09:54.847
+better.
+
+01:09:58.107 --> 01:10:02.013
+It probably doesn't mention it
+though, because this is pretty
+
+01:10:02.013 --> 01:10:02.517
+obscure.
+
+01:10:05.627 --> 01:10:07.677
+It does not say anything about
+graphemes.
+
+01:10:08.387 --> 01:10:09.937
+OK, silent, interesting.
+
+01:10:09.437 --> 01:10:10.407
+Point clusters.
+
+01:10:11.197 --> 01:10:12.527
+Sure looked like it worked
+though.
+
+01:10:13.397 --> 01:10:16.167
+Yeah. So we should do more
+testing.
+
+01:10:17.307 --> 01:10:17.527
+Yeah.
+
+01:10:18.477 --> 01:10:20.707
+Staying but it seems.
+
+01:10:21.887 --> 01:10:29.054
+I mean, we could do simple
+search back for the beginning of
+
+01:10:29.054 --> 01:10:30.607
+a code point.
+
+01:10:31.337 --> 01:10:32.047
+There time.
+
+01:10:32.547 --> 01:10:34.737
+You can have a graph you.
+
+01:10:39.877 --> 01:10:41.627
+I am still tempted to just say.
+
+01:10:40.367 --> 01:10:40.817
+Go back.
+
+01:10:43.977 --> 01:10:46.797
+What if we don't break it into a
+K segments? And what if we just
+
+01:10:46.797 --> 01:10:47.577
+do it all at once?
+
+01:10:49.037 --> 01:10:51.251
+Because the the whole reason I
+think we were originally
+
+01:10:51.251 --> 01:10:53.466
+avoiding this is because we
+wanted to lock, but then we
+
+01:10:53.466 --> 01:10:55.877
+decided that we don't actually
+need to lock when we do this.
+
+01:10:57.037 --> 01:11:01.139
+So I wonder if the the argument
+for breaking it up into a K
+
+01:11:01.139 --> 01:11:02.847
+segments and still holds.
+
+01:11:03.637 --> 01:11:06.950
+So the original reason that we
+did this was because I didn't
+
+01:11:06.950 --> 01:11:07.927
+like that we were.
+
+01:11:09.937 --> 01:11:14.607
+Doing allocation. I wanted us to
+do it in a stack buffer.
+
+01:11:15.837 --> 01:11:17.847
+Taking an 8K stack buffer or
+something?
+
+01:11:19.437 --> 01:11:22.047
+Because that's how I implemented
+it. Erupt, basically.
+
+01:11:24.057 --> 01:11:27.212
+Hi I'm certainly allocating a
+slower. I think we're already
+
+01:11:27.212 --> 01:11:30.524
+allocating in many cases if we
+print the new line because that
+
+01:11:30.524 --> 01:11:31.207
+stood string.
+
+01:11:32.927 --> 01:11:35.832
+You're right, it's a potential
+performance issue. The thing is,
+
+01:11:35.832 --> 01:11:38.601
+if we're physically writing to a
+console, I wonder, I really
+
+01:11:38.601 --> 01:11:41.415
+wonder if it matters because the
+console performance, I mean,
+
+01:11:41.415 --> 01:11:43.957
+they've improved it, but I think
+that's gonna dominate.
+
+01:11:45.707 --> 01:11:49.001
+I haven't profiled this at all,
+but I would be very surprised if
+
+01:11:46.077 --> 01:11:46.437
+Yeah.
+
+01:11:49.001 --> 01:11:52.346
+our allocation were the limiting
+step in like physically printing
+
+01:11:52.346 --> 01:11:53.207
+the console also.
+
+01:11:54.487 --> 01:11:57.491
+If you're physically printing to
+the console how many like you
+
+01:11:57.491 --> 01:12:00.543
+know gigs, can you print before
+it just scrolls by too fast for
+
+01:12:00.543 --> 01:12:03.356
+the user to see? Like at that
+point you redirect your file
+
+01:12:03.356 --> 01:12:06.217
+anyways because you don't wanna,
+you know, have the console
+
+01:12:06.217 --> 01:12:09.030
+printing slow down. So I wonder
+in that case because we're
+
+01:12:09.030 --> 01:12:11.557
+actually displaying stuff to the
+user if it matters.
+
+01:12:12.837 --> 01:12:16.107
+Whereas if we were, if this were
+on the print to a file path, we
+
+01:12:13.397 --> 01:12:14.047
+Yeah, that was.
+
+01:12:16.107 --> 01:12:18.874
+were could run completely
+headless, then yeah, yeah. I
+
+01:12:18.874 --> 01:12:21.087
+would be like, OK, we don't
+wanna allocate.
+
+01:12:22.277 --> 01:12:24.567
+Yeah, my my feeling is kind of
+like.
+
+01:12:26.287 --> 01:12:29.627
+If you're printing more than
+4000.
+
+01:12:30.997 --> 01:12:32.407
+Caracteres to the console.
+
+01:12:35.337 --> 01:12:37.707
+They don't care about your
+health case very much.
+
+01:12:39.487 --> 01:12:39.837
+And.
+
+01:12:40.967 --> 01:12:41.337
+Like.
+
+01:12:42.467 --> 01:12:46.681
+Will be smaller amounts that
+we're that you print. I would
+
+01:12:46.681 --> 01:12:51.037
+rather not allocate. So like if
+you just do it in 4K chunks.
+
+01:12:54.107 --> 01:12:56.247
+You can 2K chunks like it's not
+a big deal.
+
+01:12:57.197 --> 01:12:59.571
+Especially because we don't have
+to do this graph being
+
+01:12:59.571 --> 01:13:00.207
+clusterization.
+
+01:13:02.697 --> 01:13:03.887
+I would rather not.
+
+01:13:06.297 --> 01:13:09.197
+Rather not allocate whenever
+possible.
+
+01:13:10.837 --> 01:13:13.779
+I think it's a reasonable The
+thing is, the code has already
+
+01:13:13.779 --> 01:13:16.914
+written so slightly adjusting it
+to use the simpler technique of
+
+01:13:16.914 --> 01:13:19.712
+just finding the next UTF 8
+boundary, which we can detect
+
+01:13:19.712 --> 01:13:22.461
+with a simple it's arranged
+test. I just need to look on
+
+01:13:22.461 --> 01:13:24.197
+Wikipedia to see what the value
+is.
+
+01:13:25.167 --> 01:13:25.427
+Yeah.
+
+01:13:25.837 --> 01:13:26.937
+That would be that would be
+simple.
+
+01:13:26.457 --> 01:13:30.535
+Checking right thought test
+really really like you. Just you
+
+01:13:30.535 --> 01:13:34.211
+just search for the last
+character that has either the
+
+01:13:34.211 --> 01:13:35.347
+top 2 bit set or.
+
+01:13:36.057 --> 01:13:37.337
+Not the top bit set.
+
+01:13:38.997 --> 01:13:42.037
+Yeah, that can be done with
+handwritten code by effectively.
+
+01:13:39.347 --> 01:13:40.067
+Either.
+
+01:13:43.647 --> 01:13:48.047
+Either there will be 0 XXXXX.
+
+01:13:49.637 --> 01:13:50.947
+Or is there will be 1/1?
+
+01:13:53.057 --> 01:13:55.880
+That's all we care about. We
+need to find one of these two
+
+01:13:55.880 --> 01:13:57.267
+characters, one of these two.
+
+01:14:02.057 --> 01:14:02.867
+You know that now.
+
+01:14:04.047 --> 01:14:05.057
+We come in my.
+
+01:14:09.177 --> 01:14:09.617
+OK.
+
+01:14:11.197 --> 01:14:15.247
+We're doing a bunch of
+transcoding multiplied twig car.
+
+01:14:16.447 --> 01:14:18.837
+To beat you today. Yep, that
+makes sense.
+
+01:14:21.297 --> 01:14:22.697
+It string Yep.
+
+01:14:26.317 --> 01:14:29.197
+Yeah, this is the accounting
+number occurs required.
+
+01:14:30.537 --> 01:14:32.687
+It's the number of character
+required is greater than.
+
+01:14:33.697 --> 01:14:36.537
+Gratian string dot capacity let
+me reset it.
+
+01:14:43.807 --> 01:14:45.797
+So we all allocating in this
+case.
+
+01:14:48.447 --> 01:14:48.997
+Right.
+
+01:14:52.117 --> 01:14:53.947
+Yeah, I don't believe we
+actually use a stack buffer.
+
+01:14:55.197 --> 01:14:56.927
+We use the the allocated string.
+
+01:14:58.637 --> 01:15:01.727
+Yeah. So we're basically saying,
+OK, we're going to allocate.
+
+01:15:03.027 --> 01:15:03.707
+Shut down.
+
+01:15:04.617 --> 01:15:08.747
+Up to 8192 and it's The thing is
+a big tracking thing, then we'll
+
+01:15:08.747 --> 01:15:12.627
+do random stuff, but we don't
+need to have all that stuff. So
+
+01:15:12.627 --> 01:15:15.067
+this is a lot of complexity
+basically.
+
+01:15:16.707 --> 01:15:19.583
+Which will go away once we
+remove the graphene
+
+01:15:19.583 --> 01:15:20.867
+clusterization style.
+
+01:15:22.477 --> 01:15:25.795
+Well, I think that I think all
+that complexity will stay. It's
+
+01:15:25.795 --> 01:15:28.797
+just the graphene bit means that
+the the step define the
+
+01:15:28.797 --> 01:15:31.904
+boundaries simpler, but we're
+still doing in chunks, so it
+
+01:15:31.904 --> 01:15:35.221
+still needs allocated to stir.
+This doesn't sure that the user
+
+01:15:35.221 --> 01:15:38.381
+comes to us with like a mega
+text. We simply reuse the same
+
+01:15:38.381 --> 01:15:41.699
+8K buffer. So after the first
+allocation we are non allocating
+
+01:15:41.699 --> 01:15:43.647
+and we can reuse it. So that's
+nice.
+
+01:15:44.837 --> 01:15:48.791
+Yeah, that that's definitely
+true. But on the other hand
+
+01:15:48.791 --> 01:15:49.137
+like.
+
+01:15:49.817 --> 01:15:52.520
+What's happening is every time
+you call print, you get a new
+
+01:15:52.520 --> 01:15:53.007
+allocation.
+
+01:15:54.137 --> 01:15:55.637
+Already do get an allegation.
+
+01:15:56.667 --> 01:15:59.657
+It's not make me happy, but we
+do do an operation.
+
+01:16:04.837 --> 01:16:06.267
+Broke for a SEC. One SEC.
+
+01:16:07.857 --> 01:16:12.597
+Ohh but like the this checking
+for.
+
+01:16:15.277 --> 01:16:17.936
+This if it's greater than
+capacity, we do not need to
+
+01:16:17.936 --> 01:16:19.117
+worry about this at all.
+
+01:16:20.037 --> 01:16:20.627
+I don't think.
+
+01:16:21.167 --> 01:16:24.527
+Now we do cause it starts off
+with new capacity I believe.
+
+01:16:30.127 --> 01:16:31.387
+No, I see what happens.
+
+01:16:35.627 --> 01:16:38.637
+Yeah, this is trying to avoid
+like allocating 8K every time
+
+01:16:38.637 --> 01:16:38.837
+but.
+
+01:16:41.207 --> 01:16:42.477
+It it doesn't need to allocate.
+
+01:16:45.217 --> 01:16:46.187
+So I think.
+
+01:16:47.207 --> 01:16:49.858
+The only other comment is I
+would like this to be a stock
+
+01:16:49.858 --> 01:16:50.177
+buffer.
+
+01:16:50.887 --> 01:16:54.595
+The thing is, like I would worry
+about that we we try to be
+
+01:16:54.595 --> 01:16:55.027
+pretty.
+
+01:16:56.367 --> 01:16:59.424
+Conservative in our use of stack
+space because we don't know how
+
+01:16:59.424 --> 01:17:02.104
+much is available. The user
+could already be in a pretty
+
+01:17:02.104 --> 01:17:05.207
+deep call stack by the time they
+call the STL, and if we overflow
+
+01:17:05.207 --> 01:17:06.617
+the stack, it's unrecoverable.
+
+01:17:07.137 --> 01:17:10.361
+Umm, the the largest things we
+have in the STL like the random
+
+01:17:10.361 --> 01:17:13.637
+number generators which are like
+2 or 4 kilobytes. I forget how
+
+01:17:13.637 --> 01:17:16.912
+big and that's unavoidable from
+version twist or and in CARICOM
+
+01:17:16.912 --> 01:17:19.931
+I had literally no choice but to
+use a stack buffer cuz we
+
+01:17:19.931 --> 01:17:23.207
+physically cannot allocate now
+we're no fail. So there I had to
+
+01:17:23.207 --> 01:17:26.329
+use like a one KB stack buffer
+and I felt super bad about it
+
+01:17:26.329 --> 01:17:28.887
+because I was like I don't know
+how close we are.
+
+01:17:29.927 --> 01:17:34.099
+But that that was like the upper
+limit. AK is a lot. I don't. I
+
+01:17:34.099 --> 01:17:37.946
+don't think we can do that. It
+seems risky for a potential
+
+01:17:37.946 --> 01:17:41.987
+optimization. The thing is, I'd
+rather keep what we have now.
+
+01:17:43.127 --> 01:17:46.044
+Because we can revise it in the
+future if we find that
+
+01:17:46.044 --> 01:17:49.280
+performance is an issue, the
+internal usage of a buffer here
+
+01:17:49.280 --> 01:17:52.568
+we can change that without other
+code needing to care because
+
+01:17:52.568 --> 01:17:55.803
+we're not passing it across
+functions. So I'd kind of rather
+
+01:17:55.803 --> 01:17:59.145
+stupid for what we have and then
+if we profile and we're fine,
+
+01:17:56.497 --> 01:17:56.797
+Right.
+
+01:17:59.145 --> 01:18:02.062
+this is actually problem.
+Somebody calling stood print
+
+01:18:02.062 --> 01:18:05.350
+with fairly small strings. Then
+we can go back and say, well,
+
+01:18:05.350 --> 01:18:08.745
+what if we use like a 1K buffer
+and then if it's over that then
+
+01:18:08.745 --> 01:18:11.237
+we allocate you or just
+something fancier but.
+
+01:18:11.727 --> 01:18:11.957
+Yeah.
+
+01:18:12.077 --> 01:18:15.876
+We refer to avoid starting with
+a big stack buffer. That seems
+
+01:18:15.876 --> 01:18:19.314
+like premature optimization in a
+way that could decrease
+
+01:18:19.314 --> 01:18:20.037
+reliability.
+
+01:18:22.067 --> 01:18:25.337
+It OK, so the one thing I will
+say is that.
+
+01:18:27.627 --> 01:18:28.347
+This.
+
+01:18:29.677 --> 01:18:34.617
+Probably doesn't need to exist
+like like what we care about is.
+
+01:18:37.997 --> 01:18:39.747
+At work we can allocate.
+
+01:18:41.327 --> 01:18:46.575
+Enough always, because we know
+that the size and W cares is
+
+01:18:46.575 --> 01:18:47.187
+always.
+
+01:18:47.957 --> 01:18:50.237
+Points that are equal to the
+size in careers.
+
+01:18:52.417 --> 01:18:54.847
+So we could just allocate the
+number of terrors.
+
+01:18:57.037 --> 01:18:57.897
+If that makes sense.
+
+01:18:59.317 --> 01:19:01.007
+Oh, I see. I see what you're
+saying.
+
+01:19:02.477 --> 01:19:06.057
+Because it's a, it's A at most a
+constant factor more.
+
+01:19:08.077 --> 01:19:12.410
+The the question is, does that
+actually save anything because
+
+01:19:12.410 --> 01:19:14.227
+the initial allocation is?
+
+01:19:14.987 --> 01:19:18.842
+A could cause we're we're doing
+it exactly. So you're saying we
+
+01:19:18.842 --> 01:19:22.516
+could have a case where the
+initial string is 8K occurrences
+
+01:19:22.516 --> 01:19:22.817
+of a?
+
+01:19:24.007 --> 01:19:24.237
+Yeah.
+
+01:19:24.817 --> 01:19:29.209
+No, no, the opposite. The
+initial string is a bunch of big
+
+01:19:29.209 --> 01:19:30.027
+emoji that.
+
+01:19:30.717 --> 01:19:35.030
+Consume. You know, they're like,
+you know, 4 byte each or
+
+01:19:35.030 --> 01:19:39.937
+something. And then so we we say
+ohh we only need 2K W carts. No,
+
+01:19:39.937 --> 01:19:44.547
+we've got the uh the combining,
+they actually use surrogates.
+
+01:19:45.447 --> 01:19:48.503
+OK, so the case, maybe it might
+may not be as simple as that,
+
+01:19:48.503 --> 01:19:50.227
+but it's the initial stuff is
+all.
+
+01:19:49.487 --> 01:19:53.851
+So we have a bunch of Chinese
+text that takes up 3 bytes in
+
+01:19:51.797 --> 01:19:52.087
+Yeah.
+
+01:19:53.851 --> 01:19:54.287
+UTF 8.
+
+01:19:54.907 --> 01:19:58.182
+Yeah, and then collapses down to
+smaller UTF sixteens. And then
+
+01:19:55.457 --> 01:19:56.257
+And takes up.
+
+01:19:58.182 --> 01:20:01.354
+next one is all a bunch of ASCII
+A's that do need the whole 8
+
+01:20:01.354 --> 01:20:04.475
+case that we do 1 allocation and
+then we discover we need to
+
+01:20:04.475 --> 01:20:07.493
+resize. Then we hit the high
+watermark and anything beyond
+
+01:20:07.493 --> 01:20:10.307
+that we can reuse the
+allocation. So that doesn't seem
+
+01:20:10.307 --> 01:20:12.917
+like the end of the world. The
+number we're actual
+
+01:20:12.917 --> 01:20:16.140
+reallocations is fairly small.
+It does seem like just allocate
+
+01:20:16.140 --> 01:20:18.851
+a constant factor more the
+promise that stood string
+
+01:20:18.851 --> 01:20:21.614
+insists on initializing
+everything. So if we allocate
+
+01:20:21.614 --> 01:20:24.837
+more than we need, we actually
+initialize all that stuff to 0.
+
+01:20:25.927 --> 01:20:26.907
+At least the first time.
+
+01:20:28.177 --> 01:20:29.307
+Which seems also in desire.
+
+01:20:28.997 --> 01:20:30.227
+You're not using stood string.
+
+01:20:34.457 --> 01:20:34.717
+Yeah.
+
+01:20:34.837 --> 01:20:38.016
+CRT unique. He put her don't
+way. Yeah, we Malik. And then we
+
+01:20:37.547 --> 01:20:37.767
+Yeah.
+
+01:20:38.016 --> 01:20:40.836
+move. And then I think it
+scribbles a null Terminator.
+
+01:20:40.836 --> 01:20:44.118
+Yeah, that's a good argument in
+favor of just allocate a little
+
+01:20:44.118 --> 01:20:45.297
+bit more than you need.
+
+01:20:46.627 --> 01:20:47.677
+So you're saying it's?
+
+01:20:49.257 --> 01:20:53.651
+N right, because you can never
+have more WRT coming out than
+
+01:20:53.651 --> 01:20:54.947
+care is coming in.
+
+01:20:57.237 --> 01:20:59.027
+That's compelling. That's only a
+lot simpler.
+
+01:21:00.277 --> 01:21:00.477
+Yeah.
+
+01:21:00.937 --> 01:21:03.207
+I could be convinced of that if
+we're going to allocate then.
+
+01:21:04.277 --> 01:21:05.427
+Make it a little simpler there.
+
+01:21:06.567 --> 01:21:06.787
+Yeah.
+
+01:21:08.927 --> 01:21:10.177
+Because like, it's not.
+
+01:21:11.057 --> 01:21:14.539
+Not much more. I mean, actually,
+I would argue it's probably not
+
+01:21:14.539 --> 01:21:16.627
+at all and more expensive to
+allocate.
+
+01:21:18.437 --> 01:21:22.677
+4K or 8K then it is to allocate
+4K2K.
+
+01:21:23.397 --> 01:21:26.187
+You're still allocating a page
+or two pages or whatever.
+
+01:21:26.617 --> 01:21:30.010
+Yeah, right. But other then then
+this really like if we're gonna
+
+01:21:30.010 --> 01:21:33.142
+simplify that, then they're
+really pushes me towards. Let's
+
+01:21:33.142 --> 01:21:36.483
+just do the whole conversion all
+at once. Like none of the same
+
+01:21:36.483 --> 01:21:39.667
+case stuff. Throw it all away.
+If we're gonna allocate, like
+
+01:21:39.667 --> 01:21:40.397
+just allocate.
+
+01:21:41.857 --> 01:21:45.062
+Enough space to convert the
+users whole string and then
+
+01:21:45.062 --> 01:21:46.607
+later maybe go optimize it.
+
+01:21:47.297 --> 01:21:50.348
+With, you know something fancy
+stack, buffer, whatever. But
+
+01:21:50.348 --> 01:21:53.550
+what do I basically worry about?
+Is the OK, I could change the
+
+01:21:53.550 --> 01:21:56.753
+code to March backwards a bit
+and find that UDFA boundary, but
+
+01:21:56.753 --> 01:21:59.955
+that's introducing more risk if
+we do the conversion of all at
+
+01:21:59.955 --> 01:22:02.904
+once, then we know that if the
+basic stuff works, all the
+
+01:22:02.904 --> 01:22:04.327
+complicated stuff works too.
+
+01:22:06.337 --> 01:22:10.487
+And but I'm getting nervous that
+we're rising at the PR's logic
+
+01:22:10.487 --> 01:22:12.367
+close sort of to the end and.
+
+01:22:14.267 --> 01:22:17.668
+Going with something simpler
+seems even if it's a bigger code
+
+01:22:17.668 --> 01:22:21.232
+change, it's gonna result a lot
+simpler code. I think I'd prefer
+
+01:22:21.232 --> 01:22:24.468
+to do that because either way
+we're gonna allocate and for
+
+01:22:24.468 --> 01:22:27.869
+most things it doesn't make a
+difference like user gonna come
+
+01:22:27.869 --> 01:22:31.379
+to us with a string that's a few
+100 bytes, or maybe a couple K
+
+01:22:31.379 --> 01:22:34.340
+like in my testing, 8K is
+already a whole page that's
+
+01:22:34.340 --> 01:22:37.631
+already pretty big, so I think
+there's gonna be very little
+
+01:22:37.631 --> 01:22:40.537
+difference between do it in aka
+chunks versus do it.
+
+01:22:41.207 --> 01:22:43.894
+All in a single step, and that
+will dramatically simplify the
+
+01:22:43.894 --> 01:22:46.321
+code, which is I think what
+we're both worried about. I
+
+01:22:46.321 --> 01:22:48.487
+prefer to do that change. If
+you're OK with that.
+
+01:22:47.387 --> 01:22:47.777
+Yeah.
+
+01:22:49.437 --> 01:22:50.797
+I'm gonna that I think.
+
+01:22:52.207 --> 01:22:55.217
+I would be certainly down if
+somebody brought in.
+
+01:22:58.487 --> 01:23:02.957
+This kind of optimization back
+if they show a use case for it.
+
+01:23:04.137 --> 01:23:07.215
+Or if they are somehow writing
+more than two gigs to the
+
+01:23:07.215 --> 01:23:07.647
+console.
+
+01:23:08.667 --> 01:23:11.127
+But but yeah, I think this is
+reasonable.
+
+01:23:09.447 --> 01:23:09.697
+Yeah.
+
+01:23:11.657 --> 01:23:12.187
+OK, cool.
+
+01:23:12.957 --> 01:23:15.973
+Yeah, certainly, yeah. There's
+an optimization PR follow up
+
+01:23:15.973 --> 01:23:18.837
+that uses a benchmark and we
+definitely be open to that.
+
+01:23:20.857 --> 01:23:24.278
+But the most important thing is
+to make sure that we're not
+
+01:23:24.278 --> 01:23:27.927
+going to paint ourselves into a
+corner with an ABI or something
+
+01:23:27.927 --> 01:23:31.633
+in the import Lib that prevents
+us from ever making this better.
+
+01:23:31.633 --> 01:23:35.054
+We could worst case is we would
+need to retain the existing
+
+01:23:35.054 --> 01:23:38.646
+stuff as is and add something
+entirely new to the import Lib a
+
+01:23:38.646 --> 01:23:38.817
+V2.
+
+01:23:39.957 --> 01:23:40.897
+Which we could do.
+
+01:23:42.707 --> 01:23:45.827
+I I am happy with.
+
+01:23:52.807 --> 01:23:57.214
+I would be happier if this
+allocation stuff was. I would be
+
+01:23:57.214 --> 01:24:01.620
+happier if the allocation stuff
+was not on the ABI boundary
+
+01:24:01.620 --> 01:24:06.247
+like. This is an API boundary.
+It is an internal API boundary.
+
+01:24:06.927 --> 01:24:09.300
+I guess we could make it
+transparent UTF 8 string too.
+
+01:24:09.300 --> 01:24:12.017
+Never mind. Never mind. We can
+do transcode either 8 string 2.
+
+01:24:09.757 --> 01:24:10.467
+No, it's.
+
+01:24:12.437 --> 01:24:16.204
+Yeah. And importantly, this is
+in an unnamed namespace. If you
+
+01:24:16.204 --> 01:24:20.090
+look at it, it's not marked with
+an explicit calling convention.
+
+01:24:20.090 --> 01:24:23.378
+That's actually one of the
+revisions I get, so this is
+
+01:24:23.378 --> 01:24:27.085
+fully local to this TU yeah. See
+this allocated string stuff.
+
+01:24:27.085 --> 01:24:30.791
+It's all the unnamed new space.
+The only ones that are on the
+
+01:24:30.791 --> 01:24:34.318
+boundary that are actually
+linking to user code. Those are
+
+01:24:34.318 --> 01:24:37.965
+marked stirred call, and they're
+just like the right Unicode
+
+01:24:37.965 --> 01:24:41.732
+console. Whatever. This does not
+pass any allocations back and
+
+01:24:38.497 --> 01:24:38.897
+Perfect.
+
+01:24:41.732 --> 01:24:42.927
+forth to the header.
+
+01:24:44.037 --> 01:24:44.427
+Yes.
+
+01:24:44.387 --> 01:24:47.506
+I just fixed the conscire. Star
+says. I'm gonna go print it to
+
+01:24:47.506 --> 01:24:50.129
+the console somehow through
+magic, and we do all the
+
+01:24:50.129 --> 01:24:53.099
+allocations internally. So I
+think that is a good firewall.
+
+01:24:53.099 --> 01:24:54.287
+We're gonna be ABI safe.
+
+01:24:55.617 --> 01:24:57.107
+Perfect. I'm happy with that.
+
+01:25:00.667 --> 01:25:03.477
+I think that's the only thing I
+have left. I just wanted to.
+
+01:25:04.867 --> 01:25:07.804
+The the real the real meat and
+potatoes of this is I wanted to
+
+01:25:07.804 --> 01:25:10.367
+explain to people how Unicode
+stuff on Windows worked.
+
+01:25:11.277 --> 01:25:14.647
+And how Unicode code points work
+and I think I succeeded in that.
+
+01:25:15.597 --> 01:25:19.607
+So hopefully y'all, who are
+watching enjoy this.
+
+01:25:20.627 --> 01:25:24.916
+Semi code reviews Sunny look
+into Unicode and how it's
+
+01:25:24.916 --> 01:25:26.397
+printed on Windows.
+
+01:25:27.447 --> 01:25:30.799
+Thank you so much for coming to
+the VC libs Open code review and
+
+01:25:30.799 --> 01:25:31.057
+I'll.
+
+01:25:32.197 --> 01:25:32.707
+He also.

@@ -1,0 +1,5766 @@
+WEBVTT
+
+00:00:11.186 --> 00:00:16.097
+Hi everyone and welcome back to
+another VC libraries Open code
+
+00:00:16.097 --> 00:00:20.384
+review in today's special
+Intercontinental Edition, we
+
+00:00:20.384 --> 00:00:25.217
+will be reviewing site brands PR
+to implement P25O5R5 monadic
+
+00:00:25.217 --> 00:00:29.972
+functions for state expected.
+This is a C + + 23 feature. So
+
+00:00:29.972 --> 00:00:34.805
+here is the PR 3361. I've got
+the tracking issue open that as
+
+00:00:34.805 --> 00:00:39.560
+usual lists the feature test
+macro change where the value is
+
+00:00:39.560 --> 00:00:43.146
+increasing. So we'll be looking
+out for that.
+
+00:00:44.296 --> 00:00:49.080
+The actual paper which is adding
+a functions and then or else
+
+00:00:49.080 --> 00:00:53.865
+transform and transform error.
+These are being added to stood
+
+00:00:53.865 --> 00:00:58.418
+expected and they're somewhat
+similar to the other monadic
+
+00:00:58.418 --> 00:01:02.817
+functions that were added to
+optional that we previously
+
+00:01:02.817 --> 00:01:07.601
+reviewed, and I've opened up the
+corresponding section of the
+
+00:01:07.601 --> 00:01:11.846
+working paper here. So let's
+dive right into the code.
+
+00:01:14.916 --> 00:01:17.296
+OK alt Click to minimize
+everything.
+
+00:01:17.896 --> 00:01:22.037
+Umm, OK. So we're adding a new
+test, we've got changes to libx
+
+00:01:22.037 --> 00:01:26.310
+skips, changes to our century to
+header arrival, core H846 lines
+
+00:01:26.310 --> 00:01:30.452
+of product code change the new
+test and the feature test macro
+
+00:01:30.452 --> 00:01:34.396
+as usual. I like to eat dessert
+first, so I will review the
+
+00:01:34.396 --> 00:01:38.471
+small changes first. So I've
+also core we are listing the new
+
+00:01:38.471 --> 00:01:38.866
+paper.
+
+00:01:39.526 --> 00:01:45.840
+In the C + 23 guarded section.
+Yeah, that's correct and it is
+
+00:01:45.840 --> 00:01:52.155
+in sorted order that looks good.
+Let's make sure there are no
+
+00:01:52.155 --> 00:01:52.766
+typos.
+
+00:01:54.216 --> 00:01:59.246
+Yeah, Alex, good. We've got the
+increased feature test macro.
+
+00:02:00.096 --> 00:02:04.610
+Because expected is a. See was
+supposed 23 feature to begin
+
+00:02:04.610 --> 00:02:04.986
+with.
+
+00:02:05.966 --> 00:02:07.236
+So essentially, there's no.
+
+00:02:08.486 --> 00:02:12.250
+Uh, there's no variation in the
+macro. We have a special section
+
+00:02:12.250 --> 00:02:16.014
+below. If we have something like
+a C + + 20 feature that changes
+
+00:02:16.014 --> 00:02:19.546
+in 23. But in this case the
+feature will appear fully formed
+
+00:02:19.546 --> 00:02:22.847
+in C23 with these monadic
+functions. So we just have the
+
+00:02:22.847 --> 00:02:26.495
+new value, which is quite easy.
+I'm pretty sure this is right.
+
+00:02:26.495 --> 00:02:29.796
+Well, let's make sure there's
+some typos. Yeah, perfect.
+
+00:02:30.216 --> 00:02:33.306
+Ensure I copy pasted it from
+your comments.
+
+00:02:30.436 --> 00:02:31.626
+So that's good for the.
+
+00:02:34.056 --> 00:02:37.588
+Yes, yeah. And we could, we
+could double check the working
+
+00:02:37.588 --> 00:02:41.539
+draft as well. In this case. I'm
+not too concerned that I got the
+
+00:02:41.539 --> 00:02:45.071
+the value wrong because it's set
+to the value that was the
+
+00:02:45.071 --> 00:02:48.603
+current month when the changes
+were voted into the working
+
+00:02:48.603 --> 00:02:52.315
+paper. Every once in a while
+they do something weird with the
+
+00:02:52.315 --> 00:02:56.087
+feature test macros. It's good
+to occasionally double check I,
+
+00:02:56.087 --> 00:02:56.446
+Katie.
+
+00:02:56.856 --> 00:02:59.186
+Yeah, this is lexical analysis,
+cat.
+
+00:02:58.436 --> 00:02:59.036
+But yeah.
+
+00:03:01.086 --> 00:03:03.950
+I always double check for typos
+because it's so easy to like.
+
+00:03:03.950 --> 00:03:06.953
+Accidentally copy paste like one
+line off if somebody copy paste
+
+00:03:06.953 --> 00:03:08.016
+from the working paper.
+
+00:03:09.256 --> 00:03:13.120
+Every once in a while patches
+something fun. So let's look at
+
+00:03:13.120 --> 00:03:16.983
+the feature test macro test. So
+this is the CPP Lib expected.
+
+00:03:16.983 --> 00:03:20.847
+Again we've got the new value
+update and all three locations.
+
+00:03:20.847 --> 00:03:21.346
+Perfect.
+
+00:03:22.206 --> 00:03:25.356
+So nice and easy. I've got the
+new test being added.
+
+00:03:25.956 --> 00:03:29.849
+Umm, as the right value here,
+I'm just eyeballing it. Yep, and
+
+00:03:29.849 --> 00:03:33.557
+it's being added in sorted
+order. Minac functions for state
+
+00:03:33.557 --> 00:03:37.018
+expected. OK, correct test
+directory name that that one
+
+00:03:37.018 --> 00:03:40.850
+gets occasionally type out and
+it won't be caught by our test
+
+00:03:40.850 --> 00:03:44.805
+harness because test dot list is
+used only by the internal test
+
+00:03:44.805 --> 00:03:48.636
+harness, which someday we will
+fix. Hopefully we just need to
+
+00:03:48.636 --> 00:03:52.468
+unify our test harnesses. So
+here's the new ENV list. So this
+
+00:03:52.468 --> 00:03:56.423
+feature depends on concepts and
+is otherwise a C + 23 features.
+
+00:03:56.423 --> 00:03:59.266
+So concepts, latest matrix, but
+it tolerates.
+
+00:03:59.366 --> 00:04:02.446
+The permissive mode, so there's
+no struct here, so that's good.
+
+00:04:03.316 --> 00:04:06.648
+And then, oh, got a double
+check. We've got our banner. So
+
+00:04:06.648 --> 00:04:10.036
+that's right. The new test,
+which I'll come back to, but we
+
+00:04:10.036 --> 00:04:13.425
+do have the banner. OK, I'll
+quickly scan to see if there's
+
+00:04:13.425 --> 00:04:15.966
+any unnecessary use of stood.
+No. Excellent.
+
+00:04:17.046 --> 00:04:21.511
+Just in the title. OK, so I
+think we're already ohh the also
+
+00:04:21.511 --> 00:04:22.756
+the libs X skips.
+
+00:04:23.886 --> 00:04:29.060
+So because we and Lipsius Plus
+implement features at different
+
+00:04:29.060 --> 00:04:30.456
+paces, we've got.
+
+00:04:31.556 --> 00:04:36.260
+A version macro test there that
+will fail because we've
+
+00:04:36.260 --> 00:04:41.637
+increased the version test macro
+here or the feature test macro
+
+00:04:41.637 --> 00:04:46.677
+so the skip comment is list CPP
+has not implemented P25O5R5
+
+00:04:46.677 --> 00:04:51.382
+monadic functions for STD
+expected exactly down a call.
+
+00:04:51.382 --> 00:04:55.246
+This is being added in our known
+issues area.
+
+00:04:56.346 --> 00:04:59.057
+Yeah, this is near the top. This
+is a issues known to. I could
+
+00:04:59.057 --> 00:05:00.736
+keep expanding. I guess one more
+time.
+
+00:05:01.526 --> 00:05:04.666
+Yeah, issues known upstream that
+they'll realize that they need
+
+00:05:04.666 --> 00:05:05.696
+to update this macro.
+
+00:05:07.836 --> 00:05:11.673
+So in the expected results, we
+use forward Slash Pass beginning
+
+00:05:11.673 --> 00:05:15.391
+with stood and we need to have
+fail or skipped at the end. So
+
+00:05:15.391 --> 00:05:18.988
+this is all correct and then in
+the internal skip test text
+
+00:05:18.988 --> 00:05:22.646
+again this one is if this is
+messed up we won't find it till
+
+00:05:22.646 --> 00:05:26.303
+we mirror the PR. Internally
+this is the fun part of working
+
+00:05:26.303 --> 00:05:30.261
+in a open source. Still internal
+code base. We don't have a stood
+
+00:05:30.261 --> 00:05:33.678
+component, everything is
+backslashes and no fail. That's
+
+00:05:33.678 --> 00:05:36.796
+exactly identical. So that's
+good. Aside from those
+
+00:05:36.796 --> 00:05:37.516
+differences.
+
+00:05:38.586 --> 00:05:41.243
+Avoiding divergence between
+these files makes them
+
+00:05:41.243 --> 00:05:44.420
+maintainable again, something we
+should resolve someday. OK,
+
+00:05:44.420 --> 00:05:46.556
+let's actually look at the
+product code.
+
+00:05:49.476 --> 00:05:51.116
+That's up to the top.
+
+00:05:52.006 --> 00:05:57.079
+OK, we've also got updates to
+the situations here. I'll double
+
+00:05:57.079 --> 00:06:01.830
+check these quickly. Let's see.
+Can I split? Maybe I wanna
+
+00:06:01.830 --> 00:06:05.856
+monitor. That's like wider than
+what I have here.
+
+00:06:06.976 --> 00:06:09.046
+Aspect ratio. It's not the most
+convenient.
+
+00:06:10.486 --> 00:06:13.345
+Of course, we could always, you
+know, change the STL to be like
+
+00:06:13.345 --> 00:06:15.176
+80 columns, but the cure would
+be worse.
+
+00:06:16.716 --> 00:06:20.525
+120 columns is in general so
+much nicer to a read. OK, so I
+
+00:06:20.525 --> 00:06:24.715
+always double check this because
+it's easy to get these citations
+
+00:06:24.715 --> 00:06:28.333
+or I'm 4928 is the right paper
+number. That's all curing
+
+00:06:28.333 --> 00:06:32.333
+properly, but it looks like the
+place where these requirements
+
+00:06:32.333 --> 00:06:36.269
+have are specified is actually
+changed every once in a while.
+
+00:06:36.269 --> 00:06:40.395
+Stable names change or sometimes
+stuff gets moved around between
+
+00:06:40.395 --> 00:06:43.569
+sections, so there's now
+something expected under
+
+00:06:43.569 --> 00:06:46.426
+general. Let's see if search
+will cooperate.
+
+00:06:46.496 --> 00:06:49.196
+Yes. So this is the unexpected.
+
+00:06:50.306 --> 00:06:54.261
+And Scroll down paragraph two.
+OK, indeed paragraph two. I'm
+
+00:06:54.261 --> 00:06:58.150
+talks about the requirements, so
+they're all coming from 2.
+
+00:06:58.150 --> 00:07:02.040
+They're all the same here, so
+that's good. We've also got a
+
+00:07:02.040 --> 00:07:03.726
+stable name citation here.
+
+00:07:05.776 --> 00:07:08.973
+This one doesn't appear with the
+working paper because we're not
+
+00:07:08.973 --> 00:07:12.022
+citing any specific paragraph.
+This is indeed the constructor
+
+00:07:12.022 --> 00:07:14.826
+section. We've got some cleanup
+comments, I guess I can.
+
+00:07:15.556 --> 00:07:18.969
+Change this now that I saw
+talked about in the the history
+
+00:07:18.969 --> 00:07:22.499
+of the PR. No, I don't wanna go
+up to the top of the working
+
+00:07:22.499 --> 00:07:22.846
+paper.
+
+00:07:24.606 --> 00:07:28.334
+Where we're changing strength
+and to be attached directly here
+
+00:07:28.334 --> 00:07:31.826
+against no except saying, hey,
+we're doing something a bit
+
+00:07:31.826 --> 00:07:35.318
+stronger than what the standard
+specifies, so fairly minor
+
+00:07:35.318 --> 00:07:38.336
+cleanup. It's OK to mix that in
+with the features.
+
+00:07:39.826 --> 00:07:42.136
+OK, so now we've got some
+support machinery.
+
+00:07:43.176 --> 00:07:44.706
+And this is to enforce.
+
+00:07:45.436 --> 00:07:49.654
+The requirements for expected
+because we're going to need to
+
+00:07:49.654 --> 00:07:53.664
+refer to them elsewhere.
+Previously, we did that directly
+
+00:07:53.664 --> 00:07:57.536
+within expected itself. So we
+had export template class
+
+00:07:57.536 --> 00:08:01.823
+expected and then we immediately
+began static asserting stuff
+
+00:08:01.823 --> 00:08:06.179
+about it. But now we're going to
+extract this so we can use it
+
+00:08:06.179 --> 00:08:10.465
+elsewhere. So we also have A
+tag. So this is an internal tag.
+
+00:08:10.465 --> 00:08:14.960
+Oh, and by the way, with export
+stood that is for the new C + 23
+
+00:08:14.960 --> 00:08:16.066
+feature modules.
+
+00:08:16.336 --> 00:08:19.834
+I'm not expecting any modules
+impact for this feature because
+
+00:08:19.834 --> 00:08:23.276
+all of these things are being
+added or member functions, not
+
+00:08:23.276 --> 00:08:26.943
+top level functions or classes,
+so expected will still of course
+
+00:08:26.943 --> 00:08:30.272
+be marked as export and these
+will all be just attached to
+
+00:08:30.272 --> 00:08:33.601
+that. All the internal stuff
+does not get exported. That's
+
+00:08:33.601 --> 00:08:37.156
+the cool thing about modules. So
+nothing to worry about there.
+
+00:08:37.156 --> 00:08:40.710
+We've got A tag following our
+user usual convention. It has an
+
+00:08:40.710 --> 00:08:43.757
+explicit and defaulted
+constructor to make it hard to
+
+00:08:43.757 --> 00:08:46.296
+accidentally construct. This is
+called ugly.
+
+00:08:46.376 --> 00:08:50.044
+Under score construct expected
+from invoke result tag. That's
+
+00:08:50.044 --> 00:08:53.713
+nice and self-explanatory. Then
+we have a concept. Any use of
+
+00:08:53.713 --> 00:08:57.440
+concepts needs to be guarded by
+SQLite concepts. I believe the
+
+00:08:57.440 --> 00:08:58.446
+whole feature is.
+
+00:08:57.956 --> 00:09:00.586
+Yeah, the the entire file is
+guarded by that.
+
+00:09:01.526 --> 00:09:06.230
+OK, excellent. I can also open
+it up here in case I need
+
+00:09:06.230 --> 00:09:07.716
+context. Yeah, so.
+
+00:09:08.166 --> 00:09:11.822
+Umm. If anybody tries to include
+this, we emit a nice warning
+
+00:09:11.822 --> 00:09:15.420
+saying the contents of expected
+to available only with 23 or
+
+00:09:15.420 --> 00:09:17.956
+later, and in particular we need
+concepts.
+
+00:09:19.406 --> 00:09:20.676
+OK. Thanks Sai.
+
+00:09:22.696 --> 00:09:25.006
+So I lost my place.
+
+00:09:25.786 --> 00:09:28.806
+Here we go. I think I can go
+ahead and maximize this now.
+
+00:09:30.146 --> 00:09:34.266
+OK, so this is now is invoke
+constructable.
+
+00:09:34.906 --> 00:09:37.726
+So we're going to ask, can we
+construct?
+
+00:09:40.996 --> 00:09:43.436
+A transformed invoke result tee.
+
+00:09:44.436 --> 00:09:45.496
+From stuff.
+
+00:09:46.806 --> 00:09:50.719
+Now it's interesting that this
+is using parenthesis syntax
+
+00:09:50.719 --> 00:09:51.316
+which is.
+
+00:09:52.046 --> 00:09:56.710
+Famously willing to do a C style
+semantic casts, UM instead of is
+
+00:09:56.710 --> 00:10:00.949
+constructible. I know we talked
+about this a bit in the the
+
+00:10:00.949 --> 00:10:04.836
+comments that it relates to or
+potentially relates to.
+
+00:10:04.906 --> 00:10:08.730
+You deferred temporary
+materialization. Would it be
+
+00:10:08.336 --> 00:10:08.766
+Yeah.
+
+00:10:08.730 --> 00:10:13.436
+possible to express this as an
+is constructible, or must it be?
+
+00:10:13.706 --> 00:10:19.074
+I think it has to be this way
+because the so the idea behind
+
+00:10:14.096 --> 00:10:15.246
+This sort of syntax here.
+
+00:10:19.074 --> 00:10:24.443
+this is that you might want to
+support types in transform or
+
+00:10:24.443 --> 00:10:29.635
+transform error which are non
+movable. So if you're if you
+
+00:10:29.635 --> 00:10:34.915
+pass for example a Lambda which
+returns non movable type by
+
+00:10:34.915 --> 00:10:40.020
+value then due to deferred
+temporary materialization that
+
+00:10:40.020 --> 00:10:44.156
+can be constructed in place
+directly into the.
+
+00:10:44.896 --> 00:10:48.686
+The expected object and doing.
+
+00:10:47.186 --> 00:10:47.576
+Umm.
+
+00:10:50.206 --> 00:10:54.870
+Doing is constructible on invoke
+result doesn't take into account
+
+00:10:54.870 --> 00:10:58.757
+the deferred temporary
+materialization so that it says
+
+00:10:58.757 --> 00:11:01.796
+no. You can't do this even
+though you can.
+
+00:11:03.916 --> 00:11:05.776
+Interesting. Nicole, you have
+your hand up.
+
+00:11:07.456 --> 00:11:12.360
+Uh, so it's not a particularly
+an issue because we're casting
+
+00:11:12.360 --> 00:11:12.756
+from.
+
+00:11:13.976 --> 00:11:19.544
+Team to remove CV raft but that
+is technically a sea cast of, so
+
+00:11:19.544 --> 00:11:24.426
+if we want to make sure that
+we're not using a ccast, we
+
+00:11:24.426 --> 00:11:26.996
+could use static cast instead.
+
+00:11:29.226 --> 00:11:30.276
+Uh, it's good point.
+
+00:11:29.586 --> 00:11:30.666
+But also like.
+
+00:11:31.336 --> 00:11:34.958
+It it's not a sea castle. Ever
+be anything other than a static
+
+00:11:34.958 --> 00:11:35.246
+cast?
+
+00:11:37.776 --> 00:11:42.570
+I I would definitely prefer a
+static cast if it has the same
+
+00:11:38.156 --> 00:11:38.556
+So.
+
+00:11:42.570 --> 00:11:47.364
+semantics I'm looking for. Is
+constructible to remind myself
+
+00:11:47.364 --> 00:11:50.036
+how it works. Where do we put
+it?
+
+00:11:50.936 --> 00:11:52.026
+It's not a a other.
+
+00:11:52.866 --> 00:11:54.416
+It's not a unary type tray.
+
+00:11:57.506 --> 00:12:01.066
+This convertible or is it type
+property queries? Nope.
+
+00:12:02.336 --> 00:12:03.046
+Type properties.
+
+00:12:05.216 --> 00:12:05.756
+There we go.
+
+00:12:08.456 --> 00:12:10.956
+OK, so the definition of is
+constructible.
+
+00:12:13.696 --> 00:12:15.306
+Specified to see below.
+
+00:12:16.946 --> 00:12:19.868
+I used to know how this works
+before she has 17 changed
+
+00:12:19.868 --> 00:12:22.216
+everything. It is constructible.
+Here we go.
+
+00:12:24.016 --> 00:12:27.230
+The predicate condition shall be
+satisfied if and only if the
+
+00:12:27.230 --> 00:12:30.341
+following variable definition
+will be well formed. They are
+
+00:12:30.341 --> 00:12:33.296
+never interpreted as a function
+declaration. Make a tea.
+
+00:12:34.216 --> 00:12:36.636
+Named variable out of Declval
+args.
+
+00:12:37.876 --> 00:12:38.296
+This.
+
+00:12:39.046 --> 00:12:41.896
+Does handle deferred temporary
+materialization?
+
+00:12:42.156 --> 00:12:44.666
+The Declval adds ref ref doesn't
+it?
+
+00:12:42.956 --> 00:12:43.166
+It.
+
+00:12:44.906 --> 00:12:46.336
+All the declval.
+
+00:12:47.576 --> 00:12:49.066
+Because we are, I see.
+
+00:12:47.776 --> 00:12:51.006
+So it acts as if you it acts as
+if you like returned.
+
+00:12:52.986 --> 00:12:56.156
+And our value reference, so the
+different.
+
+00:12:55.376 --> 00:12:56.566
+The args are of.
+
+00:12:56.986 --> 00:12:57.376
+Yeah.
+
+00:12:57.796 --> 00:13:02.326
+Ah, OK. And if the if the Lambda
+itself, I guess the.
+
+00:13:03.356 --> 00:13:07.467
+They're the result of invoking.
+So you're saying if this thing
+
+00:13:05.746 --> 00:13:07.916
+Yeah. So if the result of
+invoking.
+
+00:13:07.467 --> 00:13:08.446
+is not movable.
+
+00:13:08.616 --> 00:13:13.702
+Is non movable, then it gets
+still can be constructed in
+
+00:13:13.702 --> 00:13:19.325
+place and the UM the paper. The
+paper was written with that in
+
+00:13:14.066 --> 00:13:15.556
+If it's the exact same type.
+
+00:13:19.325 --> 00:13:25.036
+mind, such that it's specified
+that we have to support that so.
+
+00:13:25.536 --> 00:13:29.155
+OK. A question before I actually
+get to that. Do we have test
+
+00:13:29.155 --> 00:13:30.206
+coverage for this?
+
+00:13:30.376 --> 00:13:30.796
+Yes.
+
+00:13:31.636 --> 00:13:35.577
+Excellent. OK. So then this is a
+reasonable, but I do like the
+
+00:13:35.577 --> 00:13:39.206
+idea of using a static cast
+here, which should be exactly
+
+00:13:39.206 --> 00:13:43.273
+equivalent in semantics, because
+we never want to Conn's cast or
+
+00:13:43.273 --> 00:13:47.214
+a reinterpret cast, which are
+the other things that the C, the
+
+00:13:47.214 --> 00:13:51.156
+functional functional style C
+semantics syntax is going to do.
+
+00:13:52.576 --> 00:13:55.846
+So out here, Cole.
+
+00:13:57.126 --> 00:13:58.126
+Suggests.
+
+00:14:00.346 --> 00:14:04.786
+Using static cast here as.
+
+00:14:05.666 --> 00:14:08.276
+Ah type args.
+
+00:14:09.446 --> 00:14:10.736
+Is a.
+
+00:14:13.186 --> 00:14:18.019
+Technically, a functional style
+C semantics cast, which we
+
+00:14:18.019 --> 00:14:22.524
+prefer to avoid, we we
+absolutely avoid all the season
+
+00:14:22.524 --> 00:14:27.275
+tax cases except for void. We
+try to avoid the functional
+
+00:14:27.275 --> 00:14:32.436
+style casts as much as possible,
+although there are some cases
+
+00:14:32.436 --> 00:14:34.156
+where it's necessary.
+
+00:14:34.896 --> 00:14:38.398
+Umm with like user client types
+and there's some ranges scenario
+
+00:14:38.398 --> 00:14:41.524
+which I always forget which
+really can't use like braces.
+
+00:14:41.524 --> 00:14:44.865
+Although in theory and some of
+those cases probably could use
+
+00:14:44.865 --> 00:14:48.098
+static cast, we just haven't
+done that everywhere. OK, so I
+
+00:14:48.098 --> 00:14:51.654
+Nicole suggest using static cast
+here as type bars as technically
+
+00:14:51.654 --> 00:14:54.995
+a functional style C semantics
+cast which we prefer to avoid.
+
+00:14:54.995 --> 00:14:58.228
+OK, so let's actually look at
+the machinery template, class
+
+00:14:58.228 --> 00:15:01.515
+owner, fun class owner ties
+concept is invoke constructable.
+
+00:15:01.515 --> 00:15:03.186
+We're requires fun. Refer funk.
+
+00:15:04.306 --> 00:15:07.056
+Vowels. So can we make?
+
+00:15:07.736 --> 00:15:09.126
+The invoke result T.
+
+00:15:09.846 --> 00:15:14.006
+Of invoking fun on ties. This is
+all correct, because when we're
+
+00:15:14.006 --> 00:15:18.102
+taking ref ref. If we just pass
+the type itself, that preserves
+
+00:15:18.102 --> 00:15:22.262
+the value category properly and
+is not redundant like saying fun
+
+00:15:22.262 --> 00:15:24.246
+refresh would be identical but.
+
+00:15:26.216 --> 00:15:30.095
+Unnecessary. So we don't do
+that. Then we want to remove the
+
+00:15:30.095 --> 00:15:31.176
+CV ref from that.
+
+00:15:32.046 --> 00:15:33.076
+That cosmetic.
+
+00:15:34.216 --> 00:15:38.471
+It essentially is cause you
+should in theory be able to
+
+00:15:38.471 --> 00:15:43.106
+construct a const whatever, even
+a constant out other stuff.
+
+00:15:43.926 --> 00:15:47.919
+But this is certainly a very
+cheap and it's simpler to think
+
+00:15:47.919 --> 00:15:50.406
+about. OK, I like that then
+stood in.
+
+00:15:49.096 --> 00:15:51.266
+It certainly needs to be a
+removed reference T.
+
+00:15:52.306 --> 00:15:55.068
+Not yes. Yeah, yeah. Because,
+yeah, trying to construct a
+
+00:15:55.068 --> 00:15:57.306
+reference out of it would not do
+what we want.
+
+00:15:59.686 --> 00:16:02.588
+Construct from student votes did
+forward fun Funk stood 4 ties,
+
+00:16:02.588 --> 00:16:04.946
+valves OK avoiding ADL. That's
+great. That's great.
+
+00:16:05.966 --> 00:16:09.346
+Uh, here are the extracted
+requirements. Now template class
+
+00:16:09.346 --> 00:16:12.613
+tie. This is following the same
+check unexpected argument
+
+00:16:12.613 --> 00:16:13.176
+machinery.
+
+00:16:14.796 --> 00:16:19.892
+Which? Uh, if I can open this
+up, here we go. Check. I need
+
+00:16:19.892 --> 00:16:20.656
+not case.
+
+00:16:21.836 --> 00:16:23.916
+Yeah. This thing we had a.
+
+00:16:24.866 --> 00:16:27.767
+And still have a helper struct
+that always drives from true
+
+00:16:27.767 --> 00:16:30.426
+type that goes and enforces a
+bunch of static asserts.
+
+00:16:31.626 --> 00:16:35.020
+We don't actually have a lot of
+precedent of this in the code
+
+00:16:35.020 --> 00:16:38.140
+base, so it's nice that it
+occurs right near to the next
+
+00:16:38.140 --> 00:16:41.425
+one. We need to add because
+usually we just need to enforce
+
+00:16:41.425 --> 00:16:44.381
+like one or two static
+assertions, but for unexpected
+
+00:16:44.381 --> 00:16:47.830
+we had like 5 different things
+we needed to check, so wrapping
+
+00:16:47.830 --> 00:16:51.170
+them up in a helper struct was
+convenient and so we're doing
+
+00:16:51.170 --> 00:16:54.618
+the similar thing here. Check
+expected argument. Also dry some
+
+00:16:54.618 --> 00:16:55.166
+true type.
+
+00:16:55.966 --> 00:16:56.736
+Umm.
+
+00:16:58.496 --> 00:17:01.310
+Oh, this is not being
+specialized. This is simply the
+
+00:17:01.310 --> 00:17:04.176
+primary template itself. Why do
+we need to specialize?
+
+00:17:05.036 --> 00:17:08.750
+Uh, no, that unexpected argument
+behaves the same way. I was
+
+00:17:08.750 --> 00:17:12.464
+getting confused by the four
+declaration of unexpected here.
+
+00:17:12.464 --> 00:17:15.508
+OK, so it's always primary
+template, which is the
+
+00:17:15.508 --> 00:17:19.282
+standard's term 4 template that
+has not yet been specialized.
+
+00:17:19.282 --> 00:17:23.118
+Template costs high start check
+expected argument, derive some
+
+00:17:23.118 --> 00:17:26.954
+true type, stacked a bunch of
+stuff. These are all they should
+
+00:17:26.954 --> 00:17:30.424
+be exactly be the same as
+before, not a reference, not a
+
+00:17:30.424 --> 00:17:34.077
+function. The citations are
+being updated. This is the same
+
+00:17:34.077 --> 00:17:34.686
+paragraph.
+
+00:17:35.026 --> 00:17:38.587
+OK, here we're not changing the
+stable name or anything. Yeah,
+
+00:17:38.587 --> 00:17:42.035
+it's just updating the working
+paper. I guess I can check to
+
+00:17:42.035 --> 00:17:45.314
+make sure that the paragraph
+number has not changed. I am
+
+00:17:45.314 --> 00:17:45.936
+very picky.
+
+00:17:46.496 --> 00:17:49.075
+Umm, because if we, if we ever
+let the paragraph numbers get
+
+00:17:49.075 --> 00:17:51.738
+out of sync, we'll never be able
+to find her. It'll be hard to
+
+00:17:51.738 --> 00:17:53.176
+find what we were trying to
+cite.
+
+00:17:54.616 --> 00:17:59.281
+Type 2 or paragraph two or type
+is a valid value type. If cool
+
+00:17:59.281 --> 00:18:00.836
+things are satisfied.
+
+00:18:02.496 --> 00:18:06.126
+And then the CP-17 destructible
+things are different. Yeah,
+
+00:18:06.126 --> 00:18:07.276
+paragraph 2's good.
+
+00:18:08.056 --> 00:18:08.506
+OK.
+
+00:18:09.776 --> 00:18:11.416
+So they're all sitting paragraph
+2.
+
+00:18:11.496 --> 00:18:15.627
+So it's not a reference, not a
+function, and then the diff is
+
+00:18:15.627 --> 00:18:19.626
+not really convenient here.
+There's this array coming from.
+
+00:18:20.406 --> 00:18:21.066
+Is that new?
+
+00:18:24.926 --> 00:18:25.996
+Now looks new here.
+
+00:18:27.446 --> 00:18:28.716
+I don't believe I added that.
+
+00:18:29.936 --> 00:18:31.826
+Intentionally at least so.
+
+00:18:30.826 --> 00:18:31.156
+There's.
+
+00:18:31.846 --> 00:18:36.731
+Is the is the diff or was this
+copy pasted from unexpected
+
+00:18:36.731 --> 00:18:37.476
+possibly?
+
+00:18:38.376 --> 00:18:40.660
+Unexpected forbids array. It
+looks like there might be copy
+
+00:18:40.660 --> 00:18:42.983
+paste or I don't know if it's
+wrong yet I got to look at the
+
+00:18:42.983 --> 00:18:43.326
+standard.
+
+00:18:44.746 --> 00:18:47.256
+But OK, so now now since I've
+seen something unusual, I'm
+
+00:18:47.256 --> 00:18:49.636
+getting paranoid. I I need to
+double check everything.
+
+00:18:49.386 --> 00:18:50.616
+Yeah, yeah, for sure.
+
+00:18:51.676 --> 00:18:54.336
+So we got the not a reference.
+
+00:18:55.776 --> 00:18:59.196
+We got not a function and the
+the wording I guess is is also
+
+00:18:59.196 --> 00:19:02.785
+the same, not a reference, not a
+function. So then it's the not
+
+00:19:02.785 --> 00:19:05.196
+an array that's appearing out of
+thin air.
+
+00:19:05.856 --> 00:19:09.219
+Umm, we'll come back to that
+then here the diff is making
+
+00:19:09.219 --> 00:19:12.176
+things nice in place T and
+expect tea and can't be
+
+00:19:12.176 --> 00:19:15.713
+unexpected itself. So those are
+all. Those are all fine. But
+
+00:19:15.713 --> 00:19:19.366
+what's going on with the array?
+So let's look at the standard.
+
+00:19:20.246 --> 00:19:26.972
+Umm, a type T is a valid value
+type for expected if remove CBT
+
+00:19:26.972 --> 00:19:27.826
+is void.
+
+00:19:28.506 --> 00:19:32.249
+Or a complete non array object
+type that is not in place T and
+
+00:19:32.249 --> 00:19:34.626
+expect or specialization of
+unexpected.
+
+00:19:36.546 --> 00:19:37.396
+Interesting.
+
+00:19:38.326 --> 00:19:41.790
+So we're enforcing teens to be a
+complete nonary object type
+
+00:19:41.790 --> 00:19:44.856
+where we just missing this
+before that's interesting.
+
+00:19:44.466 --> 00:19:45.756
+Yes, we were.
+
+00:19:46.126 --> 00:19:49.016
+OK, so this is uh, this is
+correcting a deficiency.
+
+00:19:49.776 --> 00:19:53.452
+Yeah, I I noticed that's when I
+was comparing the conditions and
+
+00:19:50.036 --> 00:19:50.846
+Because the.
+
+00:19:52.016 --> 00:19:52.676
+Yeah.
+
+00:19:53.452 --> 00:19:54.866
+added the not array case.
+
+00:19:55.196 --> 00:19:58.686
+Yeah, we still check error. OK,
+interesting. Next, Casey.
+
+00:20:00.416 --> 00:20:04.905
+So let's actually, for my own
+education, make sure that this
+
+00:20:04.905 --> 00:20:07.186
+is actually now exhaustive. So.
+
+00:20:08.056 --> 00:20:09.886
+We allow it to be void.
+
+00:20:10.646 --> 00:20:13.262
+Which is not a reference of
+function array, so it won't
+
+00:20:13.262 --> 00:20:14.196
+trigger any of that.
+
+00:20:14.736 --> 00:20:18.086
+Umm, we can't check
+completeness, of course says we
+
+00:20:18.086 --> 00:20:22.338
+non array. That's the array part
+object types. Here I've immersed
+
+00:20:22.338 --> 00:20:25.945
+the standard definition. Object
+types are non void, non
+
+00:20:25.945 --> 00:20:30.004
+reference non function. So we
+can't be referenced. We can't be
+
+00:20:30.004 --> 00:20:33.869
+function. But we do permit void
+so that's good. And then we
+
+00:20:33.869 --> 00:20:37.863
+specifically forbid in place T
+and expect T or specialization
+
+00:20:37.863 --> 00:20:39.796
+of unexpected. OK, so this is.
+
+00:20:40.696 --> 00:20:43.566
+Uh, complete and correcting a
+deficiency. Thank you.
+
+00:20:46.256 --> 00:20:49.150
+It's good. I wonder if that was
+added at some point. I could
+
+00:20:49.150 --> 00:20:51.854
+have sworn that when we
+originally reviewed expected, we
+
+00:20:51.854 --> 00:20:54.796
+made sure it was exhaustive, so
+either we missed something or
+
+00:20:54.796 --> 00:20:57.642
+they passed it later and we
+missed it, which is unusual. We
+
+00:20:57.642 --> 00:21:00.679
+could do archaeology to find out
+exactly what happened, but I'm
+
+00:21:00.679 --> 00:21:03.525
+not too interested at this
+point. I'm just happy to get the
+
+00:21:03.525 --> 00:21:06.229
+fix. OK, so we got the struct
+there. We're retaining the
+
+00:21:06.229 --> 00:21:09.266
+export, stood on class, expected
+the Div is just confused here.
+
+00:21:10.586 --> 00:21:14.180
+And then we static assert that
+ties satisfies the expected
+
+00:21:14.180 --> 00:21:17.591
+argument and then error
+satisfies unexpected, so that's
+
+00:21:17.591 --> 00:21:21.428
+good. We've got a stable name
+change, which is fairly unusual.
+
+00:21:21.428 --> 00:21:22.586
+That's not helping.
+
+00:21:22.686 --> 00:21:25.626
+Umm I've got 2 copies that work
+in draft open.
+
+00:21:26.656 --> 00:21:30.576
+There we go. Expect object cons
+for constructor.
+
+00:21:31.686 --> 00:21:32.706
+Yeah, there it is.
+
+00:21:34.356 --> 00:21:35.896
+They're stable asterisk.
+
+00:21:36.716 --> 00:21:42.399
+Uh, clean up to attach,
+strengthen there, clean up plus
+
+00:21:42.399 --> 00:21:46.256
+clang format. OK, not too
+concerning.
+
+00:21:47.596 --> 00:21:51.513
+Some paragraph changes since I
+haven't seen any issues with
+
+00:21:51.513 --> 00:21:54.646
+paragraphs, I'm less concerned
+about these now.
+
+00:21:56.056 --> 00:21:58.586
+16 is value or?
+
+00:22:00.736 --> 00:22:01.916
+Yep. Value or.
+
+00:22:03.916 --> 00:22:06.466
+18 is the referee version of
+value or?
+
+00:22:08.226 --> 00:22:08.456
+Yep.
+
+00:22:09.316 --> 00:22:10.246
+That's the mandates.
+
+00:22:12.556 --> 00:22:12.926
+OK.
+
+00:22:13.656 --> 00:22:18.996
+Ah, some questions from Nicole
+talking to Sai about.
+
+00:22:19.646 --> 00:22:21.956
+The specification value or.
+
+00:22:24.056 --> 00:22:25.866
+This is very warm, no error or.
+
+00:22:29.426 --> 00:22:31.976
+Yes. So the context here is the.
+
+00:22:29.496 --> 00:22:31.426
+Possible API symmetry?
+
+00:22:32.666 --> 00:22:38.387
+Umm, the template argument to
+error or is defaulted to error
+
+00:22:38.387 --> 00:22:44.296
+so that you can call it with an
+empty brace list, whereas the.
+
+00:22:44.376 --> 00:22:48.904
+Uh and template argument to
+value or is not defaulted, so
+
+00:22:48.904 --> 00:22:53.666
+you cannot pass anti braces to
+value or cynical comment was.
+
+00:22:54.996 --> 00:22:56.726
+Do we need to make an issue and?
+
+00:22:57.816 --> 00:23:03.202
+My answer was maybe, maybe not.
+I don't know. I I looked at the.
+
+00:23:01.616 --> 00:23:02.026
+Alright.
+
+00:23:03.202 --> 00:23:06.766
+I looked at the original minutes
+from the.
+
+00:23:08.166 --> 00:23:10.876
+AWG calls and.
+
+00:23:12.436 --> 00:23:14.076
+And it seemed like.
+
+00:23:15.446 --> 00:23:18.046
+It was to support this kind of
+refactoring.
+
+00:23:19.436 --> 00:23:23.780
+Where you have like an an error
+code and you're doing like
+
+00:23:23.780 --> 00:23:28.418
+calling a a function to to test
+for an error and and you wanna
+
+00:23:28.406 --> 00:23:28.716
+Umm.
+
+00:23:28.418 --> 00:23:33.056
+make this this kind of refactor
+to to get back a default error
+
+00:23:33.056 --> 00:23:33.866
+afterwards.
+
+00:23:35.706 --> 00:23:40.758
+So that was their reason for
+having the default on the the
+
+00:23:40.758 --> 00:23:41.786
+error or my.
+
+00:23:43.206 --> 00:23:46.842
+Kind of guessed from from
+reading the notes was that they
+
+00:23:46.842 --> 00:23:47.406
+find a A.
+
+00:23:48.096 --> 00:23:50.476
+A good use case for this for
+error or and.
+
+00:23:51.276 --> 00:23:51.666
+Umm.
+
+00:23:51.756 --> 00:23:56.844
+I didn't find necessarily strong
+one for for adding this to value
+
+00:23:56.844 --> 00:24:01.547
+or but I don't know if it's
+worth filing an issue on 1st for
+
+00:24:01.547 --> 00:24:02.626
+symmetry sake.
+
+00:24:02.366 --> 00:24:06.393
+Umm, it seems like it might be
+worth sending a mail to library
+
+00:24:06.393 --> 00:24:10.612
+evolution because this is really
+a design question. It looks like
+
+00:24:10.076 --> 00:24:10.626
+Yeah.
+
+00:24:10.612 --> 00:24:14.384
+it's not just an outright the
+misspecified the API or they
+
+00:24:14.384 --> 00:24:18.092
+just forgot something during an
+edit, or maybe not a full
+
+00:24:18.092 --> 00:24:21.799
+library evolution issue, but
+just a mail to the reflector
+
+00:24:21.799 --> 00:24:24.676
+asking hey was did anybody think
+about this?
+
+00:24:25.156 --> 00:24:28.193
+Umm, because it's always
+possible that they patched error
+
+00:24:28.193 --> 00:24:31.597
+or and then nobody noticed that
+value org didn't get patched. Or
+
+00:24:31.376 --> 00:24:34.986
+Well, it error is error is new
+in this paper.
+
+00:24:31.597 --> 00:24:32.906
+maybe it was intentional.
+
+00:24:36.456 --> 00:24:39.776
+Ohh OK, that's the 10. But value
+or was the existing one.
+
+00:24:39.156 --> 00:24:42.725
+Value or was already existing
+and they added error or as part
+
+00:24:41.906 --> 00:24:42.916
+Ah.
+
+00:24:42.725 --> 00:24:43.876
+of this paper, yeah.
+
+00:24:44.536 --> 00:24:48.310
+OK, so that makes it more likely
+that this paper has a cool
+
+00:24:48.310 --> 00:24:52.022
+innovation that then could have
+been possibly, but was not
+
+00:24:52.022 --> 00:24:53.406
+retroactively applied.
+
+00:24:53.956 --> 00:24:54.676
+Could be, yeah.
+
+00:24:54.196 --> 00:24:56.653
+OK, so that it does seem like it
+does seem that it merits the
+
+00:24:56.653 --> 00:24:57.486
+library of evolution.
+
+00:24:58.926 --> 00:25:00.196
+Issue slash mail.
+
+00:25:03.186 --> 00:25:06.685
+Say, can you take care of this
+or should we file an issue right
+
+00:25:06.685 --> 00:25:08.326
+now in the repo as a reminder?
+
+00:25:08.876 --> 00:25:13.733
+And I can, if you just write a
+note there, I'll. I'll send an
+
+00:25:12.656 --> 00:25:13.086
+OK.
+
+00:25:13.733 --> 00:25:15.926
+e-mail to the reflector and.
+
+00:25:17.196 --> 00:25:18.236
+I'll follow up and.
+
+00:25:19.426 --> 00:25:21.746
+And on that common thread.
+
+00:25:24.626 --> 00:25:27.540
+I still need to figure out how
+to get my Microsoft e-mail
+
+00:25:27.540 --> 00:25:28.896
+working with the reflector.
+
+00:25:36.256 --> 00:25:39.255
+Let's say paths. Let's say OK,
+we should send an e-mail to the
+
+00:25:39.255 --> 00:25:42.255
+library evolution reflector and
+ask whether value or should be
+
+00:25:42.255 --> 00:25:42.636
+changed.
+
+00:25:43.696 --> 00:25:44.386
+OK, great.
+
+00:25:45.156 --> 00:25:49.196
+Umm so dropping the this or
+probably moving?
+
+00:25:50.006 --> 00:25:53.896
+Thanks diff UM ohh. There's like
+all the new code.
+
+00:25:55.056 --> 00:25:56.666
+Is it ever going to?
+
+00:25:58.966 --> 00:26:00.766
+OK, expected object EQ.
+
+00:26:01.726 --> 00:26:02.716
+That actually change.
+
+00:26:07.686 --> 00:26:12.152
+OK, no change here. It's just
+the diff gets confused. Template
+
+00:26:12.152 --> 00:26:16.334
+class under score Utah equals
+error. So here I actually do
+
+00:26:16.334 --> 00:26:17.256
+want to have.
+
+00:26:18.156 --> 00:26:21.778
+Actually, sorry for jumping back
+and forth. Class template
+
+00:26:21.778 --> 00:26:25.277
+expected there's error or and
+then everything else is an
+
+00:26:25.277 --> 00:26:26.996
+expected object of an attic.
+
+00:26:30.566 --> 00:26:32.046
+But there are some patching
+here.
+
+00:26:34.806 --> 00:26:37.636
+Oh. Oh, here's where the array
+thing comes from.
+
+00:26:39.456 --> 00:26:39.926
+Typo.
+
+00:26:42.356 --> 00:26:46.383
+Expected Object General did not
+used to forbid arrays. It said
+
+00:26:46.383 --> 00:26:50.346
+reference function or possibly C
+equal in place T wow, that's
+
+00:26:50.346 --> 00:26:54.436
+getting messed up unexpect or so
+forth. And now they've added a
+
+00:26:54.436 --> 00:26:58.463
+complete non array object type.
+So that's where the delta came
+
+00:26:58.463 --> 00:26:59.486
+from. Excellent.
+
+00:27:00.126 --> 00:27:04.455
+Umm. Means we didn't just forget
+something. OK, so then we add
+
+00:27:04.455 --> 00:27:08.165
+the observers the error or and
+then the whole monadic
+
+00:27:08.165 --> 00:27:12.356
+subclause. Anything else? I'm
+just looking for all the diffs
+
+00:27:12.356 --> 00:27:15.036
+the paper could have had also
+void OK.
+
+00:27:15.926 --> 00:27:18.446
+Expected void been attic and
+then the error or.
+
+00:27:20.786 --> 00:27:23.036
+And then that's it, OK.
+
+00:27:24.186 --> 00:27:26.036
+So now I can look at the working
+draft.
+
+00:27:28.936 --> 00:27:33.056
+Excuse me, am I looking at the
+right area? OK, expect object
+
+00:27:33.056 --> 00:27:33.326
+obs.
+
+00:27:34.736 --> 00:27:35.516
+Error or OK.
+
+00:27:36.806 --> 00:27:41.256
+She wanted some side by side.
+OK, so you tie error.
+
+00:27:42.136 --> 00:27:45.976
+OK so here is the first of many
+member functions.
+
+00:27:46.846 --> 00:27:48.796
+Split the this.
+
+00:27:53.596 --> 00:27:58.501
+OK. And it kind of works. Here
+we go. So template class Utah
+
+00:27:58.501 --> 00:27:59.546
+equals error.
+
+00:28:00.376 --> 00:28:02.676
+That matches where's my
+highlight.
+
+00:28:04.566 --> 00:28:08.372
+Here are template class G which
+we're calling utai is error. OK,
+
+00:28:08.372 --> 00:28:11.066
+that's good. That's our usual
+name for stuff.
+
+00:28:12.906 --> 00:28:14.446
+This is what I'm server.
+
+00:28:15.566 --> 00:28:16.996
+All of these are.
+
+00:28:17.976 --> 00:28:19.006
+They're all observers.
+
+00:28:20.196 --> 00:28:21.306
+I'm trying to.
+
+00:28:22.886 --> 00:28:26.456
+See which ones need to discard
+where is that there wording.
+
+00:28:28.396 --> 00:28:31.606
+Error or yeah, you only ever
+call this if you want the value.
+
+00:28:34.896 --> 00:28:38.996
+He's like, what's the error? And
+if we don't have one, then get a
+
+00:28:38.996 --> 00:28:42.724
+fall back. OK, but for these,
+these are all taking function
+
+00:28:42.696 --> 00:28:46.366
+Yeah. So you could reasonably do
+them as side effects.
+
+00:28:42.724 --> 00:28:44.526
+objects. They're doing stuff.
+
+00:28:47.066 --> 00:28:50.551
+Yeah. OK. So we don't expect any
+notice cards for the and then or
+
+00:28:50.551 --> 00:28:53.825
+else transform transform error.
+But all of the errors for the
+
+00:28:53.825 --> 00:28:56.729
+primary template and the void
+specialization should be
+
+00:28:56.729 --> 00:28:57.416
+nodiscard OK.
+
+00:28:58.416 --> 00:29:02.389
+Umm we we tried to be quite
+careful about following our
+
+00:29:02.389 --> 00:29:06.718
+criteria for notice card to
+avoid false positives, making it
+
+00:29:06.718 --> 00:29:11.259
+the extremely useful warning. In
+fact, we just had our compiler
+
+00:29:11.259 --> 00:29:15.303
+give Cameron Venkus for the
+nodiscard that we applied to
+
+00:29:15.303 --> 00:29:19.702
+remove if or and remove because
+he tried to call that without
+
+00:29:19.702 --> 00:29:23.534
+sending the result to erase
+member function and got a
+
+00:29:23.534 --> 00:29:27.933
+warning saying hey, this is not
+how you use remove and remove
+
+00:29:27.933 --> 00:29:28.146
+if.
+
+00:29:28.406 --> 00:29:30.640
+And otherwise that would
+assembly compiled into the wrong
+
+00:29:30.640 --> 00:29:31.526
+thing and the compiler.
+
+00:29:33.206 --> 00:29:38.956
+So error or is notice card great
+returns a context per error.
+
+00:29:40.776 --> 00:29:44.875
+Takes a Utah Ruff Ruff other.
+That's what we're calling E this
+
+00:29:44.875 --> 00:29:48.323
+is Const. Ref. We are
+strengthening the noexcept, so
+
+00:29:48.323 --> 00:29:51.706
+there's a strengthened and aside
+from Clang format.
+
+00:29:52.666 --> 00:29:55.420
+Being weird here and we sort of
+just tolerate this as not worth
+
+00:29:55.420 --> 00:29:56.496
+turning off clang format.
+
+00:29:57.696 --> 00:30:02.027
+We need two things to be true is
+no throw copy constructable V
+
+00:30:02.027 --> 00:30:03.746
+the error cause we could.
+
+00:30:04.576 --> 00:30:05.496
+Return that.
+
+00:30:06.466 --> 00:30:11.801
+And because both of these need
+to be true because we don't know
+
+00:30:11.801 --> 00:30:17.052
+until runtime which one we're
+gonna do is no throw convertible
+
+00:30:17.052 --> 00:30:17.636
+V utai.
+
+00:30:18.386 --> 00:30:19.226
+Which is.
+
+00:30:19.946 --> 00:30:22.176
+The other two error.
+
+00:30:22.846 --> 00:30:25.866
+Which is the return type and
+that is an implicit conversion,
+
+00:30:25.866 --> 00:30:29.084
+so that's right and the order is
+correct. Famously constructable
+
+00:30:29.084 --> 00:30:32.203
+convertible specify things in
+the opposite order. Very easy to
+
+00:30:32.203 --> 00:30:35.026
+get confused. But we're
+converting from Utah to error so
+
+00:30:35.026 --> 00:30:36.016
+that all looks good.
+
+00:30:36.686 --> 00:30:40.585
+Uh, you've got the construct 1
+here. Then we've got static
+
+00:30:40.585 --> 00:30:44.749
+certs to emit nice messages to
+enforce some mandate, and these
+
+00:30:44.749 --> 00:30:48.583
+are actually the nono throw
+mirrors of the strengthening.
+
+00:30:48.583 --> 00:30:52.284
+There is copy constructible V
+error and we cite is copy
+
+00:30:52.284 --> 00:30:56.448
+constructible. VE must be true
+we when we send messages to the
+
+00:30:56.448 --> 00:31:00.546
+user. We tried to talk about
+names that they would understand
+
+00:31:00.546 --> 00:31:04.577
+rather than our internal names.
+That's great. And we cite in
+
+00:31:04.577 --> 00:31:06.296
+4928 expect object OBS 20.
+
+00:31:06.636 --> 00:31:11.787
+Yes. And then is convertible V
+from Utah, which is G to error
+
+00:31:11.787 --> 00:31:16.606
+is convertible VG to E must be
+true. OK, that's all good.
+
+00:31:18.526 --> 00:31:20.736
+And then returns.
+
+00:31:21.446 --> 00:31:25.447
+If has value, so we test our
+internal bool rather than
+
+00:31:25.447 --> 00:31:29.811
+calling the member function as a
+micro optimization is just
+
+00:31:29.811 --> 00:31:33.739
+simpler. Return stood for GE
+stood forward Utah other
+
+00:31:33.739 --> 00:31:36.576
+correct. Otherwise the internal
+error.
+
+00:31:38.236 --> 00:31:40.145
+And again, we have the data
+members, so we don't need to
+
+00:31:40.145 --> 00:31:41.586
+call error prone. OK, this is
+all perfect.
+
+00:31:42.286 --> 00:31:46.122
+OK, so now that we've seen this,
+I can move a bit faster because
+
+00:31:46.122 --> 00:31:48.954
+now I just need to sort of
+mentally look at the
+
+00:31:48.954 --> 00:31:51.846
+differences. This one doing is
+move convertible.
+
+00:31:52.796 --> 00:31:55.474
+But it still wants his
+convertible GE. If we have a if
+
+00:31:55.474 --> 00:31:56.886
+we need to use the fall back.
+
+00:31:57.626 --> 00:32:00.796
+And then we need to move the
+error, the reference portion OK.
+
+00:32:01.506 --> 00:32:05.475
+So template class you tie error.
+Notice carcass expert error,
+
+00:32:05.475 --> 00:32:09.444
+error or the recursion is no
+through move constructible error
+
+00:32:09.444 --> 00:32:13.030
+and is no throw convertible from
+you tie to error still
+
+00:32:13.030 --> 00:32:17.127
+strengthened. We need the move
+constructible move constructible
+
+00:32:17.127 --> 00:32:21.032
+good, no typos. The citation
+paragraphs need to update 2, so
+
+00:32:21.032 --> 00:32:25.002
+it's 22 and 23 for the returns,
+but 22 for both requirements.
+
+00:32:25.002 --> 00:32:26.026
+OK, that's good.
+
+00:32:27.066 --> 00:32:31.063
+If his value, 40 other otherwise
+stood, move the unexpected
+
+00:32:31.063 --> 00:32:31.596
+perfect.
+
+00:32:32.336 --> 00:32:34.046
+OK, that's error.
+
+00:32:35.376 --> 00:32:37.256
+Expected object lunatic.
+
+00:32:38.106 --> 00:32:40.566
+That is the new section.
+
+00:32:41.456 --> 00:32:45.076
+OK, so we've got some
+requirements here.
+
+00:32:47.296 --> 00:32:50.417
+This is occurring in standard
+order, which is great. Here's
+
+00:32:50.417 --> 00:32:52.446
+the constraint, so template
+class fun.
+
+00:32:53.726 --> 00:32:57.136
+Requires is copy constructible V
+the error, so that's a
+
+00:32:57.136 --> 00:32:57.806
+constraint.
+
+00:32:58.496 --> 00:33:02.421
+Uh, we are correctly not seeing
+any nodiscard let me just do a
+
+00:33:02.421 --> 00:33:04.976
+quick search to get that out of
+the way.
+
+00:33:05.756 --> 00:33:08.446
+It's going to turn up all the
+ones in the context too.
+
+00:33:09.166 --> 00:33:13.458
+Error or error or these are the
+void ones presumably? Or did we
+
+00:33:13.458 --> 00:33:15.806
+wrap around ohh we wrapped
+around?
+
+00:33:14.336 --> 00:33:14.586
+Yeah.
+
+00:33:15.816 --> 00:33:16.136
+Umm.
+
+00:33:17.306 --> 00:33:21.450
+Uh, do they ohh do the error
+orders for void not return
+
+00:33:21.450 --> 00:33:22.116
+anything.
+
+00:33:23.036 --> 00:33:26.616
+Umm, no, the error isn't for
+void are marked as no discard.
+
+00:33:28.126 --> 00:33:31.126
+Oh dear, I did my search. Miss
+him then? Uh kiss.
+
+00:33:31.896 --> 00:33:32.466
+Our, our.
+
+00:33:39.706 --> 00:33:40.916
+That's the primary.
+
+00:33:42.256 --> 00:33:45.007
+This. Yeah, this is void. Ohh.
+They're nice card. OK, so my
+
+00:33:45.007 --> 00:33:47.942
+search missed them. OK, great.
+So they're both nice card. Thank
+
+00:33:47.942 --> 00:33:48.126
+you.
+
+00:33:49.366 --> 00:33:53.796
+OK, so now I can stop worrying
+about nodiscard. Let's go up.
+
+00:33:56.176 --> 00:33:57.296
+OK, an attic and then.
+
+00:33:59.006 --> 00:34:01.036
+OK, so template class fun.
+
+00:34:01.946 --> 00:34:06.771
+Got the constraint constexpr
+auto and then take fun refresh
+
+00:34:06.771 --> 00:34:07.656
+funk L ref.
+
+00:34:09.306 --> 00:34:12.916
+So here I I guess I can comment
+on the naming. This is funk.
+
+00:34:14.396 --> 00:34:18.228
+Which is reasonable. This is
+being passed to the invoke
+
+00:34:18.228 --> 00:34:21.786
+Protocol, so technically this is
+a callable object.
+
+00:34:21.966 --> 00:34:24.757
+Umm, but since we're
+consistently using invoke here,
+
+00:34:24.757 --> 00:34:28.075
+I'm not too worried about saying
+you know, renaming like after
+
+00:34:28.075 --> 00:34:31.182
+callable or anything. When we
+implemented invoke itself, I
+
+00:34:28.946 --> 00:34:29.346
+Yeah.
+
+00:34:31.182 --> 00:34:34.499
+tried to be unusually careful
+about the naming, saying call by
+
+00:34:34.499 --> 00:34:37.554
+object when we specifically
+meant to generalize notion of
+
+00:34:37.554 --> 00:34:40.345
+something that could be a
+pointer to member, because
+
+00:34:40.345 --> 00:34:43.241
+that's what revoke handle
+specially and using function
+
+00:34:43.241 --> 00:34:46.506
+object in the standardese term
+only when it meant things that
+
+00:34:46.506 --> 00:34:49.613
+are callable with exactly
+parentheses. But the rest of the
+
+00:34:49.613 --> 00:34:52.878
+code is less strict about that,
+and rightly so. We don't need
+
+d2374c2c-2ced-46bf-b0cc-ee2218620be9/4727-10
+00:34:52.878 --> 00:34:53.036
+to.
+
+00:34:53.126 --> 00:34:56.568
+Constantly use the exact
+standard terminology everywhere
+
+00:34:56.296 --> 00:35:01.206
+I also copied the. I copied the
+naming scheme from optional for.
+
+00:34:56.568 --> 00:34:57.716
+and it aligns with.
+
+00:35:01.776 --> 00:35:02.036
+Umm.
+
+00:35:02.856 --> 00:35:03.656
+Chris symmetry.
+
+00:35:04.436 --> 00:35:08.140
+Yeah, and yeah, that that makes
+reading this easier. OK, that's
+
+00:35:08.140 --> 00:35:11.844
+good. This is not strengthened
+because we don't. There would be
+
+00:35:11.844 --> 00:35:15.606
+little value in saying there is
+no throw invocable and all that.
+
+00:35:16.046 --> 00:35:22.122
+Umm so this says using Utai is
+and this mirrors paragraph one.
+
+00:35:22.122 --> 00:35:27.524
+Remove C graft. The invoke
+result T of F on what is the
+
+00:35:27.524 --> 00:35:29.646
+deck of type of value?
+
+00:35:30.546 --> 00:35:35.066
+It's an odd way that they
+phrased this. We say tie Rev. Is
+
+00:35:35.066 --> 00:35:35.756
+that the?
+
+00:35:37.386 --> 00:35:40.561
+Ah, there's, uh, there. The
+standard specifies it as
+
+00:35:40.561 --> 00:35:43.557
+decltype value because it's
+stacking together the
+
+00:35:43.557 --> 00:35:47.152
+definitions of the modifiable
+reference and const reference
+
+00:35:47.152 --> 00:35:50.567
+versions of the member function.
+So at this point in the
+
+00:35:50.567 --> 00:35:54.342
+specification, it doesn't know
+which one. It's in constant non
+
+00:35:54.342 --> 00:35:58.236
+const, but we know that value is
+going to return T Rex for Const
+
+00:35:58.236 --> 00:36:02.011
+ref, so we can just say tie ref
+and avoid that whole decltype,
+
+00:36:02.011 --> 00:36:05.606
+which is simpler and better for
+throughput, so that's good.
+
+00:36:06.936 --> 00:36:08.246
+So we've got that.
+
+00:36:09.296 --> 00:36:11.473
+And basically every time there's
+a difference between the
+
+00:36:11.473 --> 00:36:13.838
+implementation of the standards.
+I tried to understand. Are we
+
+00:36:13.838 --> 00:36:15.977
+doing something clever here? Are
+we doing something bad?
+
+00:36:15.977 --> 00:36:16.916
+Sometimes clever and bad?
+
+00:36:18.956 --> 00:36:23.436
+Static Serge. OK, so this is the
+mandate. Utah has to be a
+
+00:36:23.436 --> 00:36:25.486
+specialization of expected.
+
+00:36:26.866 --> 00:36:31.096
+I'm nitpick here. We like spaces
+after our commas that occurs
+
+00:36:31.096 --> 00:36:31.506
+below.
+
+00:36:33.796 --> 00:36:34.526
+I.
+
+00:36:35.646 --> 00:36:36.756
+Let's pack.
+
+00:36:40.596 --> 00:36:44.886
+Should have a space after the
+comma.
+
+00:36:45.706 --> 00:36:51.176
+Cursed below, so I won't comment
+on that anymore. Expected TE.
+
+00:36:52.546 --> 00:36:56.495
+And that is the the parameters
+to expected double colon and
+
+00:36:56.495 --> 00:36:56.956
+then F.
+
+00:36:57.846 --> 00:36:59.856
+Here we can just sort of talk
+about.
+
+00:37:01.466 --> 00:37:04.336
+F without caring too much that
+it's a rough raff.
+
+00:37:06.096 --> 00:37:08.876
+This message, say FFRF.
+
+00:37:10.816 --> 00:37:14.133
+The user doesn't really care
+about that. If they really care,
+
+00:37:14.133 --> 00:37:17.342
+they could look at the the
+standard here. They just give us
+
+00:37:17.342 --> 00:37:20.713
+a thing. Yeah, it's an L value
+or an R value, but we just want
+
+00:37:20.713 --> 00:37:23.922
+the type of the thing. We don't
+need to talk about. Oh, you
+
+00:37:23.922 --> 00:37:27.079
+know, is it sensitive to value
+category? If the user knows
+
+00:37:27.079 --> 00:37:30.502
+about that stuff, they're going
+to read the standard anyway. So
+
+00:37:30.502 --> 00:37:31.626
+this is a little bit.
+
+00:37:32.906 --> 00:37:35.931
+Imprecise, but it's imprecise in
+a good way. It avoids
+
+00:37:35.931 --> 00:37:38.901
+overloading the user with
+information it requires the
+
+00:37:38.901 --> 00:37:41.816
+return type of F to be a
+specialization of expected.
+
+00:37:42.656 --> 00:37:46.487
+Uh sighting and 4920 expected
+object fanatic 3 yes, that's
+
+00:37:46.487 --> 00:37:50.318
+correct. I want to make sure
+there's a space in the proper
+
+00:37:50.318 --> 00:37:52.136
+place. Yes. OK, that's good.
+
+00:37:53.056 --> 00:37:56.199
+Umm, there's a a gotcha where if
+we wrap a multiline string and
+
+00:37:56.199 --> 00:37:59.341
+we don't have a space here, then
+the message won't have a space
+
+00:37:59.341 --> 00:38:02.141
+and it's very easy to miss
+visually. Always look out for
+
+00:38:02.141 --> 00:38:04.940
+that because I I love finding
+that even though it's like
+
+00:38:04.940 --> 00:38:07.346
+completely in the PIC stack
+assert is saying VC.
+
+00:38:09.196 --> 00:38:10.166
+Type name.
+
+00:38:11.736 --> 00:38:15.004
+You tied up bacon air type must
+be error. OK, the standard
+
+00:38:15.004 --> 00:38:18.328
+doesn't think it needs to say
+type name, but we're actually
+
+00:38:18.328 --> 00:38:21.818
+implementing code, so we need to
+say type name expect at E and
+
+00:38:21.818 --> 00:38:23.536
+then F requires the error type.
+
+00:38:25.726 --> 00:38:27.026
+Of the return type of app.
+
+00:38:27.776 --> 00:38:32.340
+OK, be the return type has to be
+a specialization of expected, so
+
+00:38:32.340 --> 00:38:36.765
+requires the error type of the
+return type of F to be, and that
+
+00:38:36.765 --> 00:38:39.116
+matches up with E here. OK,
+good.
+
+00:38:39.916 --> 00:38:43.056
+Also Monadic 3 OK, that's right.
+
+00:38:43.876 --> 00:38:45.176
+So you've got the mandates.
+
+00:38:45.806 --> 00:38:49.192
+Done. OK, affects equivalent 2,
+which is the favorite wording
+
+00:38:49.192 --> 00:38:52.468
+for an implementer because it
+just says hey, do this thing.
+
+00:38:52.468 --> 00:38:56.018
+Don't worry about too much what
+it does. Of course we do need to
+
+00:38:56.018 --> 00:38:59.404
+transform into something that's
+actually implementable if has
+
+00:38:59.404 --> 00:39:02.408
+value test the data member
+returns to invoke avoid ADL
+
+00:39:02.408 --> 00:39:04.046
+stood forward FF so from funk.
+
+00:39:04.696 --> 00:39:05.936
+And then our value.
+
+00:39:07.136 --> 00:39:10.571
+And where the L value forms so
+we don't need to move or
+
+00:39:10.571 --> 00:39:12.166
+anything otherwise return.
+
+00:39:12.886 --> 00:39:16.256
+You tie with a Paran so here if
+we could do.
+
+00:39:18.286 --> 00:39:21.168
+Don't know if we could do
+braces, but we definitely want
+
+00:39:21.168 --> 00:39:24.000
+static or we would like static
+cast of unexpected comma
+
+00:39:24.000 --> 00:39:25.416
+unexpected, so that's error.
+
+00:39:26.266 --> 00:39:29.344
+OK. Could we use braces here?
+And I'll think so because we so
+
+00:39:29.344 --> 00:39:32.224
+the the Convention is that when
+possible in our new code,
+
+00:39:32.224 --> 00:39:35.252
+although the old code is quite
+inconsistent, we tried to use
+
+00:39:35.252 --> 00:39:38.181
+braces to construct temporaries
+cuz it doesn't look like a
+
+00:39:38.181 --> 00:39:40.366
+function call. It makes code
+more readable.
+
+00:39:40.526 --> 00:39:43.216
+Umm, but there are sometimes
+semantic differences between
+
+00:39:43.216 --> 00:39:45.536
+parentheses and braces. Famously
+for like vector.
+
+00:39:46.966 --> 00:39:50.932
+And branches stuff, so we can't
+unconditionally do that sort of
+
+00:39:50.932 --> 00:39:54.588
+thing. We can if we know the
+type here. Utah is the return
+
+00:39:54.588 --> 00:39:58.492
+value. We have no idea what this
+thing is. It might care about
+
+00:39:58.492 --> 00:40:01.963
+braces. But wait, it's an
+expected you time. Must be an
+
+00:40:01.963 --> 00:40:03.326
+expected. So it is us.
+
+00:40:04.666 --> 00:40:06.626
+We can use braces here we we
+know what we are.
+
+00:40:08.226 --> 00:40:10.036
+That would be nicer than static
+cast.
+
+00:40:10.896 --> 00:40:13.308
+And that this this occurs
+repeatedly. I would like braces
+
+00:40:13.308 --> 00:40:13.516
+here.
+
+00:40:14.996 --> 00:40:15.586
+Let's do that.
+
+00:40:15.156 --> 00:40:17.666
+Or and then overloads. Yeah,
+makes sense.
+
+00:40:17.916 --> 00:40:21.463
+Yeah, yeah, basically anywhere
+that really anywhere we say this
+
+00:40:21.463 --> 00:40:24.566
+thing, I don't know if that
+occurs other than and then.
+
+00:40:24.626 --> 00:40:28.088
+Well, and then is the only one
+where we know that the return
+
+00:40:26.896 --> 00:40:27.386
+Ah.
+
+00:40:28.088 --> 00:40:30.926
+type is going to be a
+specialization of expected.
+
+00:40:31.816 --> 00:40:32.536
+Ah, OK.
+
+00:40:33.236 --> 00:40:35.666
+And you're right, it does indeed
+occur only for and then OK.
+
+00:40:36.426 --> 00:40:37.026
+Umm.
+
+00:40:38.266 --> 00:40:40.426
+Do we not know it for or else?
+
+00:40:38.506 --> 00:40:39.736
+Since.
+
+00:40:42.696 --> 00:40:43.616
+Umm.
+
+00:40:46.706 --> 00:40:47.806
+And maybe we do.
+
+00:40:49.606 --> 00:40:50.966
+Yes, yeah, yeah, we do.
+
+00:40:51.426 --> 00:40:52.056
+Umm.
+
+00:40:54.986 --> 00:40:58.156
+And that also does use.
+
+00:40:59.496 --> 00:41:02.116
+Parentheses, parentheses as
+well, so.
+
+00:41:02.816 --> 00:41:03.296
+Umm.
+
+00:41:04.406 --> 00:41:07.556
+Yeah, for overloads of and then
+and or else.
+
+00:41:12.776 --> 00:41:16.636
+OK, I can go look at orelse.
+We're coming back.
+
+00:41:17.456 --> 00:41:21.086
+Here's an orelse ohh I see it's
+a in place value.
+
+00:41:21.606 --> 00:41:21.866
+Yeah.
+
+00:41:22.096 --> 00:41:24.006
+OK, I'll update this comment.
+
+00:41:24.946 --> 00:41:25.846
+Umm.
+
+00:41:44.396 --> 00:41:47.801
+OK, we're freed since we know
+that you tie is a specialization
+
+00:41:47.801 --> 00:41:51.098
+of expected, we can use braces
+to construct utie which would
+
+00:41:51.098 --> 00:41:54.449
+follow our prevention occurs
+below also in or else where Utah
+
+00:41:54.449 --> 00:41:56.016
+is constructed from in place.
+
+00:41:56.796 --> 00:41:57.126
+That.
+
+00:41:58.846 --> 00:42:01.836
+OK, so now the construct
+version.
+
+00:42:03.246 --> 00:42:06.816
+Let's see. There was a comment
+and this is the the history.
+
+00:42:06.816 --> 00:42:10.266
+It's not. It doesn't appear
+attached here because I think
+
+00:42:10.266 --> 00:42:13.776
+the code changed about whether
+some of this stuff could be
+
+00:42:13.776 --> 00:42:17.227
+extracted. Unfortunately there
+is a C + 23 feature called
+
+00:42:17.227 --> 00:42:20.856
+deducing this, but a it has a
+problem with the core language
+
+00:42:20.856 --> 00:42:24.783
+itself. There's a certain corner
+case that doesn't exactly handle
+
+00:42:24.783 --> 00:42:28.293
+that. You could use a ccast, I
+believe to work around, but
+
+00:42:28.293 --> 00:42:31.625
+that's horrible. And in any
+event, the question is moot
+
+00:42:31.625 --> 00:42:32.696
+because right now.
+
+00:42:32.776 --> 00:42:35.807
+Although MSVC MSVC has
+implemented the deducing this
+
+00:42:35.807 --> 00:42:39.238
+feature, it is not yet supported
+in modules and the STL now
+
+00:42:39.238 --> 00:42:42.726
+supports modules. So at this
+time we're not using it at all.
+
+00:42:44.066 --> 00:42:47.503
+There was a question of, I think
+it was from CPP learner. Correct
+
+00:42:47.503 --> 00:42:48.336
+me if I'm wrong.
+
+00:42:49.436 --> 00:42:52.658
+Where could these be extracted
+out to? A helper function or
+
+00:42:52.658 --> 00:42:55.827
+helper member function and in
+this case I think that's not
+
+00:42:55.827 --> 00:42:59.265
+really feasible because too much
+varies here. We need to return
+
+00:42:59.265 --> 00:43:02.219
+like value or move value
+depending on. Here's the move
+
+00:43:02.219 --> 00:43:05.549
+value depending on where our
+value reference or not. And yeah
+
+00:43:05.549 --> 00:43:07.966
+that could be like a
+straightforward like or
+
+00:43:07.966 --> 00:43:11.296
+something, but that's adding a
+lot of complexity because then
+
+00:43:11.296 --> 00:43:14.304
+it wouldn't be a direct
+translation of the standardese.
+
+00:43:14.304 --> 00:43:17.741
+We need to think about. OK, what
+happens if we extract this out
+
+00:43:17.741 --> 00:43:18.386
+to a helper?
+
+00:43:19.126 --> 00:43:22.217
+It's a little bit, I mean it's a
+little bit repetitive to have
+
+00:43:22.217 --> 00:43:25.259
+all these implementations here,
+but I think that if we try to
+
+00:43:25.259 --> 00:43:27.516
+extract it out, it would be
+harder to follow.
+
+00:43:27.976 --> 00:43:30.246
+Umm so I'm I'm OK with this.
+
+00:43:31.476 --> 00:43:34.210
+In an ideal world, we could just
+wave a magic wand and and
+
+00:43:34.210 --> 00:43:37.176
+specify it once be done with it,
+but at this point I think that
+
+00:43:37.176 --> 00:43:39.725
+repeating it is the simplest
+approach. I'd rather have
+
+00:43:39.725 --> 00:43:42.274
+basically more code that more
+directly aligns with the
+
+00:43:42.274 --> 00:43:45.055
+standard, and I have to think
+less whenever I see something
+
+00:43:45.055 --> 00:43:47.836
+that needs a big transformation.
+I got to think hard about.
+
+00:43:48.936 --> 00:43:51.396
+Yeah. We introduced any
+divergence that the user could
+
+00:43:51.396 --> 00:43:54.035
+observe cause almost everything
+is observable. If you look
+
+00:43:54.035 --> 00:43:54.706
+closely enough.
+
+00:43:55.616 --> 00:43:58.346
+OK, so we're looking at the
+constant reversion here.
+
+00:43:58.726 --> 00:44:02.869
+Umm, still requires copy
+constructible V error constexpr
+
+00:44:02.869 --> 00:44:05.776
+auto and then for the refund
+Const ref.
+
+00:44:06.646 --> 00:44:09.096
+Using Utah still the same. Yeah,
+go ahead.
+
+00:44:06.876 --> 00:44:11.730
+So I think I think, Nicole, you
+had a comment at one point that
+
+00:44:11.730 --> 00:44:12.716
+actually the.
+
+00:44:13.696 --> 00:44:18.086
+That requires clause needs to be
+is copy constructable via of
+
+00:44:18.086 --> 00:44:18.936
+const error.
+
+00:44:20.646 --> 00:44:21.336
+Is that right?
+
+00:44:21.426 --> 00:44:25.619
+So copy constructor will be.
+This is for the and then
+
+00:44:25.619 --> 00:44:26.706
+construct Rep.
+
+00:44:28.766 --> 00:44:30.796
+Function. It does not affect.
+
+00:44:31.526 --> 00:44:33.456
+And then for construct.
+
+00:44:35.636 --> 00:44:39.786
+I mean technically it could
+affect it for wrath, but I think
+
+00:44:39.786 --> 00:44:40.126
+that.
+
+00:44:43.466 --> 00:44:44.526
+I feel less.
+
+00:44:45.516 --> 00:44:47.496
+I I don't feel as strongly about
+like.
+
+00:44:49.366 --> 00:44:55.017
+About that difference, but the
+issue is below in and then for
+
+00:44:55.017 --> 00:44:56.476
+construct rough.
+
+00:44:57.526 --> 00:45:01.731
+Uh, it required the end event
+for contract requires is move
+
+00:44:58.576 --> 00:44:59.686
+Oh, this one.
+
+00:45:01.731 --> 00:45:06.356
+constructed will be which is not
+a thing that will actually like.
+
+00:45:08.226 --> 00:45:10.966
+That's not a constraint that
+makes sense for construct raft.
+
+00:45:12.646 --> 00:45:13.366
+Like it's just.
+
+00:45:14.096 --> 00:45:16.746
+You you'd want contract for up
+to be part of.
+
+00:45:14.266 --> 00:45:14.986
+Yeah.
+
+00:45:17.956 --> 00:45:19.016
+The const graph.
+
+00:45:19.796 --> 00:45:20.326
+World.
+
+00:45:21.156 --> 00:45:22.846
+That that's a bug in the
+standard.
+
+00:45:24.056 --> 00:45:26.306
+I have. Have you filed an LWG
+issue about that?
+
+00:45:24.096 --> 00:45:24.426
+Yeah.
+
+00:45:27.516 --> 00:45:31.806
+I have not yet if you Scroll
+down a little bit on the review.
+
+00:45:33.806 --> 00:45:34.586
+Yeah, here we go.
+
+00:45:35.596 --> 00:45:35.886
+Yep.
+
+00:45:36.546 --> 00:45:39.876
+Yep, councillor foff. Yep,
+highly bogus.
+
+00:45:43.666 --> 00:45:47.058
+Umm. OK so so I asked what's the
+protocol here? Do we fix the
+
+00:45:47.058 --> 00:45:50.176
+code to be correct to file a Dr
+filed resolution fixing?
+
+00:45:51.286 --> 00:45:55.610
+I would say having thought about
+it for all 10 seconds, this is a
+
+00:45:55.610 --> 00:45:59.673
+case where the code is or. The
+standard is clearly bogus, and
+
+00:45:59.673 --> 00:46:03.473
+the right thing to do is
+obvious. So in this case I think
+
+00:46:03.473 --> 00:46:07.470
+we should just fix the code and
+simultaneously file a defect
+
+00:46:07.470 --> 00:46:11.729
+report issue saying. Here's how
+we fixed it cuz as written, it's
+
+00:46:11.729 --> 00:46:15.398
+not the biggest thing in the
+world. Nobody would really
+
+00:46:15.398 --> 00:46:19.460
+notice. It requires a specific
+type to really care about this
+
+00:46:19.460 --> 00:46:21.426
+like I guess a move only yeah.
+
+00:46:21.516 --> 00:46:24.264
+Would be a move only error type
+where you call the constant R
+
+00:46:24.264 --> 00:46:26.924
+value overload, which is already
+pretty hard to call. So in
+
+00:46:26.924 --> 00:46:29.628
+theory we could just implement
+what standard does and nobody
+
+00:46:29.628 --> 00:46:32.243
+would know, so eventually would
+go fix it, but it would be
+
+00:46:32.243 --> 00:46:34.902
+strictly less work for us to go
+fix it now and simultaneous
+
+00:46:34.902 --> 00:46:37.473
+report it and then when they
+voted into the standard like
+
+00:46:37.473 --> 00:46:38.626
+hey, we already confirmed.
+
+00:46:40.526 --> 00:46:43.696
+So I think we should just change
+the code and file the issue.
+
+00:46:44.516 --> 00:46:46.036
+So I'll I'll record that here.
+
+00:46:44.936 --> 00:46:46.726
+Yeah, but so.
+
+00:46:48.066 --> 00:46:52.916
+Be argument that I would have is
+whether.
+
+00:46:53.726 --> 00:46:57.618
+We want to use is copy
+constructible, which I think is
+
+00:46:57.618 --> 00:46:59.316
+totally reasonable like.
+
+00:47:00.236 --> 00:47:04.186
+Any construct will construct
+will bind to a construct draft.
+
+00:47:05.366 --> 00:47:07.786
+Like you probably wanted to do a
+copy.
+
+00:47:08.366 --> 00:47:12.596
+Umm. Or the other option, I
+think if we're going to say.
+
+00:47:13.926 --> 00:47:15.466
+That the contract rap.
+
+00:47:16.266 --> 00:47:19.366
+It's gonna get constructed via
+the constructor of constructor
+
+00:47:19.366 --> 00:47:21.816
+if it's distinct from the
+construct constructor.
+
+00:47:22.326 --> 00:47:27.246
+And I think probably we should
+also distinguish the rest.
+
+00:47:28.286 --> 00:47:33.961
+From the contract, so like using
+something like is constructor is
+
+00:47:33.961 --> 00:47:39.378
+convertible V Const tie ref to
+Thai is convertible the tie ref
+
+00:47:39.378 --> 00:47:44.193
+to tie is convertible B
+tirecraft to tie is convertible
+
+00:47:44.193 --> 00:47:48.406
+be cause tirecraft to pie like
+that makes sense.
+
+00:47:49.796 --> 00:47:54.690
+Yes, that will also be horrible
+to transcribe for the recording.
+
+00:47:54.690 --> 00:47:56.346
+All those type traits.
+
+00:47:57.676 --> 00:47:59.106
+I I think I will ask.
+
+00:47:57.726 --> 00:47:59.986
+I'm so sorry whoever said the
+described it.
+
+00:48:01.246 --> 00:48:05.599
+You'll be transcribing this one.
+Congratulations. I think since
+
+00:48:05.599 --> 00:48:09.000
+we have our concepts expert
+Casey on the call, my
+
+00:48:09.000 --> 00:48:13.149
+understanding is that in the
+concepts world, we try to avoid
+
+00:48:13.149 --> 00:48:17.366
+being super duper fine grained
+about exactly which operations
+
+00:48:17.366 --> 00:48:21.515
+were going to perform, because
+only types that are extremely
+
+00:48:21.515 --> 00:48:23.216
+unusable care about that.
+
+00:48:25.156 --> 00:48:29.388
+My understanding of the concepts
+design that we have in 20 and 23
+
+00:48:29.388 --> 00:48:33.620
+is that we try to have fewer and
+higher level concepts and try to
+
+00:48:33.620 --> 00:48:37.467
+avoid accommodating types that
+are very, very strange and a
+
+00:48:37.467 --> 00:48:41.635
+type that cares about and might
+be constructed from a modifiable
+
+00:48:41.635 --> 00:48:45.803
+lvalue or a constant L value is
+extremely strange at that point,
+
+00:48:45.803 --> 00:48:49.266
+you're sort of descending into
+auto Porter territory.
+
+00:48:49.696 --> 00:48:53.047
+Umm. So according to my
+understanding and correct me if
+
+00:48:53.047 --> 00:48:53.646
+I'm wrong.
+
+00:48:55.166 --> 00:48:59.183
+It is reasonable for both the L
+value and constant L value forms
+
+00:48:59.183 --> 00:49:03.076
+of this to just say we require
+is copy constructible, which is
+
+00:49:03.076 --> 00:49:07.155
+specified to ask what happens if
+I construct this from a constant
+
+00:49:07.155 --> 00:49:10.801
+L value. So essentially adding
+Const when we ask about the
+
+00:49:10.801 --> 00:49:14.510
+constraint and if the type
+happens to behave weirdly, well,
+
+00:49:14.510 --> 00:49:18.032
+that's bad, that the type
+shouldn't do that, which would
+
+00:49:18.032 --> 00:49:21.617
+then argue for the const our
+value overload to the member
+
+00:49:21.617 --> 00:49:24.336
+function to just ask is copy
+constructible.
+
+00:49:25.236 --> 00:49:28.256
+Even though it would be
+specified to.
+
+00:49:29.276 --> 00:49:32.294
+Well, I guess then the question
+is then do we split the
+
+00:49:32.294 --> 00:49:33.426
+specification to say?
+
+00:49:34.626 --> 00:49:38.145
+Do we just copy from value in
+that case or do we just always
+
+00:49:38.145 --> 00:49:39.356
+say stood move value?
+
+00:49:40.546 --> 00:49:43.132
+Which is technically
+constructing from a const star
+
+00:49:43.132 --> 00:49:45.420
+value and yet have the
+constraint say is copy
+
+00:49:45.420 --> 00:49:46.116
+constructible.
+
+00:49:46.636 --> 00:49:48.766
+Umm, what do you think, Casey?
+
+00:49:50.196 --> 00:49:51.226
+More anybody in general?
+
+00:49:53.276 --> 00:49:54.946
+I hate to split the
+specification.
+
+00:49:56.526 --> 00:49:59.295
+But it does really seem like the
+right thing to do here. I I
+
+00:49:59.295 --> 00:49:59.976
+agree with you.
+
+00:50:01.936 --> 00:50:05.029
+So split the specification and
+just make it plain plain copy
+
+00:50:05.029 --> 00:50:06.906
+from value or just not move from
+it.
+
+00:50:05.796 --> 00:50:06.146
+Yeah.
+
+00:50:06.896 --> 00:50:10.330
+And and use copy constructable
+for the const or value case,
+
+00:50:10.330 --> 00:50:10.616
+yeah.
+
+00:50:11.586 --> 00:50:11.976
+OK.
+
+00:50:12.756 --> 00:50:17.699
+So and then becomes the
+equivalent to like I just got
+
+00:50:13.676 --> 00:50:14.376
+I see so.
+
+00:50:17.699 --> 00:50:19.896
+moved up under contract.
+
+00:50:22.416 --> 00:50:22.976
+Basically.
+
+00:50:24.466 --> 00:50:25.686
+Yeah, I think so.
+
+00:50:25.756 --> 00:50:27.416
+Like if you look at the effect.
+
+00:50:29.086 --> 00:50:32.050
+Could could we just remove the
+contract Rev in that case
+
+00:50:32.050 --> 00:50:34.026
+because it'll just call the
+contract?
+
+00:50:34.776 --> 00:50:36.576
+It's a it's equivalent to the
+contract.
+
+00:50:38.106 --> 00:50:41.833
+Function I like I I don't
+personally think that the cons
+
+00:50:41.833 --> 00:50:42.356
+RAF RAF.
+
+00:50:43.266 --> 00:50:43.996
+Actually.
+
+00:50:45.456 --> 00:50:49.486
+Benefits us very much here. I I
+think it's. I think it's like
+
+00:50:49.486 --> 00:50:52.736
+just having an extra function
+for no good reason.
+
+00:50:53.996 --> 00:50:57.257
+Unlike optional where you want
+it to be like crazy and do
+
+00:50:54.686 --> 00:50:55.036
+But.
+
+00:50:57.257 --> 00:50:58.326
+interesting things.
+
+00:50:59.926 --> 00:51:03.943
+It does feel over generic to me,
+but it's basically a design
+
+00:51:00.846 --> 00:51:01.126
+That.
+
+00:51:03.943 --> 00:51:04.536
+question.
+
+00:51:05.976 --> 00:51:06.316
+Yeah.
+
+00:51:06.046 --> 00:51:08.596
+Yeah, that is, that is entering
+design territory.
+
+00:51:06.816 --> 00:51:10.576
+I I guess we should ask Ellie WG
+if if they wanna support.
+
+00:51:11.336 --> 00:51:13.736
+Different behavior for Const
+reference for construct.
+
+00:51:15.786 --> 00:51:19.001
+Even though we definitely
+wouldn't do that in the concepts
+
+00:51:16.396 --> 00:51:16.506
+No.
+
+00:51:19.001 --> 00:51:20.636
+to sign, there are Gray areas.
+
+00:51:21.756 --> 00:51:24.906
+In in optional that have been
+perpetrated to expected.
+
+00:51:25.826 --> 00:51:29.320
+Where they try to go above and
+beyond support weird corner
+
+00:51:29.320 --> 00:51:31.216
+cases that they probably should.
+
+00:51:33.366 --> 00:51:37.318
+Yeah. The interesting thing,
+there are some cases where you
+
+00:51:37.318 --> 00:51:41.467
+absolutely do want to respect
+contract ref like tuple get is a
+
+00:51:41.467 --> 00:51:45.683
+famous one where I think I found
+the LWG issue to say we should
+
+00:51:45.683 --> 00:51:49.503
+actually support all four
+combinations of lvalue, rvalue,
+
+00:51:49.503 --> 00:51:52.796
+modifiable const, because that
+way if you try to.
+
+00:51:53.506 --> 00:51:57.968
+I do like a stood get on Const R
+value tuple and then pass it to
+
+00:51:57.968 --> 00:52:02.087
+something that wants to reject
+temporaries that we properly
+
+00:52:02.087 --> 00:52:06.619
+handle those. It's unclear to me
+whether that applies to this end
+
+00:52:06.619 --> 00:52:10.669
+then or if we would just need a
+move overload of Const ref
+
+00:52:10.669 --> 00:52:14.857
+versus ref ref. It's unclear
+what this L value form does cuz
+
+00:52:14.857 --> 00:52:19.113
+correct me if I'm wrong, it's
+value that cares about it's not
+
+00:52:19.113 --> 00:52:20.006
+really error.
+
+00:52:22.346 --> 00:52:26.387
+The value is fully overloaded on
+L value versus R value and
+
+00:52:26.387 --> 00:52:30.697
+modifiable versus Const, and the
+function could absolutely care
+
+00:52:30.697 --> 00:52:34.873
+about that because if I want to
+modify if I'm like a function
+
+00:52:34.873 --> 00:52:39.317
+that takes int ref and then goes
+modifies the thing I really care
+
+00:52:39.317 --> 00:52:41.136
+if the value is modifiable.
+
+00:52:41.796 --> 00:52:42.436
+Umm.
+
+00:52:43.536 --> 00:52:45.446
+This do we move the value?
+
+00:52:46.316 --> 00:52:47.246
+We do.
+
+00:52:47.326 --> 00:52:47.726
+Yeah.
+
+00:52:48.786 --> 00:52:50.756
+OK, so that argues more strongly
+that.
+
+00:52:49.586 --> 00:52:50.096
+So.
+
+00:52:52.296 --> 00:52:52.836
+Oh, go ahead.
+
+00:52:54.056 --> 00:52:57.909
+Ohh yeah so so that that goes
+back to your point of like
+
+00:52:57.909 --> 00:52:59.126
+wanting to reject.
+
+00:53:00.956 --> 00:53:06.166
+Temporary is like if somebody
+has a function that takes an.
+
+00:53:07.326 --> 00:53:10.881
+That takes in. Don't know
+sometime and then return the
+
+00:53:10.881 --> 00:53:15.084
+reference to that type in, like
+a new type. You really want that
+
+00:53:15.084 --> 00:53:16.506
+to not be a temporary.
+
+00:53:17.606 --> 00:53:21.626
+And so you could reject our
+values by doing that.
+
+00:53:22.306 --> 00:53:23.126
+If that makes sense.
+
+00:53:24.526 --> 00:53:27.726
+So basically something like
+this.
+
+00:53:34.876 --> 00:53:37.846
+Where you want to take a thing.
+
+00:53:38.816 --> 00:53:41.521
+You know, maybe do stuff and
+then return a reference to the
+
+00:53:41.521 --> 00:53:44.407
+thing, but if you're giving any
+Cerner temporary, you just need
+
+00:53:44.407 --> 00:53:47.203
+to reject that on site, which is
+sort of similar scenario. We
+
+00:53:46.446 --> 00:53:46.736
+Yeah.
+
+00:53:47.203 --> 00:53:50.134
+haven't, like, refrigerator and
+whatever, where you have a valid
+
+00:53:50.134 --> 00:53:52.750
+reason for observing sometimes,
+but because we maintain a
+
+00:53:52.750 --> 00:53:55.635
+persistent reference elsewhere,
+we need to reject temporary. So
+
+00:53:55.635 --> 00:53:58.431
+this really cares about constar
+value references. So that's a
+
+00:53:58.431 --> 00:54:00.686
+good motivation to have all
+four. OK, so I think.
+
+00:54:01.346 --> 00:54:04.549
+I think that that's an argument
+for. I guess we're kind of
+
+00:54:04.549 --> 00:54:07.807
+resolving the issue or think
+about the issue itself here to
+
+00:54:07.807 --> 00:54:11.281
+have all four overloads. But in
+that case, then that does argue
+
+00:54:11.281 --> 00:54:13.236
+to correctly constrain all of
+them.
+
+00:54:13.746 --> 00:54:14.546
+Umm.
+
+00:54:15.296 --> 00:54:18.158
+Although the sorry, the
+constraint only cares about E,
+
+00:54:18.158 --> 00:54:21.594
+the argument for what we do with
+E is less important than what we
+
+00:54:21.594 --> 00:54:24.612
+send to the function. Cause like
+if you have an arbitrary
+
+00:54:24.612 --> 00:54:27.839
+function, the scenario of ohh
+you know doesn't want to reject
+
+00:54:27.839 --> 00:54:31.118
+our values, that's interesting.
+If it's purely the question of
+
+00:54:31.118 --> 00:54:34.241
+can we copy or move EE should
+really not care if it's being
+
+00:54:34.241 --> 00:54:35.126
+constructed from.
+
+00:54:36.386 --> 00:54:38.756
+Modifiable value versus constel
+value.
+
+00:54:40.546 --> 00:54:41.676
+More constar value.
+
+00:54:43.676 --> 00:54:44.406
+So I think.
+
+00:54:45.176 --> 00:54:49.298
+Having the two specifications
+here that says deck type value
+
+00:54:49.298 --> 00:54:53.015
+and decltype stood move value,
+that's definitely still
+
+00:54:53.015 --> 00:54:57.070
+necessary. I think the only
+question is for the error case,
+
+00:54:57.070 --> 00:54:59.976
+how do we constrain and what do
+we return?
+
+00:55:03.346 --> 00:55:06.539
+I I could see Argo. OK, so I
+guess this is less simple and
+
+00:55:06.539 --> 00:55:08.596
+less obvious than originally
+thought.
+
+00:55:09.096 --> 00:55:12.738
+Umm, which now moves me towards.
+Let's file an issue and come
+
+00:55:12.738 --> 00:55:16.087
+back to this later in the
+implementation because it will
+
+00:55:16.087 --> 00:55:19.965
+really only make a difference if
+somebody calls the constar value
+
+00:55:19.965 --> 00:55:23.490
+version of this and if the E
+type cares about it and that's
+
+00:55:23.490 --> 00:55:27.367
+so obscure like in practice like
+we wouldn't even have found this
+
+00:55:24.246 --> 00:55:25.896
+Umm yeah.
+
+00:55:27.367 --> 00:55:30.716
+in that implementation in the
+test of the implementation
+
+00:55:30.716 --> 00:55:34.006
+itself. It's only when we
+exhaustively reviewed it, OK.
+
+00:55:32.576 --> 00:55:32.846
+Yeah.
+
+00:55:34.726 --> 00:55:38.821
+Frankly, I don't even think this
+needs to be a constraint at all
+
+00:55:35.486 --> 00:55:35.776
+Umm.
+
+00:55:38.821 --> 00:55:39.136
+like.
+
+00:55:41.066 --> 00:55:47.456
+It is very weird to sphene based
+on whether the expected like
+
+00:55:47.456 --> 00:55:52.506
+phone away and then based on
+whether unexpected.
+
+00:55:55.066 --> 00:55:59.113
+Is copy constructible like what
+the what are you doing that you
+
+00:55:57.846 --> 00:55:59.076
+Yeah, because like you.
+
+00:55:59.113 --> 00:56:01.326
+need that sphinx constraint?
+What?
+
+00:56:01.606 --> 00:56:05.606
+Because you can't Sweeney away
+based on the call ability of the
+
+00:56:05.606 --> 00:56:07.856
+the function you pass in anyway
+so.
+
+00:56:08.756 --> 00:56:13.910
+It's like you. You can't, like
+parsh, partially spinach the way
+
+00:56:09.036 --> 00:56:11.906
+Yeah, like why, what are you
+doing?
+
+00:56:10.686 --> 00:56:11.486
+That's a good point.
+
+00:56:13.910 --> 00:56:16.246
+you're you're overloads that.
+
+00:56:18.606 --> 00:56:21.402
+So that would, that would argue
+just for cause like I think the
+
+00:56:21.402 --> 00:56:24.024
+standard is actually gotten
+maybe a little bit overboard on
+
+00:56:24.024 --> 00:56:26.645
+service thing, things in the
+constraints that really should
+
+00:56:26.645 --> 00:56:29.441
+only be when we really want the
+function to participate in like
+
+00:56:29.441 --> 00:56:32.063
+overload resolution nicely.
+Otherwise it should either be a
+
+00:56:32.063 --> 00:56:34.946
+mandate or should just be in the
+standard. It should be a mandate
+
+00:56:34.946 --> 00:56:37.830
+in the implementation. It should
+be we're going to do a thing and
+
+00:56:37.830 --> 00:56:40.583
+then if it fails to compile well
+you get the compile error and
+
+00:56:40.583 --> 00:56:40.976
+have fun.
+
+00:56:42.236 --> 00:56:42.486
+Yeah.
+
+00:56:42.676 --> 00:56:44.516
+And this really feels like that,
+because I mean if the.
+
+00:56:43.206 --> 00:56:46.436
+Or like static cast or static a
+certain, not static cast.
+
+00:56:46.966 --> 00:56:49.492
+Yeah. Yeah. Well, yeah.
+Implemented through a mandate.
+
+00:56:49.492 --> 00:56:52.017
+Yeah. It's so that that's an
+argument for dropping the
+
+00:56:52.017 --> 00:56:52.936
+constraint entirely.
+
+00:56:53.846 --> 00:56:55.276
+That would be my preferred
+resolution.
+
+00:56:54.106 --> 00:56:55.136
+Yeah, that, that.
+
+00:56:56.286 --> 00:56:56.536
+Yeah.
+
+00:57:23.136 --> 00:57:26.153
+OK. We talked about this in the
+video code review and while this
+
+00:57:26.153 --> 00:57:28.798
+is definitely an issue, it is
+surprisingly subtle. So we
+
+00:57:28.798 --> 00:57:31.722
+should file an issue, file an
+LWG issue, and wait for it to be
+
+00:57:31.722 --> 00:57:34.786
+resolved. It could be reasonable
+to drop the constraints on these
+
+00:57:34.786 --> 00:57:37.292
+overloads entirely. What
+overload resolution scenario
+
+00:57:37.292 --> 00:57:38.406
+would they be improving?
+
+00:57:40.666 --> 00:57:41.316
+Sounds good to me.
+
+00:57:40.706 --> 00:57:42.696
+OK, finding bugs in the
+standard.
+
+00:57:44.706 --> 00:57:48.451
+OK. So we are in the constructor
+of overload, which is the one
+
+00:57:48.451 --> 00:57:50.116
+causing us all this trouble.
+
+00:57:52.976 --> 00:57:56.225
+Constexpr auto and then for the
+refund consider frac. He's in
+
+00:57:56.225 --> 00:57:58.216
+Utah, his move C Rev invoke
+result T.
+
+00:57:59.746 --> 00:58:02.475
+How we've got we've got a little
+the different here, OK, because
+
+00:58:02.475 --> 00:58:04.196
+that's the the decal type of
+stood move.
+
+00:58:05.026 --> 00:58:08.656
+Of value. OK, let me make sure
+that this is all correct.
+
+00:58:12.026 --> 00:58:15.300
+I think I I think I glossed over
+this the first time I saw this.
+
+00:58:15.300 --> 00:58:17.366
+So the L value form needs to say
+Tyra F.
+
+00:58:18.646 --> 00:58:20.566
+Constant values is const. Tyra
+off.
+
+00:58:22.146 --> 00:58:23.856
+Our value says tie.
+
+00:58:25.926 --> 00:58:27.956
+Tom Star values is constant, all
+correct.
+
+00:58:28.896 --> 00:58:33.748
+OK. And then stack of Serge is
+specialization, return Type F
+
+00:58:33.748 --> 00:58:38.282
+must be specialization of
+expected for the R value ones.
+
+00:58:38.282 --> 00:58:43.134
+Seven. Is the mandate correct?
+And then type name Utah error
+
+00:58:43.134 --> 00:58:44.646
+type must be error.
+
+00:58:45.786 --> 00:58:49.475
+Yes, airtime must be easy. If
+his value stood, invoke stood
+
+00:58:49.475 --> 00:58:53.350
+Ford Fund funks did move value
+that's right. Otherwise you tie
+
+00:58:53.350 --> 00:58:55.256
+unexpected move unexpected. OK.
+
+00:58:56.026 --> 00:58:59.126
+That's and then now or else.
+
+00:59:01.916 --> 00:59:07.208
+Ah OK. Template on class fun
+requires is copy constructible V
+
+00:59:07.208 --> 00:59:10.196
+of tie. So that's this
+constraint.
+
+00:59:11.086 --> 00:59:14.096
+Constexpr auto or else
+photographer funk? I guess we're
+
+00:59:14.096 --> 00:59:17.376
+going to see we're going to see
+the same sort of issue here.
+
+00:59:18.346 --> 00:59:19.946
+Or actually know only for the
+error.
+
+00:59:20.646 --> 00:59:22.296
+There's asking about tea, not
+east.
+
+00:59:23.566 --> 00:59:26.544
+We move value. Oh, but the same
+issue that the constant the
+
+00:59:26.544 --> 00:59:27.586
+constant refresh one.
+
+00:59:28.556 --> 00:59:30.176
+OK, so this occurs in all of
+them.
+
+00:59:30.346 --> 00:59:34.863
+Yeah, I'm on the on, not in
+transfer transform and transform
+
+00:59:31.156 --> 00:59:32.716
+Because it's asking me for
+structure, OK.
+
+00:59:34.863 --> 00:59:39.454
+error don't have constraints on
+them but and then and or else
+
+00:59:38.216 --> 00:59:38.596
+OK.
+
+00:59:39.454 --> 00:59:39.676
+do.
+
+00:59:46.736 --> 00:59:48.506
+We should fix this or else.
+
+00:59:52.166 --> 00:59:59.973
+So using a phone or funk I'll
+wrap. OK is in Utah remove CV
+
+00:59:59.973 --> 01:00:03.746
+raft, invoke result T fun on.
+
+01:00:04.566 --> 01:00:06.056
+Decker type of error.
+
+01:00:08.066 --> 01:00:11.746
+Which is Arraf. I'll quickly
+scan Const araf.
+
+01:00:12.906 --> 01:00:15.516
+Error as an R value const error.
+OK great.
+
+01:00:18.046 --> 01:00:21.776
+Uh, OK, stack assert Utah must
+be expected.
+
+01:00:23.166 --> 01:00:26.648
+Where's your tie? Oh, you tie
+the return value. Yep. I'm
+
+01:00:26.648 --> 01:00:30.436
+double checking. The name is
+correctly changed. Or else here.
+
+01:00:31.296 --> 01:00:35.561
+Return type F must be
+specialization of expected 11.
+
+01:00:35.561 --> 01:00:38.136
+Is the mandate cracked also for?
+
+01:00:39.266 --> 01:00:43.253
+That Const L value. This one
+also says or else here I'm just
+
+01:00:43.253 --> 01:00:47.306
+quickly scanning. I'm still are
+else 15 for the R value. Yep.
+
+01:00:48.536 --> 01:00:51.246
+Tyler's 15 OK, so all the
+messages are good.
+
+01:00:52.296 --> 01:00:53.146
+Let's go back up.
+
+01:00:54.326 --> 01:00:55.276
+Go.
+
+01:00:56.066 --> 01:01:01.103
+OK, let me to value type, OK. If
+it's value then return Utah of
+
+01:01:01.103 --> 01:01:05.982
+the in place tag and value. This
+is the lvalue form otherwise
+
+01:01:05.982 --> 01:01:10.626
+stood invoke stood forward from
+funk unexpected. OK great.
+
+01:01:12.266 --> 01:01:15.903
+Then there's the construct one.
+We've already checked that we've
+
+01:01:15.903 --> 01:01:19.204
+checked the messages in place
+value student Vokes deferred
+
+01:01:19.204 --> 01:01:21.106
+from funk. Unexpected. OK,
+great.
+
+01:01:21.876 --> 01:01:23.226
+Our value.
+
+01:01:24.926 --> 01:01:28.789
+We checked the type being fed to
+invoke result there and the
+
+01:01:28.789 --> 01:01:32.526
+messages. I guess I did not
+actually check the spaces, but
+
+01:01:32.526 --> 01:01:35.756
+the spaces all look good for the
+line wrapping OK.
+
+01:01:36.666 --> 01:01:39.436
+Umm, so this one. Now it needs
+moves.
+
+01:01:40.956 --> 01:01:44.611
+Here we go. So move the value,
+move the error stood move value
+
+01:01:44.611 --> 01:01:47.917
+stood move unexpected. You still
+got stood qualification
+
+01:01:47.917 --> 01:01:50.586
+everywhere. Good. And then the
+construct ref.
+
+01:01:51.616 --> 01:01:55.803
+STD move values did move
+unexpected. OK, that's all the
+
+01:01:55.803 --> 01:01:56.626
+OR else is.
+
+01:01:57.766 --> 01:02:03.116
+Uh, getting faster at this. Now
+transform template class fun.
+
+01:02:03.946 --> 01:02:07.186
+Requires this copy constructible
+V the error.
+
+01:02:07.916 --> 01:02:08.946
+That's this one.
+
+01:02:10.016 --> 01:02:11.586
+Constexpr auto transform.
+
+01:02:12.516 --> 01:02:16.286
+And refer funk. Actually
+transform also has the.
+
+01:02:14.696 --> 01:02:17.326
+I was wrong. Yeah, they do have
+the. Yeah. Yeah, yeah.
+
+01:02:18.016 --> 01:02:18.636
+Yeah.
+
+01:02:18.196 --> 01:02:19.736
+Yeah, this has the same problem,
+yeah.
+
+01:02:20.076 --> 01:02:22.696
+And the transform error. OK, so
+it's actually all of them. I'll
+
+01:02:22.696 --> 01:02:23.146
+go back up.
+
+01:02:33.836 --> 01:02:36.837
+Morales transformer.
+Transformer. OK, let's go back
+
+01:02:36.837 --> 01:02:37.126
+down.
+
+01:02:38.366 --> 01:02:38.946
+Transform.
+
+01:02:40.246 --> 01:02:40.516
+OK.
+
+01:02:41.826 --> 01:02:47.039
+It's got structure. The error
+constexpr auto transform fund
+
+01:02:47.039 --> 01:02:48.516
+refer funk L ref.
+
+01:02:49.426 --> 01:02:53.336
+Uh. We begin with the static
+assert static assert.
+
+01:02:54.206 --> 01:02:59.436
+The invocable concept? Uh,
+because that's the mandate.
+
+01:03:01.186 --> 01:03:06.496
+Yeah, so, so basically the the
+issue with this mandate is that.
+
+01:03:02.706 --> 01:03:03.726
+Well, that's interesting.
+
+01:03:08.646 --> 01:03:13.325
+So it mandates that that
+declaration is valid in order to
+
+01:03:13.325 --> 01:03:18.487
+work out the type you you need
+to do invoke result T of fun and
+
+01:03:18.487 --> 01:03:23.328
+tie. So I have to I do a kind of
+multi stage approach where
+
+01:03:23.328 --> 01:03:28.168
+because in order to work out the
+the you you need to do the
+
+01:03:27.976 --> 01:03:28.796
+Yeah.
+
+01:03:28.168 --> 01:03:33.169
+invoke results. So first I check
+that it's invokable and it's
+
+01:03:33.169 --> 01:03:38.413
+just static cert if not and then
+because I know that invoking is
+
+01:03:38.413 --> 01:03:38.816
+safe.
+
+01:03:38.906 --> 01:03:42.796
+And I do it and then I check the
+rest of the.
+
+01:03:44.706 --> 01:03:45.896
+That the mandates clause.
+
+01:03:46.906 --> 01:03:50.092
+Yeah, that's very interesting,
+because if you didn't do this,
+
+01:03:50.092 --> 01:03:53.072
+then attempting to form the
+invoke result that would seen
+
+01:03:53.072 --> 01:03:56.309
+away and so we'd get an error
+like, hey, you're trying to make
+
+01:03:56.309 --> 01:03:59.495
+a UTI type def, but it didn't
+have such a nested double colon
+
+01:03:59.495 --> 01:04:02.783
+type. That would be technically
+conformant, but pretty horrible
+
+01:04:02.783 --> 01:04:04.376
+message. So I really like this.
+
+01:04:05.636 --> 01:04:08.497
+This will result in better user
+experience if the function is
+
+01:04:08.497 --> 01:04:11.496
+not invokable with the value for
+whatever reason, and that could
+
+01:04:11.496 --> 01:04:14.450
+easily happen. If anything, it's
+more likely than like, oh, The
+
+01:04:12.126 --> 01:04:12.446
+Yeah.
+
+01:04:14.450 --> 01:04:17.403
+thing is in copy constructible,
+it's just like you're trying to
+
+01:04:15.786 --> 01:04:17.196
+Right. Yeah, absolutely.
+
+01:04:17.403 --> 01:04:20.402
+call some Lambda and you've got
+the type wrong or too many types
+
+01:04:20.402 --> 01:04:21.556
+or something, or too few.
+
+01:04:22.646 --> 01:04:26.064
+OK, so let's double check this
+multi stage deal. So we're
+
+01:04:26.064 --> 01:04:29.658
+static asserting that fun is
+invocable Thai ref because that
+
+01:04:29.658 --> 01:04:32.546
+matches what we're going with
+the invoke result.
+
+01:04:33.686 --> 01:04:36.466
+We got to say expected TE form
+F.
+
+01:04:37.206 --> 01:04:40.857
+Uh requires that F is invocable
+with T. Again, glossing over the
+
+01:04:40.857 --> 01:04:42.936
+value category, which is
+reasonable.
+
+01:04:43.386 --> 01:04:46.796
+Umm, looks like we do have a
+space there. Yep.
+
+01:04:47.886 --> 01:04:52.116
+Umm site expected object monadic
+paragraph 19.
+
+01:04:53.076 --> 01:04:57.907
+Yep, that's the mandate. OK, so
+now we know that's an invocable,
+
+01:04:57.907 --> 01:05:02.442
+and now we can actually form
+Utah. Using Utah is remove CVT.
+
+01:05:02.442 --> 01:05:04.746
+We're not removing CV ref here.
+
+01:05:05.416 --> 01:05:10.947
+Umm invoke result T of fun on
+Tyreke? That's the deck of type
+
+01:05:10.947 --> 01:05:13.356
+of value. So now we have U.
+
+01:05:14.736 --> 01:05:15.416
+And then.
+
+01:05:16.406 --> 01:05:21.394
+Uh mandates you is a valid value
+type for expected, which is
+
+01:05:21.394 --> 01:05:25.156
+happening down here outside the
+if constexpr.
+
+01:05:26.196 --> 01:05:28.884
+OK, check expected argument. You
+type value and This is why this
+
+01:05:28.884 --> 01:05:29.546
+is factored out.
+
+01:05:32.926 --> 01:05:36.707
+This is not being asserted with
+a message, but that's because
+
+01:05:36.707 --> 01:05:40.306
+check expected argument emits
+nice messages messages is. I
+
+01:05:40.306 --> 01:05:44.149
+can't pluralize for all of the
+different failure scenarios. It
+
+01:05:42.006 --> 01:05:42.266
+Yeah.
+
+01:05:44.149 --> 01:05:47.930
+would be confusing and redundant
+to also cite. Hey, you know,
+
+01:05:47.930 --> 01:05:51.712
+it's really this mandates here
+it should be fairly clear like
+
+01:05:51.712 --> 01:05:54.700
+we're complaining about an
+expected the template
+
+01:05:54.700 --> 01:05:58.421
+instantiation context will show
+that there's a transform. It
+
+01:05:58.421 --> 01:06:00.556
+should be pretty
+self-explanatory.
+
+01:05:58.866 --> 01:06:00.266
+It's also always true.
+
+01:06:01.746 --> 01:06:04.374
+Yeah. Ohh, you're right. Yeah.
+This one is always true. Yeah.
+
+01:06:01.956 --> 01:06:03.456
+Value is always true for this
+case.
+
+01:06:04.374 --> 01:06:06.536
+So we can't pass the message
+even if we wanted to.
+
+01:06:07.076 --> 01:06:08.576
+Umm OK.
+
+01:06:08.156 --> 01:06:12.074
+Yeah, you would have to like
+completely duplicate all of the
+
+01:06:08.546 --> 01:06:10.486
+Hence the this is cute. I like
+it.
+
+01:06:12.074 --> 01:06:16.057
+static asserts inside the. It
+would be a a mess for not a lot
+
+01:06:16.057 --> 01:06:17.406
+of of benefit really.
+
+01:06:18.166 --> 01:06:18.636
+Yeah.
+
+01:06:19.846 --> 01:06:26.067
+OK, so that's nice. So now we've
+checked this, then if is void V
+
+01:06:26.067 --> 01:06:32.000
+of U as false. So if we're not
+void V then we're gonna static
+
+01:06:32.000 --> 01:06:34.776
+assert some stuff this thing.
+
+01:06:36.196 --> 01:06:38.426
+Using the special is invoke
+constructible.
+
+01:06:39.046 --> 01:06:46.031
+Uh fun tie ref. Expected TEF
+requires that the return type of
+
+01:06:46.031 --> 01:06:46.256
+F.
+
+01:06:47.026 --> 01:06:50.316
+Is constructible with the result
+of invoking app.
+
+01:06:50.996 --> 01:06:51.466
+OK.
+
+01:06:52.146 --> 01:06:57.426
+And then site and 4928 expect
+object 19 and this is.
+
+01:06:58.466 --> 01:07:01.694
+This is wrapped a little bit
+weirdly, and these could be
+
+01:07:01.694 --> 01:07:05.206
+stacked onto a single line, uh.
+I guess it's more consistent.
+
+01:07:03.756 --> 01:07:04.976
+I think Clang format did that.
+
+01:07:05.986 --> 01:07:08.864
+Oh, interesting. I think you
+could probably manually set it
+
+01:07:08.864 --> 01:07:09.536
+the other way.
+
+01:07:11.346 --> 01:07:12.516
+But uh.
+
+01:07:15.256 --> 01:07:17.219
+Yeah, if you if you had
+originally written this on one
+
+01:07:17.219 --> 01:07:19.433
+line and then this on the next
+cling form, it would wrap this
+
+01:07:17.636 --> 01:07:20.036
+I wrote it on one line and then
+did a yeah.
+
+01:07:19.433 --> 01:07:19.576
+one.
+
+01:07:20.866 --> 01:07:21.736
+Ah, OK.
+
+01:07:23.896 --> 01:07:26.809
+Is that consistent with what we
+do elsewhere? This always
+
+01:07:26.809 --> 01:07:30.023
+appears it's a little bit weird.
+I won't. I won't comment on it
+
+01:07:30.023 --> 01:07:33.086
+is consuming a bunch of lines.
+It's not. It's not too weird.
+
+01:07:38.356 --> 01:07:39.876
+It doesn't make it longer.
+
+01:07:41.136 --> 01:07:42.976
+OK, I'm I can't resist. I'm
+going to comment.
+
+01:07:46.556 --> 01:07:48.306
+These can be.
+
+01:07:46.606 --> 01:07:49.406
+Yeah. Can six join those last
+two lines? Yeah.
+
+01:07:50.436 --> 01:07:52.566
+On uh, these can be combined.
+
+01:08:12.856 --> 01:08:15.228
+Yeah, if this code wasn't
+already pretty long, I'd be
+
+01:08:15.228 --> 01:08:17.909
+like, yeah, OK. We can spend a
+line here, but it occurs like
+
+01:08:17.909 --> 01:08:19.886
+four or more times and it's so
+cheap to fix.
+
+01:08:18.356 --> 01:08:19.276
+Yeah, yeah, yeah, yeah.
+
+01:08:21.366 --> 01:08:22.706
+Ah, OK.
+
+01:08:23.866 --> 01:08:27.263
+I'll say I lost my place and I
+removed this. We're just
+
+01:08:27.263 --> 01:08:30.659
+transform transform. OK, so
+we're citing this 19 is the
+
+01:08:30.659 --> 01:08:34.360
+mandates. OK, so we've got all
+this here. Now, we've checked
+
+01:08:34.360 --> 01:08:36.786
+the expected argument now we
+implement.
+
+01:08:38.296 --> 01:08:41.686
+OK. So affects, we've got three
+conditions.
+
+01:08:44.016 --> 01:08:47.847
+If has value, but the standard
+specifies the false case. So we
+
+01:08:47.847 --> 01:08:51.678
+do that first, and this is good.
+Thank you for phrasing all of
+
+01:08:51.678 --> 01:08:55.509
+these conditions positively. We
+have a convention where we try
+
+01:08:55.509 --> 01:08:58.246
+to avoid unnecessary negation in
+conditions.
+
+01:08:59.326 --> 01:09:00.796
+It's sometimes it makes stuff
+clearer.
+
+01:08:59.576 --> 01:09:02.616
+Yeah, it just makes the codes a
+lot easier to read, I think.
+
+01:09:02.366 --> 01:09:05.608
+Yeah. Otherwise gets tangled up.
+You're like, wait, is this the
+
+01:09:05.608 --> 01:09:08.698
+negative case and what's going
+on here? So if it's value, do
+
+01:09:06.886 --> 01:09:07.706
+Yeah.
+
+01:09:08.698 --> 01:09:10.826
+positive stuff. Otherwise we
+don't value.
+
+01:09:12.306 --> 01:09:17.928
+Than return make an expected and
+reforming utai error. Here we
+
+01:09:17.928 --> 01:09:23.104
+should use braces of unexpect
+and then the error which is
+
+01:09:23.104 --> 01:09:24.086
+unexpected.
+
+01:09:24.946 --> 01:09:27.900
+OK, let's see. This is a
+different enough in the text
+
+01:09:27.900 --> 01:09:30.636
+that I'll. I'll make a separate
+comment for this.
+
+01:09:30.716 --> 01:09:31.036
+Umm.
+
+01:09:33.756 --> 01:09:37.466
+We can use braces when
+constructing.
+
+01:09:38.876 --> 01:09:40.286
+Uh curves below.
+
+01:09:43.316 --> 01:09:47.011
+Yeah. Then actually. Oh, it
+occurs everywhere here. Ding,
+
+01:09:47.011 --> 01:09:50.006
+Ding, Ding, all these all these
+cases. Let me.
+
+01:09:48.896 --> 01:09:54.288
+Yeah. So and every case in where
+we are explicitly constructing
+
+01:09:52.916 --> 01:09:53.146
+Yeah.
+
+01:09:54.288 --> 01:09:57.406
+an expected then should just
+braces.
+
+01:10:00.306 --> 01:10:00.886
+Mostly.
+
+01:10:02.636 --> 01:10:06.116
+These temporary they're all
+expected Utah error.
+
+01:10:13.836 --> 01:10:18.116
+Can you use braces and
+instructing these?
+
+01:10:21.326 --> 01:10:25.061
+Her her peated land law. OK, we
+can use braces when constructing
+
+01:10:25.061 --> 01:10:28.566
+these expected. You tie air
+objects occurs repeatedly below.
+
+01:10:29.276 --> 01:10:29.526
+OK.
+
+01:10:39.526 --> 01:10:40.276
+Yeah.
+
+01:10:40.516 --> 01:10:40.816
+Umm.
+
+01:10:40.956 --> 01:10:43.327
+The the ones where there's like
+arguments is a little bit lower
+
+01:10:43.327 --> 01:10:44.846
+priority and we certainly have a
+lot of.
+
+01:10:45.206 --> 01:10:45.696
+I'm.
+
+01:10:46.896 --> 01:10:49.636
+Older usages, but when new code
+is nice.
+
+01:10:50.336 --> 01:10:55.912
+OK, so if has value false then
+expected UE unexpected error. OK
+
+01:10:55.912 --> 01:10:56.696
+got that.
+
+01:10:57.536 --> 01:10:58.406
+Otherwise.
+
+01:10:59.216 --> 01:11:04.337
+Umm if is void, V is false. Wow,
+the standard flips all of these.
+
+01:11:03.736 --> 01:11:04.276
+Umm.
+
+01:11:04.337 --> 01:11:05.656
+That's this case.
+
+01:11:07.256 --> 01:11:10.396
+Returns an expected UE object.
+Who's?
+
+01:11:12.116 --> 01:11:13.826
+Hazel Member is true.
+
+01:11:14.666 --> 01:11:17.576
+So construct is expected from
+invoke result tag.
+
+01:11:18.326 --> 01:11:22.548
+And then the Val member is
+direct non list initialize so
+
+01:11:22.548 --> 01:11:27.214
+it's saying do not use braces
+with invoke stirred Ford F value
+
+01:11:27.214 --> 01:11:27.436
+OK.
+
+01:11:28.216 --> 01:11:33.616
+Otherwise, this one evaluates
+invoke stood Ford F.
+
+01:11:34.576 --> 01:11:38.626
+And value and then returns
+expected UE.
+
+01:11:39.326 --> 01:11:43.232
+Print, print, brace, brace. OK,
+so all looks good here. You ties
+
+01:11:43.232 --> 01:11:45.936
+void. So there's no need to
+ignore anything.
+
+01:11:46.776 --> 01:11:50.126
+And this was already
+implemented? Or is this
+
+01:11:50.126 --> 01:11:51.466
+implemented below?
+
+01:11:52.246 --> 01:11:55.056
+That constructor is implemented.
+
+01:11:55.806 --> 01:11:56.476
+And.
+
+01:11:57.486 --> 01:11:58.016
+Below.
+
+01:11:58.926 --> 01:12:01.266
+OK, so here's naive benzene.
+
+01:11:59.296 --> 01:12:03.116
+The the tag is is above and the
+the constructor is below.
+
+01:12:04.086 --> 01:12:04.616
+Right.
+
+01:12:05.736 --> 01:12:09.456
+OK whoops, that's my place.
+
+01:12:10.266 --> 01:12:11.866
+OK transform L ref.
+
+01:12:12.506 --> 01:12:14.516
+Great. OK. So the new
+constructor.
+
+01:12:15.786 --> 01:12:18.985
+OK, so now the construct
+version. Let me check the
+
+01:12:18.985 --> 01:12:20.616
+paragraphs real quick. So.
+
+01:12:21.876 --> 01:12:30.261
+El Raff mandates is 19 for Const
+Graff or Rifraff, it's 23, it's
+
+01:12:30.261 --> 01:12:30.906
+1923.
+
+01:12:31.856 --> 01:12:36.806
+Yeah, OK, maximize this because
+the wrapping is horrible. OK,
+
+01:12:36.806 --> 01:12:37.046
+so.
+
+01:12:39.416 --> 01:12:43.866
+This is the era off version
+sighting 1919.
+
+01:12:46.046 --> 01:12:49.566
+Constructif, which is the next
+one, 1919.
+
+01:12:50.926 --> 01:12:56.016
+And then Ruff Ruff 23232323. OK
+good.
+
+01:12:56.806 --> 01:12:57.916
+So consider if.
+
+01:12:59.346 --> 01:13:02.373
+Template copy constructible
+here. I'm not looking at the
+
+01:13:02.373 --> 01:13:05.346
+standard, I'm just looking for
+the differences that I'm
+
+01:13:05.346 --> 01:13:08.426
+expecting, so we should see
+consti ref for each of these.
+
+01:13:10.106 --> 01:13:11.646
+But the messages don't need to
+change.
+
+01:13:12.336 --> 01:13:15.871
+OK, we still got the remove CVT.
+So where does the construct
+
+01:13:15.871 --> 01:13:19.464
+appear invokable when we make
+the invoke result and then when
+
+01:13:19.464 --> 01:13:21.666
+we ask our, you invoke
+constructable?
+
+01:13:23.026 --> 01:13:26.710
+No changes down here because we
+just say value, but then the
+
+01:13:26.710 --> 01:13:30.395
+move one will be a little bit
+different. Here we say for the
+
+01:13:30.395 --> 01:13:32.086
+reference one tie, tie, tie.
+
+01:13:32.816 --> 01:13:36.569
+And then we stood move value
+stood move. Value stood, move
+
+01:13:36.569 --> 01:13:40.576
+unexpected. And then for Contra
+frac, we say constant constant
+
+01:13:40.576 --> 01:13:41.276
+constant I.
+
+01:13:42.006 --> 01:13:45.037
+Stood move values should move
+values to move unexpected OK
+
+01:13:45.037 --> 01:13:47.966
+that looks good. I don't see any
+copy paste errors here.
+
+01:13:48.986 --> 01:13:51.336
+Quickly scanning for anything
+else.
+
+01:13:52.146 --> 01:13:54.156
+Don't see any issues.
+
+01:13:54.976 --> 01:13:57.126
+Cap that looks good and then.
+
+01:13:57.946 --> 01:13:59.346
+The Ruff Ruff won.
+
+01:14:03.436 --> 01:14:05.186
+Yeah, that looks good.
+
+01:14:07.156 --> 01:14:10.355
+Then account Straff 10 it
+requires a different. We already
+
+01:14:10.355 --> 01:14:13.718
+talked about this where it's
+copy, copy, move, move, but that
+
+01:14:13.718 --> 01:14:15.616
+should probably change. Yep,
+copy.
+
+01:14:16.426 --> 01:14:19.236
+Copy, move, move. OK.
+
+01:14:20.266 --> 01:14:22.056
+And the construct raffone.
+
+01:14:23.246 --> 01:14:26.376
+The Invocable not invoke
+constructible.
+
+01:14:29.336 --> 01:14:29.656
+OK.
+
+01:14:30.346 --> 01:14:32.116
+Talks good. Now transform error.
+
+01:14:32.826 --> 01:14:34.716
+So let's actually look at the
+standard again.
+
+01:14:37.706 --> 01:14:38.316
+Left.
+
+01:14:43.336 --> 01:14:44.766
+OK, Tryon.
+
+01:14:45.906 --> 01:14:46.506
+Transform error.
+
+01:14:47.516 --> 01:14:48.296
+Our first.
+
+01:14:50.236 --> 01:14:57.906
+Down here. OK template class F
+constexpr auto transform error.
+
+01:14:59.146 --> 01:15:01.396
+FL ref version.
+
+01:15:02.436 --> 01:15:07.936
+OK, same multistep deal we
+static assert.
+
+01:15:11.596 --> 01:15:15.826
+Speaker OK, transform error
+stack assert invokable fun.
+
+01:15:16.446 --> 01:15:18.836
+Well, this is a little bit
+different with error ref.
+
+01:15:20.436 --> 01:15:24.585
+Because Gene needs to be
+removed, CVS invoke result of
+
+01:15:24.585 --> 01:15:26.396
+the decal type of error.
+
+01:15:28.256 --> 01:15:29.326
+OK, air ref.
+
+01:15:31.526 --> 01:15:35.107
+We we had high ref and Const
+hired for the L value ones up
+
+01:15:35.107 --> 01:15:38.566
+here, right? Yes. OK, good. We
+weren't dropping her off.
+
+01:15:39.306 --> 01:15:44.048
+OK so here stack assert,
+invocable fun with Arref
+
+01:15:44.048 --> 01:15:49.265
+expected TE form error. F
+requires that F is invocable
+
+01:15:49.265 --> 01:15:54.576
+with E OK, that's correct, no
+copy paste errors for 27.
+
+01:15:55.656 --> 01:15:58.366
+Yep, that's the right mandate.
+
+01:15:59.406 --> 01:16:03.864
+K and then use new tie as remove
+CVT, invoke result T fun air ref
+
+01:16:03.864 --> 01:16:07.376
+stack cert is invoke
+constructable. Fun error. Raff
+
+01:16:07.376 --> 01:16:11.699
+expected TE transform error if
+requires that the return type of
+
+01:16:11.699 --> 01:16:15.616
+F is constructible with the
+result of invoking F OK, that
+
+01:16:15.616 --> 01:16:18.656
+doesn't need to mention error
+again site 27.
+
+01:16:19.346 --> 01:16:22.396
+Umm, so that's all the mandates.
+
+01:16:32.026 --> 01:16:35.221
+Sarah bugging the standard here
+it says Gee is valid value type
+
+01:16:35.221 --> 01:16:37.818
+for expected, but then the
+static assert is checked
+
+01:16:37.818 --> 01:16:39.266
+unexpected argument for Utah.
+
+01:16:39.726 --> 01:16:44.896
+Yes, that was a a bug in the
+standard. I think Casey if you.
+
+01:16:45.626 --> 01:16:48.906
+Click on the the conversation,
+yeah.
+
+01:16:46.486 --> 01:16:47.006
+This one.
+
+01:16:49.896 --> 01:16:50.546
+Ah, excellent.
+
+01:16:51.246 --> 01:16:53.679
+Yeah, I figured out. I figured
+out an issue without cracking
+
+01:16:53.679 --> 01:16:54.556
+the common open first.
+
+01:16:54.826 --> 01:16:55.276
+Your cat.
+
+01:16:55.266 --> 01:16:56.326
+I am paying attention.
+
+01:16:58.546 --> 01:17:01.090
+OK, great. And we've already got
+an issue that's in voting
+
+01:17:01.090 --> 01:17:01.866
+status. Thank you.
+
+01:17:02.616 --> 01:17:03.216
+OK.
+
+01:17:04.936 --> 01:17:09.067
+It's it's so nice. The standard
+two include these little little
+
+01:17:09.067 --> 01:17:09.906
+gems to find.
+
+01:17:10.806 --> 01:17:14.395
+OK, so we are doing the right
+thing here. Even though the
+
+01:17:14.395 --> 01:17:17.861
+standard says the wrong thing,
+Utah's gotta be a valid,
+
+01:17:17.861 --> 01:17:19.346
+unexpected argument, OK?
+
+01:17:20.116 --> 01:17:23.561
+So we've already checked your
+invocable. You formed Utah
+
+01:17:23.561 --> 01:17:25.496
+invoke constructible. So that's.
+
+01:17:26.166 --> 01:17:27.226
+All this.
+
+01:17:28.166 --> 01:17:31.416
+Make G with invoke F on error.
+
+01:17:32.126 --> 01:17:38.086
+OK, because G is the folk
+resolve. OK, that looks good.
+
+01:17:38.916 --> 01:17:44.721
+OK, so then the actual
+implementation sets if we have a
+
+01:17:44.721 --> 01:17:50.940
+value, if his value is true,
+return expected TG which is Ty
+
+01:17:50.940 --> 01:17:55.916
+Utah from in place and value
+correct otherwise.
+
+01:17:56.666 --> 01:18:01.482
+On expected TG object. So Thai
+utai whose Hazel inverse false.
+
+01:18:01.482 --> 01:18:05.916
+So constructive Spector from
+vocal result tag unexpected.
+
+01:18:06.576 --> 01:18:11.303
+Umm. And then he'd be direct non
+list initialized with invoke
+
+01:18:11.303 --> 01:18:16.183
+forward FF. So switchboard, funk
+and error unexpected. OK great
+
+01:18:16.183 --> 01:18:19.386
+and then the usual move changes
+there OK.
+
+01:18:20.636 --> 01:18:22.186
+So construct.
+
+01:18:23.116 --> 01:18:28.186
+Um or I should check before I
+minimize that the mandates
+
+01:18:28.186 --> 01:18:29.076
+paragraph?
+
+01:18:29.696 --> 01:18:32.316
+27 and 31 OK.
+
+01:18:33.106 --> 01:18:36.806
+So for the L version 2727.
+
+01:18:37.806 --> 01:18:44.436
+And spaces here try 727 and then
+31313131. Perfect.
+
+01:18:45.466 --> 01:18:49.625
+OK, construct O. We expect to
+see concern Arav, concert rap
+
+01:18:49.625 --> 01:18:50.526
+Concert, RAF.
+
+01:18:51.526 --> 01:18:54.466
+But we still say value and
+unexpected.
+
+01:18:55.246 --> 01:18:56.676
+OK, that's good.
+
+01:18:57.376 --> 01:19:01.124
+And then the rough rough
+version, which now says move
+
+01:19:01.124 --> 01:19:05.150
+constructible here. Let's good
+here we have error, error,
+
+01:19:05.150 --> 01:19:08.759
+error, move value move
+unexpected Alstead qualified
+
+01:19:08.759 --> 01:19:09.106
+good.
+
+01:19:10.546 --> 01:19:14.632
+And then concert or counselor,
+Prof is cancer. Cancer, cancer.
+
+01:19:14.632 --> 01:19:17.356
+Stood move. Value should move
+unexpected.
+
+01:19:18.266 --> 01:19:18.856
+Great.
+
+01:19:19.476 --> 01:19:22.753
+And then the quality operators
+fix up these strengthens OK
+
+01:19:22.753 --> 01:19:25.642
+implementation of the
+constructor. Let's see are we
+
+01:19:25.642 --> 01:19:28.919
+getting close to the end of
+expected. I know we're getting
+
+01:19:28.919 --> 01:19:32.141
+close to the end of our time
+slot then we've got the void
+
+01:19:32.141 --> 01:19:35.585
+specialization, OK, which is
+gonna be of course pretty highly
+
+01:19:35.585 --> 01:19:39.029
+repetitive. I think we might
+wanna call it a wrap once we get
+
+01:19:39.029 --> 01:19:42.084
+to the end of the primary
+template and I'll review the
+
+01:19:42.084 --> 01:19:42.806
+rest offline.
+
+01:19:43.256 --> 01:19:46.380
+But like that was pretty much
+exactly my my reaction when I
+
+01:19:43.366 --> 01:19:44.016
+Umm.
+
+01:19:46.380 --> 01:19:49.660
+was doing the standard and all
+this stuff, and I was like, oh,
+
+01:19:49.660 --> 01:19:51.066
+no, I've got the void ones.
+
+01:19:53.366 --> 01:19:58.547
+Uh, it's like ohh, it's a whole
+extra sequel. OK, so I lost my
+
+01:19:56.556 --> 01:19:57.266
+Yeah.
+
+01:19:58.547 --> 01:20:01.096
+place. Uh, the constructor, OK.
+
+01:20:02.146 --> 01:20:05.874
+So nice comment explaining why
+we're doing this thing. These
+
+01:20:05.874 --> 01:20:09.663
+overloads force copy elision
+from the invoke call into value.
+
+01:20:09.663 --> 01:20:09.846
+OK.
+
+01:20:10.846 --> 01:20:14.776
+Ah, so we have several overloads
+here.
+
+01:20:16.326 --> 01:20:18.796
+One takes a function and Arg.
+
+01:20:19.926 --> 01:20:23.741
+One takes a funk by itself or in
+Transformers called on an
+
+01:20:23.741 --> 01:20:24.776
+expected void E.
+
+01:20:25.946 --> 01:20:26.776
+Ah.
+
+01:20:27.836 --> 01:20:30.811
+How do we do the specializations
+of expect? Isn't it an entirely
+
+01:20:30.811 --> 01:20:31.956
+different specialization?
+
+01:20:31.236 --> 01:20:35.725
+So so yes, it's an entirely
+different specialization, but
+
+01:20:35.725 --> 01:20:40.136
+it's when you're calling
+transform on an expected void E
+
+01:20:38.416 --> 01:20:39.466
+Ah.
+
+01:20:40.136 --> 01:20:44.316
+such that it then needs to
+construct our expected TE.
+
+01:20:46.126 --> 01:20:50.735
+But you need to call that
+invokable with no arguments, so
+
+01:20:50.735 --> 01:20:53.516
+the the TE primary template
+needs.
+
+01:20:51.256 --> 01:20:51.776
+OK.
+
+01:20:54.346 --> 01:20:58.564
+And that constructor, which
+takes no argument to pass to the
+
+01:20:58.564 --> 01:20:59.256
+invocable.
+
+01:21:00.216 --> 01:21:00.946
+Makes sense?
+
+01:21:02.596 --> 01:21:05.826
+OK, let's see. OK, see.
+
+01:21:06.296 --> 01:21:08.366
+Basically, exactly this is the
+same thing.
+
+01:21:07.106 --> 01:21:08.996
+OK, Casey was confused about the
+same thing.
+
+01:21:10.476 --> 01:21:12.246
+Maybe that means I need to
+change the comment?
+
+01:21:11.366 --> 01:21:12.016
+Hilarious.
+
+01:21:13.196 --> 01:21:16.086
+Yeah, nitpick space after coming
+here.
+
+01:21:20.186 --> 01:21:25.275
+OK. Umm OK, these. Yeah, we saw
+that template class, fun class
+
+01:21:25.275 --> 01:21:27.376
+UX. Constexpr constructor.
+
+01:21:29.226 --> 01:21:30.746
+Expected.
+
+01:21:32.326 --> 01:21:36.230
+And we take the tag here. The
+tag occurs first, which is most
+
+01:21:36.230 --> 01:21:39.944
+helpful for tag dispatch. Here
+is a necessary case for tag
+
+01:21:39.944 --> 01:21:43.344
+dispatch. Basically or tag. I
+guess that's not really
+
+01:21:43.344 --> 01:21:45.926
+dispatch, it's more like
+disambiguation.
+
+01:21:46.726 --> 01:21:49.875
+I'm because constructors don't
+have names. Fun rough of funk UX
+
+01:21:49.875 --> 01:21:50.466
+ref ref Arg.
+
+01:21:51.496 --> 01:21:54.124
+We are no except, but this is
+all internal, so no reason to
+
+01:21:54.124 --> 01:21:55.176
+come in is strengthened.
+
+01:21:56.366 --> 01:21:58.996
+We're not. We're not. Except if
+this is noexcept.
+
+01:21:59.586 --> 01:22:02.836
+Let's make a tie. This probably
+be a static cast. It invokes did
+
+01:22:02.836 --> 01:22:04.686
+Fortran function before. Do you
+XRG?
+
+01:22:06.106 --> 01:22:08.687
+Yeah, I think I think let's,
+let's phrase this as a static
+
+01:22:08.687 --> 01:22:09.256
+cast as well.
+
+01:22:09.556 --> 01:22:09.836
+Yeah.
+
+01:22:10.446 --> 01:22:12.016
+Smile for using.
+
+01:22:13.076 --> 01:22:14.546
+Static cast here.
+
+01:22:15.586 --> 01:22:17.776
+And in the below 2 reloads as
+well.
+
+01:22:18.476 --> 01:22:19.556
+Now OK.
+
+01:22:27.526 --> 01:22:27.766
+Yeah.
+
+01:22:29.546 --> 01:22:33.204
+And then construct value with
+student Vogue stood forward from
+
+01:22:33.204 --> 01:22:36.688
+funk stood 40X. RG has value
+such a true as an aside boy it
+
+01:22:36.688 --> 01:22:39.940
+would be nice if the standard
+Committee was able to add
+
+01:22:39.940 --> 01:22:43.134
+features that avoided the
+repetitiveness of this code.
+
+01:22:43.134 --> 01:22:46.327
+It's like that's just go and
+look through what library
+
+01:22:46.327 --> 01:22:49.811
+implementers are suffering
+through and help them write more
+
+01:22:49.811 --> 01:22:52.076
+elegant code which will help
+everyone.
+
+01:22:53.576 --> 01:22:56.716
+OK, rant over 4.
+
+01:22:55.206 --> 01:22:56.786
+That's one for no except auto.
+
+01:22:57.296 --> 01:22:57.946
+The.
+
+01:22:57.686 --> 01:22:58.056
+Yeah.
+
+01:22:59.036 --> 01:23:02.455
+There are reasons to be
+uncomfortable with it, but the
+
+01:23:02.455 --> 01:23:06.122
+alternative is so bad, and I was
+so happy when we got like
+
+01:23:06.122 --> 01:23:09.106
+expected or sorry explicit bool.
+So convenient.
+
+01:23:08.826 --> 01:23:09.756
+Yeah.
+
+01:23:10.856 --> 01:23:16.236
+OK, so this is the helper tag.
+From there funk I wonder.
+
+01:23:17.266 --> 01:23:21.514
+We could make this variadic, but
+making it variadic just to
+
+01:23:21.514 --> 01:23:23.496
+handle the zero or one case.
+
+01:23:24.546 --> 01:23:26.746
+Is not the biggest thing in the
+world.
+
+01:23:27.466 --> 01:23:32.085
+Umm, I guess that oh, and this
+allows you to bypass the invoke,
+
+01:23:28.576 --> 01:23:30.206
+There's also the case where.
+
+01:23:31.016 --> 01:23:36.010
+Yes. So the this, the standard
+does say to use invoke here, but
+
+01:23:32.085 --> 01:23:32.446
+yeah.
+
+01:23:36.010 --> 01:23:39.366
+I thought couldn't just call the
+function.
+
+01:23:40.216 --> 01:23:44.526
+Absolutely. Because if there's
+no arguments, yeah, because if.
+
+01:23:40.536 --> 01:23:44.704
+Avoid the invoke call. Yeah,
+they can't be a Member Pointer
+
+01:23:44.704 --> 01:23:47.066
+or a member function pointer,
+so.
+
+01:23:47.736 --> 01:23:50.886
+Yeah, it would need a class
+object or pointer thing.
+
+01:23:52.756 --> 01:23:53.796
+OK, so that's a nice.
+
+01:23:55.156 --> 01:23:58.815
+Metaprogramming throughput
+optimization. We're no except if
+
+01:23:58.815 --> 01:24:02.657
+this is no, except the construct
+the tie from directly calling
+
+01:24:02.657 --> 01:24:03.206
+the funk.
+
+01:24:04.336 --> 01:24:05.486
+Said has value true.
+
+01:24:04.576 --> 01:24:07.866
+So many parentheses looks like
+Lisp.
+
+01:24:07.096 --> 01:24:08.126
+Yeah.
+
+01:24:10.106 --> 01:24:16.001
+And then, funny wax, if we have
+an unexpected tag, all the tags
+
+01:24:16.001 --> 01:24:17.106
+function RG.
+
+01:24:17.846 --> 01:24:20.830
+And these are these are
+unambiguous because it's, um.
+
+01:24:20.830 --> 01:24:24.422
+Whenever I see heavy overload. I
+tried to make sure that there's
+
+01:24:24.422 --> 01:24:27.848
+no possibility for ambiguity.
+This is 3 args disambiguated on
+
+01:24:27.848 --> 01:24:31.163
+the first tag, two and four, so
+purely by errity, these can
+
+01:24:31.163 --> 01:24:33.816
+never conflict with each other,
+so that's good.
+
+01:24:34.926 --> 01:24:38.189
+And in the most dire case of
+tuple, we have these internal
+
+01:24:38.189 --> 01:24:41.285
+tags that help us fully
+disambiguate which one we need,
+
+01:24:41.285 --> 01:24:44.382
+and we have a very careful
+template. Any trick to avoid
+
+01:24:44.382 --> 01:24:47.369
+ever impulsively constructing
+those things that's not
+
+01:24:47.369 --> 01:24:48.696
+necessary here, I think.
+
+01:24:48.966 --> 01:24:52.597
+Yeah, I thought about like
+making a construct expected from
+
+01:24:49.566 --> 01:24:50.166
+Umm.
+
+01:24:52.597 --> 01:24:55.986
+invoke tag unexpected or
+something, but I thought I can
+
+01:24:55.986 --> 01:24:59.556
+just we've already gotten
+unexpected. I can just use that.
+
+01:25:00.316 --> 01:25:01.826
+Yeah, that does seem reasonable.
+
+01:25:02.266 --> 01:25:07.493
+Umm, no, except if noexcept
+construct the error, this one
+
+01:25:07.416 --> 01:25:08.816
+Static cast again get.
+
+01:25:07.493 --> 01:25:09.836
+could also be static cast.
+
+01:25:12.706 --> 01:25:15.186
+Also for error.
+
+01:25:15.946 --> 01:25:16.386
+Avoid.
+
+01:25:17.046 --> 01:25:20.046
+Uh, just a avoid a ton of
+comments here.
+
+01:25:21.126 --> 01:25:24.416
+Error. Student Vogue storefront
+from Funks did 40X RG.
+
+01:25:25.296 --> 01:25:27.868
+And then construct the
+unexpected from that has value
+
+01:25:27.868 --> 01:25:30.487
+set to false. OK, great. And
+then we're up to the void
+
+01:25:30.487 --> 01:25:31.726
+specialization. Wonderful.
+
+01:25:32.976 --> 01:25:38.653
+OK. And we are exactly at the
+end of our time slot. So I think
+
+01:25:38.653 --> 01:25:41.266
+I will pause here. Let's see.
+
+01:25:43.546 --> 01:25:46.349
+I'm thinking should I submit
+this review and then come back
+
+01:25:46.349 --> 01:25:48.638
+in cause a lot of the
+recommended changes are in
+
+01:25:48.638 --> 01:25:49.946
+effect the void one as well.
+
+01:25:50.566 --> 01:25:51.206
+Umm.
+
+01:25:52.646 --> 01:25:54.936
+I'm tempted to do that and then.
+
+01:25:53.346 --> 01:25:53.816
+Well.
+
+01:25:55.016 --> 01:25:58.396
+One thing is I've already made
+all of the changes which you've
+
+01:25:58.396 --> 01:26:01.026
+suggested, including in the Void
+specialization.
+
+01:26:01.436 --> 01:26:05.837
+Ah, nice. So fast. And then the
+test, which I'll come back and
+
+01:26:05.837 --> 01:26:06.326
+review.
+
+01:26:09.026 --> 01:26:13.140
+Yeah, OK. I think I'll submit my
+review now. I will look for your
+
+01:26:13.140 --> 01:26:16.942
+changes and then I will resume
+at the void specialization. I
+
+01:26:16.942 --> 01:26:18.126
+will add a comment.
+
+01:26:18.986 --> 01:26:22.621
+A here. This is purely a note to
+self. Actually, no, I don't need
+
+01:26:22.621 --> 01:26:25.705
+to add a comment, that's
+annoying. I will add it in the
+
+01:26:25.705 --> 01:26:26.476
+review itself.
+
+01:26:27.736 --> 01:26:28.146
+Great.
+
+01:26:29.766 --> 01:26:30.206
+Uh.
+
+01:26:31.326 --> 01:26:39.672
+Thanks, um. Note to self. I
+reviewed the product code up to
+
+01:26:39.672 --> 01:26:46.766
+the Boyds specialization and
+still need to review.
+
+01:26:47.436 --> 01:26:48.216
+The new.
+
+01:26:48.956 --> 01:26:50.706
+Test file OK.
+
+01:26:52.386 --> 01:26:55.036
+Cool. I just pushed all of those
+changes as well.
+
+01:26:56.226 --> 01:26:59.552
+Excellent. I'll come back and
+review the rest of it later
+
+01:26:59.552 --> 01:26:59.896
+today.
+
+01:27:01.276 --> 01:27:05.252
+And this is looking great and
+thank you for implementing this
+
+01:27:05.252 --> 01:27:09.356
+and we should hopefully be able
+to move this forward to is this
+
+01:27:09.356 --> 01:27:13.460
+an final review right now Casey
+Casey did approve, OK. So it is
+
+01:27:13.460 --> 01:27:14.486
+in final review.
+
+01:27:15.786 --> 01:27:17.456
+So once I sign off.
+
+01:27:18.776 --> 01:27:22.677
+And I the necessary changes are
+like small, I might go ahead and
+
+01:27:22.677 --> 01:27:26.279
+push them anyways if they don't
+need your expertise then we
+
+01:27:26.279 --> 01:27:30.060
+should be able to get this ready
+to merge and hopefully merge.
+
+01:27:28.836 --> 01:27:29.126
+Great.
+
+01:27:30.060 --> 01:27:33.541
+This week we just missed the
+deadline for getting changes
+
+01:27:33.541 --> 01:27:37.142
+into 17-6 Preview 2, although
+the date for that to actually
+
+01:27:37.142 --> 01:27:40.684
+releases in the future. We don't
+say exactly when, but the
+
+01:27:40.684 --> 01:27:44.045
+internal branch deadline for
+changes flowing is already
+
+01:27:44.045 --> 01:27:47.046
+passed so this is now slated to
+go into 17 seven.
+
+01:27:47.966 --> 01:27:50.776
+But it will be one of the first
+changes in 17-7.
+
+01:27:51.996 --> 01:27:52.926
+And.
+
+01:27:54.046 --> 01:27:58.112
+Let's see. That will bring us.
+This is over 5% of our remaining
+
+01:27:58.112 --> 01:28:01.988
+C + 23 features we're at. I
+guess I can open up this project
+
+01:28:01.988 --> 01:28:02.306
+here.
+
+01:28:03.846 --> 01:28:06.831
+Here we go. Yeah. We have
+rapidly diminishing set of C +
+
+01:28:06.831 --> 01:28:09.920
+23 features to implement,
+although the committee is voting
+
+01:28:09.920 --> 01:28:12.852
+in more stuff this week.
+Hopefully not actual features,
+
+01:28:12.852 --> 01:28:15.994
+just like patch papers. So the
+total number of papers might
+
+01:28:15.994 --> 01:28:19.136
+increase, but hopefully no new
+massive things will come in.
+
+01:28:19.796 --> 01:28:23.636
+Umm, so thanks. UMI think that
+does it for this video code for
+
+01:28:23.636 --> 01:28:25.586
+you and we'll see you next week.
+
+01:28:27.046 --> 01:28:27.746
+Great. Thanks so much.
